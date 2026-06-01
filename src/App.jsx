@@ -9312,18 +9312,18 @@ if (
         const schoolDistance = getNearestPointDistance(x, y, schoolPositions, schoolX, schoolY);
 
         if (stationDistance < 6 && Math.random() < 0.22) {
-          building = Math.random() < 0.7 ? "house_2f" : "apt_2f_single";
-          rooms = createRooms(building, 70, month);
-          age = randomInt(1, 25);
-condition = Math.max(40, 100 - age * randomInt(1, 3));
-        }
+  building = Math.random() < 0.7 ? "house_2f" : "apt_2f_single";
+  rooms = createRooms(building, 70, 0);
+  age = randomInt(1, 25);
+  condition = Math.max(40, 100 - age * randomInt(1, 3));
+}
 
         if (!building && schoolDistance < 5 && Math.random() < 0.15) {
-          building = "house_2f";
-          rooms = createRooms(building, 75, month);
-          age = randomInt(1, 25);
-condition = Math.max(40, 100 - age * randomInt(1, 3));
-        }
+  building = "house_2f";
+  rooms = createRooms(building, 75, 0);
+  age = randomInt(1, 25);
+  condition = Math.max(40, 100 - age * randomInt(1, 3));
+}
 
         if (!building && Math.random() < 0.24) {
           owner = OWNER.SALE;
