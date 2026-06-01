@@ -70,6 +70,188 @@ function getRivalCompany(companyId) {
   return RIVAL_COMPANIES[companyId] ?? RIVAL_COMPANIES.A;
 }
 
+const BANKS = {
+  nonbank: {
+    id: "nonbank",
+    name: "ノンバンク",
+    shortName: "ノンバンク",
+    rate: 0.075,
+    maxYears: 10,
+    approvalMultiplier: 10,
+    collateralRate: 0.25,
+    minRank: 1,
+    description: "金利は高いが、銀行より審査が柔軟。急ぎの小口資金に使いやすい。",
+  },
+  regional: {
+    id: "regional",
+    name: "地方銀行",
+    shortName: "地銀",
+    rate: 0.028,
+    maxYears: 20,
+    approvalMultiplier: 18,
+    collateralRate: 0.55,
+    minRank: 1,
+    description: "金利はやや高いが、地方の不動産投資に積極的。序盤から使いやすい銀行。",
+  },
+  shinkin: {
+    id: "shinkin",
+    name: "信用金庫",
+    shortName: "信金",
+    rate: 0.023,
+    maxYears: 25,
+    approvalMultiplier: 15,
+    collateralRate: 0.5,
+    minRank: 2,
+    description: "地域密着型。金利と審査のバランスが良く、安定経営向き。",
+  },
+  megabank: {
+    id: "megabank",
+    name: "メガバンク",
+    shortName: "メガ",
+    rate: 0.017,
+    maxYears: 30,
+    approvalMultiplier: 12,
+    collateralRate: 0.45,
+    minRank: 4,
+    description: "低金利で大型融資に強いが、ランク・返済余力・自己資本を厳しく見る。",
+  },
+};
+
+function calculateMonthlyLoanPayment(principal, annualRate, years) {
+  const months = years * 12;
+  const monthlyRate = annualRate / 12;
+
+  if (principal <= 0 || months <= 0) return 0;
+  if (monthlyRate <= 0) return Math.ceil(principal / months);
+
+  return Math.ceil(
+    principal * monthlyRate * Math.pow(1 + monthlyRate, months) /
+      (Math.pow(1 + monthlyRate, months) - 1)
+  );
+}
+
+function normalizeLoan(loan) {
+  const bank = BANKS[loan?.bankId] ?? BANKS.regional;
+  const principal = Math.max(0, Math.round(loan?.principal ?? loan?.remaining ?? 0));
+  const years = Math.max(1, Math.round(loan?.years ?? bank.maxYears));
+  const annualRate = loan?.annualRate ?? bank.rate;
+  const monthlyPayment = loan?.monthlyPayment ?? calculateMonthlyLoanPayment(principal, annualRate, years);
+
+  return {
+    id: loan?.id ?? `loan-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    bankId: bank.id,
+    bankName: bank.name,
+    principal,
+    remaining: Math.max(0, Math.round(loan?.remaining ?? principal)),
+    annualRate,
+    years,
+    monthsLeft: Math.max(1, Math.round(loan?.monthsLeft ?? years * 12)),
+    monthlyPayment,
+    borrowedAt: loan?.borrowedAt ?? "",
+  };
+}
+
+function getLoanReviewMonths(amount) {
+  const requestedAmount = Math.max(0, Math.round(Number(amount) || 0));
+
+  if (requestedAmount >= 20000) return 3;
+  if (requestedAmount >= 5000) return 2;
+
+  return 1;
+}
+
+function getLoanNegotiationPower(actionEmployees) {
+  const members = Array.isArray(actionEmployees) ? actionEmployees : [];
+  if (members.length === 0) return 0;
+
+  const total = members.reduce((sum, employee) => {
+    return sum +
+      (employee.sales ?? 0) * 0.5 +
+      (employee.management ?? 0) * 0.35 +
+      (employee.leadership ?? 0) * 0.15;
+  }, 0);
+
+  return Math.round(total / members.length);
+}
+
+function getLoanTeamAverage(actionEmployees, statKey) {
+  const members = Array.isArray(actionEmployees) ? actionEmployees : [];
+  if (members.length === 0) return 0;
+
+  const total = members.reduce((sum, employee) => sum + (employee[statKey] ?? 0), 0);
+  return Math.round(total / members.length);
+}
+
+function normalizePendingLoanApplication(application) {
+  const bank = BANKS[application?.bankId] ?? BANKS.regional;
+  const requestedAmount = Math.max(0, Math.round(application?.requestedAmount ?? 0));
+  if (requestedAmount <= 0) return null;
+
+  const reviewMonths = Math.max(1, Math.round(application?.reviewMonths ?? getLoanReviewMonths(requestedAmount)));
+
+  return {
+    id: application?.id ?? `loan-app-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    bankId: bank.id,
+    bankName: bank.name,
+    requestedAmount,
+    reviewMonths,
+    monthsLeft: Math.max(1, Math.round(application?.monthsLeft ?? reviewMonths)),
+    appliedAt: application?.appliedAt ?? "",
+    employeeIds: Array.isArray(application?.employeeIds) ? application.employeeIds : [],
+    employeeNames: Array.isArray(application?.employeeNames) ? application.employeeNames : [],
+    negotiationPower: Math.max(0, Math.round(application?.negotiationPower ?? 0)),
+    salesAverage: Math.max(0, Math.round(application?.salesAverage ?? 0)),
+    managementAverage: Math.max(0, Math.round(application?.managementAverage ?? 0)),
+    leadershipAverage: Math.max(0, Math.round(application?.leadershipAverage ?? 0)),
+    consultationReportId: application?.consultationReportId ?? null,
+    consultationRecommendedAmount: Math.max(0, Math.round(application?.consultationRecommendedAmount ?? 0)),
+    consultationEstimatedMin: Math.max(0, Math.round(application?.consultationEstimatedMin ?? 0)),
+    consultationEstimatedMax: Math.max(0, Math.round(application?.consultationEstimatedMax ?? 0)),
+    consultationPower: Math.max(0, Math.round(application?.consultationPower ?? 0)),
+    consultationEmployeeName: application?.consultationEmployeeName ?? "",
+  };
+}
+
+
+function normalizePendingLoanConsultation(consultation) {
+  const bank = BANKS[consultation?.bankId] ?? BANKS.regional;
+
+  return {
+    id: consultation?.id ?? `loan-consult-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    bankId: bank.id,
+    bankName: bank.name,
+    monthsLeft: Math.max(1, Math.round(consultation?.monthsLeft ?? 1)),
+    requestedAt: consultation?.requestedAt ?? "",
+    employeeId: consultation?.employeeId ?? null,
+    employeeName: consultation?.employeeName ?? "",
+    consultationPower: Math.max(0, Math.round(consultation?.consultationPower ?? 0)),
+    sales: Math.max(0, Math.round(consultation?.sales ?? 0)),
+    management: Math.max(0, Math.round(consultation?.management ?? 0)),
+  };
+}
+
+function normalizeLoanConsultationReport(report) {
+  const bank = BANKS[report?.bankId] ?? BANKS.regional;
+
+  return {
+    id: report?.id ?? `loan-report-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    bankId: bank.id,
+    bankName: bank.name,
+    reportedAt: report?.reportedAt ?? "",
+    employeeName: report?.employeeName ?? "",
+    estimatedMin: Math.max(0, Math.round(report?.estimatedMin ?? 0)),
+    estimatedMax: Math.max(0, Math.round(report?.estimatedMax ?? 0)),
+    recommendedAmount: Math.max(0, Math.round(report?.recommendedAmount ?? 0)),
+    outlookLabel: report?.outlookLabel ?? "不明",
+    comment: report?.comment ?? "相談結果を確認できませんでした。",
+    riskNotes: Array.isArray(report?.riskNotes) ? report.riskNotes : [],
+    consultationPower: Math.max(0, Math.round(report?.consultationPower ?? 0)),
+    createdMonth: Number.isFinite(Number(report?.createdMonth)) ? Math.round(Number(report.createdMonth)) : null,
+    expiresMonth: Number.isFinite(Number(report?.expiresMonth)) ? Math.round(Number(report.expiresMonth)) : null,
+    used: report?.used === true,
+  };
+}
+
 
 const TENANT_TYPES = {
   SINGLE: { name: "単身", peopleMin: 1, peopleMax: 1, rentPower: 1.0 },
@@ -9575,7 +9757,7 @@ function loadSavedGameSafely() {
 export default function App() {
 
   useEffect(() => {
-    document.title = "箱庭不動産経営シミュレーター V88";
+    document.title = "箱庭不動産経営シミュレーター V99";
 
     if (typeof window === "undefined") return;
     if (!("serviceWorker" in navigator)) return;
@@ -9595,6 +9777,34 @@ const loadedHqPlaced = Boolean(
 );
 
 const [money, setMoney] = useState(savedGame?.money ?? 20000);
+const [loans, setLoans] = useState(() => (savedGame?.loans ?? []).map(normalizeLoan));
+const [pendingLoanApplications, setPendingLoanApplications] = useState(() => {
+  return (savedGame?.pendingLoanApplications ?? [])
+    .map(normalizePendingLoanApplication)
+    .filter(Boolean);
+});
+const [pendingLoanConsultations, setPendingLoanConsultations] = useState(() => {
+  return (savedGame?.pendingLoanConsultations ?? [])
+    .map(normalizePendingLoanConsultation)
+    .filter(Boolean);
+});
+const [loanConsultationReports, setLoanConsultationReports] = useState(() => {
+  const currentMonthForReports = savedGame?.month ?? 1;
+  return (savedGame?.loanConsultationReports ?? [])
+    .map(normalizeLoanConsultationReport)
+    .filter(Boolean)
+    .map((report) => ({
+      ...report,
+      createdMonth: report.createdMonth ?? currentMonthForReports,
+      expiresMonth: report.expiresMonth ?? currentMonthForReports + 6,
+    }))
+    .filter((report) => report.used !== true)
+    .filter((report) => currentMonthForReports < report.expiresMonth)
+    .slice(0, 12);
+});
+const [loanAmountInput, setLoanAmountInput] = useState("5000");
+const [consultationApplicationAmounts, setConsultationApplicationAmounts] = useState({});
+const [selectedBankId, setSelectedBankId] = useState("regional");
 const [month, setMonth] = useState(savedGame?.month ?? 1);
 const [hqPlaced, setHqPlaced] = useState(loadedHqPlaced);
 
@@ -9797,6 +10007,10 @@ useEffect(() => {
   const saveTimer = window.setTimeout(() => {
     const saveData = {
       money,
+      loans,
+      pendingLoanApplications,
+      pendingLoanConsultations,
+      loanConsultationReports,
       month,
       hqPlaced,
       tiles,
@@ -9831,6 +10045,10 @@ useEffect(() => {
   };
 }, [
   money,
+  loans,
+  pendingLoanApplications,
+  pendingLoanConsultations,
+  loanConsultationReports,
   month,
   hqPlaced,
   tiles,
@@ -10221,6 +10439,78 @@ const yearlyTax = useMemo(() => {
   const monthlyProfit = useMemo(() => {
   return totalRent - totalMaintenance;
 }, [totalRent, totalMaintenance]);
+
+const totalLoanRemaining = useMemo(() => {
+  return loans.reduce((sum, loan) => sum + (loan.remaining ?? 0), 0);
+}, [loans]);
+
+const totalMonthlyLoanPayment = useMemo(() => {
+  return loans.reduce((sum, loan) => sum + (loan.monthlyPayment ?? 0), 0);
+}, [loans]);
+
+const actualMonthlyProfit = useMemo(() => {
+  return monthlyProfit - totalMonthlyLoanPayment;
+}, [monthlyProfit, totalMonthlyLoanPayment]);
+
+const monthlyProfitIcon = actualMonthlyProfit >= 0 ? "📈" : "📉";
+const monthlyProfitSign = actualMonthlyProfit >= 0 ? "+" : "";
+
+const totalPendingLoanAmount = useMemo(() => {
+  return pendingLoanApplications.reduce((sum, application) => {
+    return sum + (application.requestedAmount ?? 0);
+  }, 0);
+}, [pendingLoanApplications]);
+
+const netWorthAfterDebt = useMemo(() => {
+  return Math.round(money + assetValue - totalLoanRemaining);
+}, [money, assetValue, totalLoanRemaining]);
+
+const debtRatio = useMemo(() => {
+  if (assetValue <= 0) return totalLoanRemaining > 0 ? 100 : 0;
+  return Math.round((totalLoanRemaining / assetValue) * 100);
+}, [assetValue, totalLoanRemaining]);
+
+const loanCapacityByBank = useMemo(() => {
+  const yearlyNetIncome = Math.max(0, monthlyProfit - totalMonthlyLoanPayment) * 12;
+
+  return Object.values(BANKS).reduce((result, bank) => {
+    const incomeCapacity = yearlyNetIncome * bank.approvalMultiplier;
+    const collateralCapacity = assetValue * bank.collateralRate;
+    const rankBonus = Math.max(0, playerRank - bank.minRank) * 1500;
+    const cashBuffer = Math.max(0, money) * 0.35;
+    const baseLimit = Math.max(0, Math.round(incomeCapacity + collateralCapacity + rankBonus + cashBuffer));
+    const nonbankStartupLimit = bank.id === "nonbank" ? Math.max(1000, Math.min(5000, Math.round(Math.max(money * 0.5, assetValue * 0.18 + money * 0.4 + 1200)))) : 0;
+    const grossLimit = bank.id === "nonbank" ? Math.max(baseLimit, nonbankStartupLimit) : baseLimit;
+    const pendingAmountForBank = pendingLoanApplications.reduce((sum, application) => {
+      if (application.bankId !== bank.id) return sum;
+      return sum + (application.requestedAmount ?? 0);
+    }, 0);
+    const remainingLimit = Math.max(0, grossLimit - totalLoanRemaining - pendingAmountForBank);
+    const smallRegionalStartupOk = bank.id === "regional" &&
+      monthlyProfit >= 0 &&
+      totalLoanRemaining <= Math.max(5000, assetValue * 0.45);
+    const nonbankStartupOk = bank.id === "nonbank" &&
+      totalLoanRemaining <= Math.max(7000, assetValue * 0.7);
+    const dscrOk = monthlyProfit <= 0
+      ? (smallRegionalStartupOk || nonbankStartupOk)
+      : totalMonthlyLoanPayment <= Math.max(50, monthlyProfit * (bank.id === "nonbank" ? 1.2 : 0.75));
+    const rankOk = playerRank >= bank.minRank;
+    const debtLimit = bank.id === "nonbank" ? 110 : bank.id === "regional" ? 95 : 85;
+    const debtOk = assetValue <= 0 ? totalLoanRemaining === 0 || bank.id === "nonbank" : debtRatio <= debtLimit;
+
+    result[bank.id] = {
+      bank,
+      grossLimit,
+      remainingLimit,
+      dscrOk,
+      rankOk,
+      debtOk,
+      canApply: remainingLimit > 0 && rankOk && dscrOk && debtOk,
+    };
+
+    return result;
+  }, {});
+}, [assetValue, debtRatio, money, monthlyProfit, pendingLoanApplications, playerRank, totalLoanRemaining, totalMonthlyLoanPayment]);
 
 const officeTiles = useMemo(() => {
   return tiles.filter((tile) => {
@@ -11810,6 +12100,13 @@ function addEmployeeTicketForDemo() {
 function addPremiumEmployeeTicketForDemo() {
   setPremiumEmployeeTickets(premiumEmployeeTickets + 1);
   setLog("デモ用に社員プレミアムチケットを1枚追加しました。SR以上確定です。");
+}
+
+function addDemoMoney100m() {
+  if (!isDemoMode) return;
+
+  setMoney((current) => current + 10000);
+  setLog("デモ版：所持金を1億円追加しました。");
 }
 
 
@@ -14171,10 +14468,38 @@ if (monthlyEmployeeSalary > 0) {
   eventLog.push(`社員給与 ${monthlyEmployeeSalary}万円を支払いました`);
 }
 
-const net = income - maintenance - taxPayment - purchasePaymentTotal;
+let loanPaymentTotal = 0;
+let nextLoans = loans.map((loan) => {
+  if ((loan.remaining ?? 0) <= 0 || (loan.monthsLeft ?? 0) <= 0) return null;
+
+  const monthlyInterest = Math.ceil((loan.remaining ?? 0) * (loan.annualRate ?? 0) / 12);
+  const scheduledPayment = Math.min(loan.monthlyPayment ?? 0, loan.remaining + monthlyInterest);
+  const principalPayment = Math.max(0, scheduledPayment - monthlyInterest);
+  const nextRemaining = Math.max(0, (loan.remaining ?? 0) - principalPayment);
+  const nextMonthsLeft = Math.max(0, (loan.monthsLeft ?? 0) - 1);
+
+  loanPaymentTotal += scheduledPayment;
+
+  if (nextRemaining <= 0 || nextMonthsLeft <= 0) {
+    eventLog.push(`${loan.bankName}の借入を完済しました`);
+    return null;
+  }
+
+  return {
+    ...loan,
+    remaining: nextRemaining,
+    monthsLeft: nextMonthsLeft,
+  };
+}).filter(Boolean);
+
+if (loanPaymentTotal > 0) {
+  eventLog.push(`銀行返済 ${loanPaymentTotal.toLocaleString()}万円を支払いました`);
+}
+
+const net = income - maintenance - taxPayment - purchasePaymentTotal - loanPaymentTotal;
 const updatedAnnualStats = {
   income: (annualStats.income ?? 0) + income,
-  maintenance: (annualStats.maintenance ?? 0) + maintenance,
+  maintenance: (annualStats.maintenance ?? 0) + maintenance + loanPaymentTotal,
   tax: (annualStats.tax ?? 0) + taxPayment,
   purchase: (annualStats.purchase ?? 0) + purchasePaymentTotal,
   net: (annualStats.net ?? 0) + net,
@@ -14270,6 +14595,99 @@ setTiles(syncedTiles);
 setFactoryProjects(newFactoryProjects);
 setStationProjects(newStationProjects);
 
+const completedLoanConsultationEmployeeIds = [];
+const completedLoanConsultationReports = [];
+const nextPendingLoanConsultations = pendingLoanConsultations.map((consultation) => {
+  const nextMonthsLeft = Math.max(0, (consultation.monthsLeft ?? 1) - 1);
+
+  if (nextMonthsLeft > 0) {
+    eventLog.push(`${consultation.bankName}の融資相談中：残り${nextMonthsLeft}ヶ月 / 担当:${consultation.employeeName || "-"}`);
+    return {
+      ...consultation,
+      monthsLeft: nextMonthsLeft,
+    };
+  }
+
+  const report = calculateLoanConsultationReport(consultation);
+  completedLoanConsultationReports.push(report);
+  if (consultation.employeeId != null) completedLoanConsultationEmployeeIds.push(consultation.employeeId);
+  eventLog.push(`${consultation.bankName}の融資相談結果：推定${report.estimatedMin.toLocaleString()}万〜${report.estimatedMax.toLocaleString()}万円 / 担当:${consultation.employeeName || "-"}`);
+  return null;
+}).filter(Boolean);
+
+let loanApprovalTotal = 0;
+const completedLoanEmployeeIds = [];
+let reviewedLoans = nextLoans;
+const nextPendingLoanApplications = pendingLoanApplications.map((application) => {
+  const nextMonthsLeft = Math.max(0, (application.monthsLeft ?? 1) - 1);
+
+  if (nextMonthsLeft > 0) {
+    eventLog.push(`${application.bankName}の融資審査中：残り${nextMonthsLeft}ヶ月 / 希望額${(application.requestedAmount ?? 0).toLocaleString()}万円`);
+    return {
+      ...application,
+      monthsLeft: nextMonthsLeft,
+    };
+  }
+
+  const result = calculateLoanReviewResult(application, reviewedLoans);
+  completedLoanEmployeeIds.push(...(application.employeeIds ?? []));
+
+  if (!result.approved) {
+    eventLog.push(`${application.bankName}の融資審査は否決されました。理由:${result.reason} / 担当:${(application.employeeNames ?? []).join("・") || "-"}`);
+    return null;
+  }
+
+  const conditionChanged = result.conditionChanged === true || result.reduced === true || Math.abs((result.annualRate ?? 0) - (BANKS[application.bankId]?.rate ?? 0)) >= 0.0001;
+  const approvalMessage =
+    `${application.bankName}の融資審査が${result.reduced ? "減額承認" : "承認"}されました。\n\n` +
+    `希望額: ${(application.requestedAmount ?? 0).toLocaleString()}万円\n` +
+    `承認額: ${result.approvedAmount.toLocaleString()}万円\n` +
+    `金利: ${(result.annualRate * 100).toFixed(2)}%\n` +
+    `返済期間: ${result.years}年\n` +
+    `月返済: ${result.monthlyPayment.toLocaleString()}万円\n\n` +
+    `${conditionChanged ? "希望条件から変更があります。この条件で借入しますか？" : "この条件で借入しますか？"}`;
+
+  const acceptLoan = window.confirm(approvalMessage);
+
+  if (!acceptLoan) {
+    eventLog.push(
+      `${application.bankName}の融資承認を辞退しました。承認額${result.approvedAmount.toLocaleString()}万円 / 金利${(result.annualRate * 100).toFixed(2)}% / 担当:${(application.employeeNames ?? []).join("・") || "-"}`
+    );
+    return null;
+  }
+
+  const approvedLoan = normalizeLoan({
+    bankId: application.bankId,
+    bankName: application.bankName,
+    principal: result.approvedAmount,
+    remaining: result.approvedAmount,
+    annualRate: result.annualRate,
+    years: result.years,
+    monthsLeft: result.years * 12,
+    monthlyPayment: result.monthlyPayment,
+    borrowedAt: gameDate.label,
+  });
+
+  reviewedLoans = [approvedLoan, ...reviewedLoans];
+  loanApprovalTotal += result.approvedAmount;
+
+  eventLog.push(
+    `${application.bankName}の融資審査が${result.reduced ? "減額承認" : "承認"}され、借入を実行しました。希望額${(application.requestedAmount ?? 0).toLocaleString()}万円 → 承認額${result.approvedAmount.toLocaleString()}万円 / 金利${(result.annualRate * 100).toFixed(2)}% / 月返済${result.monthlyPayment.toLocaleString()}万円 / 担当:${(application.employeeNames ?? []).join("・") || "-"}`
+  );
+
+  return null;
+}).filter(Boolean);
+
+nextLoans = reviewedLoans;
+
+if (completedLoanEmployeeIds.length > 0) {
+  grantEmployeesExp(completedLoanEmployeeIds, 24, "融資審査対応");
+}
+
+if (completedLoanConsultationEmployeeIds.length > 0) {
+  grantEmployeesExp(completedLoanConsultationEmployeeIds, 12, "融資相談");
+}
+
 let corporateTax = 0;
 let finalNet = net;
 
@@ -14281,7 +14699,32 @@ if (gameDate.month === 3) {
   }
 }
 
-    setMoney(money + finalNet);
+    setMoney(money + finalNet + loanApprovalTotal);
+    setLoans(nextLoans);
+    setPendingLoanApplications(nextPendingLoanApplications);
+    setPendingLoanConsultations(nextPendingLoanConsultations);
+    setLoanConsultationReports((current) => {
+      const activeReports = current
+        .map(normalizeLoanConsultationReport)
+        .filter(Boolean)
+        .map((report) => ({
+          ...report,
+          createdMonth: report.createdMonth ?? month,
+          expiresMonth: report.expiresMonth ?? month + 6,
+        }))
+        .filter((report) => report.used !== true)
+        .filter((report) => month + 1 < report.expiresMonth);
+
+      const expiredCount = current.length - activeReports.length;
+      if (expiredCount > 0) {
+        eventLog.push(`有効期限切れの融資相談結果${expiredCount}件を整理しました。`);
+      }
+
+      return [
+        ...completedLoanConsultationReports,
+        ...activeReports,
+      ].slice(0, 12);
+    });
     setMonth(month + 1);
     setActionPoints(companyActionPower);
 
@@ -14292,9 +14735,11 @@ const monthlyHistoryRecord = {
   maintenance,
   tax: taxPayment,
   purchase: purchasePaymentTotal,
+  loan: loanPaymentTotal,
   corporateTax,
   net: finalNet,
-  money: money + finalNet,
+  money: money + finalNet + loanApprovalTotal,
+  loanApproval: loanApprovalTotal,
 };
 setMonthlyCompanyHistory((prev) => [monthlyHistoryRecord, ...prev].slice(0, 120));
 
@@ -14304,7 +14749,8 @@ if (gameDate.month === 3) {
     ...updatedAnnualStats,
     corporateTax,
     netAfterTax: (updatedAnnualStats.net ?? 0) - corporateTax,
-    money: money + finalNet,
+    money: money + finalNet + loanApprovalTotal,
+  loanApproval: loanApprovalTotal,
     assetValue: Math.round(assetValue),
     playerRank,
     playerExp,
@@ -14323,6 +14769,10 @@ const purchaseText =
   purchasePaymentTotal > 0 ? ` / 土地購入支払${purchasePaymentTotal}万円` : "";
 const corporateTaxText =
   corporateTax > 0 ? ` / 法人税等${corporateTax}万円` : "";
+const loanText =
+  loanPaymentTotal > 0 ? ` / 銀行返済${loanPaymentTotal.toLocaleString()}万円` : "";
+const loanApprovalText =
+  loanApprovalTotal > 0 ? ` / 融資入金${loanApprovalTotal.toLocaleString()}万円` : "";
 
 const visibleEventLog = eventLog.filter((line) => {
   const hiddenNpcPhrases = [
@@ -14338,7 +14788,7 @@ const visibleEventLog = eventLog.filter((line) => {
 });
 
 const monthLog =
-  `${gameDate.label}終了：家賃${income}万円 / 維持費${maintenance}万円${taxText}${purchaseText} / 差引${net}万円\n` +
+  `${gameDate.label}終了：家賃${income}万円 / 維持費${maintenance}万円${taxText}${purchaseText}${loanText} / 差引${net}万円\n` +
   (visibleEventLog.length ? visibleEventLog.join("\n") : "大きな変化はありません");
 setLog(monthLog);
 
@@ -14355,6 +14805,12 @@ function newGame() {
   if (!ok) return;
 
   setMoney(20000);
+  setLoans([]);
+  setPendingLoanApplications([]);
+  setPendingLoanConsultations([]);
+  setLoanConsultationReports([]);
+  setLoanAmountInput("5000");
+  setSelectedBankId("regional");
   setMonth(1);
 
   const newMap = createMap();
@@ -14382,6 +14838,12 @@ function fullResetGame() {
   const newMap = createMap();
 
   setMoney(20000);
+  setLoans([]);
+  setPendingLoanApplications([]);
+  setPendingLoanConsultations([]);
+  setLoanConsultationReports([]);
+  setLoanAmountInput("5000");
+  setSelectedBankId("regional");
   setMonth(1);
   setTiles(newMap.tiles);
   setSelectedId(null);
@@ -14409,6 +14871,473 @@ function fullResetGame() {
 
   setLog("全データをリセットしました。最初に本社を設置してください。");
 }
+
+function getLoanConsultationBaseLimit(bankId) {
+  const bank = BANKS[bankId] ?? BANKS.regional;
+  const capacity = loanCapacityByBank[bank.id];
+  const remainingLimit = Math.max(0, capacity?.remainingLimit ?? 0);
+
+  if (bank.id === "nonbank") {
+    return Math.max(500, Math.round(remainingLimit));
+  }
+
+  return Math.max(0, Math.round(remainingLimit));
+}
+
+function getLoanOutlookLabel(recommendedAmount, estimatedMax, bankId) {
+  if (recommendedAmount <= 0 || estimatedMax <= 0) return "非常に厳しい";
+  if (bankId === "nonbank" && recommendedAmount >= 500) return "高い";
+  if (recommendedAmount >= estimatedMax * 0.78) return "非常に高い";
+  if (recommendedAmount >= estimatedMax * 0.55) return "高い";
+  if (recommendedAmount >= estimatedMax * 0.32) return "五分五分";
+  return "低い";
+}
+
+function buildLoanConsultationComment(bank, report) {
+  const minText = report.estimatedMin.toLocaleString();
+  const maxText = report.estimatedMax.toLocaleString();
+  const recText = report.recommendedAmount.toLocaleString();
+  const commentsByBank = {
+    nonbank: {
+      strong: [
+        `銀行が厳しい局面でも、${recText}万円前後なら当社系の資金調達は十分狙えます。ただし金利負担は重いです。`,
+        `急ぎ資金なら${minText}万〜${maxText}万円の範囲で相談余地があります。短期で返す前提なら使いやすいです。`,
+      ],
+      normal: [
+        `${recText}万円程度までなら可能性があります。長期保有資金というより、つなぎ資金として考えた方が安全です。`,
+        `審査は柔軟ですが金利は高めです。${minText}万〜${maxText}万円の範囲で抑えるのが現実的です。`,
+      ],
+      weak: [
+        `現状でも少額なら相談できますが、返済負担には注意が必要です。${recText}万円以下に抑えたいです。`,
+        `銀行よりは柔軟ですが、今の財務だと大きな金額は危険です。まずは小口が無難です。`,
+      ],
+    },
+    regional: {
+      strong: [
+        `地域での実績を見る限り、${recText}万円前後ならかなり前向きに見てもらえそうです。`,
+        `${minText}万〜${maxText}万円の範囲なら相談しやすいです。特に${recText}万円程度なら現実的です。`,
+      ],
+      normal: [
+        `${recText}万円程度なら可能性があります。空室や返済後利益の説明をしっかり準備したいです。`,
+        `${minText}万〜${maxText}万円あたりが目安です。希望額を欲張りすぎなければ勝負できます。`,
+      ],
+      weak: [
+        `今の状況だと大きな金額は厳しめです。${recText}万円以下まで抑えるなら相談余地があります。`,
+        `地方銀行でも慎重に見られそうです。まずは小口で実績を作る方が安全です。`,
+      ],
+    },
+    shinkin: {
+      strong: [
+        `返済計画が整えば、${recText}万円前後まで十分狙えます。資料の見せ方が大事です。`,
+        `${minText}万〜${maxText}万円の範囲なら検討余地があります。安定経営を強く説明したいです。`,
+      ],
+      normal: [
+        `${recText}万円程度なら五分五分以上です。既存借入と空室率の説明を用意しましょう。`,
+        `信金は堅実性を見ます。${minText}万〜${maxText}万円の範囲で控えめに申請したいです。`,
+      ],
+      weak: [
+        `今の財務だと慎重に見られます。${recText}万円以下に抑えて、返済計画を固めたいです。`,
+        `黒字幅や満室率を改善できれば見え方が変わります。今回は小口が無難です。`,
+      ],
+    },
+    megabank: {
+      strong: [
+        `財務内容は悪くありません。${recText}万円前後なら本審査に進める可能性があります。`,
+        `${minText}万〜${maxText}万円の範囲なら検討余地があります。ただし資料の精度はかなり求められます。`,
+      ],
+      normal: [
+        `メガバンクは厳しめです。${recText}万円程度まで抑えれば可能性はありますが、五分五分です。`,
+        `低金利は魅力ですが審査は重いです。${minText}万〜${maxText}万円が目安になります。`,
+      ],
+      weak: [
+        `現状ではメガバンクはかなり厳しいです。まずは地銀か信金で実績を作る方が良さそうです。`,
+        `財務の安定性をもう少し見せたいです。今すぐなら金額をかなり抑える必要があります。`,
+      ],
+    },
+  };
+
+  const tier = report.outlookLabel === "非常に高い" || report.outlookLabel === "高い"
+    ? "strong"
+    : report.outlookLabel === "五分五分"
+      ? "normal"
+      : "weak";
+  const list = commentsByBank[bank.id]?.[tier] ?? commentsByBank.regional[tier];
+  const indexSeed = Math.abs((report.recommendedAmount ?? 0) + (report.consultationPower ?? 0) + bank.name.length);
+  return list[indexSeed % list.length];
+}
+
+function calculateLoanConsultationReport(consultation) {
+  const bank = BANKS[consultation?.bankId] ?? BANKS.regional;
+  const baseLimit = getLoanConsultationBaseLimit(bank.id);
+  const consultationPower = Math.max(0, Math.round(consultation?.consultationPower ?? 0));
+  const precision = Math.max(0.18, Math.min(0.75, 0.18 + consultationPower / 150));
+  const blurRate = Math.max(0.12, 0.75 - precision);
+  const bankConservatism = bank.id === "nonbank" ? 0.88 : bank.id === "regional" ? 0.82 : bank.id === "shinkin" ? 0.76 : 0.68;
+  const recommendedAmount = Math.max(0, Math.round(baseLimit * bankConservatism / 100) * 100);
+  const spread = Math.max(500, Math.round(Math.max(baseLimit, 1000) * blurRate / 100) * 100);
+  const estimatedMin = Math.max(0, Math.round(Math.max(0, recommendedAmount - spread) / 100) * 100);
+  const estimatedMax = Math.max(estimatedMin, Math.round((recommendedAmount + spread) / 100) * 100);
+  const outlookLabel = getLoanOutlookLabel(recommendedAmount, estimatedMax, bank.id);
+  const riskNotes = [];
+
+  if ((loanCapacityByBank[bank.id]?.rankOk ?? true) === false) riskNotes.push(`ランク${bank.minRank}以上が必要`);
+  if ((loanCapacityByBank[bank.id]?.dscrOk ?? true) === false) riskNotes.push("返済余力が弱い");
+  if ((loanCapacityByBank[bank.id]?.debtOk ?? true) === false) riskNotes.push("借入比率が高い");
+  if (monthlyProfit - totalMonthlyLoanPayment <= 0) riskNotes.push("返済後月利益が少ない");
+  if (vacancyRate >= 30) riskNotes.push("空室率が高い");
+  if (baseLimit <= 0) riskNotes.push("追加借入枠がほぼない");
+
+  const reportBase = {
+    id: `loan-report-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    bankId: bank.id,
+    bankName: bank.name,
+    reportedAt: gameDate.label,
+    createdMonth: month,
+    expiresMonth: month + 6,
+    employeeName: consultation?.employeeName ?? "",
+    estimatedMin,
+    estimatedMax,
+    recommendedAmount,
+    outlookLabel,
+    riskNotes,
+    consultationPower,
+  };
+
+  return normalizeLoanConsultationReport({
+    ...reportBase,
+    comment: buildLoanConsultationComment(bank, reportBase),
+  });
+}
+
+async function startLoanConsultation(bankId) {
+  const bank = BANKS[bankId];
+  if (!bank) return;
+
+  const alreadyPending = pendingLoanConsultations.some((consultation) => consultation.bankId === bank.id);
+  if (alreadyPending) {
+    window.alert(`${bank.name}にはすでに融資相談中です。結果を待ってください。`);
+    return;
+  }
+
+  const actionEmployees = await chooseActionEmployees("融資相談", {
+    maxCount: 1,
+    baseMonths: 1,
+    statKey: "sales",
+  });
+
+  if (actionEmployees.length === 0) return;
+
+  const employee = actionEmployees[0];
+  const consultationPower = Math.round((employee.sales ?? 0) * 0.6 + (employee.management ?? 0) * 0.4);
+
+  const ok = window.confirm(
+    `${bank.name}へ融資相談を行いますか？\n\n` +
+      `担当: ${employee.name}\n` +
+      `相談力: ${consultationPower}\n` +
+      `期間: 1ヶ月\n\n` +
+      `※相談結果では、推定融資枠・銀行員コメントが確認できます。`
+  );
+
+  if (!ok) return;
+
+  const consultation = normalizePendingLoanConsultation({
+    bankId: bank.id,
+    bankName: bank.name,
+    monthsLeft: 1,
+    requestedAt: gameDate.label,
+    employeeId: employee.id,
+    employeeName: employee.name,
+    consultationPower,
+    sales: employee.sales ?? 0,
+    management: employee.management ?? 0,
+  });
+
+  setPendingLoanConsultations((current) => [consultation, ...current]);
+  markEmployeesBusy([employee.id], 1, "融資相談");
+
+  const message = `${bank.name}へ融資相談を依頼しました。結果は1ヶ月後です。担当:${employee.name} / 相談力:${consultationPower}`;
+  setLog(message);
+  setLogHistory((prev) => [message, ...prev].slice(0, 200));
+}
+
+async function borrowFromBank(bankId, overrideAmount = null, consultationReport = null) {
+  const bank = BANKS[bankId];
+  if (!bank) return;
+
+  const rawAmount = overrideAmount ?? loanAmountInput;
+  const amount = Math.round(Number(rawAmount));
+  if (overrideAmount !== null && overrideAmount !== undefined) {
+    setSelectedBankId(bank.id);
+    setLoanAmountInput(String(amount));
+  }
+  const capacity = loanCapacityByBank[bankId];
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    window.alert("借入希望額を正しく入力してください。");
+    return;
+  }
+
+  const warningMessages = [];
+  if (!capacity?.rankOk) warningMessages.push(`現在のランクでは${bank.name}の通常基準に届いていません`);
+  if (!capacity?.dscrOk) warningMessages.push("返済余力が弱く見られる可能性があります");
+  if (!capacity?.debtOk) warningMessages.push("借入比率が高く見られる可能性があります");
+  if (amount > (capacity?.remainingLimit ?? 0)) warningMessages.push(`希望額が推定枠${(capacity?.remainingLimit ?? 0).toLocaleString()}万円を超えています`);
+
+  const warningText = warningMessages.length > 0
+    ? `\n事前注意:\n・${warningMessages.join("\n・")}\n`
+    : "";
+
+  const consultationInfoText = consultationReport
+    ? `\n相談結果連動: ${consultationReport.bankName} / 推奨${(consultationReport.recommendedAmount ?? 0).toLocaleString()}万円 / 担当:${consultationReport.employeeName || "-"}\n`
+    : "";
+
+  const reviewMonths = getLoanReviewMonths(amount);
+  const actionEmployees = await chooseActionEmployees("融資申請", {
+    maxCount: 4,
+    baseMonths: reviewMonths,
+    statKey: "sales",
+  });
+
+  if (actionEmployees.length === 0) return;
+
+  const negotiationPower = getLoanNegotiationPower(actionEmployees);
+  const salesAverage = getLoanTeamAverage(actionEmployees, "sales");
+  const managementAverage = getLoanTeamAverage(actionEmployees, "management");
+  const leadershipAverage = getLoanTeamAverage(actionEmployees, "leadership");
+
+  const ok = window.confirm(
+    `${bank.name}へ融資申請しますか？
+
+` +
+      `希望額: ${amount.toLocaleString()}万円
+` +
+      `標準金利: ${(bank.rate * 100).toFixed(1)}%
+` +
+      `返済期間: ${bank.maxYears}年
+` +
+      `審査期間: ${reviewMonths}ヶ月
+` +
+      `担当: ${actionEmployees.map((employee) => employee.name).join("・")}
+` +
+      `融資交渉力: ${negotiationPower}
+` +
+      `${consultationInfoText}` +
+      `${warningText}
+` +
+      `※申請自体は可能です。申請時点では入金されず、審査完了後に承認額が入金されます。`
+  );
+
+  if (!ok) return;
+
+  const application = normalizePendingLoanApplication({
+    bankId: bank.id,
+    bankName: bank.name,
+    requestedAmount: amount,
+    reviewMonths,
+    monthsLeft: reviewMonths,
+    appliedAt: gameDate.label,
+    employeeIds: actionEmployees.map((employee) => employee.id),
+    employeeNames: actionEmployees.map((employee) => employee.name),
+    negotiationPower,
+    salesAverage,
+    managementAverage,
+    leadershipAverage,
+    consultationReportId: consultationReport?.id ?? null,
+    consultationRecommendedAmount: consultationReport?.recommendedAmount ?? 0,
+    consultationEstimatedMin: consultationReport?.estimatedMin ?? 0,
+    consultationEstimatedMax: consultationReport?.estimatedMax ?? 0,
+    consultationPower: consultationReport?.consultationPower ?? 0,
+    consultationEmployeeName: consultationReport?.employeeName ?? "",
+  });
+
+  if (!application) return;
+
+  setPendingLoanApplications((current) => [application, ...current]);
+
+  if (consultationReport?.id) {
+    setLoanConsultationReports((current) => current.filter((report) => report.id !== consultationReport.id));
+    setConsultationApplicationAmounts((current) => {
+      const nextAmounts = { ...current };
+      delete nextAmounts[consultationReport.id];
+      return nextAmounts;
+    });
+  }
+
+  markEmployeesBusy(actionEmployees.map((employee) => employee.id), reviewMonths, "融資申請");
+
+  const message = `${bank.name}へ${amount.toLocaleString()}万円の融資申請を行いました。審査期間${reviewMonths}ヶ月 / 担当:${actionEmployees.map((employee) => employee.name).join("・")} / 融資交渉力:${negotiationPower}`;
+  setLog(message);
+  setLogHistory((prev) => [message, ...prev].slice(0, 200));
+}
+
+function calculateLoanReviewResult(application, currentLoans = loans) {
+  const bank = BANKS[application?.bankId] ?? BANKS.regional;
+  const requestedAmount = Math.max(0, Math.round(application?.requestedAmount ?? 0));
+  const negotiationPower = Math.max(0, Math.round(application?.negotiationPower ?? 0));
+  const salesAverage = Math.max(0, Math.round(application?.salesAverage ?? 0));
+  const managementAverage = Math.max(0, Math.round(application?.managementAverage ?? 0));
+  const leadershipAverage = Math.max(0, Math.round(application?.leadershipAverage ?? 0));
+  const consultationRecommendedAmount = Math.max(0, Math.round(application?.consultationRecommendedAmount ?? 0));
+  const consultationEstimatedMax = Math.max(0, Math.round(application?.consultationEstimatedMax ?? 0));
+  const consultationPower = Math.max(0, Math.round(application?.consultationPower ?? 0));
+  const hasConsultationSupport = consultationRecommendedAmount > 0;
+  const withinConsultationRecommended = hasConsultationSupport && requestedAmount <= consultationRecommendedAmount * 1.08;
+  const withinConsultationMax = consultationEstimatedMax > 0 && requestedAmount <= consultationEstimatedMax;
+  const currentLoanRemaining = currentLoans.reduce((sum, loan) => sum + (loan.remaining ?? 0), 0);
+  const currentMonthlyPayment = currentLoans.reduce((sum, loan) => sum + (loan.monthlyPayment ?? 0), 0);
+  const currentDebtRatio = assetValue <= 0
+    ? (currentLoanRemaining > 0 ? 100 : 0)
+    : Math.round((currentLoanRemaining / assetValue) * 100);
+  const yearlyNetIncome = Math.max(0, monthlyProfit - currentMonthlyPayment) * 12;
+  const incomeCapacity = yearlyNetIncome * bank.approvalMultiplier;
+  const collateralCapacity = assetValue * bank.collateralRate;
+  const rankBonus = Math.max(0, playerRank - bank.minRank) * 1500;
+  const cashBuffer = Math.max(0, money) * 0.35;
+  const baseLimit = Math.max(0, Math.round(incomeCapacity + collateralCapacity + rankBonus + cashBuffer));
+  const nonbankStartupLimit = bank.id === "nonbank" ? Math.max(1000, Math.min(5000, Math.round(Math.max(money * 0.5, assetValue * 0.18 + money * 0.4 + 1200)))) : 0;
+  const grossLimit = bank.id === "nonbank" ? Math.max(baseLimit, nonbankStartupLimit) : baseLimit;
+  const remainingLimit = Math.max(0, grossLimit - currentLoanRemaining);
+
+  const regionalSmallLoanSupport = bank.id === "regional" && requestedAmount <= 5000;
+  const nonbankSmallLoanSupport = bank.id === "nonbank" && requestedAmount <= 5000;
+  const consultationScoreBonus = withinConsultationRecommended
+    ? Math.max(18, Math.min(34, 16 + consultationPower * 0.22))
+    : withinConsultationMax
+      ? Math.max(8, Math.min(18, 6 + consultationPower * 0.12))
+      : 0;
+  const regionalSmallLoanSupportBonus = regionalSmallLoanSupport ? 28 : 0;
+  const financialScore = Math.max(0, Math.min(100,
+    50 +
+      regionalSmallLoanSupportBonus +
+      Math.min(20, yearlyNetIncome / 1200) +
+      Math.min(15, money / 3000) +
+      Math.min(15, assetValue / 20000) -
+      Math.min(30, currentDebtRatio * 0.35) -
+      Math.min(20, vacancyRate * 0.35)
+  ));
+
+  const bankDifficulty = bank.id === "nonbank" ? (nonbankSmallLoanSupport ? 18 : 28) : bank.id === "regional" ? (regionalSmallLoanSupport ? 24 : 40) : bank.id === "shinkin" ? 55 : 68;
+  const amountPressure = requestedAmount >= 20000 ? 10 : requestedAmount >= 5000 ? 5 : 0;
+  const managementBonus = (managementAverage - 50) * 0.28;
+  const leadershipBonus = requestedAmount >= 20000 || bank.id === "megabank"
+    ? (leadershipAverage - 50) * 0.22
+    : (leadershipAverage - 50) * 0.1;
+  const finalScore = financialScore + consultationScoreBonus + (negotiationPower - 50) * 0.38 + managementBonus + leadershipBonus - amountPressure;
+  const hasRepaymentSource = monthlyProfit > 0 || regionalSmallLoanSupport || bank.id === "nonbank" || withinConsultationRecommended;
+  const allowedDebtRatio = regionalSmallLoanSupport ? 115 : bank.id === "nonbank" ? 125 : 92;
+  const rankPass = playerRank >= bank.minRank || regionalSmallLoanSupport || nonbankSmallLoanSupport;
+  const canApprove =
+    requestedAmount > 0 &&
+    rankPass &&
+    remainingLimit > 0 &&
+    hasRepaymentSource &&
+    currentDebtRatio <= allowedDebtRatio &&
+    finalScore >= bankDifficulty;
+
+  if (!canApprove) {
+    const reducedBaseAmount = hasConsultationSupport
+      ? Math.min(consultationRecommendedAmount || requestedAmount, requestedAmount * 0.9)
+      : Math.min(remainingLimit * 0.88, requestedAmount * 0.72);
+    const reducedPossibleAmount = Math.max(0, Math.round(Math.min(remainingLimit, reducedBaseAmount) / 100) * 100);
+    const reducedApproveScoreLine = bank.id === "nonbank" ? bankDifficulty - 18 : bank.id === "regional" ? bankDifficulty - 16 : bank.id === "shinkin" ? bankDifficulty - 12 : bankDifficulty - 8;
+    const canReducedApprove =
+      reducedPossibleAmount >= 500 &&
+      rankPass &&
+      hasRepaymentSource &&
+      currentDebtRatio <= allowedDebtRatio + 18 &&
+      finalScore >= reducedApproveScoreLine;
+
+    const minimumReductionRatio = bank.id === "nonbank" ? 0.35 : 0.6;
+    const reducedRatio = requestedAmount > 0 ? reducedPossibleAmount / requestedAmount : 0;
+
+    if (canReducedApprove && reducedRatio >= minimumReductionRatio) {
+      const reducedAnnualRate = Math.max(0.006, bank.rate + 0.0025 - Math.max(0, (salesAverage - 50) * 0.00004));
+      const reducedMonthlyPayment = calculateMonthlyLoanPayment(reducedPossibleAmount, reducedAnnualRate, bank.maxYears);
+
+      return {
+        approved: true,
+        reduced: true,
+        conditionChanged: true,
+        approvedAmount: reducedPossibleAmount,
+        annualRate: reducedAnnualRate,
+        years: bank.maxYears,
+        monthlyPayment: reducedMonthlyPayment,
+        finalScore: Math.round(finalScore),
+        financialScore: Math.round(financialScore),
+      };
+    }
+
+    const reasons = [];
+    if (!rankPass) reasons.push(`ランク不足`);
+    if (remainingLimit <= 0) reasons.push(`追加借入余力不足`);
+    if (!hasRepaymentSource) reasons.push(`返済原資不足`);
+    if (currentDebtRatio > allowedDebtRatio) reasons.push(`借入比率過大`);
+    if (finalScore < bankDifficulty) reasons.push(`審査評価不足`);
+
+    return {
+      approved: false,
+      reason: reasons.join("・") || "審査否決",
+      finalScore: Math.round(finalScore),
+      financialScore: Math.round(financialScore),
+    };
+  }
+
+  const scoreRate = Math.max(0.78, Math.min(1.16, 0.9 + (finalScore - bankDifficulty) * 0.01));
+  const salesRate = Math.max(-0.08, Math.min(0.1, (salesAverage - 50) * 0.002));
+  const managementRate = Math.max(-0.06, Math.min(0.08, (managementAverage - 50) * 0.0015));
+  const approvalRate = Math.max(0.55, Math.min(1.25, scoreRate + salesRate + managementRate));
+  const approvedAmount = Math.max(100, Math.min(remainingLimit, Math.round(requestedAmount * approvalRate)));
+  const minimumApprovalRatio = bank.id === "nonbank" ? 0.35 : 0.6;
+  const approvalRatio = requestedAmount > 0 ? approvedAmount / requestedAmount : 0;
+
+  if (approvalRatio < minimumApprovalRatio) {
+    return {
+      approved: false,
+      reason: `希望額に対して承認可能額が大きく不足`,
+      finalScore: Math.round(finalScore),
+      financialScore: Math.round(financialScore),
+    };
+  }
+
+  const rateDiscount = Math.max(-0.002, Math.min(0.0045, (salesAverage - 50) * 0.00008 + (financialScore - 50) * 0.00004));
+  const annualRate = Math.max(0.006, bank.rate - rateDiscount);
+  const monthlyPayment = calculateMonthlyLoanPayment(approvedAmount, annualRate, bank.maxYears);
+  const amountChanged = approvedAmount !== requestedAmount;
+  const rateChanged = Math.abs(annualRate - bank.rate) >= 0.0001;
+
+  return {
+    approved: true,
+    reduced: approvedAmount < requestedAmount,
+    conditionChanged: amountChanged || rateChanged,
+    approvedAmount,
+    annualRate,
+    years: bank.maxYears,
+    monthlyPayment,
+    finalScore: Math.round(finalScore),
+    financialScore: Math.round(financialScore),
+  };
+}
+
+function repayLoanEarly(loanId) {
+  const targetLoan = loans.find((loan) => loan.id === loanId);
+  if (!targetLoan) return;
+
+  if (money < targetLoan.remaining) {
+    window.alert(`一括返済には${targetLoan.remaining.toLocaleString()}万円が必要です。`);
+    return;
+  }
+
+  const ok = window.confirm(`${targetLoan.bankName}の借入残高${targetLoan.remaining.toLocaleString()}万円を一括返済しますか？`);
+  if (!ok) return;
+
+  setMoney((current) => current - targetLoan.remaining);
+  setLoans((current) => current.filter((loan) => loan.id !== loanId));
+
+  const message = `${targetLoan.bankName}の借入を一括返済しました。返済額${targetLoan.remaining.toLocaleString()}万円。`;
+  setLog(message);
+  setLogHistory((prev) => [message, ...prev].slice(0, 200));
+}
+
 function handleMapPointerDown(event) {
   if (!mapScrollRef.current) return;
 
@@ -15097,6 +16026,70 @@ return (
         border-color: rgba(255,255,255,0.18) !important;
       }
 
+      .demo-money-add-button {
+        min-width: 64px !important;
+        width: auto !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        padding: 0 10px !important;
+        font-size: 13px !important;
+        line-height: 1 !important;
+        flex: 0 0 auto !important;
+      }
+
+      .top-status-inline .top-compact-stat {
+        white-space: nowrap !important;
+      }
+
+      .v73-top-command-bar {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+      }
+
+      .v73-top-status-inline {
+        margin-left: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 6px !important;
+        flex: 0 1 auto !important;
+        min-width: 0 !important;
+        max-width: calc(100% - 136px) !important;
+        overflow: visible !important;
+      }
+
+      .v73-top-status-inline .top-status-chip-wrap {
+        flex: 0 0 auto !important;
+        min-width: 0 !important;
+      }
+
+      .v73-top-status-inline .top-status-chip-wrap .top-compact-stat {
+        width: auto !important;
+        min-width: auto !important;
+        max-width: none !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        padding: 0 8px !important;
+        font-size: 12px !important;
+        line-height: 1 !important;
+      }
+
+      .v73-top-status-inline .demo-money-add-button,
+      .app .v73-top-status-inline .demo-money-add-button,
+      .app button.demo-money-add-button {
+        width: 42px !important;
+        min-width: 42px !important;
+        max-width: 42px !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        padding: 0 !important;
+        font-size: 11px !important;
+        line-height: 1 !important;
+        flex: 0 0 42px !important;
+        overflow: hidden !important;
+      }
+
       .app button:not(.map-tile):disabled,
       .side-section button:disabled,
       .top-icon-button:disabled,
@@ -15758,7 +16751,7 @@ return (
 
       <header className="top-header compact-top-header">
         <div className="top-title-wrap">
-          <h1 className="v73-title">箱庭不動産経営シミュレーター V88{isDemoMode ? "（デモ版）" : ""}</h1>
+          <h1 className="v73-title">箱庭不動産経営シミュレーター V99{isDemoMode ? "（デモ版）" : ""}</h1>
         </div>
       </header>
 
@@ -15796,6 +16789,29 @@ return (
   </button>
 
   <div className="top-status-inline v73-top-status-inline" aria-label="主要ステータス">
+    {isDemoMode && (
+      <button
+        type="button"
+        className="top-compact-stat top-compact-stat-button demo-money-add-button"
+        title="デモ版：所持金を1億円追加"
+        aria-label="デモ版：所持金を1億円追加"
+        style={{
+          width: 42,
+          minWidth: 42,
+          maxWidth: 42,
+          height: 28,
+          minHeight: 28,
+          padding: 0,
+          fontSize: 11,
+          lineHeight: 1,
+          flex: "0 0 42px",
+        }}
+        onClick={addDemoMoney100m}
+      >
+        ＋1億
+      </button>
+    )}
+
     <div className="top-status-chip-wrap">
       <button
         type="button"
@@ -15818,17 +16834,36 @@ return (
             <strong>{money.toLocaleString()}万</strong>
             <span>総資産</span>
             <strong>{Math.round(money + assetValue).toLocaleString()}万</strong>
+            <span>借入残高</span>
+            <strong>{totalLoanRemaining.toLocaleString()}万</strong>
+            <span>純資産</span>
+            <strong>{netWorthAfterDebt.toLocaleString()}万</strong>
             <span>月家賃</span>
             <strong>{totalRent.toLocaleString()}万</strong>
-            <span>維持費</span>
+            <span>維持費・給与</span>
             <strong>{totalMaintenance.toLocaleString()}万</strong>
-            <span>月利益</span>
+            <span>月返済</span>
+            <strong>{totalMonthlyLoanPayment.toLocaleString()}万</strong>
+            <span>返済前月利益</span>
             <strong>{monthlyProfit.toLocaleString()}万</strong>
+            <span>実質月利益</span>
+            <strong>{monthlyProfitSign}{actualMonthlyProfit.toLocaleString()}万</strong>
             <span>空室率</span>
             <strong>{vacancyRate}%</strong>
           </div>
         </div>
       )}
+    </div>
+
+    <div className="top-status-chip-wrap">
+      <button
+        type="button"
+        className="top-compact-stat"
+        title={`実質月利益：${monthlyProfitSign}${actualMonthlyProfit.toLocaleString()}万`}
+        aria-label={`実質月利益：${monthlyProfitSign}${actualMonthlyProfit.toLocaleString()}万`}
+      >
+        {monthlyProfitIcon}{monthlyProfitSign}{actualMonthlyProfit.toLocaleString()}万
+      </button>
     </div>
 
     <div className="top-status-chip-wrap">
@@ -15922,6 +16957,16 @@ return (
         <button
           type="button"
           onClick={() => {
+            setActivePanel("bank");
+            setIsMainMenuOpen(false);
+          }}
+          className={activePanel === "bank" ? "active" : ""}
+        >
+          🏦 銀行
+        </button>
+        <button
+          type="button"
+          onClick={() => {
             setActivePanel("info");
             setIsMainMenuOpen(false);
           }}
@@ -15955,7 +17000,7 @@ return (
 </nav>
 <div className="game-layout"></div>
 
-      <main className={`main-layout ${(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "property" || activePanel === "log" || activePanel === "option" || activePanel === "info") ? "full-panel" : ""}`}>
+      <main className={`main-layout ${(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "property" || activePanel === "log" || activePanel === "option" || activePanel === "info" || activePanel === "bank") ? "full-panel" : ""}`}>
         {(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build") && (
         <section className="map-section">
           <div className="panel-title-row map-title-row">
@@ -16912,6 +17957,360 @@ return (
 </section>
 )}
             
+
+{activePanel === "bank" && (
+  <section className="property-section info-section bank-section">
+    <h2>銀行・融資</h2>
+
+    <div className="player-info-box v74-player-info-box">
+      <h3>融資状況</h3>
+      <div className="player-info-grid">
+        <div>
+          <span>所持金</span>
+          <strong>{money.toLocaleString()}万円</strong>
+        </div>
+        <div>
+          <span>総資産</span>
+          <strong>{Math.round(money + assetValue).toLocaleString()}万円</strong>
+        </div>
+        <div>
+          <span>借入残高</span>
+          <strong>{totalLoanRemaining.toLocaleString()}万円</strong>
+        </div>
+        <div>
+          <span>純資産</span>
+          <strong>{netWorthAfterDebt.toLocaleString()}万円</strong>
+        </div>
+        <div>
+          <span>借入比率</span>
+          <strong>{debtRatio}%</strong>
+        </div>
+        <div>
+          <span>月返済</span>
+          <strong>{totalMonthlyLoanPayment.toLocaleString()}万円</strong>
+        </div>
+        <div>
+          <span>審査中融資</span>
+          <strong>{totalPendingLoanAmount.toLocaleString()}万円</strong>
+        </div>
+        <div>
+          <span>返済前月利益</span>
+          <strong>{monthlyProfit.toLocaleString()}万円</strong>
+        </div>
+        <div>
+          <span>返済後月利益</span>
+          <strong>{(monthlyProfit - totalMonthlyLoanPayment).toLocaleString()}万円</strong>
+        </div>
+      </div>
+    </div>
+
+    <div className="detail-card">
+      <h3>融資相談</h3>
+      <p>v96では、融資相談結果に6ヶ月の有効期限を設定し、相談結果から申請した場合は該当する相談結果を自動で整理します。</p>
+      <div className="table-scroll">
+        <table className="property-table">
+          <thead>
+            <tr>
+              <th>金融機関</th>
+              <th>標準金利</th>
+              <th>返済期間</th>
+              <th>現在の目安枠</th>
+              <th>特徴</th>
+              <th>相談</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.values(BANKS).map((bank) => {
+              const capacity = loanCapacityByBank[bank.id];
+              const alreadyPending = pendingLoanConsultations.some((consultation) => consultation.bankId === bank.id);
+
+              return (
+                <tr key={`consult-${bank.id}`}>
+                  <td>{bank.name}</td>
+                  <td>{(bank.rate * 100).toFixed(1)}%</td>
+                  <td>{bank.maxYears}年</td>
+                  <td>{(capacity?.remainingLimit ?? 0).toLocaleString()}万円</td>
+                  <td>{bank.description}</td>
+                  <td>
+                    <button
+                      disabled={alreadyPending}
+                      onClick={() => startLoanConsultation(bank.id)}
+                    >
+                      {alreadyPending ? "相談中" : "相談する"}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div className="detail-card">
+      <h3>相談中の融資相談</h3>
+      {pendingLoanConsultations.length === 0 ? (
+        <p>現在、相談中の銀行はありません。</p>
+      ) : (
+        <div className="table-scroll">
+          <table className="property-table">
+            <thead>
+              <tr>
+                <th>金融機関</th>
+                <th>依頼時期</th>
+                <th>残り</th>
+                <th>担当</th>
+                <th>相談力</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingLoanConsultations.map((consultation) => (
+                <tr key={consultation.id}>
+                  <td>{consultation.bankName}</td>
+                  <td>{consultation.requestedAt || "-"}</td>
+                  <td>{consultation.monthsLeft}ヶ月</td>
+                  <td>{consultation.employeeName || "-"}</td>
+                  <td>{consultation.consultationPower}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+
+    <div className="detail-card">
+      <h3>融資相談結果</h3>
+      <p>相談結果の有効期限は6ヶ月です。相談結果から融資申請した場合、その相談結果は一覧から自動で消えます。</p>
+      {loanConsultationReports.length === 0 ? (
+        <p>まだ融資相談結果はありません。まずは金融機関へ相談してください。</p>
+      ) : (
+        <div className="table-scroll">
+          <table className="property-table">
+            <thead>
+              <tr>
+                <th>金融機関</th>
+                <th>結果時期</th>
+                <th>担当</th>
+                <th>推定融資枠</th>
+                <th>銀行員コメント</th>
+                <th>申請</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loanConsultationReports.map((report) => {
+                const defaultReportAmount = Math.max(0, Math.round(report.recommendedAmount ?? 0));
+                const reportAmountValue = consultationApplicationAmounts[report.id] ?? String(defaultReportAmount);
+                const reportApplyAmount = Math.max(0, Math.round(Number(reportAmountValue) || 0));
+
+                return (
+                  <tr key={report.id}>
+                    <td>{report.bankName}</td>
+                    <td>{report.reportedAt || "-"}</td>
+                    <td>{report.employeeName || "-"}</td>
+                    <td>{report.estimatedMin.toLocaleString()}万〜{report.estimatedMax.toLocaleString()}万円</td>
+                    <td>
+                      <div>{report.comment}</div>
+                      {(report.riskNotes ?? []).length > 0 && (
+                        <small>注意: {(report.riskNotes ?? []).join("・")}</small>
+                      )}
+                      {report.expiresMonth != null && (
+                        <small>有効期限: あと{Math.max(0, report.expiresMonth - month)}ヶ月</small>
+                      )}
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
+                        <input
+                          type="number"
+                          min="100"
+                          step="100"
+                          value={reportAmountValue}
+                          onChange={(event) => {
+                            const nextValue = event.target.value;
+                            setConsultationApplicationAmounts((current) => ({
+                              ...current,
+                              [report.id]: nextValue,
+                            }));
+                          }}
+                          style={{ width: 110 }}
+                        />
+                        <span>万円</span>
+                        <button
+                          disabled={reportApplyAmount <= 0}
+                          onClick={() => borrowFromBank(report.bankId, reportApplyAmount, report)}
+                        >
+                          {reportApplyAmount > 0 ? `${reportApplyAmount.toLocaleString()}万円で申請` : "申請不可"}
+                        </button>
+                      </div>
+                      {defaultReportAmount > 0 && reportApplyAmount !== defaultReportAmount && (
+                        <small>相談推奨額: {defaultReportAmount.toLocaleString()}万円</small>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+
+    <div className="detail-card">
+      <h3>融資申請</h3>
+      <p>融資は即日入金ではなく審査制です。申請自体は原則いつでも可能です。希望額が5,000万円未満なら1ヶ月、5,000万円以上なら2ヶ月、2億円以上なら3ヶ月後に結果が出ます。担当社員の営業・管理・統率によって、承認額や金利が変動します。</p>
+
+      <div className="button-row">
+        <label>
+          借入希望額
+          <input
+            type="number"
+            min="100"
+            step="100"
+            value={loanAmountInput}
+            onChange={(event) => setLoanAmountInput(event.target.value)}
+          />
+          万円
+        </label>
+      </div>
+
+      <div className="table-scroll">
+        <table className="property-table">
+          <thead>
+            <tr>
+              <th>銀行</th>
+              <th>金利</th>
+              <th>期間</th>
+              <th>審査</th>
+              <th>追加借入可能額</th>
+              <th>希望額の月返済</th>
+              <th>審査期間</th>
+              <th>特徴</th>
+              <th>申込</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.values(BANKS).map((bank) => {
+              const capacity = loanCapacityByBank[bank.id];
+              const amount = Math.max(0, Math.round(Number(loanAmountInput) || 0));
+              const expectedPayment = calculateMonthlyLoanPayment(amount, bank.rate, bank.maxYears);
+              const reviewMonths = getLoanReviewMonths(amount);
+              const disabled = amount <= 0;
+              const riskLabels = [];
+              if (!capacity?.rankOk) riskLabels.push(`ランク目安:${bank.minRank}以上`);
+              if (!capacity?.dscrOk) riskLabels.push("返済余力弱め");
+              if (!capacity?.debtOk) riskLabels.push("借入比率高め");
+              if (amount > (capacity?.remainingLimit ?? 0)) riskLabels.push("希望額が推定枠超過");
+              const reason = riskLabels.length > 0
+                ? `申請可 / ${riskLabels.join("・")}`
+                : "申請可 / 見込み良好";
+
+              return (
+                <tr key={bank.id}>
+                  <td>{bank.name}</td>
+                  <td>{(bank.rate * 100).toFixed(1)}%</td>
+                  <td>{bank.maxYears}年</td>
+                  <td>{reason}</td>
+                  <td>{(capacity?.remainingLimit ?? 0).toLocaleString()}万円</td>
+                  <td>{expectedPayment.toLocaleString()}万円/月</td>
+                  <td>{reviewMonths}ヶ月</td>
+                  <td>{bank.description}</td>
+                  <td>
+                    <button
+                      disabled={disabled}
+                      onClick={() => borrowFromBank(bank.id)}
+                    >
+                      申請する
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+
+    <div className="detail-card">
+      <h3>審査中の融資申請</h3>
+      {pendingLoanApplications.length === 0 ? (
+        <p>現在、審査中の融資申請はありません。</p>
+      ) : (
+        <div className="table-scroll">
+          <table className="property-table">
+            <thead>
+              <tr>
+                <th>銀行</th>
+                <th>申請時期</th>
+                <th>希望額</th>
+                <th>残り審査</th>
+                <th>担当</th>
+                <th>交渉力</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingLoanApplications.map((application) => (
+                <tr key={application.id}>
+                  <td>{application.bankName}</td>
+                  <td>{application.appliedAt || "-"}</td>
+                  <td>{application.requestedAmount.toLocaleString()}万円</td>
+                  <td>{application.monthsLeft}ヶ月</td>
+                  <td>{(application.employeeNames ?? []).join("・") || "-"}</td>
+                  <td>{application.negotiationPower}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+    <div className="detail-card">
+      <h3>借入一覧</h3>
+      {loans.length === 0 ? (
+        <p>現在の借入はありません。</p>
+      ) : (
+        <div className="table-scroll">
+          <table className="property-table">
+            <thead>
+              <tr>
+                <th>銀行</th>
+                <th>借入時期</th>
+                <th>当初借入</th>
+                <th>残高</th>
+                <th>金利</th>
+                <th>残期間</th>
+                <th>月返済</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loans.map((loan) => (
+                <tr key={loan.id}>
+                  <td>{loan.bankName}</td>
+                  <td>{loan.borrowedAt || "-"}</td>
+                  <td>{loan.principal.toLocaleString()}万円</td>
+                  <td>{loan.remaining.toLocaleString()}万円</td>
+                  <td>{((loan.annualRate ?? 0) * 100).toFixed(1)}%</td>
+                  <td>{loan.monthsLeft}ヶ月</td>
+                  <td>{loan.monthlyPayment.toLocaleString()}万円</td>
+                  <td>
+                    <button
+                      disabled={money < loan.remaining}
+                      onClick={() => repayLoanEarly(loan.id)}
+                    >
+                      一括返済
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  </section>
+)}
 
 {activePanel === "info" && (
   <section className="property-section info-section">
