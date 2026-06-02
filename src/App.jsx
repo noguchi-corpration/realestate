@@ -14,6 +14,37 @@ import "./App.css";
 */
 
 const MAP_SIZE = 70;
+const SAVE_SLOT_COUNT = 3;
+const DEFAULT_COMPANY_NAME = "野口コーポレーション";
+const DEFAULT_SAVE_SLOT = 1;
+
+function getSaveSlotKey(slot) {
+  return `realEstateGameSave_slot${slot}`;
+}
+
+function getCurrentSaveSlot() {
+  if (typeof window === "undefined") return DEFAULT_SAVE_SLOT;
+  const rawSlot = Number(window.localStorage.getItem("realEstateGameCurrentSlot") ?? DEFAULT_SAVE_SLOT);
+  if (!Number.isFinite(rawSlot)) return DEFAULT_SAVE_SLOT;
+  return Math.min(SAVE_SLOT_COUNT, Math.max(1, Math.round(rawSlot)));
+}
+
+function readSaveSlot(slot) {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const rawSaveData = window.localStorage.getItem(getSaveSlotKey(slot));
+    if (!rawSaveData) return null;
+    const parsedSaveData = JSON.parse(rawSaveData);
+    if (!parsedSaveData || typeof parsedSaveData !== "object") return null;
+    if (!Array.isArray(parsedSaveData.tiles)) return null;
+    return parsedSaveData;
+  } catch (error) {
+    console.warn(`Save slot ${slot} could not be loaded.`, error);
+    return null;
+  }
+}
+
 
 const OWNER = {
   PLAYER: "player",
@@ -54,7 +85,7 @@ const RIVAL_COMPANIES = {
     colorClass: "rival-company-a-tile",
     rangeClass: "rival-company-a-range-tile",
     colorName: "水色",
-    initialMoney: 15000,
+    initialMoney: 30000,
   },
   B: {
     id: "B",
@@ -62,12 +93,63 @@ const RIVAL_COMPANIES = {
     colorClass: "rival-company-b-tile",
     rangeClass: "rival-company-b-range-tile",
     colorName: "緑",
-    initialMoney: 20000,
+    initialMoney: 30000,
+  },
+  C: {
+    id: "C",
+    name: "大手ライバル",
+    colorClass: "rival-company-c-tile",
+    rangeClass: "rival-company-c-range-tile",
+    colorName: "紫",
+    initialMoney: 120000,
+    lateEntry: true,
   },
 };
 
+const INITIAL_RIVAL_COMPANY_IDS = ["A", "B"];
+const MAX_RIVAL_COMPANY_COUNT = 3;
+const LATE_RIVAL_COMPANY_ID = "C";
+
+const RIVAL_COMPANY_NAME_CANDIDATES = [
+  "東雲地所",
+  "紫苑リアルティ",
+  "サンライズ開発",
+  "青葉不動産",
+  "みらい都市開発",
+  "中央プロパティ",
+  "北斗地所",
+  "アーバンリンク",
+  "大成ホームズ",
+  "さくら総合開発",
+  "グリーンエステート",
+  "港町リアルティ",
+  "山城地所",
+  "ひかり不動産",
+  "ネクスト都市開発",
+  "東海住建",
+  "三河プロパティ",
+  "名南地所",
+  "西濃開発",
+  "清流エステート",
+];
+
+function pickRandomRivalCompanyNames(count) {
+  const shuffledNames = [...RIVAL_COMPANY_NAME_CANDIDATES].sort(() => Math.random() - 0.5);
+  return shuffledNames.slice(0, count);
+}
+
 function getRivalCompany(companyId) {
   return RIVAL_COMPANIES[companyId] ?? RIVAL_COMPANIES.A;
+}
+
+function getRivalCompanyNameFromTiles(tileList, companyId) {
+  const hqTile = tileList.find((tile) => {
+    return tile.owner === OWNER.RIVAL &&
+      tile.rivalCompanyId === companyId &&
+      tile.feature === FEATURE.HQ;
+  });
+
+  return hqTile?.rivalCompanyName ?? getRivalCompany(companyId).name;
 }
 
 const BANKS = {
@@ -9279,7 +9361,52 @@ function isRailCoordinate(x, y) {
   return isMainRailCoordinate(x, y) || isSecondRailCoordinate(x, y);
 }
 
-const riverY = randomInt(6, MAP_SIZE - 10);
+const riverAnchor = randomInt(8, MAP_SIZE - 9);
+const riverDelta = randomInt(-18, 18);
+
+function getRiverCenterByX(x) {
+  const inlandStartX = seaSide === 0 ? 2 : seaSide === 1 ? MAP_SIZE - 3 : null;
+  const coastEndX = seaSide === 0
+    ? Math.max(4, seaStart - 1)
+    : seaSide === 1
+      ? Math.min(MAP_SIZE - 5, MAP_SIZE - seaStart + 1)
+      : null;
+
+  if (inlandStartX === null || coastEndX === null) return null;
+  const progress = Math.max(0, Math.min(1, Math.abs(x - inlandStartX) / Math.max(1, Math.abs(coastEndX - inlandStartX))));
+  return Math.round(riverAnchor + riverDelta * progress + Math.sin(x * 0.35) * 1.5);
+}
+
+function getRiverCenterByY(y) {
+  const inlandStartY = seaSide === 2 ? 2 : seaSide === 3 ? MAP_SIZE - 3 : null;
+  const coastEndY = seaSide === 2
+    ? Math.max(4, seaStart - 1)
+    : seaSide === 3
+      ? Math.min(MAP_SIZE - 5, MAP_SIZE - seaStart + 1)
+      : null;
+
+  if (inlandStartY === null || coastEndY === null) return null;
+  const progress = Math.max(0, Math.min(1, Math.abs(y - inlandStartY) / Math.max(1, Math.abs(coastEndY - inlandStartY))));
+  return Math.round(riverAnchor + riverDelta * progress + Math.sin(y * 0.35) * 1.5);
+}
+
+function isRiverCoordinate(x, y) {
+  if (isSeaCoordinate(x, y)) return false;
+
+  if (seaSide === 0 || seaSide === 1) {
+    const centerY = getRiverCenterByX(x);
+    if (centerY === null) return false;
+    const coastEndX = seaSide === 0 ? Math.max(4, seaStart - 1) : Math.min(MAP_SIZE - 5, MAP_SIZE - seaStart + 1);
+    const inRiverLength = seaSide === 0 ? x <= coastEndX : x >= coastEndX;
+    return inRiverLength && Math.abs(y - centerY) <= 0;
+  }
+
+  const centerX = getRiverCenterByY(y);
+  if (centerX === null) return false;
+  const coastEndY = seaSide === 2 ? Math.max(4, seaStart - 1) : Math.min(MAP_SIZE - 5, MAP_SIZE - seaStart + 1);
+  const inRiverLength = seaSide === 2 ? y <= coastEndY : y >= coastEndY;
+  return inRiverLength && Math.abs(x - centerX) <= 0;
+}
 
 function isRoadCoordinate(x, y) {
   return verticalRoadXs.includes(x) || horizontalRoadYs.includes(y);
@@ -9287,7 +9414,7 @@ function isRoadCoordinate(x, y) {
 
 function isReservedFacilityCoordinate(x, y) {
   if (isSeaCoordinate(x, y)) return true;
-  if (y === riverY) return true;
+  if (isRiverCoordinate(x, y)) return true;
   if (isRoadCoordinate(x, y)) return true;
   if (isRailCoordinate(x, y)) return true;
   if (stationPositions.some((station) => station.x === x && station.y === y)) return true;
@@ -9408,7 +9535,7 @@ if (
 }
 
 // 川
-if (y === riverY) {
+if (isRiverCoordinate(x, y)) {
   terrain = TERRAIN.RIVER;
 }
 
@@ -9533,43 +9660,55 @@ landPrice,
     }
   }
 
-const rivalOfficeCandidates = tiles.filter((tile) => {
-  if (tile.terrain !== TERRAIN.PLAIN) return false;
-  if (tile.feature !== FEATURE.NONE) return false;
-  if (tile.building) return false;
-  if (tile.owner === OWNER.PUBLIC) return false;
+function getRivalOfficeCandidates(minDistanceFromPlaced = 0, placedRivalOffices = [], requireRoadOrRail = true) {
+  return tiles.filter((tile) => {
+    if (tile.terrain !== TERRAIN.PLAIN) return false;
+    if (tile.feature !== FEATURE.NONE) return false;
+    if (tile.building) return false;
+    if (tile.owner === OWNER.PUBLIC) return false;
+    if (tile.owner === OWNER.RIVAL) return false;
+    if (requireRoadOrRail && !isTileNearRoadOrRail(tile, tiles)) return false;
 
-  return isTileNearRoadOrRail(tile, tiles);
-});
+    return placedRivalOffices.every((placedTile) => {
+      return getDistance(tile.x, tile.y, placedTile.x, placedTile.y) >= minDistanceFromPlaced;
+    });
+  });
+}
 
-const fallbackRivalOfficeCandidates = tiles.filter((tile) => {
-  if (tile.terrain !== TERRAIN.PLAIN) return false;
-  if (tile.feature !== FEATURE.NONE) return false;
-  if (tile.building) return false;
-  if (tile.owner === OWNER.PUBLIC) return false;
+const placedRivalOffices = [];
+const initialRivalCompanyNames = pickRandomRivalCompanyNames(INITIAL_RIVAL_COMPANY_IDS.length);
+INITIAL_RIVAL_COMPANY_IDS.forEach((companyId, index) => {
+  const company = getRivalCompany(companyId);
+  const companyName = initialRivalCompanyNames[index] ?? company.name;
+  const strictCandidates = getRivalOfficeCandidates(15, placedRivalOffices, true);
+  const looseDistanceCandidates = getRivalOfficeCandidates(10, placedRivalOffices, true);
+  const fallbackCandidates = getRivalOfficeCandidates(15, placedRivalOffices, false);
+  const candidatePool = strictCandidates.length > 0
+    ? strictCandidates
+    : looseDistanceCandidates.length > 0
+      ? looseDistanceCandidates
+      : fallbackCandidates;
 
-  return true;
-});
-
-const rivalCandidatePool =
-  rivalOfficeCandidates.length > 0 ? rivalOfficeCandidates : fallbackRivalOfficeCandidates;
-
-const rivalOfficeTile =
-  rivalCandidatePool.length > 0
-    ? rivalCandidatePool[randomInt(0, rivalCandidatePool.length - 1)]
+  const rivalOfficeTile = candidatePool.length > 0
+    ? candidatePool[randomInt(0, candidatePool.length - 1)]
     : null;
 
-if (rivalOfficeTile) {
-  const rivalEmployee = pickRivalInitialEmployee();
+  if (!rivalOfficeTile) return;
 
+  const rivalEmployee = {
+    ...pickRivalInitialEmployee(),
+    officeId: `rival_${company.id}_hq`,
+  };
   rivalOfficeTile.owner = OWNER.RIVAL;
   rivalOfficeTile.feature = FEATURE.HQ;
   rivalOfficeTile.building = null;
-  rivalOfficeTile.rivalCompanyId = "A";
-  rivalOfficeTile.rivalOfficeName = "東雲地所 本社";
+  rivalOfficeTile.rivalCompanyId = company.id;
+  rivalOfficeTile.rivalCompanyName = companyName;
+  rivalOfficeTile.rivalOfficeName = `${companyName} 本社`;
   rivalOfficeTile.rivalEmployees = [rivalEmployee];
-  rivalOfficeTile.rivalMoney = RIVAL_COMPANIES.A.initialMoney;
-}
+  rivalOfficeTile.rivalMoney = company.initialMoney;
+  placedRivalOffices.push(rivalOfficeTile);
+});
 
 return {
   tiles,
@@ -9739,6 +9878,13 @@ function getOldBuildingActionChance(tile) {
 function loadSavedGameSafely() {
   if (typeof window === "undefined") return null;
 
+  const currentSlot = getCurrentSaveSlot();
+  const currentSlotSave = readSaveSlot(currentSlot);
+  if (currentSlotSave) return currentSlotSave;
+
+  const firstSlotSave = readSaveSlot(DEFAULT_SAVE_SLOT);
+  if (firstSlotSave) return firstSlotSave;
+
   try {
     const rawSaveData = window.localStorage.getItem("realEstateGameSave");
     if (!rawSaveData) return null;
@@ -9757,7 +9903,7 @@ function loadSavedGameSafely() {
 export default function App() {
 
   useEffect(() => {
-    document.title = "箱庭不動産経営シミュレーター V99";
+    document.title = "箱庭不動産経営シミュレーター V103";
 
     if (typeof window === "undefined") return;
     if (!("serviceWorker" in navigator)) return;
@@ -9960,6 +10106,10 @@ const [annualStats, setAnnualStats] = useState(savedGame?.annualStats ?? { incom
 const [monthlyCompanyHistory, setMonthlyCompanyHistory] = useState(savedGame?.monthlyCompanyHistory ?? []);
 const [annualReportHistory, setAnnualReportHistory] = useState(savedGame?.annualReportHistory ?? []);
 const [isDemoMode, setIsDemoMode] = useState(savedGame?.isDemoMode ?? false);
+const [playerCompanyName, setPlayerCompanyName] = useState(savedGame?.playerCompanyName ?? DEFAULT_COMPANY_NAME);
+const [activeSaveSlot, setActiveSaveSlot] = useState(savedGame?.activeSaveSlot ?? getCurrentSaveSlot());
+const [saveSlotRefreshKey, setSaveSlotRefreshKey] = useState(0);
+const [newCompanyNameInput, setNewCompanyNameInput] = useState(savedGame?.playerCompanyName ?? DEFAULT_COMPANY_NAME);
 const [usedSecretCommands, setUsedSecretCommands] = useState(savedGame?.usedSecretCommands ?? {});
 const [showDeveloperCommand, setShowDeveloperCommand] = useState(false);
 const [developerCommandInput, setDeveloperCommandInput] = useState("");
@@ -10006,6 +10156,9 @@ useEffect(() => {
   // localStorage保存は短時間で1回にまとめる。ゲーム内容は削らない。
   const saveTimer = window.setTimeout(() => {
     const saveData = {
+      playerCompanyName,
+      activeSaveSlot,
+      savedAt: new Date().toISOString(),
       money,
       loans,
       pendingLoanApplications,
@@ -10034,16 +10187,18 @@ useEffect(() => {
       usedSecretCommands,
     };
 
-    localStorage.setItem(
-      "realEstateGameSave",
-      JSON.stringify(saveData)
-    );
+    localStorage.setItem("realEstateGameCurrentSlot", String(activeSaveSlot));
+    localStorage.setItem(getSaveSlotKey(activeSaveSlot), JSON.stringify(saveData));
+    localStorage.setItem("realEstateGameSave", JSON.stringify(saveData));
+    setSaveSlotRefreshKey((current) => current + 1);
   }, 250);
 
   return () => {
     window.clearTimeout(saveTimer);
   };
 }, [
+  playerCompanyName,
+  activeSaveSlot,
   money,
   loans,
   pendingLoanApplications,
@@ -10085,6 +10240,7 @@ const floatingPanelResizeRef = useRef(null);
 const [showOptions, setShowOptions] = useState(false);
 const [showTitleScreen, setShowTitleScreen] = useState(true);
 const [titleModal, setTitleModal] = useState(null);
+const [saveLoadModal, setSaveLoadModal] = useState(null);
 const [selectedBuildCategory, setSelectedBuildCategory] = useState(null);
 const [selectedHousingType, setSelectedHousingType] = useState(null);
 const [mapViewMode, setMapViewMode] = useState("normal");
@@ -10129,6 +10285,14 @@ function resetFloatingPanel() {
 
 function closeFloatingPanel() {
   setActivePanel("home");
+}
+
+function getFloatingPanelTitle(panelName = activePanel) {
+  if (panelName === "hq") return "本社設置";
+  if (panelName === "land") return "土地・建物情報";
+  if (panelName === "build") return "建設メニュー";
+  if (panelName === "employee") return "社員管理";
+  return "操作パネル";
 }
 
 function handleFloatingPanelPointerDown(event) {
@@ -14223,8 +14387,107 @@ if (stationDistance <= 3) {
   return tile;
 });
 
-function runRivalCompanyMonthlyAction(tileList, companyId) {
+function getExistingRivalCompanyIds(tileList) {
+  return Object.keys(RIVAL_COMPANIES).filter((companyId) => {
+    return tileList.some((tile) => {
+      return tile.owner === OWNER.RIVAL &&
+        tile.rivalCompanyId === companyId &&
+        tile.feature === FEATURE.HQ;
+    });
+  });
+}
+
+function pickUnusedRivalCompanyName(tileList) {
+  const usedNames = new Set(
+    tileList
+      .filter((tile) => tile.owner === OWNER.RIVAL && tile.rivalCompanyName)
+      .map((tile) => tile.rivalCompanyName)
+  );
+
+  const unusedNames = RIVAL_COMPANY_NAME_CANDIDATES.filter((name) => !usedNames.has(name));
+  const candidateNames = unusedNames.length > 0 ? unusedNames : RIVAL_COMPANY_NAME_CANDIDATES;
+  return candidateNames[randomInt(0, candidateNames.length - 1)] ?? getRivalCompany(LATE_RIVAL_COMPANY_ID).name;
+}
+
+function createLateRivalCompanyEntry(tileList, companyId = LATE_RIVAL_COMPANY_ID) {
   const company = getRivalCompany(companyId);
+  const alreadyExists = tileList.some((tile) => {
+    return tile.owner === OWNER.RIVAL &&
+      tile.rivalCompanyId === companyId &&
+      tile.feature === FEATURE.HQ;
+  });
+
+  if (alreadyExists) {
+    return { tiles: tileList, log: null, placed: false };
+  }
+
+  const existingHqTiles = tileList.filter((tile) => {
+    return tile.owner === OWNER.RIVAL && tile.feature === FEATURE.HQ;
+  });
+
+  const getCandidates = (minDistanceFromRivals, requireRoadOrRail) => {
+    return tileList.filter((tile) => {
+      if (tile.terrain !== TERRAIN.PLAIN) return false;
+      if (tile.feature !== FEATURE.NONE) return false;
+      if (tile.building || tile.buildingMainId) return false;
+      if (tile.owner === OWNER.PLAYER || tile.owner === OWNER.PUBLIC || tile.owner === OWNER.RIVAL) return false;
+      if (requireRoadOrRail && !isTileNearRoadOrRail(tile, tileList)) return false;
+
+      return existingHqTiles.every((hqTile) => {
+        return getDistance(tile.x, tile.y, hqTile.x, hqTile.y) >= minDistanceFromRivals;
+      });
+    });
+  };
+
+  const candidatePool = getCandidates(15, true).length > 0
+    ? getCandidates(15, true)
+    : getCandidates(10, true).length > 0
+      ? getCandidates(10, true)
+      : getCandidates(15, false);
+
+  if (candidatePool.length === 0) {
+    return { tiles: tileList, log: null, placed: false };
+  }
+
+  const targetTile = candidatePool[randomInt(0, candidatePool.length - 1)];
+  const companyName = pickUnusedRivalCompanyName(tileList);
+  const rivalEmployees = Array.from({ length: 4 }, () => {
+    return {
+      ...pickRivalInitialEmployee(),
+      officeId: `rival_${company.id}_hq`,
+    };
+  });
+
+  const nextTiles = tileList.map((tile) => {
+    if (tile.id !== targetTile.id) return tile;
+
+    return {
+      ...tile,
+      owner: OWNER.RIVAL,
+      feature: FEATURE.HQ,
+      building: null,
+      buildingMainId: null,
+      rooms: [],
+      rivalCompanyId: company.id,
+      rivalCompanyName: companyName,
+      rivalOfficeName: `${companyName} 本社`,
+      rivalEmployees,
+      rivalMoney: company.initialMoney,
+      rivalAgeMonths: 0,
+      rivalSixMonthTicketGranted: true,
+      rivalRank: 10,
+    };
+  });
+
+  return {
+    tiles: nextTiles,
+    placed: true,
+    log: `【経済ニュース】大手不動産会社「${companyName}」が参入しました。初期資金12億円・社員4名で本社を設立しました。`,
+  };
+}
+
+function runRivalCompanyMonthlyAction(tileList, companyId) {
+  const companyBase = getRivalCompany(companyId);
   let nextTiles = tileList;
   const companyTiles = nextTiles.filter((tile) => tile.owner === OWNER.RIVAL && tile.rivalCompanyId === companyId);
   const officeTilesForCompany = companyTiles.filter((tile) => tile.feature === FEATURE.HQ || tile.feature === FEATURE.BRANCH);
@@ -14235,7 +14498,28 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
 
   const logs = [];
   const hqTileForCompany = officeTilesForCompany.find((tile) => tile.feature === FEATURE.HQ) ?? officeTilesForCompany[0];
+  const company = {
+    ...companyBase,
+    name: hqTileForCompany?.rivalCompanyName ?? companyBase.name,
+  };
   let rivalMoney = hqTileForCompany?.rivalMoney ?? company.initialMoney ?? 10000;
+
+  const rivalMainBuildings = companyTiles.filter((tile) => {
+    return tile.building && !tile.buildingMainId && tile.feature !== FEATURE.HQ && tile.feature !== FEATURE.BRANCH;
+  });
+  const rivalMonthlyRent = rivalMainBuildings.reduce((sum, tile) => {
+    return sum + (tile.rooms ?? []).reduce((roomSum, room) => {
+      return roomSum + (room.occupied ? (room.rent ?? 0) : 0);
+    }, 0);
+  }, 0);
+  const rivalMonthlyMaintenance = rivalMainBuildings.reduce((sum, tile) => {
+    return sum + calculateMonthlyExpenses(tile);
+  }, 0);
+  const rivalMonthlyPayroll = (hqTileForCompany?.rivalEmployees ?? []).reduce((sum, employee) => {
+    return sum + (employee.salary ?? 0);
+  }, 0);
+  const rivalMonthlyNet = rivalMonthlyRent - rivalMonthlyMaintenance - rivalMonthlyPayroll;
+  rivalMoney = Math.max(0, Math.round(rivalMoney + rivalMonthlyNet));
 
   const updateRivalMoney = (tileListForMoney, nextMoney) => {
     return tileListForMoney.map((tile) => {
@@ -14275,7 +14559,10 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
     logs.push(`${company.name}が設立6ヶ月の社員チケットを使用し、${newEmployee.name}（${newEmployee.rarity}）を採用しました。`);
   }
 
-  const nextRivalRank = hqTileForCompany?.rivalRank ?? Math.max(1, Math.floor(nextRivalAgeMonths / 12) + 1);
+  const nextRivalRank = Math.max(
+    hqTileForCompany?.rivalRank ?? 1,
+    Math.max(1, Math.floor(nextRivalAgeMonths / 12) + 1)
+  );
 
   nextTiles = updateRivalHq(nextTiles, {
     rivalAgeMonths: nextRivalAgeMonths,
@@ -14312,6 +14599,14 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
     if (placement.ok) {
       const buildingCost = BUILDINGS[buildingKey]?.cost ?? 0;
       if (rivalMoney < buildingCost) {
+        const shortfall = buildingCost - rivalMoney;
+        const financingAmount = Math.min(50000, Math.max(3000, Math.ceil(shortfall / 1000) * 1000));
+        rivalMoney += financingAmount;
+        logs.push(`${company.name}が金融機関から運転資金${financingAmount}万円を調達しました。`);
+      }
+
+      if (rivalMoney < buildingCost) {
+        nextTiles = updateRivalMoney(nextTiles, rivalMoney);
         return { tiles: nextTiles, logs };
       }
 
@@ -14382,10 +14677,25 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
     });
 
     if (affordableCandidates.length === 0) {
+      const lowestPrice = Math.min(...purchaseCandidates.map((tile) => tile.landPrice ?? 0));
+      if (Number.isFinite(lowestPrice) && lowestPrice > 0) {
+        const shortfall = lowestPrice - rivalMoney;
+        const financingAmount = Math.min(30000, Math.max(2000, Math.ceil(shortfall / 1000) * 1000));
+        rivalMoney += financingAmount;
+        logs.push(`${company.name}が土地取得資金${financingAmount}万円を調達しました。`);
+      }
+    }
+
+    const refreshedAffordableCandidates = purchaseCandidates.filter((tile) => {
+      return (tile.landPrice ?? 0) <= rivalMoney;
+    });
+
+    if (refreshedAffordableCandidates.length === 0) {
+      nextTiles = updateRivalMoney(nextTiles, rivalMoney);
       return { tiles: nextTiles, logs };
     }
 
-    const target = affordableCandidates[randomInt(0, affordableCandidates.length - 1)];
+    const target = refreshedAffordableCandidates[randomInt(0, refreshedAffordableCandidates.length - 1)];
     const purchasePrice = target.landPrice ?? 0;
     rivalMoney -= purchasePrice;
 
@@ -14406,9 +14716,33 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
   return { tiles: nextTiles, logs };
 }
 
-let rivalActionResult = runRivalCompanyMonthlyAction(cityChangedTiles, "A");
-let rivalActionTiles = rivalActionResult.tiles;
-eventLog.push(...rivalActionResult.logs);
+let rivalBaseTiles = cityChangedTiles;
+const existingRivalCompanyIdsBeforeLateEntry = getExistingRivalCompanyIds(rivalBaseTiles);
+const nextProcessingYear = Math.floor((nextProcessingMonth - 1) / 12) + 1;
+
+if (
+  nextProcessingYear >= 10 &&
+  existingRivalCompanyIdsBeforeLateEntry.length < MAX_RIVAL_COMPANY_COUNT &&
+  !existingRivalCompanyIdsBeforeLateEntry.includes(LATE_RIVAL_COMPANY_ID)
+) {
+  const lateEntryChance = Math.min(0.5, 0.2 + (nextProcessingYear - 10) * 0.05);
+
+  if (Math.random() < lateEntryChance) {
+    const lateEntryResult = createLateRivalCompanyEntry(rivalBaseTiles, LATE_RIVAL_COMPANY_ID);
+    rivalBaseTiles = lateEntryResult.tiles;
+
+    if (lateEntryResult.log) {
+      eventLog.push(lateEntryResult.log);
+    }
+  }
+}
+
+let rivalActionTiles = rivalBaseTiles;
+getExistingRivalCompanyIds(rivalActionTiles).forEach((companyId) => {
+  const rivalActionResult = runRivalCompanyMonthlyAction(rivalActionTiles, companyId);
+  rivalActionTiles = rivalActionResult.tiles;
+  eventLog.push(...rivalActionResult.logs);
+});
 
 // v82軽量化：NPC複数マス建物の同期は、全タイルfindではなく座標Mapで1回だけ展開する。
 const npcMainTileByCoordinate = new Map();
@@ -14805,6 +15139,7 @@ function newGame() {
   if (!ok) return;
 
   setMoney(20000);
+  setPlayerCompanyName(playerCompanyName || DEFAULT_COMPANY_NAME);
   setLoans([]);
   setPendingLoanApplications([]);
   setPendingLoanConsultations([]);
@@ -14812,6 +15147,11 @@ function newGame() {
   setLoanAmountInput("5000");
   setSelectedBankId("regional");
   setMonth(1);
+  setPlayerRank(1);
+  setPlayerExp(0);
+  playerRankRef.current = 1;
+  playerExpRef.current = 0;
+  setPlayerRankUpResult(null);
 
   const newMap = createMap();
 
@@ -14834,6 +15174,7 @@ function fullResetGame() {
   if (!ok) return;
 
   localStorage.removeItem("realEstateGameSave");
+  localStorage.removeItem(getSaveSlotKey(activeSaveSlot));
 
   const newMap = createMap();
 
@@ -14845,6 +15186,11 @@ function fullResetGame() {
   setLoanAmountInput("5000");
   setSelectedBankId("regional");
   setMonth(1);
+  setPlayerRank(1);
+  setPlayerExp(0);
+  playerRankRef.current = 1;
+  playerExpRef.current = 0;
+  setPlayerRankUpResult(null);
   setTiles(newMap.tiles);
   setSelectedId(null);
   setHqPlaced(false);
@@ -14863,6 +15209,8 @@ function fullResetGame() {
   setAnnualStats({ income: 0, maintenance: 0, tax: 0, purchase: 0, net: 0 });
   setMonthlyCompanyHistory([]);
   setAnnualReportHistory([]);
+  setPlayerCompanyName(DEFAULT_COMPANY_NAME);
+  setNewCompanyNameInput(DEFAULT_COMPANY_NAME);
   setPlayerRankUpResult(null);
   setTicketRewardResult(null);
   setSelectedCompanyDetail(null);
@@ -15864,7 +16212,243 @@ const housingDemandAverage = demandAverages.housing;
 const commercialDemandAverage = demandAverages.commercial;
 const industrialDemandAverage = demandAverages.industrial;
 
-const hasSaveData = Boolean(savedGame);
+function getSaveSlotSummaries() {
+  return Array.from({ length: SAVE_SLOT_COUNT }, (_, index) => {
+    const slot = index + 1;
+    const data = readSaveSlot(slot);
+    if (!data) {
+      return { slot, hasData: false };
+    }
+
+    const savedDate = data.savedAt ? new Date(data.savedAt) : null;
+    const savedAtText = savedDate && !Number.isNaN(savedDate.getTime())
+      ? savedDate.toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+      : "保存日時不明";
+
+    return {
+      slot,
+      hasData: true,
+      companyName: data.playerCompanyName ?? DEFAULT_COMPANY_NAME,
+      month: data.month ?? 1,
+      money: data.money ?? 0,
+      savedAtText,
+    };
+  });
+}
+
+const saveSlotSummaries = useMemo(() => getSaveSlotSummaries(), [saveSlotRefreshKey, showTitleScreen]);
+const hasAnySaveSlot = saveSlotSummaries.some((slot) => slot.hasData);
+
+function getTileOwnerName(tile) {
+  if (!tile) return "不明";
+  if (tile.owner === OWNER.PLAYER) return playerCompanyName || DEFAULT_COMPANY_NAME;
+  if (tile.owner === OWNER.RIVAL) return getRivalCompanyNameFromTiles(tiles, tile.rivalCompanyId);
+  return getOwnerName(tile.owner);
+}
+
+function saveCurrentGameToSlot(slot = activeSaveSlot) {
+  const saveData = {
+    playerCompanyName,
+    activeSaveSlot: slot,
+    savedAt: new Date().toISOString(),
+    money,
+    loans,
+    pendingLoanApplications,
+    pendingLoanConsultations,
+    loanConsultationReports,
+    month,
+    hqPlaced,
+    tiles,
+    selectedId,
+    log,
+    logHistory: logHistory.slice(0, 200),
+    playerRank,
+    playerExp,
+    employees,
+    employeeCandidates,
+    employeeStorage,
+    actionPoints,
+    employeeTickets,
+    premiumEmployeeTickets,
+    employeeSortKey,
+    employeeSortDirection,
+    annualStats,
+    monthlyCompanyHistory: monthlyCompanyHistory.slice(0, 120),
+    annualReportHistory: annualReportHistory.slice(0, 30),
+    isDemoMode,
+    usedSecretCommands,
+  };
+
+  localStorage.setItem("realEstateGameCurrentSlot", String(slot));
+  localStorage.setItem(getSaveSlotKey(slot), JSON.stringify(saveData));
+  localStorage.setItem("realEstateGameSave", JSON.stringify(saveData));
+  setActiveSaveSlot(slot);
+  setSaveSlotRefreshKey((current) => current + 1);
+  setLog(`スロット${slot}に保存しました。`);
+}
+
+function applySaveDataToCurrentGame(data, slot) {
+  if (!data || !Array.isArray(data.tiles)) {
+    alert(`スロット${slot}のセーブデータを読み込めませんでした。`);
+    return false;
+  }
+
+  const loadedCompanyName = data.playerCompanyName || DEFAULT_COMPANY_NAME;
+  const loadedPlayerRank = data.playerRank ?? 1;
+  const loadedPlayerExp = data.playerExp ?? 0;
+
+  setActiveSaveSlot(slot);
+  setPlayerCompanyName(loadedCompanyName);
+  setNewCompanyNameInput(loadedCompanyName);
+  setMoney(data.money ?? 20000);
+  setLoans((data.loans ?? []).map(normalizeLoan));
+  setPendingLoanApplications((data.pendingLoanApplications ?? []).map(normalizePendingLoanApplication));
+  setPendingLoanConsultations((data.pendingLoanConsultations ?? []).map(normalizePendingLoanConsultation));
+  setLoanConsultationReports((data.loanConsultationReports ?? []).map((report) => {
+    return {
+      ...report,
+      expiresAtMonth: report?.expiresAtMonth ?? ((report?.resultMonth ?? data.month ?? 1) + 6),
+    };
+  }));
+  setLoanAmountInput("5000");
+  setSelectedBankId("regional");
+  setConsultationApplicationAmounts({});
+  setMonth(data.month ?? 1);
+  setHqPlaced(Boolean(data.hqPlaced || data.tiles.some((tile) => tile.owner === OWNER.PLAYER && tile.feature === FEATURE.HQ)));
+  setTiles(data.tiles);
+  setSelectedId(data.selectedId ?? null);
+  setLog(data.log ?? `スロット${slot}をロードしました。`);
+  setLogHistory((data.logHistory ?? []).slice(0, 200));
+  setPlayerRank(loadedPlayerRank);
+  setPlayerExp(loadedPlayerExp);
+  playerRankRef.current = loadedPlayerRank;
+  playerExpRef.current = loadedPlayerExp;
+  setEmployees((data.employees ?? [])
+    .filter((employee) => employee.id !== 0)
+    .map((employee) => normalizeEmployeeGrowthBase({
+      ...employee,
+      officeId: employee.officeId ?? "hq",
+    })));
+  setEmployeeCandidates(data.employeeCandidates ?? []);
+  setEmployeeStorage((data.employeeStorage ?? [])
+    .filter((employee) => employee.id !== 0)
+    .map((employee) => normalizeEmployeeGrowthBase({
+      ...employee,
+      officeId: null,
+    })));
+  setActionPoints(data.actionPoints ?? 0);
+  setEmployeeTickets(data.employeeTickets ?? 1);
+  setPremiumEmployeeTickets(data.premiumEmployeeTickets ?? 0);
+  setEmployeeSortKey(data.employeeSortKey ?? "rarity");
+  setEmployeeSortDirection(data.employeeSortDirection ?? "desc");
+  setAnnualStats(data.annualStats ?? { income: 0, maintenance: 0, tax: 0, purchase: 0, net: 0 });
+  setMonthlyCompanyHistory(data.monthlyCompanyHistory ?? []);
+  setAnnualReportHistory(data.annualReportHistory ?? []);
+  setIsDemoMode(data.isDemoMode ?? false);
+  setUsedSecretCommands(data.usedSecretCommands ?? {});
+  setActivePanel(Boolean(data.hqPlaced || data.tiles.some((tile) => tile.owner === OWNER.PLAYER && tile.feature === FEATURE.HQ)) ? "home" : "hq");
+  setIsMainMenuOpen(false);
+  setSaveLoadModal(null);
+  setTitleModal(null);
+  setShowTitleScreen(false);
+  setPopupLog(null);
+  setAnnualReport(null);
+  setPlayerRankUpResult(null);
+  setTicketRewardResult(null);
+  setSelectedCompanyDetail(null);
+  setEmployeeGachaResult(null);
+  setSelectedEmployeeDetail(null);
+  setSelectedBuildCategory(null);
+  setSelectedHousingType(null);
+  setPendingBuildKey(null);
+  setPendingBranchPlacement(false);
+
+  const normalizedSaveData = {
+    ...data,
+    activeSaveSlot: slot,
+    playerCompanyName: loadedCompanyName,
+    savedAt: data.savedAt ?? new Date().toISOString(),
+  };
+
+  localStorage.setItem("realEstateGameCurrentSlot", String(slot));
+  localStorage.setItem(getSaveSlotKey(slot), JSON.stringify(normalizedSaveData));
+  localStorage.setItem("realEstateGameSave", JSON.stringify(normalizedSaveData));
+  setSaveSlotRefreshKey((current) => current + 1);
+  return true;
+}
+
+function loadSaveSlotFromTitle(slot) {
+  const data = readSaveSlot(slot);
+  if (!data) {
+    alert(`スロット${slot}にセーブデータはありません。`);
+    return;
+  }
+
+  const ok = window.confirm(`スロット${slot}をロードしますか？
+
+現在の画面の未保存操作は上書きされます。`);
+  if (!ok) return;
+
+  const loaded = applySaveDataToCurrentGame(data, slot);
+  if (loaded) {
+    setLog(`スロット${slot}をロードしました。`);
+  }
+}
+
+function startNewGameFromTitle(slot = activeSaveSlot) {
+  const companyName = (newCompanyNameInput || DEFAULT_COMPANY_NAME).trim() || DEFAULT_COMPANY_NAME;
+  const ok = window.confirm(`スロット${slot}で「${companyName}」として最初から始めますか？
+
+このスロットの既存データは上書きされます。`);
+  if (!ok) return;
+
+  localStorage.setItem("realEstateGameCurrentSlot", String(slot));
+  setActiveSaveSlot(slot);
+  setPlayerCompanyName(companyName);
+  setNewCompanyNameInput(companyName);
+  setMoney(20000);
+  setLoans([]);
+  setPendingLoanApplications([]);
+  setPendingLoanConsultations([]);
+  setLoanConsultationReports([]);
+  setLoanAmountInput("5000");
+  setSelectedBankId("regional");
+  setMonth(1);
+  setPlayerRank(1);
+  setPlayerExp(0);
+  playerRankRef.current = 1;
+  playerExpRef.current = 0;
+  setPlayerRankUpResult(null);
+
+  const newMap = createMap();
+  setTiles(newMap.tiles);
+  setSelectedId(null);
+  setHqPlaced(false);
+  setActivePanel("hq");
+  setEmployees([]);
+  setEmployeeCandidates([]);
+  setEmployeeStorage([]);
+  setActionPoints(0);
+  setEmployeeTickets(1);
+  setPremiumEmployeeTickets(0);
+  setEmployeeSortKey("rarity");
+  setEmployeeSortDirection("desc");
+  setLogHistory([]);
+  setPopupLog(null);
+  setAnnualReport(null);
+  setAnnualStats({ income: 0, maintenance: 0, tax: 0, purchase: 0, net: 0 });
+  setMonthlyCompanyHistory([]);
+  setAnnualReportHistory([]);
+  setIsDemoMode(false);
+  setUsedSecretCommands({});
+  setShowTitleScreen(false);
+  setTitleModal(null);
+  setSaveLoadModal(null);
+  setIsMainMenuOpen(false);
+  setLog(`${companyName}として最初から開始しました。最初に本社を設置してください。`);
+}
+
+const hasSaveData = Boolean(savedGame) || hasAnySaveSlot;
 const ownedBuildingCountForTitle = tiles.filter((tile) => {
   return tile.owner === OWNER.PLAYER && tile.building && !tile.buildingMainId;
 }).length;
@@ -16236,6 +16820,30 @@ return (
         overflow-wrap: anywhere !important;
       }
 
+      .app .build-icon-menu {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(82px, 1fr)) !important;
+        gap: 8px !important;
+        margin-bottom: 10px !important;
+      }
+
+      .app .build-icon-button {
+        min-height: 46px !important;
+        padding: 7px 8px !important;
+        border-radius: 14px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        line-height: 1.2 !important;
+        font-size: 13px !important;
+      }
+
+      .app .build-icon-button .build-icon {
+        font-size: 18px !important;
+        line-height: 1 !important;
+      }
+
       .main-menu-popup {
         padding: 12px !important;
       }
@@ -16354,11 +16962,11 @@ return (
           <div style={{ fontSize: 42, lineHeight: 1, marginBottom: 10 }}>🏘️</div>
           <p style={{ margin: "0 0 6px", letterSpacing: 2, fontSize: 12, opacity: 0.82 }}>NOGUCHI CORPORATION PRESENTS</p>
           <h1 style={{ margin: "0 0 8px", fontSize: 28, lineHeight: 1.25 }}>箱庭不動産経営<br />シミュレーション</h1>
-          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>Version 88</p>
+          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>Version 102</p>
 
           <div
             style={{
-              margin: "0 auto 18px",
+              margin: "0 auto 14px",
               padding: 14,
               borderRadius: 16,
               background: "rgba(255,255,255,0.1)",
@@ -16367,25 +16975,56 @@ return (
               lineHeight: 1.7,
             }}
           >
-            {hasSaveData ? (
-              <>
-                <div><strong>最終プレイ</strong>：{getGameDate(savedGame?.month ?? month).label}</div>
-                <div><strong>所持金</strong>：{money.toLocaleString()}万円</div>
-                <div><strong>保有建物</strong>：{ownedBuildingCountForTitle}棟</div>
-                <div><strong>総資産目安</strong>：{titleTotalAssets.toLocaleString()}万円</div>
-              </>
-            ) : (
-              <div style={{ textAlign: "center" }}>セーブデータがありません</div>
-            )}
+            <label style={{ display: "block", marginBottom: 8, fontWeight: 700 }}>会社名</label>
+            <input
+              type="text"
+              value={newCompanyNameInput}
+              onChange={(event) => setNewCompanyNameInput(event.target.value)}
+              placeholder="会社名を入力"
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                padding: "10px 12px",
+                borderRadius: 12,
+                border: "1px solid rgba(255,255,255,0.35)",
+                background: "rgba(255,255,255,0.92)",
+                color: "#123524",
+                fontWeight: 700,
+              }}
+            />
+          </div>
+
+          <div
+            style={{
+              margin: "0 auto 18px",
+              padding: 12,
+              borderRadius: 16,
+              background: "rgba(255,255,255,0.1)",
+              textAlign: "left",
+              fontSize: 12,
+              lineHeight: 1.45,
+            }}
+          >
+            <strong>セーブスロット</strong>
+            <div style={{ display: "grid", gap: 8, marginTop: 8 }}>
+              {saveSlotSummaries.map((slotInfo) => (
+                <div key={slotInfo.slot} style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: 6, alignItems: "center" }}>
+                  <div>
+                    <strong>Slot {slotInfo.slot}</strong>：{slotInfo.hasData ? `${slotInfo.companyName} / ${getGameDate(slotInfo.month).label} / ${Number(slotInfo.money ?? 0).toLocaleString()}万円` : "空き"}
+                    {slotInfo.hasData && <div style={{ opacity: 0.72 }}>保存：{slotInfo.savedAtText}</div>}
+                  </div>
+                  <button type="button" onClick={() => startNewGameFromTitle(slotInfo.slot)} style={{ padding: "7px 9px", borderRadius: 999, border: "none", fontWeight: 700, cursor: "pointer" }}>
+                    最初から
+                  </button>
+                  <button type="button" onClick={() => loadSaveSlotFromTitle(slotInfo.slot)} disabled={!slotInfo.hasData} style={{ padding: "7px 9px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.35)", background: slotInfo.hasData ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.06)", color: "#ffffff", fontWeight: 700, cursor: slotInfo.hasData ? "pointer" : "not-allowed", opacity: slotInfo.hasData ? 1 : 0.55 }}>
+                    ロード
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div style={{ display: "grid", gap: 10 }}>
-            <button type="button" onClick={openGameFromTitle} style={{ padding: "13px 14px", borderRadius: 999, border: "none", fontWeight: 700, fontSize: 16, cursor: "pointer" }}>
-              ▶ ゲームスタート
-            </button>
-            <button type="button" onClick={openGameFromTitle} disabled={!hasSaveData} style={{ padding: "12px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.35)", background: hasSaveData ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.06)", color: "#ffffff", fontWeight: 700, cursor: hasSaveData ? "pointer" : "not-allowed", opacity: hasSaveData ? 1 : 0.55 }}>
-              ▶ 続きから
-            </button>
             <button type="button" onClick={() => setTitleModal("settings")} style={{ padding: "12px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.35)", background: "rgba(255,255,255,0.12)", color: "#ffffff", fontWeight: 700, cursor: "pointer" }}>
               ▶ 設定
             </button>
@@ -16467,9 +17106,13 @@ return (
       <h3>月末報告</h3>
 <div>
   {popupLog.split("\n").map((line, index) => {
-    const isRivalLine = Object.values(RIVAL_COMPANIES).some((company) => {
-      return line.startsWith(company.name);
-    });
+    const isRivalLine = Object.keys(RIVAL_COMPANIES).some((companyId) => {
+      return tiles.some((tile) => {
+        return tile.owner === OWNER.RIVAL &&
+          tile.rivalCompanyId === companyId &&
+          tile.feature === FEATURE.HQ;
+      }) && line.startsWith(getRivalCompanyNameFromTiles(tiles, companyId));
+    }) || line.startsWith("【経済ニュース】");
 
     const isPositive =
       !isRivalLine &&
@@ -16751,7 +17394,7 @@ return (
 
       <header className="top-header compact-top-header">
         <div className="top-title-wrap">
-          <h1 className="v73-title">箱庭不動産経営シミュレーター V99{isDemoMode ? "（デモ版）" : ""}</h1>
+          <h1 className="v73-title">箱庭不動産経営シミュレーター V103{isDemoMode ? "（デモ版）" : ""}</h1>
         </div>
       </header>
 
@@ -17172,9 +17815,7 @@ return (
             }`}
             title={`座標:${tile.x},${tile.y} / ${getTerrainName(
               tile.terrain
-            )} / ${getFeatureName(tile.feature)} / ${getOwnerName(
-              tile.owner
-            )}${tile.owner === OWNER.RIVAL ? `（${getRivalCompany(tile.rivalCompanyId).name}）` : ""} / 地価:${tile.landPrice}万円${
+            )} / ${getFeatureName(tile.feature)} / ${getTileOwnerName(tile)} / 地価:${tile.landPrice}万円${
               getNearestOfficeNameForTile(tile)
                 ? ` / 行動範囲:${getNearestOfficeNameForTile(tile)}`
                 : " / 行動範囲外"
@@ -17215,7 +17856,7 @@ return (
         onPointerUp={handleFloatingPanelPointerUp}
         onPointerCancel={handleFloatingPanelPointerUp}
       >
-        <strong>操作パネル</strong>
+        <strong>{getFloatingPanelTitle()}</strong>
         <div className="floating-panel-actions">
           <button type="button" onClick={(event) => { event.stopPropagation(); resetFloatingPanel(); }}>戻す</button>
           <button type="button" onClick={(event) => { event.stopPropagation(); closeFloatingPanel(); }}>閉じる</button>
@@ -17242,7 +17883,7 @@ return (
       <div>
         <p>選択中土地 ({selectedTile.x}, {selectedTile.y})</p>
         <p>土地価格 {selectedTile.landPrice}万円</p>
-        <p>所有 {getOwnerName(selectedTile.owner)}</p>
+        <p>所有 {getTileOwnerName(selectedTile)}</p>
         <p>
           建築 {isBuildableTile(selectedTile) ? "可能" : "不可"}
         </p>
@@ -17272,7 +17913,6 @@ return (
 )}
 {activePanel === "land" && (
   <div className="detail-card">
-    <h2>土地・建物情報</h2>
 
     {!selectedTile && (
       <p>マップ上の土地を選択してください。</p>
@@ -17284,7 +17924,7 @@ return (
         <p>地形 {getTerrainName(selectedTile.terrain)}</p>
         <p>施設 {getFeatureName(selectedTile.feature)}</p>
         <p>用途地域 {getZoneName(selectedTile.zone)}</p>
-        <p>所有者 {getOwnerName(selectedTile.owner)}</p>
+        <p>所有者 {getTileOwnerName(selectedTile)}</p>
         <p>地価 {selectedTile.landPrice}万円</p>
         <p>
           行動範囲 {isTileInOfficeRange(selectedTile) ? `範囲内（${getNearestOfficeNameForTile(selectedTile)}）` : "範囲外"}
@@ -17300,7 +17940,7 @@ return (
         )}
         {selectedTile.owner === OWNER.RIVAL && (
           <div className="rival-company-info">
-            <h3>{getRivalCompany(selectedTile.rivalCompanyId).name}</h3>
+            <h3>{getRivalCompanyNameFromTiles(tiles, selectedTile.rivalCompanyId)}</h3>
             <p>拠点: {selectedTile.rivalOfficeName || "ライバル拠点"}</p>
             <p>企業カラー: {getRivalCompany(selectedTile.rivalCompanyId).colorName}</p>
             <h4>所属社員</h4>
@@ -17500,24 +18140,15 @@ return (
               </button>
             )}
 
-          {selectedTile.owner === OWNER.PLAYER &&
-            isBuildableTile(selectedTile) &&
-            !selectedTile.building &&
-            selectedTile.feature !== FEATURE.HQ &&
-            selectedTile.feature !== FEATURE.BRANCH && (
-              <button
-                onClick={startBranchPlacement}
-                disabled={!isTileInOfficeRange(selectedTile)}
-                title={!isTileInOfficeRange(selectedTile) ? "本社・支店の行動範囲外です" : ""}
-              >
-                {isTileInOfficeRange(selectedTile) ? "支店を開設する（1億円）" : "範囲外のため支店不可"}
-              </button>
-            )}
-
 {selectedMainTile?.owner === OWNER.PLAYER &&
   selectedMainTile?.building && (
-    <button onClick={demolish}>
-      取り壊す
+    <button
+      onClick={() => {
+        setSelectedBuildCategory("修繕");
+        setActivePanel("build");
+      }}
+    >
+      修繕する
     </button>
 )}
 
@@ -17525,6 +18156,13 @@ return (
   selectedMainTile?.feature !== FEATURE.HQ && (
     <button onClick={sellProperty}>
       売却する
+    </button>
+)}
+
+{selectedMainTile?.owner === OWNER.PLAYER &&
+  selectedMainTile?.building && (
+    <button onClick={demolish}>
+      取り壊す
     </button>
 )}
         </div>
@@ -17723,7 +18361,6 @@ return (
 
 {activePanel === "build" && (
   <div className="detail-card build-pop-card">
-    <h2>建設メニュー</h2>
 
     {pendingBuildKey && (
       <div className="build-placement-guide">
@@ -17774,7 +18411,7 @@ return (
         className={`build-icon-button ${
           selectedBuildCategory === "商業" ? "active" : ""
         }`}
-        onClick={() => setSelectedBuildCategory("商業")}
+        onClick={() => { setSelectedBuildCategory("商業"); setSelectedHousingType(null); }}
       >
         <span className="build-icon">🏪</span>
         <span>店舗</span>
@@ -17783,7 +18420,7 @@ return (
         className={`build-icon-button ${
           selectedBuildCategory === "工業" ? "active" : ""
         }`}
-        onClick={() => setSelectedBuildCategory("工業")}
+        onClick={() => { setSelectedBuildCategory("工業"); setSelectedHousingType(null); }}
       >
         <span className="build-icon">🏭</span>
         <span>工業</span>
@@ -17793,7 +18430,7 @@ return (
         className={`build-icon-button ${
           selectedBuildCategory === "支店" ? "active" : ""
         }`}
-        onClick={() => setSelectedBuildCategory("支店")}
+        onClick={() => { setSelectedBuildCategory("支店"); setSelectedHousingType(null); }}
       >
         <span className="build-icon">🏢</span>
         <span>支店</span>
@@ -17803,7 +18440,7 @@ return (
         className={`build-icon-button ${
           selectedBuildCategory === "修繕" ? "active" : ""
         }`}
-        onClick={() => setSelectedBuildCategory("修繕")}
+        onClick={() => { setSelectedBuildCategory("修繕"); setSelectedHousingType(null); }}
       >
         <span className="build-icon">🔧</span>
         <span>修繕</span>
@@ -17819,14 +18456,28 @@ return (
 {selectedBuildCategory && (
   <div className="build-detail-popup">
     <div className="build-detail-header">
-      <strong>{selectedBuildCategory}を選択中</strong>
+      <strong>{selectedHousingType ? selectedHousingType : selectedBuildCategory}を選択中</strong>
 
-      <button
-        className="build-close-button"
-        onClick={() => setSelectedBuildCategory(null)}
-      >
-        閉じる
-      </button>
+      <div className="button-row" style={{ gap: 6 }}>
+        {selectedBuildCategory === "住宅" && selectedHousingType && (
+          <button
+            className="build-close-button"
+            onClick={() => setSelectedHousingType(null)}
+          >
+            戻る
+          </button>
+        )}
+
+        <button
+          className="build-close-button"
+          onClick={() => {
+            setSelectedBuildCategory(null);
+            setSelectedHousingType(null);
+          }}
+        >
+          閉じる
+        </button>
+      </div>
     </div>
 
     <div className="build-detail-buttons">
@@ -18316,7 +18967,7 @@ return (
   <section className="property-section info-section">
     <h2>情報</h2>
     <div className="player-info-box v74-player-info-box">
-      <h3>プレイヤー情報</h3>
+      <h3>{playerCompanyName || DEFAULT_COMPANY_NAME}</h3>
       <div className="player-info-grid">
         <div>
           <span>所持金</span>
@@ -18388,7 +19039,7 @@ return (
           <tr>
             <td><button onClick={() => setSelectedCompanyDetail("player")}>表示</button></td>
             <td>自社</td>
-            <td>プレイヤー会社</td>
+            <td>{playerCompanyName || DEFAULT_COMPANY_NAME}</td>
             <td>{money.toLocaleString()}万円</td>
             <td>{playerRank}</td>
             <td>{totalRent.toLocaleString()}万円</td>
@@ -18416,7 +19067,7 @@ return (
               <tr key={company.id}>
                 <td><button onClick={() => setSelectedCompanyDetail(company.id)}>表示</button></td>
                 <td>ライバル</td>
-                <td>{company.name}</td>
+                <td>{hqTile?.rivalCompanyName ?? company.name}</td>
                 <td>{(hqTile?.rivalMoney ?? company.initialMoney ?? 0).toLocaleString()}万円</td>
                 <td>{hqTile?.rivalRank ?? 1}</td>
                 <td>{rivalRent.toLocaleString()}万円</td>
@@ -18435,7 +19086,7 @@ return (
 
     {selectedCompanyDetail && (
       <div className="company-detail-box">
-        <h3>{selectedCompanyDetail === "player" ? "自社詳細" : `${getRivalCompany(selectedCompanyDetail).name} 詳細`}</h3>
+        <h3>{selectedCompanyDetail === "player" ? "自社詳細" : `${getRivalCompanyNameFromTiles(tiles, selectedCompanyDetail)} 詳細`}</h3>
         <button onClick={() => setSelectedCompanyDetail(null)}>詳細を閉じる</button>
         <h4>月次推移</h4>
         <div className="line-chart-box">
@@ -18635,6 +19286,14 @@ const rent = occupiedRooms.reduce(
         BGM OFF
       </button>
 
+      <button onClick={() => setSaveLoadModal("save")}>
+        セーブ
+      </button>
+
+      <button onClick={() => setSaveLoadModal("load")}>
+        ロード
+      </button>
+
       <button onClick={returnToTitleScreen}>
         タイトルメニューへ戻る
       </button>
@@ -18661,6 +19320,76 @@ const rent = occupiedRooms.reduce(
 
     </section>
   </section>
+)}
+
+
+{saveLoadModal && (
+  <div className="popup-log">
+    <div className="popup-log-card" style={{ maxWidth: "min(94vw, 620px)" }}>
+      <h3>{saveLoadModal === "save" ? "セーブ" : "ロード"}</h3>
+      <p style={{ marginTop: 0, opacity: 0.78 }}>
+        {saveLoadModal === "save"
+          ? "保存先スロットを選んでください。既存データがある場合は上書きされます。"
+          : "読み込むセーブデータを選んでください。選択したスロットの内容をこの画面へ読み込みます。"}
+      </p>
+      <div style={{ display: "grid", gap: 10 }}>
+        {saveSlotSummaries.map((slotInfo) => (
+          <div
+            key={slotInfo.slot}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr auto",
+              gap: 10,
+              alignItems: "center",
+              padding: 12,
+              borderRadius: 14,
+              background: "rgba(255,255,255,0.92)",
+              color: "#1d2b22",
+              border: activeSaveSlot === slotInfo.slot ? "2px solid #1d5c3a" : "1px solid rgba(29,92,58,0.18)",
+            }}
+          >
+            <div>
+              <strong>スロット{slotInfo.slot}</strong>
+              {activeSaveSlot === slotInfo.slot ? "（現在）" : ""}
+              <div style={{ fontSize: 13, marginTop: 4 }}>
+                {slotInfo.hasData
+                  ? `${slotInfo.companyName} / ${getGameDate(slotInfo.month).label} / ${Number(slotInfo.money ?? 0).toLocaleString()}万円`
+                  : "空きスロット"}
+              </div>
+              {slotInfo.hasData && (
+                <div style={{ fontSize: 12, opacity: 0.72, marginTop: 2 }}>保存：{slotInfo.savedAtText}</div>
+              )}
+            </div>
+            {saveLoadModal === "save" ? (
+              <button
+                type="button"
+                onClick={() => {
+                  const ok = !slotInfo.hasData || window.confirm(`スロット${slotInfo.slot}に上書き保存しますか？`);
+                  if (!ok) return;
+                  saveCurrentGameToSlot(slotInfo.slot);
+                  setSaveLoadModal(null);
+                }}
+              >
+                保存する
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled={!slotInfo.hasData}
+                onClick={() => loadSaveSlotFromTitle(slotInfo.slot)}
+                style={{ opacity: slotInfo.hasData ? 1 : 0.45, cursor: slotInfo.hasData ? "pointer" : "not-allowed" }}
+              >
+                ロードする
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+      <button type="button" onClick={() => setSaveLoadModal(null)} style={{ marginTop: 14, width: "100%" }}>
+        閉じる
+      </button>
+    </div>
+  </div>
 )}
 
       {activePanel === "log" && (
