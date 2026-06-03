@@ -558,7 +558,7 @@ const BUILDINGS = {
     category: "本社",
     structure: "RC造",
     lifeYears: 47,
-    name: "アパート付きRC造本社",
+    name: "アパート付き本社",
     short: "本A",
     cost: 8000,
     baseRent: 12,
@@ -690,7 +690,7 @@ logistics_center: {
 };
 const HQ_TYPES = {
   normal: {
-    name: "一般本社RC造",
+    name: "本社",
     short: "本",
 
     cost: 3000,
@@ -698,7 +698,7 @@ const HQ_TYPES = {
   },
 
   apartment: {
-    name: "アパート付きRC造本社",
+    name: "アパート付き本社",
     cost: 8000,
     rooms: 4,
     baseRent: 12,
@@ -9057,7 +9057,7 @@ specialNames: [
 }
 ];
 
-const MAX_EMPLOYEES_PER_OFFICE = 4;
+const MAX_EMPLOYEES_PER_OFFICE = 10;
 const BRANCH_OFFICE_COST = 10000;
 const BRANCH_OFFICE_BASE_MONTHS = 6;
 const HQ_ACTION_RANGE = 10;
@@ -9841,6 +9841,19 @@ function calculateYearlyPropertyTax(tile) {
 
   return Math.round(landTax + buildingTax);
 }
+
+function calculateCompanyYearlyPropertyTax(tile) {
+  if (!tile) return 0;
+
+  const landTax = (tile.landPrice ?? 0) * 0.014;
+
+  const buildingTax =
+    tile.building && !tile.buildingMainId
+      ? calculateBuildingValue(tile) * 0.014
+      : 0;
+
+  return Math.round(landTax + buildingTax);
+}
 function getOldBuildingActionChance(tile) {
   if (!tile?.building) return null;
 
@@ -9903,7 +9916,7 @@ function loadSavedGameSafely() {
 export default function App() {
 
   useEffect(() => {
-    document.title = "箱庭不動産経営シミュレーター V103";
+    document.title = "箱庭不動産経営シミュレーター V108";
 
     if (typeof window === "undefined") return;
     if (!("serviceWorker" in navigator)) return;
@@ -10116,6 +10129,10 @@ const [developerCommandInput, setDeveloperCommandInput] = useState("");
 const [playerRankUpResult, setPlayerRankUpResult] = useState(null);
 const [ticketRewardResult, setTicketRewardResult] = useState(null);
 const [selectedCompanyDetail, setSelectedCompanyDetail] = useState(null);
+const [companyEmployeeListModal, setCompanyEmployeeListModal] = useState(null);
+const [companyBuildingListModal, setCompanyBuildingListModal] = useState(null);
+const [companySortKey, setCompanySortKey] = useState("asset");
+const [companySortDirection, setCompanySortDirection] = useState("desc");
 
 const [employeeGachaResult, setEmployeeGachaResult] = useState(null);
 const [selectedEmployeeDetail, setSelectedEmployeeDetail] = useState(null);
@@ -10574,12 +10591,12 @@ const totalMaintenance = useMemo(() => {
     return sum + calculateMonthlyExpenses(tile);
   }, 0);
 
-  const employeePayroll = [...employees, ...employeeStorage].reduce((sum, employee) => {
+  const employeePayroll = employees.reduce((sum, employee) => {
     return sum + (employee.salary ?? 0);
   }, 0);
 
   return buildingMaintenance + employeePayroll;
-}, [playerMainBuildings, employees, employeeStorage]);
+}, [playerMainBuildings, employees]);
 
 const yearlyTax = useMemo(() => {
   return tiles.reduce((sum, tile) => {
@@ -10913,6 +10930,14 @@ const employeeLimit = useMemo(() => {
   return activeOfficeTiles.length * MAX_EMPLOYEES_PER_OFFICE;
 }, [hqPlaced, activeOfficeTiles]);
 
+const nextBranchRequiredEmployeeCount = useMemo(() => {
+  return (branchCount + 1) * 5;
+}, [branchCount]);
+
+const canOpenNextBranchByEmployeeCount = useMemo(() => {
+  return employees.length >= nextBranchRequiredEmployeeCount;
+}, [employees, nextBranchRequiredEmployeeCount]);
+
 const companyActionPower = useMemo(() => {
   if (!hqPlaced) return 0;
 
@@ -10920,10 +10945,10 @@ const companyActionPower = useMemo(() => {
 }, [hqPlaced, activeOfficeTiles]);
 
 const employeeSalaryTotal = useMemo(() => {
-  return [...employees, ...employeeStorage].reduce((sum, employee) => {
+  return employees.reduce((sum, employee) => {
     return sum + (employee.salary ?? 0);
   }, 0);
-}, [employees, employeeStorage]);
+}, [employees]);
 
 const employeeCountText = useMemo(() => {
   return `${employees.length}/${employeeLimit}`;
@@ -10944,7 +10969,7 @@ function getEmployeeSortValue(employee, sortKey) {
   if (sortKey === "management") return employee.management ?? 0;
   if (sortKey === "salary") return employee.salary ?? 0;
   if (sortKey === "special") return getEmployeeSpecialText(employee);
-  if (sortKey === "office") return getOfficeName(employee.officeId ?? null);
+  if (sortKey === "office") return getCompanyEmployeeOfficeName(employee, false);
   return 0;
 }
 
@@ -10983,6 +11008,80 @@ function renderEmployeeSortHeader(label, sortKey) {
       <span>{getSortMark(sortKey)}</span>
     </button>
   );
+}
+
+
+function changeCompanySort(sortKey) {
+  if (companySortKey === sortKey) {
+    setCompanySortDirection((current) => current === "asc" ? "desc" : "asc");
+    return;
+  }
+
+  setCompanySortKey(sortKey);
+  setCompanySortDirection(sortKey === "name" || sortKey === "type" ? "asc" : "desc");
+}
+
+function getCompanySortMark(sortKey) {
+  if (companySortKey !== sortKey) return "▽";
+  return companySortDirection === "asc" ? "▲" : "▼";
+}
+
+function renderCompanySortHeader(label, sortKey) {
+  return (
+    <button
+      type="button"
+      className="table-sort-button"
+      onClick={() => changeCompanySort(sortKey)}
+    >
+      <span>{label}</span>
+      <span>{getCompanySortMark(sortKey)}</span>
+    </button>
+  );
+}
+
+function getCompanySortValue(row, sortKey) {
+  if (sortKey === "type") return row.typeLabel ?? "";
+  if (sortKey === "name") return row.companyName ?? "";
+  if (sortKey === "money") return row.money ?? 0;
+  if (sortKey === "rank") return row.rank ?? 0;
+  if (sortKey === "rent") return row.rent ?? 0;
+  if (sortKey === "maintenance") return row.maintenance ?? 0;
+  if (sortKey === "profit") return row.profit ?? 0;
+  if (sortKey === "ownedTiles") return row.ownedTiles ?? 0;
+  if (sortKey === "offices") return row.offices ?? 0;
+  if (sortKey === "buildings") return row.buildings?.length ?? 0;
+  if (sortKey === "employees") return row.employeeCount ?? 0;
+  if (sortKey === "asset") return (row.money ?? 0) + (row.assetValue ?? 0);
+  return 0;
+}
+
+function sortCompanyRowsForDisplay(rowList) {
+  return [...rowList].sort((a, b) => {
+    const valueA = getCompanySortValue(a, companySortKey);
+    const valueB = getCompanySortValue(b, companySortKey);
+
+    if (typeof valueA === "string" || typeof valueB === "string") {
+      const result = String(valueA).localeCompare(String(valueB), "ja");
+      return companySortDirection === "asc" ? result : -result;
+    }
+
+    const result = (valueA ?? 0) - (valueB ?? 0);
+    return companySortDirection === "asc" ? result : -result;
+  });
+}
+
+function getCompanyEmployeeOfficeName(employee, isStored = false) {
+  if (isStored || employee?.isStoredEmployee) return "社員保管庫";
+  if (employee?.displayOfficeName) return employee.displayOfficeName;
+  if (employee?.companyEmployeeOfficeName) return employee.companyEmployeeOfficeName;
+
+  const officeId = employee?.officeId ?? "hq";
+
+  if (officeId === "hq") return "本社";
+  if (String(officeId).includes("_hq")) return "本社";
+  if (String(officeId).includes("branch")) return "支店";
+
+  return getOfficeName(officeId);
 }
 
 function sortEmployeesForDisplay(employeeList) {
@@ -12489,8 +12588,8 @@ function startBranchPlacement() {
     return;
   }
 
-  if (employees.length < employeeLimit) {
-    alert("現在の社員枠が満員でないと支店は開設できません");
+  if (!canOpenNextBranchByEmployeeCount) {
+    alert(`次の支店開設には、本社・支店に配属中の社員が合計${nextBranchRequiredEmployeeCount}人以上必要です。`);
     return;
   }
 
@@ -12556,6 +12655,11 @@ async function buyLand() {
 
   const plannedMonths = estimateActionMonths(2, actionEmployees, "sales");
   const finalPurchasePrice = calculateActionCost(purchasePrice, actionEmployees, "sales");
+
+  if (finalPurchasePrice > money) {
+    alert(`資金不足のため購入できません。\n\n必要額: ${finalPurchasePrice}万円\n現在資金: ${money}万円`);
+    return;
+  }
 
   const ok = window.confirm(
     `購入交渉を開始しますか？\n\n` +
@@ -12728,8 +12832,8 @@ async function placeBranch(targetTile = selectedTile) {
     return false;
   }
 
-  if (employees.length < employeeLimit) {
-    alert("現在の社員枠が満員でないと支店は開設できません");
+  if (!canOpenNextBranchByEmployeeCount) {
+    alert(`次の支店開設には、本社・支店に配属中の社員が合計${nextBranchRequiredEmployeeCount}人以上必要です。`);
     return false;
   }
 
@@ -13600,6 +13704,7 @@ workingTiles = workingTiles.map((tile) => {
 });
 
 let purchasePaymentTotal = 0;
+const completedPurchaseMainIds = new Set();
 
 workingTiles = workingTiles.map((tile) => {
   if (tile.purchaseStatus !== "purchasing") return tile;
@@ -13619,8 +13724,28 @@ workingTiles = workingTiles.map((tile) => {
   const baseMonths = tile.purchaseBaseMonths ?? 2;
   const plannedMonths = tile.purchasePlannedMonths ?? baseMonths;
   const employeeNames = Array.isArray(tile.purchaseEmployeeNames) ? tile.purchaseEmployeeNames.join("・") : "-";
+  const availableMoneyForPurchase = money - purchasePaymentTotal;
+
+  if (finalPrice > availableMoneyForPurchase) {
+    eventLog.push(
+      `資金不足のため購入できませんでした (${tile.x},${tile.y})。必要:${finalPrice}万円 / 現在資金:${Math.max(0, availableMoneyForPurchase)}万円`
+    );
+
+    return {
+      ...tile,
+      purchaseStatus: null,
+      purchaseMonthsLeft: 0,
+      purchaseBaseMonths: 0,
+      purchasePlannedMonths: 0,
+      purchaseBasePrice: 0,
+      purchaseFinalPrice: 0,
+      purchaseEmployeeIds: [],
+      purchaseEmployeeNames: [],
+    };
+  }
 
   purchasePaymentTotal += finalPrice;
+  completedPurchaseMainIds.add(tile.id);
 
   eventLog.push(
     `土地を購入しました (${tile.x},${tile.y})。期間:${baseMonths}ヶ月→${plannedMonths}ヶ月 / 価格:${basePrice}万円→${finalPrice}万円 / 担当:${employeeNames}`
@@ -13645,6 +13770,25 @@ workingTiles = workingTiles.map((tile) => {
     purchaseEmployeeNames: [],
   };
 });
+
+if (completedPurchaseMainIds.size > 0) {
+  workingTiles = workingTiles.map((tile) => {
+    if (!completedPurchaseMainIds.has(tile.buildingMainId)) return tile;
+
+    return {
+      ...tile,
+      owner: OWNER.PLAYER,
+      purchaseStatus: null,
+      purchaseMonthsLeft: 0,
+      purchaseBaseMonths: 0,
+      purchasePlannedMonths: 0,
+      purchaseBasePrice: 0,
+      purchaseFinalPrice: 0,
+      purchaseEmployeeIds: [],
+      purchaseEmployeeNames: [],
+    };
+  });
+}
 
 
 workingTiles = workingTiles.map((tile) => {
@@ -14521,6 +14665,21 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
   const rivalMonthlyNet = rivalMonthlyRent - rivalMonthlyMaintenance - rivalMonthlyPayroll;
   rivalMoney = Math.max(0, Math.round(rivalMoney + rivalMonthlyNet));
 
+  if (gameDate.month === 6) {
+    const rivalYearlyTax = companyTiles.reduce((sum, tile) => {
+      if (tile.buildingMainId) return sum;
+      if (tile.feature === FEATURE.HQ || tile.feature === FEATURE.BRANCH || tile.building) {
+        return sum + calculateCompanyYearlyPropertyTax(tile);
+      }
+      return sum;
+    }, 0);
+
+    if (rivalYearlyTax > 0) {
+      rivalMoney = Math.max(0, Math.round(rivalMoney - rivalYearlyTax));
+      logs.push(`${company.name}が固定資産税${rivalYearlyTax}万円を支払いました。`);
+    }
+  }
+
   const updateRivalMoney = (tileListForMoney, nextMoney) => {
     return tileListForMoney.map((tile) => {
       if (tile.id !== hqTileForCompany?.id) return tile;
@@ -14559,10 +14718,24 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
     logs.push(`${company.name}が設立6ヶ月の社員チケットを使用し、${newEmployee.name}（${newEmployee.rarity}）を採用しました。`);
   }
 
+  const previousRivalRank = Math.max(1, hqTileForCompany?.rivalRank ?? 1);
   const nextRivalRank = Math.max(
-    hqTileForCompany?.rivalRank ?? 1,
+    previousRivalRank,
     Math.max(1, Math.floor(nextRivalAgeMonths / 12) + 1)
   );
+
+  if (nextRivalRank > previousRivalRank) {
+    const rankUpCount = nextRivalRank - previousRivalRank;
+
+    for (let i = 0; i < rankUpCount; i += 1) {
+      const newEmployee = pickRivalInitialEmployee();
+      rivalEmployees.push({
+        ...newEmployee,
+        officeId: `rival_${companyId}_hq`,
+      });
+      logs.push(`${company.name}がランク${previousRivalRank + i + 1}到達の社員チケットを使用し、${newEmployee.name}（${newEmployee.rarity}）を採用しました。`);
+    }
+  }
 
   nextTiles = updateRivalHq(nextTiles, {
     rivalAgeMonths: nextRivalAgeMonths,
@@ -14571,12 +14744,136 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
     rivalRank: nextRivalRank,
   });
 
+  const refreshCurrentRivalOfficeTiles = () => {
+    return nextTiles.filter((tile) => {
+      return tile.owner === OWNER.RIVAL &&
+        tile.rivalCompanyId === companyId &&
+        (tile.feature === FEATURE.HQ || tile.feature === FEATURE.BRANCH);
+    });
+  };
+
+  const getOfficeIdForRivalOfficeTile = (officeTile) => {
+    if (!officeTile) return `rival_${companyId}_hq`;
+    if (officeTile.rivalOfficeId) return officeTile.rivalOfficeId;
+    if (officeTile.officeId) return officeTile.officeId;
+    return officeTile.feature === FEATURE.HQ ? `rival_${companyId}_hq` : `rival_${companyId}_branch_${officeTile.branchNumber ?? 1}`;
+  };
+
+  const redistributeRivalEmployeesAcrossOffices = (employeeList, officeTileList) => {
+    const sortedOfficeTiles = [...officeTileList].sort((a, b) => {
+      if (a.feature === FEATURE.HQ && b.feature !== FEATURE.HQ) return -1;
+      if (a.feature !== FEATURE.HQ && b.feature === FEATURE.HQ) return 1;
+      return (a.branchNumber ?? 0) - (b.branchNumber ?? 0);
+    });
+
+    if (sortedOfficeTiles.length === 0) return employeeList;
+
+    const officeIds = sortedOfficeTiles.map(getOfficeIdForRivalOfficeTile);
+    const officeCounts = new Map(officeIds.map((officeId) => [officeId, 0]));
+
+    return employeeList.map((employee, index) => {
+      let targetOfficeId = employee.officeId;
+
+      if (!officeIds.includes(targetOfficeId) || (officeCounts.get(targetOfficeId) ?? 0) >= MAX_EMPLOYEES_PER_OFFICE) {
+        targetOfficeId = officeIds.find((officeId) => (officeCounts.get(officeId) ?? 0) < MAX_EMPLOYEES_PER_OFFICE) ?? officeIds[index % officeIds.length];
+      }
+
+      officeCounts.set(targetOfficeId, (officeCounts.get(targetOfficeId) ?? 0) + 1);
+
+      return {
+        ...employee,
+        officeId: targetOfficeId,
+      };
+    });
+  };
+
+  let currentRivalOfficeTiles = refreshCurrentRivalOfficeTiles();
+  rivalEmployees = redistributeRivalEmployeesAcrossOffices(rivalEmployees, currentRivalOfficeTiles);
+  nextTiles = updateRivalHq(nextTiles, { rivalEmployees });
+
   const isInCompanyRange = (tile) => {
-    return officeTilesForCompany.some((officeTile) => {
+    return refreshCurrentRivalOfficeTiles().some((officeTile) => {
       const range = getOfficeActionRange(officeTile);
       return getDistance(tile.x, tile.y, officeTile.x, officeTile.y) <= range;
     });
   };
+
+  const currentRivalBranchCount = currentRivalOfficeTiles.filter((tile) => tile.feature === FEATURE.BRANCH).length;
+  const targetRivalBranchCount = Math.floor(rivalEmployees.length / 5);
+
+  if (
+    currentRivalBranchCount < targetRivalBranchCount &&
+    rivalMoney >= BRANCH_OFFICE_COST
+  ) {
+    let branchCandidates = nextTiles.filter((tile) => {
+      if (tile.terrain !== TERRAIN.PLAIN) return false;
+      if (tile.feature !== FEATURE.NONE) return false;
+      if (tile.building || tile.buildingMainId) return false;
+      if (tile.owner === OWNER.PLAYER || tile.owner === OWNER.PUBLIC || tile.owner === OWNER.RIVAL) return false;
+      if (!isTileNearRoadOrRail(tile, nextTiles)) return false;
+      if (!isInCompanyRange(tile)) return false;
+
+      return currentRivalOfficeTiles.every((officeTile) => {
+        return getDistance(tile.x, tile.y, officeTile.x, officeTile.y) >= OFFICE_MIN_DISTANCE;
+      });
+    });
+
+    if (branchCandidates.length === 0) {
+      branchCandidates = nextTiles.filter((tile) => {
+        if (tile.terrain !== TERRAIN.PLAIN) return false;
+        if (tile.feature !== FEATURE.NONE) return false;
+        if (tile.building || tile.buildingMainId) return false;
+        if (tile.owner === OWNER.PLAYER || tile.owner === OWNER.PUBLIC || tile.owner === OWNER.RIVAL) return false;
+        if (!isTileNearRoadOrRail(tile, nextTiles)) return false;
+
+        const nearestOfficeDistance = currentRivalOfficeTiles.reduce((minDistance, officeTile) => {
+          return Math.min(minDistance, getDistance(tile.x, tile.y, officeTile.x, officeTile.y));
+        }, 999);
+
+        return nearestOfficeDistance >= OFFICE_MIN_DISTANCE && nearestOfficeDistance <= BRANCH_ACTION_RANGE + OFFICE_MIN_DISTANCE;
+      });
+    }
+
+    if (branchCandidates.length > 0) {
+      const branchTarget = branchCandidates[randomInt(0, branchCandidates.length - 1)];
+      const branchNumber = currentRivalBranchCount + 1;
+      const branchOfficeId = `rival_${companyId}_branch_${branchNumber}`;
+      rivalMoney -= BRANCH_OFFICE_COST;
+
+      nextTiles = nextTiles.map((tile) => {
+        if (tile.id !== branchTarget.id) return tile;
+        return {
+          ...tile,
+          owner: OWNER.RIVAL,
+          feature: FEATURE.BRANCH,
+          building: null,
+          buildingMainId: null,
+          rooms: [],
+          rivalCompanyId: companyId,
+          rivalCompanyName: company.name,
+          rivalOfficeId: branchOfficeId,
+          officeId: branchOfficeId,
+          rivalOfficeName: `${company.name} 支店${branchNumber}`,
+          officeRange: BRANCH_ACTION_RANGE,
+          branchNumber,
+        };
+      });
+
+      currentRivalOfficeTiles = refreshCurrentRivalOfficeTiles();
+      rivalEmployees = redistributeRivalEmployeesAcrossOffices(rivalEmployees, currentRivalOfficeTiles);
+      const movedCount = rivalEmployees.filter((employee) => employee.officeId === branchOfficeId).length;
+
+      nextTiles = updateRivalHq(nextTiles, {
+        rivalMoney,
+        rivalEmployees,
+        rivalRank: nextRivalRank,
+        rivalAgeMonths: nextRivalAgeMonths,
+        rivalSixMonthTicketGranted: nextRivalSixMonthTicketGranted,
+      });
+      logs.push(`${company.name}が支店${branchNumber}を開設しました (${branchTarget.x},${branchTarget.y}) / 開設費${BRANCH_OFFICE_COST}万円 / 配属${movedCount}名`);
+      return { tiles: nextTiles, logs };
+    }
+  }
 
   const ownedEmptyTiles = nextTiles.filter((tile) => {
     return tile.owner === OWNER.RIVAL &&
@@ -14793,7 +15090,7 @@ if (gameDate.month === 6) {
   );
 }
 
-const monthlyEmployeeSalary = [...employees, ...employeeStorage].reduce((sum, employee) => {
+const monthlyEmployeeSalary = employees.reduce((sum, employee) => {
   return sum + (employee.salary ?? 0);
 }, 0);
 
@@ -15633,8 +15930,8 @@ function calculateLoanReviewResult(application, currentLoans = loans) {
   const scoreRate = Math.max(0.78, Math.min(1.16, 0.9 + (finalScore - bankDifficulty) * 0.01));
   const salesRate = Math.max(-0.08, Math.min(0.1, (salesAverage - 50) * 0.002));
   const managementRate = Math.max(-0.06, Math.min(0.08, (managementAverage - 50) * 0.0015));
-  const approvalRate = Math.max(0.55, Math.min(1.25, scoreRate + salesRate + managementRate));
-  const approvedAmount = Math.max(100, Math.min(remainingLimit, Math.round(requestedAmount * approvalRate)));
+  const approvalRate = Math.max(0.55, Math.min(1.0, scoreRate + salesRate + managementRate));
+  const approvedAmount = Math.max(100, Math.min(requestedAmount, remainingLimit, Math.round(requestedAmount * approvalRate)));
   const minimumApprovalRatio = bank.id === "nonbank" ? 0.35 : 0.6;
   const approvalRatio = requestedAmount > 0 ? approvedAmount / requestedAmount : 0;
 
@@ -16610,6 +16907,126 @@ return (
         border-color: rgba(255,255,255,0.18) !important;
       }
 
+
+      .employee-salary-note {
+        margin: 6px 0 12px;
+        padding: 8px 10px;
+        border-radius: 12px;
+        background: #fff8e6;
+        border: 1px solid #ead59b;
+        font-weight: 700;
+      }
+
+      .ticket-button-row {
+        align-items: stretch !important;
+      }
+
+      .employee-ticket-button {
+        position: relative !important;
+        overflow: hidden !important;
+        min-height: 54px !important;
+        padding: 10px 18px !important;
+        letter-spacing: 0.04em !important;
+      }
+
+      .employee-ticket-button::before {
+        content: "";
+        position: absolute;
+        inset: -80%;
+        background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,0.75) 50%, transparent 65%);
+        transform: translateX(-55%);
+        animation: ticketShine 2.8s ease-in-out infinite;
+      }
+
+      .normal-ticket-button {
+        border: 2px solid #d7a64a !important;
+        background: linear-gradient(135deg, #fff7d6 0%, #f4c96a 45%, #fff2b3 100%) !important;
+        color: #553500 !important;
+      }
+
+      .premium-ticket-button {
+        border: 2px solid rgba(255,255,255,0.75) !important;
+        background: linear-gradient(120deg, #ff4ecd, #ff9a3d, #fff06a, #3bea7a, #30c4ff, #8d62ff, #ff4ecd) !important;
+        background-size: 400% 400% !important;
+        color: #ffffff !important;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.45) !important;
+        animation: premiumRainbow 3.2s linear infinite;
+      }
+
+      .employee-ticket-button:disabled {
+        animation: none !important;
+        filter: grayscale(0.8);
+        opacity: 0.65;
+      }
+
+      .employee-count-link-button {
+        padding: 5px 10px !important;
+        min-height: 30px !important;
+      }
+
+      .company-employee-list-card,
+      .company-building-list-card {
+        width: min(94vw, 980px) !important;
+        max-height: 88vh;
+        overflow: auto;
+      }
+
+      .company-employee-list-table th,
+      .company-employee-list-table td {
+        white-space: nowrap;
+      }
+
+      .gacha-ticket-animation {
+        position: relative;
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+      }
+
+      .gacha-ticket-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 62px;
+        height: 62px;
+        border-radius: 18px;
+        font-size: 38px;
+        background: linear-gradient(135deg, #fff3b0, #f5bd32);
+        box-shadow: 0 10px 22px rgba(183, 121, 31, 0.28);
+        animation: gachaTicketOpen 0.9s ease-out both;
+      }
+
+      .gacha-ticket-flash {
+        position: absolute;
+        font-size: 44px;
+        animation: gachaFlash 1.2s ease-out both;
+      }
+
+      @keyframes ticketShine {
+        0% { transform: translateX(-60%) rotate(8deg); }
+        55% { transform: translateX(80%) rotate(8deg); }
+        100% { transform: translateX(80%) rotate(8deg); }
+      }
+
+      @keyframes premiumRainbow {
+        0% { background-position: 0% 50%; }
+        100% { background-position: 400% 50%; }
+      }
+
+      @keyframes gachaTicketOpen {
+        0% { transform: scale(0.5) rotate(-14deg); opacity: 0; }
+        55% { transform: scale(1.12) rotate(8deg); opacity: 1; }
+        100% { transform: scale(1) rotate(0deg); opacity: 1; }
+      }
+
+      @keyframes gachaFlash {
+        0% { transform: scale(0.2); opacity: 0; }
+        45% { transform: scale(1.45); opacity: 1; }
+        100% { transform: scale(2.2); opacity: 0; }
+      }
+
       .demo-money-add-button {
         min-width: 64px !important;
         width: auto !important;
@@ -16886,6 +17303,36 @@ return (
         box-shadow: inset 0 0 0 2px rgba(29, 92, 58, 0.35) !important;
       }
 
+      .map-tile.rival-company-a-tile {
+        border-color: rgba(0, 188, 212, 0.95) !important;
+        box-shadow: inset 0 0 0 3px rgba(0, 188, 212, 0.45) !important;
+      }
+
+      .map-tile.rival-company-b-tile {
+        border-color: rgba(34, 197, 94, 0.95) !important;
+        box-shadow: inset 0 0 0 3px rgba(34, 197, 94, 0.45) !important;
+      }
+
+      .map-tile.rival-company-c-tile {
+        border-color: rgba(147, 51, 234, 0.98) !important;
+        box-shadow: inset 0 0 0 3px rgba(147, 51, 234, 0.55) !important;
+      }
+
+      .map-tile.rival-company-a-range-tile {
+        outline: 2px dashed rgba(0, 188, 212, 0.85) !important;
+        outline-offset: -4px !important;
+      }
+
+      .map-tile.rival-company-b-range-tile {
+        outline: 2px dashed rgba(34, 197, 94, 0.85) !important;
+        outline-offset: -4px !important;
+      }
+
+      .map-tile.rival-company-c-range-tile {
+        outline: 2px dashed rgba(147, 51, 234, 0.9) !important;
+        outline-offset: -4px !important;
+      }
+
       .map-tile.pending-build-target {
         outline: 3px solid #22c55e !important;
         outline-offset: -3px !important;
@@ -16962,7 +17409,7 @@ return (
           <div style={{ fontSize: 42, lineHeight: 1, marginBottom: 10 }}>🏘️</div>
           <p style={{ margin: "0 0 6px", letterSpacing: 2, fontSize: 12, opacity: 0.82 }}>NOGUCHI CORPORATION PRESENTS</p>
           <h1 style={{ margin: "0 0 8px", fontSize: 28, lineHeight: 1.25 }}>箱庭不動産経営<br />シミュレーション</h1>
-          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>Version 102</p>
+          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>Version 108</p>
 
           <div
             style={{
@@ -17180,6 +17627,10 @@ return (
 {employeeGachaResult && (
   <div className="popup-log">
     <div className={`popup-log-card employee-gacha-card rarity-${String(employeeGachaResult.rarity || "N").toLowerCase()}`}>
+      <div className="gacha-ticket-animation">
+        <span className="gacha-ticket-icon">🎫</span>
+        <span className="gacha-ticket-flash">✨</span>
+      </div>
       <h2>{employeeGachaResult.ticketType === "premium" ? "プレミアム社員獲得！" : "社員獲得！"}</h2>
       <p className="employee-gacha-rarity">{getRarityLabel(employeeGachaResult.rarity)}</p>
       <h3>{employeeGachaResult.name}</h3>
@@ -17275,13 +17726,142 @@ return (
   </div>
 )}
 
+{companyEmployeeListModal && (
+  <div className="popup-log">
+    <div className="popup-log-card company-employee-list-card">
+      <h2>在籍社員一覧</h2>
+      <h3>{companyEmployeeListModal.companyName}</h3>
+      {(companyEmployeeListModal.employees ?? []).length === 0 ? (
+        <p>在籍社員はいません。</p>
+      ) : (
+        <div className="employee-table-scroll">
+          <table className="employee-detail-table company-employee-list-table">
+            <thead>
+              <tr>
+                <th>{renderEmployeeSortHeader("名前", "name")}</th>
+                <th>{renderEmployeeSortHeader("所属", "office")}</th>
+                <th>{renderEmployeeSortHeader("レア", "rarity")}</th>
+                <th>{renderEmployeeSortHeader("Lv", "level")}</th>
+                <th>{renderEmployeeSortHeader("統率", "leadership")}</th>
+                <th>{renderEmployeeSortHeader("営業", "sales")}</th>
+                <th>{renderEmployeeSortHeader("建築", "construction")}</th>
+                <th>{renderEmployeeSortHeader("管理", "management")}</th>
+                <th>{renderEmployeeSortHeader("月給", "salary")}</th>
+                <th>{renderEmployeeSortHeader("特殊能力", "special")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortEmployeesForDisplay(companyEmployeeListModal.employees ?? []).map((employee) => {
+                const isStored = employee.isStoredEmployee === true || (companyEmployeeListModal.storageEmployeeIds ?? []).includes(employee.id);
+                return (
+                  <tr key={employee.id}>
+                    <td>
+                      <button className="employee-name-button" onClick={() => setSelectedEmployeeDetail(employee)}>
+                        {employee.name}
+                      </button>
+                    </td>
+                    <td>{getCompanyEmployeeOfficeName(employee, isStored)}</td>
+                    <td>{getRarityLabel(employee.rarity)}</td>
+                    <td>{employee.level ?? 1}</td>
+                    <td>{employee.leadership ?? 0}</td>
+                    <td>{employee.sales ?? 0}</td>
+                    <td>{employee.construction ?? 0}</td>
+                    <td>{employee.management ?? 0}</td>
+                    <td>{isStored ? "給与なし" : renderEmployeeSalaryValue(employee)}</td>
+                    <td>{getEmployeeSpecialText(employee)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <button onClick={() => setCompanyEmployeeListModal(null)}>閉じる</button>
+    </div>
+  </div>
+)}
+
+{companyBuildingListModal && (
+  <div className="popup-log">
+    <div className="popup-log-card company-building-list-card">
+      <h2>所有建物一覧</h2>
+      <h3>{companyBuildingListModal.companyName}</h3>
+      {(companyBuildingListModal.buildings ?? []).length === 0 ? (
+        <p>所有建物はありません。</p>
+      ) : (
+        <div className="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>座標</th>
+                <th>建物</th>
+                <th>部屋数</th>
+                <th>入居数</th>
+                <th>入居人数</th>
+                <th>稼働率</th>
+                <th>月家賃</th>
+                <th>月維持費</th>
+                <th>固定資産税/月割</th>
+                <th>月利益</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(companyBuildingListModal.buildings ?? []).map((tile) => {
+                const building = tile.building
+                  ? BUILDINGS[tile.building]
+                  : { name: tile.hqName || tile.rivalOfficeName || "本社", rooms: 0, cost: tile.hqCost || 0 };
+                const occupiedRooms = (tile.rooms ?? []).filter((room) => room.occupied);
+                const people = occupiedRooms.reduce((sum, room) => sum + (room.people ?? 0), 0);
+                const rent = occupiedRooms.reduce((sum, room) => sum + (room.rent ?? 0), 0);
+                const monthlyExpense = tile.building ? calculateMonthlyExpenses(tile) : 0;
+                const yearlyPropertyTax = tile.owner === OWNER.PLAYER
+                  ? calculateYearlyPropertyTax(tile)
+                  : calculateCompanyYearlyPropertyTax(tile);
+                const monthlyTax = Math.round(yearlyPropertyTax / 12);
+                const profit = rent - monthlyExpense - monthlyTax;
+                const rate = (tile.rooms ?? []).length
+                  ? Math.round((occupiedRooms.length / (tile.rooms ?? []).length) * 100)
+                  : 0;
+
+                return (
+                  <tr
+                    key={tile.id}
+                    className="clickable-row"
+                    onClick={() => {
+                      selectBuildingFromList(tile.id);
+                      setCompanyBuildingListModal(null);
+                      setActivePanel("land");
+                    }}
+                  >
+                    <td>{tile.x},{tile.y}</td>
+                    <td>{building?.name ?? "建物"}</td>
+                    <td>{(tile.rooms ?? []).length}</td>
+                    <td>{occupiedRooms.length}</td>
+                    <td>{people}</td>
+                    <td>{rate}%</td>
+                    <td>{rent}万円</td>
+                    <td>{monthlyExpense}万円</td>
+                    <td>{monthlyTax}万円</td>
+                    <td>{profit}万円</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <button onClick={() => setCompanyBuildingListModal(null)}>閉じる</button>
+    </div>
+  </div>
+)}
+
 {selectedEmployeeDetail && (
   <div className="popup-log">
     <div className="popup-log-card employee-detail-card">
       <h2>社員詳細</h2>
       <h3>{selectedEmployeeDetail.name}</h3>
       <p>レアリティ：{getRarityLabel(selectedEmployeeDetail.rarity)}</p>
-      <p>所属：{selectedEmployeeDetail.officeId ? getOfficeName(selectedEmployeeDetail.officeId) : "社員保管庫"}</p>
+      <p>所属：{getCompanyEmployeeOfficeName(selectedEmployeeDetail, selectedEmployeeDetail.isStoredEmployee === true)}</p>
       <p>Lv {selectedEmployeeDetail.level ?? 1} / EXP {selectedEmployeeDetail.exp ?? 0} / 次Lv必要 {getEmployeeRequiredExp(selectedEmployeeDetail.level ?? 1)} / 残り {Math.max(0, getEmployeeRequiredExp(selectedEmployeeDetail.level ?? 1) - (selectedEmployeeDetail.exp ?? 0))}</p>
       <table className="employee-detail-table">
         <tbody>
@@ -17394,7 +17974,7 @@ return (
 
       <header className="top-header compact-top-header">
         <div className="top-title-wrap">
-          <h1 className="v73-title">箱庭不動産経営シミュレーター V103{isDemoMode ? "（デモ版）" : ""}</h1>
+          <h1 className="v73-title">箱庭不動産経営シミュレーター V108{isDemoMode ? "（デモ版）" : ""}</h1>
         </div>
       </header>
 
@@ -17875,8 +18455,6 @@ return (
     )}
 {activePanel === "hq" && (
   <div className="detail-card">
-    <h2>本社設置</h2>
-
     <p>最初に本社を設置してください。</p>
 
     {selectedTile ? (
@@ -17897,14 +18475,14 @@ return (
 <p>入居率50%UP</p>
 
     <button onClick={() => placeHQ("normal")}>
-      一般本社RC造を設置
+      本社を設置
       {selectedTile
         ? `（合計 ${selectedTile.landPrice + 3000}万円）`
         : "（建設費3000万円）"}
     </button>
 
     <button onClick={() => placeHQ("apartment")}>
-      アパート付きRC造本社を設置
+      アパート付き本社を設置
       {selectedTile
         ? `（合計 ${selectedTile.landPrice + 8000}万円）`
         : "（建設費8000万円・4戸付き）"}
@@ -18060,7 +18638,9 @@ return (
 </p>
 
 <p>
-  年間固定資産税 {calculateYearlyPropertyTax(selectedMainTile)}万円
+  年間固定資産税 {selectedMainTile.owner === OWNER.PLAYER
+    ? calculateYearlyPropertyTax(selectedMainTile)
+    : calculateCompanyYearlyPropertyTax(selectedMainTile)}万円
 </p>
 
 <p>
@@ -18177,9 +18757,11 @@ return (
     <p>
       配属社員: {employeeCountText}人 / 保有社員: {ownedEmployeeCount}人 / 待機社員: {employeeStorage.length}人 / 月給合計: {employeeSalaryTotal}万円 / 社員チケット: {employeeTickets}枚 / プレミアム: {premiumEmployeeTickets}枚
     </p>
+    <p className="employee-salary-note">※月給が発生するのは本社・支店に配属中の社員だけです。社員保管庫の待機社員は給与なしです。</p>
 
-    <div className="button-row">
+    <div className="button-row ticket-button-row">
       <button
+        className="employee-ticket-button normal-ticket-button"
         disabled={employeeTickets < 1}
         onClick={recruitEmployees}
       >
@@ -18195,6 +18777,7 @@ return (
       )}
 
       <button
+        className="employee-ticket-button premium-ticket-button"
         disabled={premiumEmployeeTickets < 1}
         onClick={recruitPremiumEmployees}
       >
@@ -18516,9 +19099,9 @@ return (
           >
             <strong>支店</strong>
             <span>建築費: 1億円</span>
-            <span>社員上限: +4人</span>
+            <span>社員上限: +10人</span>
             <span>営業範囲: 10マス</span>
-            <span>条件: 現在の社員枠が満員</span>
+            <span>条件: 次の支店数 × 5人以上の社員が配属中</span>
             <span>条件: 本社・他支店から7マス以上離す</span>
             <span>工期: 6ヶ月</span>
           </button>
@@ -19022,64 +19605,152 @@ return (
         <thead>
           <tr>
             <th>詳細</th>
-            <th>区分</th>
-            <th>会社名</th>
-            <th>現金</th>
-            <th>ランク</th>
-            <th>月家賃</th>
-            <th>月維持費</th>
-            <th>月利益</th>
-            <th>所有マス</th>
-            <th>本社・支店</th>
-            <th>建物数</th>
-            <th>社員数</th>
+            <th>{renderCompanySortHeader("区分", "type")}</th>
+            <th>{renderCompanySortHeader("会社名", "name")}</th>
+            <th>{renderCompanySortHeader("現金", "money")}</th>
+            <th>{renderCompanySortHeader("ランク", "rank")}</th>
+            <th>{renderCompanySortHeader("月家賃", "rent")}</th>
+            <th>{renderCompanySortHeader("月維持費", "maintenance")}</th>
+            <th>{renderCompanySortHeader("月利益", "profit")}</th>
+            <th>{renderCompanySortHeader("所有マス", "ownedTiles")}</th>
+            <th>{renderCompanySortHeader("本社・支店", "offices")}</th>
+            <th>{renderCompanySortHeader("建物数", "buildings")}</th>
+            <th>{renderCompanySortHeader("社員数", "employees")}</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><button onClick={() => setSelectedCompanyDetail("player")}>表示</button></td>
-            <td>自社</td>
-            <td>{playerCompanyName || DEFAULT_COMPANY_NAME}</td>
-            <td>{money.toLocaleString()}万円</td>
-            <td>{playerRank}</td>
-            <td>{totalRent.toLocaleString()}万円</td>
-            <td>{totalMaintenance.toLocaleString()}万円</td>
-            <td>{monthlyProfit.toLocaleString()}万円</td>
-            <td>{tiles.filter((tile) => tile.owner === OWNER.PLAYER).length}</td>
-            <td>{officeTiles.length}</td>
-            <td>{playerMainBuildings.filter((tile) => tile.building).length}</td>
-            <td>{employees.length}人 / 保管{employeeStorage.length}人</td>
-          </tr>
-          {Object.values(RIVAL_COMPANIES).map((company) => {
-            const companyTiles = tiles.filter((tile) => tile.owner === OWNER.RIVAL && tile.rivalCompanyId === company.id);
-            if (companyTiles.length === 0) return null;
-            const hqTile = companyTiles.find((tile) => tile.feature === FEATURE.HQ);
-            const mainBuildings = companyTiles.filter((tile) => tile.building && !tile.buildingMainId);
-            const rivalRent = mainBuildings.reduce((sum, tile) => {
-              return sum + (tile.rooms ?? []).reduce((roomSum, room) => roomSum + (room.occupied ? room.rent ?? 0 : 0), 0);
-            }, 0);
-            const rivalMaintenance = mainBuildings.reduce((sum, tile) => sum + calculateMonthlyExpenses(tile), 0) + (hqTile?.rivalEmployees ?? []).reduce((sum, employee) => sum + (employee.salary ?? 0), 0);
-            const rivalProfit = rivalRent - rivalMaintenance;
-            const officeCount = companyTiles.filter((tile) => tile.feature === FEATURE.HQ || tile.feature === FEATURE.BRANCH).length;
-            const employeeCount = (hqTile?.rivalEmployees ?? []).length;
+          {(() => {
+            const playerBuildings = playerMainBuildings.filter((tile) => tile.building);
+            const companyRows = [
+              {
+                id: "player",
+                typeLabel: "自社",
+                companyName: playerCompanyName || DEFAULT_COMPANY_NAME,
+                money,
+                rank: playerRank,
+                rent: totalRent,
+                maintenance: totalMaintenance,
+                profit: monthlyProfit,
+                ownedTiles: tiles.filter((tile) => tile.owner === OWNER.PLAYER).length,
+                offices: officeTiles.length,
+                buildings: playerBuildings,
+                employeeCount: employees.length,
+                employeeText: `${employees.length}人 / 保管${employeeStorage.length}人`,
+                assetValue,
+                employeesForModal: [
+                  ...employees.map((employee) => ({
+                    ...employee,
+                    displayOfficeName: getCompanyEmployeeOfficeName(employee, false),
+                    isStoredEmployee: false,
+                  })),
+                  ...employeeStorage.map((employee) => ({
+                    ...employee,
+                    displayOfficeName: "社員保管庫",
+                    isStoredEmployee: true,
+                  })),
+                ],
+                storageEmployeeIds: employeeStorage.map((employee) => employee.id),
+              },
+            ];
 
-            return (
-              <tr key={company.id}>
-                <td><button onClick={() => setSelectedCompanyDetail(company.id)}>表示</button></td>
-                <td>ライバル</td>
-                <td>{hqTile?.rivalCompanyName ?? company.name}</td>
-                <td>{(hqTile?.rivalMoney ?? company.initialMoney ?? 0).toLocaleString()}万円</td>
-                <td>{hqTile?.rivalRank ?? 1}</td>
-                <td>{rivalRent.toLocaleString()}万円</td>
-                <td>{rivalMaintenance.toLocaleString()}万円</td>
-                <td>{rivalProfit.toLocaleString()}万円</td>
-                <td>{companyTiles.length}</td>
-                <td>{officeCount}</td>
-                <td>{mainBuildings.length}</td>
-                <td>{employeeCount}人</td>
+            Object.values(RIVAL_COMPANIES).forEach((company) => {
+              const companyTiles = tiles.filter((tile) => tile.owner === OWNER.RIVAL && tile.rivalCompanyId === company.id);
+              if (companyTiles.length === 0) return;
+
+              const hqTile = companyTiles.find((tile) => tile.feature === FEATURE.HQ);
+              const rivalOfficeTiles = companyTiles.filter((tile) => tile.feature === FEATURE.HQ || tile.feature === FEATURE.BRANCH);
+              const getRivalEmployeeOfficeName = (employee) => {
+                const officeId = employee?.officeId ?? "";
+
+                if (String(officeId).includes("hq")) {
+                  return hqTile?.rivalOfficeName ?? "本社";
+                }
+
+                const matchedOffice = rivalOfficeTiles.find((officeTile) => {
+                  return officeTile.rivalOfficeId === officeId || officeTile.officeId === officeId;
+                });
+
+                if (matchedOffice) {
+                  return matchedOffice.rivalOfficeName ?? matchedOffice.officeName ?? "支店";
+                }
+
+                return officeId ? "支店" : "本社";
+              };
+              const rivalEmployeesForDisplay = (hqTile?.rivalEmployees ?? []).map((employee) => ({
+                ...employee,
+                displayOfficeName: getRivalEmployeeOfficeName(employee),
+                isStoredEmployee: false,
+              }));
+              const mainBuildings = companyTiles.filter((tile) => tile.building && !tile.buildingMainId);
+              const rivalRent = mainBuildings.reduce((sum, tile) => {
+                return sum + (tile.rooms ?? []).reduce((roomSum, room) => roomSum + (room.occupied ? room.rent ?? 0 : 0), 0);
+              }, 0);
+              const rivalPayroll = (hqTile?.rivalEmployees ?? []).reduce((sum, employee) => sum + (employee.salary ?? 0), 0);
+              const rivalMaintenance = mainBuildings.reduce((sum, tile) => sum + calculateMonthlyExpenses(tile), 0) + rivalPayroll;
+              const rivalProfit = rivalRent - rivalMaintenance;
+              const rivalAssetValue = companyTiles.reduce((sum, tile) => {
+                if (tile.buildingMainId) return sum;
+                return sum + (tile.landPrice ?? 0) + (tile.building ? calculateBuildingValue(tile) : 0);
+              }, 0);
+
+              companyRows.push({
+                id: company.id,
+                typeLabel: "ライバル",
+                companyName: hqTile?.rivalCompanyName ?? company.name,
+                money: hqTile?.rivalMoney ?? company.initialMoney ?? 0,
+                rank: hqTile?.rivalRank ?? 1,
+                rent: rivalRent,
+                maintenance: rivalMaintenance,
+                profit: rivalProfit,
+                ownedTiles: companyTiles.length,
+                offices: rivalOfficeTiles.length,
+                buildings: mainBuildings,
+                employeeCount: rivalEmployeesForDisplay.length,
+                employeeText: `${rivalEmployeesForDisplay.length}人`,
+                assetValue: rivalAssetValue,
+                employeesForModal: rivalEmployeesForDisplay,
+                storageEmployeeIds: [],
+              });
+            });
+
+            return sortCompanyRowsForDisplay(companyRows).map((row) => (
+              <tr key={row.id}>
+                <td><button onClick={() => setSelectedCompanyDetail(row.id)}>表示</button></td>
+                <td>{row.typeLabel}</td>
+                <td>{row.companyName}</td>
+                <td>{row.money.toLocaleString()}万円</td>
+                <td>{row.rank}</td>
+                <td>{row.rent.toLocaleString()}万円</td>
+                <td>{row.maintenance.toLocaleString()}万円</td>
+                <td>{row.profit.toLocaleString()}万円</td>
+                <td>{row.ownedTiles}</td>
+                <td>{row.offices}</td>
+                <td>
+                  <button
+                    className="employee-count-link-button"
+                    onClick={() => setCompanyBuildingListModal({
+                      companyName: row.companyName,
+                      buildings: row.buildings,
+                    })}
+                  >
+                    {row.buildings.length}棟
+                  </button>
+                </td>
+                <td>
+                  <button
+                    className="employee-count-link-button"
+                    onClick={() => setCompanyEmployeeListModal({
+                      companyName: row.companyName,
+                      employees: row.employeesForModal,
+                      storageEmployeeIds: row.storageEmployeeIds,
+                    })}
+                  >
+                    {row.employeeText}
+                  </button>
+                </td>
               </tr>
-            );
-          })}
+            ));
+          })()}
         </tbody>
       </table>
     </div>
@@ -19208,7 +19879,7 @@ return (
     tile.building
       ? BUILDINGS[tile.building]
       : {
-          name: tile.hqName || "一般本社",
+          name: tile.hqName || "本社",
           rooms: 0,
           cost: tile.hqCost || 0,
         };
