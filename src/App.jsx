@@ -9058,11 +9058,13 @@ specialNames: [
 ];
 
 const MAX_EMPLOYEES_PER_OFFICE = 10;
+const EMPLOYEE_RECRUITMENT_ENVELOPE_COUNT = 5;
+const EMPLOYEE_AWAKENING_MAX = 5;
 const BRANCH_OFFICE_COST = 10000;
 const BRANCH_OFFICE_BASE_MONTHS = 6;
 const HQ_ACTION_RANGE = 10;
 const BRANCH_ACTION_RANGE = 10;
-const OFFICE_MIN_DISTANCE = 7;
+const OFFICE_MIN_DISTANCE = 0;
 
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -9916,7 +9918,7 @@ function loadSavedGameSafely() {
 export default function App() {
 
   useEffect(() => {
-    document.title = "箱庭不動産経営シミュレーター V108";
+    document.title = "箱庭不動産経営シミュレーター V109";
 
     if (typeof window === "undefined") return;
     if (!("serviceWorker" in navigator)) return;
@@ -10135,6 +10137,7 @@ const [companySortKey, setCompanySortKey] = useState("asset");
 const [companySortDirection, setCompanySortDirection] = useState("desc");
 
 const [employeeGachaResult, setEmployeeGachaResult] = useState(null);
+const [employeeRecruitmentOffer, setEmployeeRecruitmentOffer] = useState(null);
 const [selectedEmployeeDetail, setSelectedEmployeeDetail] = useState(null);
 const [actionEmployeeRequest, setActionEmployeeRequest] = useState(null);
 const [actionEmployeeSelectionIds, setActionEmployeeSelectionIds] = useState([]);
@@ -11643,12 +11646,10 @@ function drawPremiumRecruitRarity() {
 }
 
 function pickRecruitEmployee(availableEmployees, pickedEmployees, premiumOnly = false) {
-  const pickedIds = pickedEmployees.map((employee) => employee.id);
-
   for (let attempt = 0; attempt < 20; attempt++) {
     const rarity = premiumOnly ? drawPremiumRecruitRarity() : drawRecruitRarity();
     const sameRarityEmployees = availableEmployees.filter((employee) => {
-      return employee.rarity === rarity && !pickedIds.includes(employee.id);
+      return employee.rarity === rarity;
     });
 
     if (sameRarityEmployees.length > 0) {
@@ -11657,7 +11658,6 @@ function pickRecruitEmployee(availableEmployees, pickedEmployees, premiumOnly = 
   }
 
   const fallbackEmployees = availableEmployees.filter((employee) => {
-    if (pickedIds.includes(employee.id)) return false;
     if (premiumOnly) return ["SR", "SSR", "UR"].includes(employee.rarity);
     return true;
   });
@@ -11853,6 +11853,7 @@ function normalizeEmployeeGrowthBase(employee) {
     ...employee,
     level: employee.level ?? 1,
     exp: employee.exp ?? 0,
+    awakening: Math.max(0, Math.min(EMPLOYEE_AWAKENING_MAX, Math.round(employee.awakening ?? 0))),
     baseLeadership: employee.baseLeadership ?? employee.leadership ?? 0,
     baseSales: employee.baseSales ?? employee.sales ?? 0,
     baseConstruction: employee.baseConstruction ?? employee.construction ?? 0,
@@ -12106,6 +12107,24 @@ function getRarityLabel(rarity) {
   return rarity;
 }
 
+function getEmployeeRarityStars(rarity) {
+  if (rarity === "N") return 1;
+  if (rarity === "R") return 2;
+  if (rarity === "HR") return 3;
+  if (rarity === "SR") return 4;
+  if (["SSR", "UR", "社長"].includes(rarity)) return 5;
+
+  return 1;
+}
+
+function renderEmployeeRarityStars(rarity) {
+  const starCount = getEmployeeRarityStars(rarity);
+
+  return Array.from({ length: 5 }).map((_, index) => (
+    <span key={index} className={index < starCount ? "employee-star filled" : "employee-star empty"}>★</span>
+  ));
+}
+
 function getAvailableActionEmployees(options = {}) {
   const reachableOfficeIds = options.targetTile
     ? getReachableOfficeIdsForTile(options.targetTile)
@@ -12281,14 +12300,58 @@ function grantEmployeeExp(employeeId, gainedExp, reason) {
 }
 
 function recruitEmployees() {
-  recruitEmployeeByTicket("normal");
+  startEmployeeRecruitmentByTicket("normal");
 }
 
 function recruitPremiumEmployees() {
-  recruitEmployeeByTicket("premium");
+  startEmployeeRecruitmentByTicket("premium");
 }
 
-function recruitEmployeeByTicket(ticketType) {
+function getRecruitEnvelopeType(rarity) {
+  if (["SSR", "UR"].includes(rarity)) return "black";
+  if (rarity === "SR") return "brown";
+  return "white";
+}
+
+function getRecruitEnvelopeLabel(envelopeType) {
+  if (envelopeType === "black") return "黒封筒";
+  if (envelopeType === "brown") return "茶封筒";
+  return "白封筒";
+}
+
+function createRecruitmentApplicants(ticketType) {
+  const isPremium = ticketType === "premium";
+  const availableEmployees = EMPLOYEE_POOL.filter((employee) => {
+    if (isPremium) return ["SR", "SSR", "UR"].includes(employee.rarity);
+    return true;
+  });
+
+  const pickedEmployees = [];
+
+  for (let i = 0; i < EMPLOYEE_RECRUITMENT_ENVELOPE_COUNT; i++) {
+    const pickedEmployee = pickRecruitEmployee(availableEmployees, pickedEmployees, isPremium);
+    if (pickedEmployee) {
+      pickedEmployees.push(pickedEmployee);
+    }
+  }
+
+  return pickedEmployees.map((employee, index) => {
+    const normalizedEmployee = normalizeEmployeeGrowthBase({
+      ...employee,
+      officeId: null,
+    });
+    const envelopeType = getRecruitEnvelopeType(normalizedEmployee.rarity);
+
+    return {
+      ...normalizedEmployee,
+      envelopeId: `${ticketType}-${Date.now()}-${index}-${normalizedEmployee.id}`,
+      envelopeType,
+      opened: false,
+    };
+  });
+}
+
+function startEmployeeRecruitmentByTicket(ticketType) {
   if (!hqPlaced) {
     alert("先に本社を設置してください");
     return;
@@ -12297,42 +12360,21 @@ function recruitEmployeeByTicket(ticketType) {
   const isPremium = ticketType === "premium";
 
   if (!isPremium && employeeTickets < 1) {
-    alert("社員チケットがありません。社員獲得には社員チケット1枚が必要です。");
+    alert("社員チケットがありません。社員募集には社員チケット1枚が必要です。");
     return;
   }
 
   if (isPremium && premiumEmployeeTickets < 1) {
-    alert("社員プレミアムチケットがありません。SR以上確定ガチャにはプレミアムチケット1枚が必要です。");
+    alert("社員プレミアムチケットがありません。SR以上確定の社員募集にはプレミアムチケット1枚が必要です。");
     return;
   }
 
-  const ownedIds = [
-    ...employees.map((employee) => employee.id),
-    ...employeeStorage.map((employee) => employee.id),
-  ];
+  const applicants = createRecruitmentApplicants(ticketType);
 
-  const availableEmployees = EMPLOYEE_POOL.filter((employee) => {
-    if (ownedIds.includes(employee.id)) return false;
-    if (isPremium) return ["SR", "SSR", "UR"].includes(employee.rarity);
-    return true;
-  });
-
-  if (availableEmployees.length === 0) {
-    alert(isPremium ? "SR以上の獲得可能社員がもう残っていません" : "獲得できる社員がもう残っていません");
+  if (applicants.length === 0) {
+    alert("応募者を生成できませんでした");
     return;
   }
-
-  const acquiredEmployee = pickRecruitEmployee(availableEmployees, [], isPremium);
-
-  if (!acquiredEmployee) {
-    alert("社員の獲得に失敗しました");
-    return;
-  }
-
-  const storedEmployee = normalizeEmployeeGrowthBase({
-    ...acquiredEmployee,
-    officeId: null,
-  });
 
   if (isPremium) {
     setPremiumEmployeeTickets(premiumEmployeeTickets - 1);
@@ -12341,18 +12383,187 @@ function recruitEmployeeByTicket(ticketType) {
   }
 
   setEmployeeCandidates([]);
+  setEmployeeGachaResult(null);
+  setEmployeeRecruitmentOffer({
+    ticketType,
+    applicants,
+    selectedEnvelopeId: null,
+  });
+
+  setLog(`${isPremium ? "社員プレミアムチケット" : "社員チケット"}1枚を使い、履歴書が${applicants.length}枚届きました。封筒を開封して1人を採用してください。`);
+}
+
+function openRecruitEnvelope(envelopeId) {
+  setEmployeeRecruitmentOffer((currentOffer) => {
+    if (!currentOffer) return currentOffer;
+
+    return {
+      ...currentOffer,
+      selectedEnvelopeId: envelopeId,
+      applicants: currentOffer.applicants.map((applicant) => {
+        if (applicant.envelopeId !== envelopeId) return applicant;
+        return {
+          ...applicant,
+          opened: true,
+        };
+      }),
+    };
+  });
+}
+
+function cancelEmployeeRecruitmentOffer() {
+  const ok = window.confirm(
+    "今回届いた履歴書を閉じますか？\n\n社員チケットは使用済みのため戻りません。"
+  );
+
+  if (!ok) return;
+
+  setEmployeeRecruitmentOffer(null);
+  setLog("社員募集を終了しました。今回は採用を見送りました。");
+}
+
+function findOwnedEmployeeById(employeeId) {
+  const assignedEmployee = employees.find((employee) => employee.id === employeeId);
+  if (assignedEmployee) return { employee: assignedEmployee, location: "assigned" };
+
+  const storedEmployee = employeeStorage.find((employee) => employee.id === employeeId);
+  if (storedEmployee) return { employee: storedEmployee, location: "storage" };
+
+  return null;
+}
+
+function awakenEmployee(employee) {
+  const normalizedEmployee = normalizeEmployeeGrowthBase(employee);
+  const currentAwakening = Math.max(0, Math.round(normalizedEmployee.awakening ?? 0));
+
+  if (currentAwakening >= EMPLOYEE_AWAKENING_MAX) {
+    const levelUpResult = applyEmployeeLevelUps(normalizedEmployee, 500);
+    return {
+      employee: levelUpResult.employee,
+      wasMaxAwakening: true,
+      statMessages: ["覚醒上限のため研修EXP+500"],
+      beforeAwakening: currentAwakening,
+      afterAwakening: currentAwakening,
+    };
+  }
+
+  const statKeys = [
+    { key: "leadership", label: "統率" },
+    { key: "sales", label: "営業" },
+    { key: "construction", label: "建築" },
+    { key: "management", label: "管理" },
+  ];
+  const statMessages = [];
+  let updatedEmployee = {
+    ...normalizedEmployee,
+    awakening: currentAwakening + 1,
+  };
+
+  statKeys.forEach((stat) => {
+    const currentValue = updatedEmployee[stat.key] ?? 0;
+    const increase = Math.max(1, Math.ceil(currentValue * 0.1));
+    updatedEmployee = {
+      ...updatedEmployee,
+      [stat.key]: currentValue + increase,
+    };
+    statMessages.push(`${stat.label}+${increase}`);
+  });
+
+  return {
+    employee: updatedEmployee,
+    wasMaxAwakening: false,
+    statMessages,
+    beforeAwakening: currentAwakening,
+    afterAwakening: currentAwakening + 1,
+  };
+}
+
+function confirmRecruitApplicant(applicant) {
+  if (!employeeRecruitmentOffer) return;
+
+  if (!applicant.opened) {
+    alert("先に封筒を開封してください。");
+    return;
+  }
+
+  const ownedEmployeeInfo = findOwnedEmployeeById(applicant.id);
+
+  if (ownedEmployeeInfo) {
+    const awakeningPreview = awakenEmployee(ownedEmployeeInfo.employee);
+    const ok = window.confirm(
+      `${applicant.name}はすでに在籍・保管中です。\n\n` +
+        `同じ社員を採用扱いにして覚醒しますか？\n` +
+        `覚醒: +${awakeningPreview.beforeAwakening} → +${awakeningPreview.afterAwakening}\n` +
+        `${awakeningPreview.statMessages.join(" / ")}`
+    );
+
+    if (!ok) return;
+
+    if (ownedEmployeeInfo.location === "assigned") {
+      setEmployees((currentEmployees) => {
+        return currentEmployees.map((employee) => {
+          if (employee.id !== applicant.id) return employee;
+          return awakeningPreview.employee;
+        });
+      });
+    } else {
+      setEmployeeStorage((currentStorage) => {
+        return currentStorage.map((employee) => {
+          if (employee.id !== applicant.id) return employee;
+          return awakeningPreview.employee;
+        });
+      });
+    }
+
+    setEmployeeRecruitmentOffer(null);
+    setEmployeeGachaResult({
+      ...awakeningPreview.employee,
+      ticketType: employeeRecruitmentOffer.ticketType,
+      awakened: true,
+      wasMaxAwakening: awakeningPreview.wasMaxAwakening,
+      beforeAwakening: awakeningPreview.beforeAwakening,
+      afterAwakening: awakeningPreview.afterAwakening,
+      awakeningMessages: awakeningPreview.statMessages,
+    });
+    setLog(
+      `${applicant.name}がダブりました。覚醒+${awakeningPreview.afterAwakening}になりました。${awakeningPreview.statMessages.join(" / ")}`
+    );
+    return;
+  }
+
+  const ok = window.confirm(
+    `${applicant.name}を採用しますか？\n\n` +
+      `レアリティ: ${applicant.rarity}\n` +
+      `統率: ${applicant.leadership}\n` +
+      `営業: ${applicant.sales}\n` +
+      `建築: ${applicant.construction}\n` +
+      `管理: ${applicant.management}\n` +
+      `月給: ${applicant.salary}万円\n` +
+      `特殊能力: ${getEmployeeSpecialText(applicant)}\n\n` +
+      `残りの履歴書4枚とは縁がなかったことになります。`
+  );
+
+  if (!ok) return;
+
+  const storedEmployee = normalizeEmployeeGrowthBase({
+    ...applicant,
+    envelopeId: undefined,
+    envelopeType: undefined,
+    opened: undefined,
+    officeId: null,
+  });
+
   setEmployeeStorage([
     ...employeeStorage,
     storedEmployee,
   ]);
+  setEmployeeRecruitmentOffer(null);
   setEmployeeGachaResult({
     ...storedEmployee,
-    ticketType: isPremium ? "premium" : "normal",
+    ticketType: employeeRecruitmentOffer.ticketType,
   });
 
-  setLog(
-    `${isPremium ? "社員プレミアムチケット" : "社員チケット"}1枚を使い、${acquiredEmployee.name}（${acquiredEmployee.rarity}）を獲得しました。社員保管庫に追加されました。`
-  );
+  setLog(`${storedEmployee.name}（${storedEmployee.rarity}）を採用しました。社員保管庫に追加されました。`);
 }
 
 function addEmployeeTicketForDemo() {
@@ -12870,7 +13081,7 @@ async function placeBranch(targetTile = selectedTile) {
   }, 999);
 
   if (nearestOfficeDistance < OFFICE_MIN_DISTANCE) {
-    alert(`支店は本社・他支店から${OFFICE_MIN_DISTANCE}マス以上離してください`);
+    alert("支店は本社・支店の行動範囲内であれば開設できます。近すぎると営業範囲が広がりにくい点に注意してください。");
     return false;
   }
 
@@ -14801,10 +15012,15 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
   const currentRivalBranchCount = currentRivalOfficeTiles.filter((tile) => tile.feature === FEATURE.BRANCH).length;
   const targetRivalBranchCount = Math.floor(rivalEmployees.length / 5);
 
-  if (
-    currentRivalBranchCount < targetRivalBranchCount &&
-    rivalMoney >= BRANCH_OFFICE_COST
-  ) {
+  if (currentRivalBranchCount < targetRivalBranchCount) {
+    if (rivalMoney < BRANCH_OFFICE_COST) {
+      const branchShortfall = BRANCH_OFFICE_COST - rivalMoney;
+      const branchFinancingAmount = Math.min(50000, Math.max(5000, Math.ceil(branchShortfall / 1000) * 1000));
+      rivalMoney += branchFinancingAmount;
+      logs.push(`${company.name}が支店開設資金として${branchFinancingAmount}万円を調達しました。`);
+    }
+
+    if (rivalMoney >= BRANCH_OFFICE_COST) {
     let branchCandidates = nextTiles.filter((tile) => {
       if (tile.terrain !== TERRAIN.PLAIN) return false;
       if (tile.feature !== FEATURE.NONE) return false;
@@ -14824,13 +15040,27 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
         if (tile.feature !== FEATURE.NONE) return false;
         if (tile.building || tile.buildingMainId) return false;
         if (tile.owner === OWNER.PLAYER || tile.owner === OWNER.PUBLIC || tile.owner === OWNER.RIVAL) return false;
-        if (!isTileNearRoadOrRail(tile, nextTiles)) return false;
 
         const nearestOfficeDistance = currentRivalOfficeTiles.reduce((minDistance, officeTile) => {
           return Math.min(minDistance, getDistance(tile.x, tile.y, officeTile.x, officeTile.y));
         }, 999);
 
-        return nearestOfficeDistance >= OFFICE_MIN_DISTANCE && nearestOfficeDistance <= BRANCH_ACTION_RANGE + OFFICE_MIN_DISTANCE;
+        return nearestOfficeDistance <= BRANCH_ACTION_RANGE;
+      });
+    }
+
+    if (branchCandidates.length === 0) {
+      branchCandidates = nextTiles.filter((tile) => {
+        if (tile.terrain !== TERRAIN.PLAIN) return false;
+        if (tile.feature !== FEATURE.NONE) return false;
+        if (tile.building || tile.buildingMainId) return false;
+        if (tile.owner === OWNER.PLAYER || tile.owner === OWNER.PUBLIC || tile.owner === OWNER.RIVAL) return false;
+
+        const nearestOfficeDistance = currentRivalOfficeTiles.reduce((minDistance, officeTile) => {
+          return Math.min(minDistance, getDistance(tile.x, tile.y, officeTile.x, officeTile.y));
+        }, 999);
+
+        return nearestOfficeDistance <= BRANCH_ACTION_RANGE + 5;
       });
     }
 
@@ -14872,6 +15102,7 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
       });
       logs.push(`${company.name}が支店${branchNumber}を開設しました (${branchTarget.x},${branchTarget.y}) / 開設費${BRANCH_OFFICE_COST}万円 / 配属${movedCount}名`);
       return { tiles: nextTiles, logs };
+    }
     }
   }
 
@@ -17352,6 +17583,353 @@ return (
         max-width: min(94vw, 720px);
       }
 
+      .employee-recruitment-card {
+        width: min(96vw, 1040px) !important;
+        max-height: 90vh;
+        overflow: auto;
+        background:
+          radial-gradient(circle at 14% 18%, rgba(255,255,255,0.72) 0 42px, transparent 43px),
+          linear-gradient(135deg, #c39a6b 0%, #ad8358 44%, #8b6745 100%) !important;
+        border: 3px solid rgba(92, 54, 22, 0.42) !important;
+        box-shadow: 0 28px 80px rgba(0,0,0,0.42) !important;
+        color: #2a1a0f !important;
+        position: relative;
+      }
+
+      .employee-recruitment-card::before {
+        content: "";
+        position: absolute;
+        inset: 10px;
+        border-radius: 18px;
+        border: 1px solid rgba(255,255,255,0.28);
+        pointer-events: none;
+      }
+
+      .employee-recruitment-card h2,
+      .employee-recruitment-card p,
+      .employee-recruitment-card .recruit-selected-detail,
+      .employee-recruitment-card .recruit-required-note {
+        position: relative;
+        z-index: 1;
+      }
+
+      .recruit-envelope-grid {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(130px, 1fr));
+        gap: 18px;
+        margin: 22px 0 18px;
+        padding: 18px;
+        border-radius: 24px;
+        background:
+          linear-gradient(90deg, rgba(255,255,255,0.08), transparent 28%, rgba(0,0,0,0.08)),
+          rgba(68, 38, 18, 0.18);
+      }
+
+      .recruit-envelope-card {
+        min-height: 250px !important;
+        border-radius: 18px !important;
+        padding: 10px 8px 12px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+        white-space: normal !important;
+        text-align: center !important;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        color: inherit !important;
+        transform: rotate(-3deg);
+        transition: transform 0.22s ease, filter 0.22s ease;
+        animation: resumeEnvelopeDrop 0.46s ease both;
+      }
+
+      .recruit-envelope-card:nth-child(2) { transform: rotate(2deg); animation-delay: 0.06s; }
+      .recruit-envelope-card:nth-child(3) { transform: rotate(-1deg); animation-delay: 0.12s; }
+      .recruit-envelope-card:nth-child(4) { transform: rotate(3deg); animation-delay: 0.18s; }
+      .recruit-envelope-card:nth-child(5) { transform: rotate(-2deg); animation-delay: 0.24s; }
+
+      .recruit-envelope-card:hover,
+      .recruit-envelope-card.selected {
+        transform: translateY(-8px) rotate(0deg) scale(1.03);
+        filter: brightness(1.05);
+      }
+
+      .recruit-envelope-card.selected .resume-envelope-visual {
+        box-shadow: 0 0 0 4px rgba(255,214,92,0.88), 0 18px 34px rgba(0,0,0,0.32);
+      }
+
+      .recruit-envelope-card.opened .resume-envelope-flap {
+        transform: rotateX(150deg);
+      }
+
+      .recruit-envelope-card.opened .resume-envelope-paper {
+        transform: translateY(-58px);
+        opacity: 1;
+      }
+
+      .recruit-envelope-number,
+      .recruit-envelope-type {
+        font-weight: 900;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.45);
+      }
+
+      .recruit-envelope-type {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.74);
+        border: 1px solid rgba(80,45,17,0.22);
+      }
+
+      .resume-envelope-visual {
+        width: 132px;
+        height: 172px;
+        position: relative;
+        display: block;
+        border-radius: 9px;
+        box-shadow: 0 14px 26px rgba(0,0,0,0.28);
+        perspective: 700px;
+      }
+
+      .resume-envelope-back,
+      .resume-envelope-body,
+      .resume-envelope-flap {
+        position: absolute;
+        inset: 0;
+        border-radius: 9px;
+      }
+
+      .resume-envelope-back {
+        background: linear-gradient(135deg, #fffdf4, #ece3ca);
+        border: 3px solid #d3c5a1;
+      }
+
+      .resume-envelope-body {
+        background:
+          linear-gradient(135deg, transparent 49%, rgba(0,0,0,0.12) 50%, transparent 51%),
+          linear-gradient(45deg, transparent 49%, rgba(255,255,255,0.36) 50%, transparent 51%),
+          linear-gradient(180deg, rgba(255,255,255,0.4), rgba(0,0,0,0.06));
+        border: 3px solid rgba(92, 63, 28, 0.22);
+      }
+
+      .resume-envelope-flap {
+        clip-path: polygon(0 0, 100% 0, 50% 48%);
+        transform-origin: top center;
+        transition: transform 0.46s ease;
+        background: linear-gradient(180deg, rgba(255,255,255,0.52), rgba(0,0,0,0.08));
+        z-index: 4;
+      }
+
+      .resume-envelope-paper {
+        position: absolute;
+        left: 18px;
+        top: 38px;
+        width: 96px;
+        height: 118px;
+        border-radius: 4px;
+        background: linear-gradient(180deg, #fffef8, #f0eadb);
+        border: 2px solid #d6cab2;
+        z-index: 2;
+        transform: translateY(0);
+        opacity: 0.92;
+        transition: transform 0.46s ease, opacity 0.46s ease;
+        display: grid;
+        align-content: start;
+        justify-items: center;
+        gap: 9px;
+        padding-top: 12px;
+      }
+
+      .resume-paper-title {
+        font-size: 14px;
+        font-weight: 900;
+        color: #6b4b2b;
+        letter-spacing: 0.1em;
+      }
+
+      .resume-paper-line {
+        width: 68px;
+        height: 5px;
+        border-radius: 999px;
+        background: #d8ccb7;
+      }
+
+      .resume-paper-line.short {
+        width: 48px;
+      }
+
+      .resume-envelope-seal {
+        position: absolute;
+        left: 50%;
+        top: 84px;
+        transform: translateX(-50%);
+        z-index: 5;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        font-family: serif;
+        color: #6b3b00;
+        background: radial-gradient(circle at 30% 25%, #fff2a6, #f0b21e 48%, #ad6d05 100%);
+        border: 2px solid rgba(120,75,0,0.42);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.28);
+      }
+
+      .resume-envelope-shine {
+        position: absolute;
+        inset: -12px;
+        pointer-events: none;
+        opacity: 0;
+        background:
+          radial-gradient(circle at 14% 18%, rgba(255,255,255,0.95) 0 3px, transparent 4px),
+          radial-gradient(circle at 85% 30%, rgba(255,255,255,0.9) 0 3px, transparent 4px),
+          radial-gradient(circle at 62% 82%, rgba(255,255,255,0.8) 0 2px, transparent 3px);
+        animation: resumeSparkle 1.7s ease-in-out infinite;
+      }
+
+      .recruit-envelope-card.envelope-white .resume-envelope-back {
+        background: linear-gradient(135deg, #fffdf6, #eee5ce);
+        border-color: #d7c9aa;
+      }
+
+      .recruit-envelope-card.envelope-brown .resume-envelope-back {
+        background: linear-gradient(135deg, #9b5e25, #5d3212 70%, #3e210c);
+        border-color: #e7b65d;
+      }
+
+      .recruit-envelope-card.envelope-brown .resume-envelope-body,
+      .recruit-envelope-card.envelope-brown .resume-envelope-flap {
+        border-color: rgba(255,230,151,0.5);
+        background:
+          linear-gradient(135deg, transparent 49%, rgba(0,0,0,0.22) 50%, transparent 51%),
+          linear-gradient(180deg, rgba(255,223,141,0.18), rgba(0,0,0,0.22));
+      }
+
+      .recruit-envelope-card.envelope-brown .recruit-envelope-type {
+        color: #5d3212;
+        background: #ffe3a5;
+      }
+
+      .recruit-envelope-card.envelope-black .resume-envelope-back {
+        background: linear-gradient(135deg, #20152a, #08070b 70%, #000000);
+        border-color: #e8c85f;
+      }
+
+      .recruit-envelope-card.envelope-black .resume-envelope-body,
+      .recruit-envelope-card.envelope-black .resume-envelope-flap {
+        border-color: rgba(255,227,112,0.78);
+        background:
+          linear-gradient(135deg, transparent 49%, rgba(255,224,99,0.14) 50%, transparent 51%),
+          linear-gradient(180deg, rgba(255,230,121,0.18), rgba(0,0,0,0.48));
+      }
+
+      .recruit-envelope-card.envelope-black .resume-envelope-shine {
+        opacity: 1;
+      }
+
+      .recruit-envelope-card.envelope-black .recruit-envelope-type {
+        color: #211500;
+        background: #f6dc77;
+      }
+
+      .recruit-applicant-summary {
+        display: grid;
+        gap: 4px;
+        font-size: 13px;
+        line-height: 1.35;
+        min-height: 58px;
+        align-content: center;
+      }
+
+      .opened-summary {
+        padding: 8px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.78);
+        color: #23170e;
+      }
+
+      .recruit-selected-detail {
+        margin-top: 12px;
+        padding: 12px;
+        border-radius: 16px;
+        border: 1px solid rgba(92, 54, 22, 0.28);
+        background: rgba(255, 250, 235, 0.92);
+      }
+
+      .recruit-required-note {
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.72);
+        font-weight: 800;
+      }
+
+      @keyframes resumeEnvelopeDrop {
+        from { opacity: 0; transform: translateY(-26px) rotate(-8deg) scale(0.96); }
+        to { opacity: 1; }
+      }
+
+      @keyframes resumeSparkle {
+        0%, 100% { opacity: 0.25; transform: scale(0.98); }
+        50% { opacity: 1; transform: scale(1.03); }
+      }
+
+      @media (max-width: 900px) {
+        .recruit-envelope-grid {
+          grid-template-columns: repeat(2, minmax(130px, 1fr));
+        }
+      }
+
+
+
+      /* v114 採用画面調整：開封前NEW表示、封止めのN削除、上部小物削除 */
+      .recruit-paper-stack,
+      .recruit-ledger-book {
+        display: none !important;
+      }
+
+      .resume-envelope-seal {
+        font-size: 0 !important;
+      }
+
+      .resume-seal-emblem {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        font-size: 18px;
+        line-height: 1;
+        color: rgba(93, 51, 3, 0.7);
+        text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+        transform: rotate(45deg);
+      }
+
+      .recruit-envelope-card.envelope-brown .resume-seal-emblem,
+      .recruit-envelope-card.envelope-black .resume-seal-emblem {
+        color: rgba(255, 224, 185, 0.88);
+      }
+
+      .recruit-envelope-card.closed .envelope-new-stamp {
+        top: 10px;
+        right: -12px;
+        transform: rotate(-7deg) scale(0.95);
+      }
+
+      .recruit-envelope-card.opened .envelope-new-stamp {
+        top: 18px;
+        right: -8px;
+      }
+
+      .employee-awakening-result {
+        font-weight: 900;
+        color: #b7791f;
+      }
+
       @media (max-width: 640px) {
         .side-section,
         .property-section,
@@ -17366,6 +17944,1072 @@ return (
         .main-menu-popup button {
           min-height: 40px;
         }
+      }
+
+
+      .recruit-popup-stage {
+        background: rgba(8, 5, 2, 0.68) !important;
+        backdrop-filter: blur(6px);
+      }
+
+      .employee-recruitment-card.recruit-desk-card {
+        width: min(98vw, 1180px) !important;
+        max-height: 94vh;
+        overflow: auto;
+        padding: 22px 24px 18px !important;
+        color: #fff7d5 !important;
+        background:
+          radial-gradient(circle at 16% 24%, rgba(255, 223, 143, 0.32), transparent 21%),
+          radial-gradient(circle at 82% 33%, rgba(255, 216, 102, 0.18), transparent 28%),
+          linear-gradient(180deg, rgba(88, 49, 20, 0.55), rgba(35, 17, 8, 0.88)),
+          repeating-linear-gradient(90deg, #5b3219 0 20px, #63391e 21px 42px, #4a2815 43px 66px) !important;
+        border: 2px solid rgba(255, 220, 126, 0.42) !important;
+        box-shadow: 0 30px 110px rgba(0,0,0,0.7), inset 0 0 120px rgba(255, 205, 83, 0.14) !important;
+      }
+
+      .employee-recruitment-card.recruit-desk-card::before {
+        border: 1px solid rgba(255, 223, 139, 0.22);
+        box-shadow: inset 0 0 70px rgba(255, 220, 126, 0.11);
+      }
+
+      .recruit-title-area {
+        position: relative;
+        z-index: 3;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 14px;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .recruit-title-area h2 {
+        margin: 0 !important;
+        font-size: clamp(30px, 5vw, 54px);
+        letter-spacing: 0.16em;
+        color: #ffe999 !important;
+        text-shadow: 0 4px 0 rgba(50, 22, 4, 0.8), 0 0 20px rgba(255, 219, 88, 0.45);
+      }
+
+      .recruit-title-area p {
+        grid-column: 1 / -1;
+        margin: -4px 0 0 !important;
+        color: #ffffff !important;
+        font-size: clamp(14px, 2.4vw, 20px);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+      }
+
+      .recruit-ornament {
+        color: #e7c65e;
+        opacity: 0.9;
+        font-size: 22px;
+      }
+
+      .recruit-desk-decoration {
+        position: absolute;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .recruit-paper-stack {
+        left: 22px;
+        top: 24px;
+        width: 160px;
+        height: 86px;
+        transform: rotate(-11deg);
+        border-radius: 6px;
+        background: linear-gradient(135deg, rgba(255,250,222,0.94), rgba(211,187,141,0.78));
+        color: rgba(72, 45, 23, 0.58);
+        font-weight: 900;
+        display: grid;
+        place-items: center;
+        box-shadow: 0 12px 24px rgba(0,0,0,0.22);
+      }
+
+      .recruit-ledger-book {
+        right: 26px;
+        top: 20px;
+        width: 154px;
+        height: 70px;
+        transform: rotate(5deg);
+        border-radius: 8px;
+        background: linear-gradient(135deg, #572319, #8b3a24 55%, #3a160e);
+        border: 2px solid rgba(232, 188, 87, 0.48);
+        color: rgba(255, 224, 134, 0.72);
+        font-weight: 900;
+        display: grid;
+        place-items: center;
+        letter-spacing: 0.28em;
+      }
+
+      .recruit-ink-bottle {
+        right: 216px;
+        top: 34px;
+        width: 44px;
+        height: 52px;
+        border-radius: 9px 9px 14px 14px;
+        background: linear-gradient(180deg, #0b0b0d, #202027 45%, #050506);
+        box-shadow: inset 0 4px 0 rgba(255,255,255,0.18), 0 10px 22px rgba(0,0,0,0.35);
+      }
+
+      .recruit-pen {
+        right: 302px;
+        top: 60px;
+        width: 178px;
+        height: 10px;
+        transform: rotate(-8deg);
+        border-radius: 999px;
+        background: linear-gradient(90deg, #d8b85a 0 12%, #111 13% 68%, #e5c66e 69% 74%, #151515 75%);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.32);
+      }
+
+      .recruit-sparkle {
+        position: absolute;
+        z-index: 2;
+        color: #fff8c8;
+        text-shadow: 0 0 16px #fff, 0 0 28px #ffd55a;
+        animation: recruitTwinkle 1.8s ease-in-out infinite;
+        pointer-events: none;
+      }
+
+      .sparkle-a { left: 18%; top: 23%; font-size: 24px; }
+      .sparkle-b { left: 45%; top: 21%; font-size: 18px; animation-delay: 0.4s; }
+      .sparkle-c { right: 18%; top: 28%; font-size: 26px; animation-delay: 0.8s; }
+      .sparkle-d { right: 9%; top: 52%; font-size: 20px; animation-delay: 1.2s; }
+
+      .recruit-envelope-desk-row {
+        display: flex !important;
+        grid-template-columns: none !important;
+        justify-content: center;
+        align-items: flex-end;
+        gap: clamp(10px, 1.6vw, 20px) !important;
+        margin: 20px 0 10px !important;
+        padding: 26px 12px 14px !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+
+      .recruit-envelope-card {
+        width: clamp(118px, 15.3vw, 178px);
+        min-height: clamp(178px, 23vw, 254px);
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+        color: #fff !important;
+        transform-origin: center bottom;
+      }
+
+      .recruit-envelope-card:nth-child(1) { transform: rotate(-5deg); }
+      .recruit-envelope-card:nth-child(2) { transform: rotate(-2deg); }
+      .recruit-envelope-card:nth-child(3) { transform: rotate(1deg); }
+      .recruit-envelope-card:nth-child(4) { transform: rotate(4deg); }
+      .recruit-envelope-card:nth-child(5) { transform: rotate(6deg); }
+
+      .recruit-envelope-card:hover,
+      .recruit-envelope-card.selected {
+        transform: translateY(-12px) scale(1.05) rotate(0deg) !important;
+      }
+
+      .recruit-envelope-card.selected .resume-envelope-visual {
+        filter: drop-shadow(0 0 18px rgba(255, 236, 155, 0.95)) drop-shadow(0 20px 22px rgba(0,0,0,0.46));
+      }
+
+      .recruit-envelope-card .resume-envelope-visual {
+        width: 100% !important;
+        height: clamp(160px, 22vw, 230px) !important;
+        filter: drop-shadow(0 18px 18px rgba(0,0,0,0.35)) drop-shadow(0 0 15px rgba(255, 220, 93, 0.55));
+      }
+
+      .resume-envelope-logo {
+        position: absolute;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%);
+        z-index: 5;
+        font-size: 10px;
+        line-height: 1.05;
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        color: rgba(70, 48, 28, 0.74);
+        text-align: center;
+      }
+
+      .recruit-envelope-card.envelope-black .resume-envelope-logo,
+      .recruit-envelope-card.envelope-brown .resume-envelope-logo {
+        color: rgba(229, 196, 113, 0.78);
+      }
+
+      .recruit-envelope-card .resume-envelope-seal {
+        background: radial-gradient(circle at 35% 30%, #ffef9c, #c68109 68%, #7b3300) !important;
+        color: rgba(71, 34, 0, 0.74) !important;
+        box-shadow: inset 0 2px 4px rgba(255,255,255,0.45), 0 0 12px rgba(255, 190, 52, 0.6) !important;
+      }
+
+      .recruit-envelope-card.envelope-brown .resume-envelope-seal,
+      .recruit-envelope-card.envelope-black .resume-envelope-seal {
+        background: radial-gradient(circle at 35% 30%, #ff8a78, #bd1e12 66%, #5c0703) !important;
+        color: rgba(255, 223, 185, 0.9) !important;
+      }
+
+      .recruit-envelope-number,
+      .recruit-envelope-type {
+        display: none !important;
+      }
+
+      .recruit-envelope-card .recruit-applicant-summary {
+        margin-top: 10px;
+        min-height: 0 !important;
+        color: #fff6c2;
+        font-size: 12px;
+        font-weight: 900;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+      }
+
+      .recruit-new-stamp {
+        display: inline-grid;
+        place-items: center;
+        padding: 4px 10px;
+        border: 3px solid #ff5572;
+        border-radius: 4px;
+        background: #fff1f3;
+        color: #e02949;
+        font-weight: 1000;
+        letter-spacing: 0.04em;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+        transform: rotate(-7deg);
+      }
+
+      .envelope-new-stamp {
+        position: absolute;
+        z-index: 10;
+        top: 18px;
+        right: -8px;
+        font-size: 16px;
+      }
+
+      .profile-new-stamp {
+        position: absolute;
+        left: -14px;
+        top: -14px;
+        z-index: 4;
+        font-size: 20px;
+      }
+
+      .recruit-tap-guide {
+        position: relative;
+        z-index: 3;
+        width: fit-content;
+        margin: 2px auto 12px;
+        padding: 8px 38px;
+        border-top: 1px solid rgba(255, 226, 137, 0.42);
+        border-bottom: 1px solid rgba(255, 226, 137, 0.42);
+        color: #fffdf2;
+        font-weight: 900;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+      }
+
+      .recruit-profile-wrap {
+        position: relative;
+        z-index: 3;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 18px;
+        margin-top: 8px;
+      }
+
+      .recruit-profile-panel {
+        position: relative;
+        z-index: 3;
+        display: grid;
+        grid-template-columns: 230px minmax(0, 1fr);
+        gap: 18px;
+        padding: 18px;
+        border-radius: 10px;
+        color: #26180d;
+        background:
+          linear-gradient(135deg, rgba(255,255,255,0.78), transparent 32%),
+          linear-gradient(180deg, #fff9e8, #ead7b6) !important;
+        border: 2px solid rgba(125, 85, 34, 0.48);
+        box-shadow: 0 16px 30px rgba(0,0,0,0.34), inset 0 0 0 3px rgba(255,255,255,0.35);
+      }
+
+      .recruit-profile-empty {
+        display: block;
+        text-align: center;
+        margin: 10px auto 0;
+        width: min(720px, 92%);
+      }
+
+      .recruit-profile-empty-title {
+        font-size: 20px;
+        font-weight: 1000;
+      }
+
+      .recruit-profile-photo {
+        position: relative;
+        min-height: 238px;
+        display: grid;
+        place-items: center;
+      }
+
+      .recruit-avatar {
+        width: 210px;
+        height: 230px;
+        border-radius: 8px;
+        border: 4px solid #f8f1dd;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 50% 25%, rgba(255,255,255,0.85), transparent 22%),
+          linear-gradient(135deg, #9fc1ff, #f0e6ff 55%, #4d3578);
+        box-shadow: inset 0 0 60px rgba(255,255,255,0.3), 0 10px 18px rgba(0,0,0,0.22);
+      }
+
+      .recruit-avatar-male {
+        background:
+          radial-gradient(circle at 50% 25%, rgba(255,255,255,0.85), transparent 22%),
+          linear-gradient(135deg, #92b8ff, #d9e8ff 55%, #28466f);
+      }
+
+      .recruit-avatar span {
+        width: 88px;
+        height: 88px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.78);
+        font-size: 54px;
+        font-weight: 1000;
+        color: #3a2850;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+      }
+
+      .recruit-profile-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid rgba(92, 55, 22, 0.22);
+        padding-bottom: 8px;
+      }
+
+      .recruit-profile-header h3 {
+        margin: 0;
+        font-size: clamp(24px, 3.6vw, 38px);
+        color: #1d1209;
+      }
+
+      .recruit-job-and-stars {
+        display: grid;
+        justify-items: end;
+        gap: 4px;
+        white-space: nowrap;
+      }
+
+      .recruit-job-badge {
+        padding: 5px 10px;
+        border-radius: 7px;
+        background: linear-gradient(135deg, #b63b35, #7e1d19);
+        color: #fff4d8;
+        font-weight: 900;
+        box-shadow: inset 0 0 0 2px rgba(255,255,255,0.18);
+      }
+
+      .employee-rarity-stars {
+        font-size: 24px;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 0 rgba(80, 42, 0, 0.42);
+      }
+
+      .employee-star.filled { color: #f5b91f; }
+      .employee-star.empty { color: #9f9a8c; }
+
+      .recruit-profile-subrow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+        margin: 10px 0;
+        font-weight: 900;
+      }
+
+      .recruit-stat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(120px, 1fr));
+        gap: 8px;
+      }
+
+      .recruit-stat-grid div {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 9px 11px;
+        border-radius: 8px;
+        background: rgba(255,255,255,0.54);
+        border: 1px solid rgba(99, 60, 25, 0.14);
+      }
+
+      .recruit-stat-grid span {
+        font-weight: 900;
+        color: #644220;
+      }
+
+      .recruit-stat-grid strong {
+        font-size: 18px;
+      }
+
+      .recruit-special-box {
+        margin-top: 10px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        background: rgba(255,255,255,0.62);
+        border: 1px solid rgba(99, 60, 25, 0.18);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .recruit-special-box span {
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: #8458a5;
+        color: #ffffff;
+        font-weight: 900;
+      }
+
+      .recruit-hire-side {
+        display: grid;
+        justify-items: center;
+        gap: 10px;
+      }
+
+      .recruit-hire-button {
+        min-width: 220px;
+        min-height: 70px;
+        border-radius: 12px;
+        border: 3px solid #e7c76a;
+        background: linear-gradient(180deg, #16a65a, #066d35) !important;
+        color: #fff9d8 !important;
+        font-size: 20px;
+        font-weight: 1000;
+        box-shadow: 0 0 0 3px rgba(11, 62, 30, 0.75), 0 0 24px rgba(255, 224, 105, 0.58), 0 14px 22px rgba(0,0,0,0.34);
+      }
+
+      .recruit-hire-side p {
+        margin: 0 !important;
+        color: #fff !important;
+        font-weight: 900;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.72);
+      }
+
+      .recruit-required-note-fantasy {
+        position: relative;
+        z-index: 3;
+        width: fit-content;
+        margin: 12px auto 0 !important;
+        color: #fff7cf !important;
+        background: rgba(0,0,0,0.28) !important;
+        border: 1px solid rgba(255,226,137,0.22);
+      }
+
+      @keyframes recruitTwinkle {
+        0%, 100% { opacity: 0.28; transform: scale(0.7) rotate(0deg); }
+        50% { opacity: 1; transform: scale(1.25) rotate(18deg); }
+      }
+
+      @media (max-width: 900px) {
+        .recruit-envelope-desk-row {
+          flex-wrap: wrap;
+        }
+
+        .recruit-profile-wrap {
+          grid-template-columns: 1fr;
+        }
+
+        .recruit-profile-panel {
+          grid-template-columns: 1fr;
+        }
+
+        .recruit-profile-photo {
+          min-height: 190px;
+        }
+
+        .recruit-avatar {
+          width: 170px;
+          height: 180px;
+        }
+
+        .recruit-stat-grid {
+          grid-template-columns: repeat(2, minmax(120px, 1fr));
+        }
+      }
+
+      @media (max-width: 560px) {
+        .employee-recruitment-card.recruit-desk-card {
+          padding: 14px 12px !important;
+        }
+
+        .recruit-paper-stack,
+        .recruit-ledger-book,
+        .recruit-ink-bottle,
+        .recruit-pen {
+          display: none;
+        }
+
+        .recruit-envelope-card {
+          width: 122px;
+          min-height: 170px;
+        }
+
+        .recruit-envelope-card .resume-envelope-visual {
+          height: 150px !important;
+        }
+
+        .recruit-stat-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .recruit-profile-header {
+          display: grid;
+        }
+
+        .recruit-job-and-stars {
+          justify-items: start;
+        }
+      }
+
+
+      /* v112 採用画面レイアウト調整：星表記廃止、レア度テキスト化、履歴書横長化 */
+      .employee-recruitment-card.recruit-desk-card {
+        width: min(96vw, 1380px) !important;
+        max-height: 96vh !important;
+        overflow-x: hidden !important;
+        padding: clamp(16px, 1.8vw, 26px) clamp(16px, 2.4vw, 34px) 22px !important;
+      }
+
+      .recruit-title-area {
+        margin-bottom: 4px !important;
+      }
+
+      .recruit-envelope-desk-row {
+        gap: clamp(16px, 2.2vw, 34px) !important;
+        padding: 30px 10px 12px !important;
+        margin: 12px 0 4px !important;
+      }
+
+      .recruit-envelope-card {
+        width: clamp(135px, 13vw, 184px) !important;
+        min-height: clamp(188px, 19vw, 252px) !important;
+      }
+
+      .recruit-envelope-card:nth-child(1),
+      .recruit-envelope-card:nth-child(2),
+      .recruit-envelope-card:nth-child(3),
+      .recruit-envelope-card:nth-child(4),
+      .recruit-envelope-card:nth-child(5) {
+        transform: rotate(0deg) !important;
+      }
+
+      .recruit-envelope-card:hover,
+      .recruit-envelope-card.selected {
+        transform: translateY(-10px) scale(1.045) !important;
+      }
+
+      .recruit-envelope-card .resume-envelope-visual {
+        height: clamp(178px, 18vw, 244px) !important;
+      }
+
+      .recruit-profile-wrap {
+        grid-template-columns: minmax(0, 1fr) clamp(190px, 18vw, 260px) !important;
+        align-items: center !important;
+        gap: clamp(16px, 2vw, 28px) !important;
+        margin-top: 10px !important;
+      }
+
+      .recruit-profile-panel {
+        grid-template-columns: clamp(220px, 20vw, 300px) minmax(0, 1fr) !important;
+        gap: clamp(18px, 2vw, 28px) !important;
+        padding: clamp(16px, 1.8vw, 24px) !important;
+        min-height: 260px;
+      }
+
+      .recruit-profile-photo {
+        min-height: 240px !important;
+      }
+
+      .recruit-avatar {
+        width: clamp(190px, 18vw, 260px) !important;
+        height: clamp(205px, 20vw, 280px) !important;
+      }
+
+      .recruit-profile-header {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto !important;
+        align-items: center !important;
+        gap: 18px !important;
+      }
+
+      .recruit-profile-header h3 {
+        font-size: clamp(28px, 3.2vw, 44px) !important;
+        line-height: 1.12 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+
+      .recruit-job-and-stars {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 12px !important;
+        white-space: nowrap !important;
+      }
+
+      .employee-rarity-stars {
+        display: none !important;
+      }
+
+      .employee-rarity-label {
+        min-width: 58px;
+        padding: 2px 6px;
+        text-align: center;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(28px, 3.2vw, 42px);
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: 0.02em;
+        color: #8f1f1a;
+        text-shadow: 0 1px 0 rgba(255, 242, 190, 0.86), 0 0 12px rgba(189, 48, 36, 0.22);
+      }
+
+      .employee-rarity-label.rarity-label-n {
+        color: #5d4a36;
+        font-size: clamp(24px, 2.8vw, 36px);
+      }
+
+      .employee-rarity-label.rarity-label-r {
+        color: #2e6b9f;
+        font-size: clamp(25px, 2.9vw, 38px);
+      }
+
+      .employee-rarity-label.rarity-label-hr {
+        color: #8f1f1a;
+      }
+
+      .employee-rarity-label.rarity-label-sr {
+        color: #b77416;
+      }
+
+      .employee-rarity-label.rarity-label-ssr,
+      .employee-rarity-label.rarity-label-ur,
+      .employee-rarity-label.rarity-label-社長 {
+        color: #d5a21f;
+        text-shadow: 0 1px 0 #3b1800, 0 0 14px rgba(255, 220, 82, 0.72);
+      }
+
+      .recruit-profile-subrow {
+        border-bottom: 1px solid rgba(92, 55, 22, 0.18);
+        padding-bottom: 8px;
+      }
+
+      .recruit-stat-grid {
+        grid-template-columns: repeat(2, minmax(150px, 1fr)) !important;
+        gap: 10px 14px !important;
+      }
+
+      .recruit-special-box {
+        min-height: 54px;
+      }
+
+      .recruit-hire-button {
+        width: 100% !important;
+        min-width: 190px !important;
+        min-height: 76px !important;
+        font-size: clamp(17px, 1.8vw, 22px) !important;
+      }
+
+      .recruit-hire-side {
+        align-self: center !important;
+      }
+
+      @media (max-width: 980px) {
+        .recruit-profile-wrap {
+          grid-template-columns: 1fr !important;
+        }
+
+        .recruit-hire-side {
+          width: 100% !important;
+        }
+
+        .recruit-hire-button {
+          width: min(100%, 420px) !important;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .recruit-profile-panel {
+          grid-template-columns: 1fr !important;
+        }
+
+        .recruit-profile-header {
+          grid-template-columns: 1fr !important;
+        }
+
+        .recruit-profile-header h3 {
+          white-space: normal !important;
+        }
+
+        .recruit-job-and-stars {
+          justify-content: flex-start !important;
+        }
+      }
+
+
+      /* v114 採用画面レイアウト再調整：横長UI固定、はみ出し防止 */
+      .popup-log.recruit-popup-stage {
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 18px !important;
+        overflow: auto !important;
+      }
+
+      .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card {
+        width: min(96vw, 1180px) !important;
+        min-width: min(96vw, 980px) !important;
+        max-width: none !important;
+        max-height: 94vh !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        padding: 22px 30px 20px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-title-area {
+        grid-template-columns: 1fr auto 1fr !important;
+        margin-bottom: 6px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-title-area h2 {
+        white-space: nowrap !important;
+        font-size: clamp(34px, 3.8vw, 54px) !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-envelope-desk-row {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        justify-content: center !important;
+        align-items: flex-end !important;
+        gap: clamp(14px, 1.8vw, 24px) !important;
+        margin: 14px 0 6px !important;
+        padding: 22px 8px 10px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-envelope-card {
+        flex: 0 0 clamp(130px, 14.2vw, 174px) !important;
+        width: clamp(130px, 14.2vw, 174px) !important;
+        min-width: 0 !important;
+        min-height: clamp(178px, 19vw, 232px) !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-envelope-card .resume-envelope-visual {
+        width: 100% !important;
+        height: clamp(166px, 18.4vw, 226px) !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-applicant-summary {
+        font-size: 11px !important;
+        line-height: 1.15 !important;
+        white-space: nowrap !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-tap-guide {
+        margin: 0 auto 10px !important;
+        padding: 7px 34px !important;
+        font-size: 14px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-profile-wrap {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 230px !important;
+        align-items: center !important;
+        gap: 22px !important;
+        width: 100% !important;
+        margin-top: 8px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-profile-panel {
+        display: grid !important;
+        grid-template-columns: 250px minmax(0, 1fr) !important;
+        align-items: stretch !important;
+        gap: 20px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 250px !important;
+        box-sizing: border-box !important;
+        padding: 18px 20px !important;
+        overflow: visible !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-profile-photo {
+        position: relative !important;
+        min-height: 230px !important;
+        width: 250px !important;
+        max-width: 250px !important;
+        display: grid !important;
+        place-items: center !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-avatar {
+        width: 210px !important;
+        height: 220px !important;
+        min-width: 210px !important;
+        min-height: 220px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-profile-main {
+        min-width: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-profile-header {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto !important;
+        align-items: center !important;
+        gap: 16px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-profile-header h3 {
+        writing-mode: horizontal-tb !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        word-break: keep-all !important;
+        overflow-wrap: normal !important;
+        font-size: clamp(26px, 3vw, 40px) !important;
+        line-height: 1.15 !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-job-and-stars {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 12px !important;
+        white-space: nowrap !important;
+      }
+
+      .popup-log.recruit-popup-stage .employee-rarity-stars {
+        display: none !important;
+      }
+
+      .popup-log.recruit-popup-stage .employee-rarity-label {
+        display: inline-block !important;
+        min-width: 64px !important;
+        text-align: center !important;
+        font-size: clamp(28px, 3.2vw, 42px) !important;
+        line-height: 1 !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-profile-subrow {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 8px 18px !important;
+        margin: 10px 0 !important;
+        white-space: nowrap !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-stat-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(118px, 1fr)) !important;
+        gap: 8px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-stat-grid div {
+        min-width: 0 !important;
+        padding: 8px 10px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-special-box {
+        min-height: 50px !important;
+        overflow-wrap: anywhere !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-hire-side {
+        width: 230px !important;
+        align-self: center !important;
+        display: grid !important;
+        justify-items: center !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-hire-button {
+        width: 220px !important;
+        min-width: 220px !important;
+        min-height: 72px !important;
+        font-size: 19px !important;
+        white-space: nowrap !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-hire-side p {
+        font-size: 13px !important;
+        line-height: 1.35 !important;
+        text-align: center !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-required-note-fantasy {
+        margin-top: 10px !important;
+        font-size: 13px !important;
+      }
+
+      @media (max-width: 1050px) {
+        .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card {
+          min-width: 0 !important;
+          width: 96vw !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-wrap {
+          grid-template-columns: 1fr !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-hire-side {
+          width: 100% !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-hire-button {
+          width: min(100%, 360px) !important;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .popup-log.recruit-popup-stage .recruit-envelope-desk-row {
+          overflow-x: auto !important;
+          justify-content: flex-start !important;
+          padding-left: 10px !important;
+          padding-right: 10px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-envelope-card {
+          flex-basis: 132px !important;
+          width: 132px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-panel {
+          grid-template-columns: 1fr !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-photo {
+          width: 100% !important;
+          max-width: none !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-header {
+          grid-template-columns: 1fr !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-job-and-stars {
+          justify-content: flex-start !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-stat-grid {
+          grid-template-columns: repeat(2, minmax(110px, 1fr)) !important;
+        }
+      }
+
+    `}</style>
+
+    <style>{`
+      /* v115 最終調整：開封前NEW、無文字の封ろう、上部小物削除、質感強化 */
+      .recruit-paper-stack,
+      .recruit-ledger-book {
+        display: none !important;
+      }
+
+      .recruit-envelope-card.closed .envelope-new-stamp,
+      .recruit-envelope-card.opened .envelope-new-stamp {
+        display: inline-grid !important;
+        top: 8px !important;
+        right: -10px !important;
+        transform: rotate(-7deg) scale(0.95) !important;
+      }
+
+      .recruit-envelope-card .resume-envelope-seal {
+        font-size: 0 !important;
+        overflow: hidden !important;
+      }
+
+      .recruit-envelope-card .resume-seal-emblem {
+        position: relative !important;
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        font-size: 0 !important;
+        color: transparent !important;
+        transform: none !important;
+      }
+
+      .recruit-envelope-card .resume-seal-emblem::before {
+        content: "✿";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 24px;
+        height: 24px;
+        transform: translate(-50%, -50%);
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        background:
+          radial-gradient(circle at 35% 28%, rgba(255,255,255,0.42), transparent 30%),
+          radial-gradient(circle at 50% 50%, rgba(166, 32, 43, 0.96), rgba(96, 18, 32, 0.98));
+        color: rgba(255, 224, 185, 0.92);
+        font-size: 14px;
+        line-height: 1;
+        box-shadow:
+          inset 0 2px 5px rgba(255,255,255,0.25),
+          inset 0 -4px 7px rgba(0,0,0,0.28),
+          0 2px 5px rgba(0,0,0,0.25);
+        filter: drop-shadow(0 1px 0 rgba(255,255,255,0.25));
+      }
+
+      .recruit-envelope-card.envelope-brown .resume-seal-emblem::before,
+      .recruit-envelope-card.envelope-black .resume-seal-emblem::before {
+        color: rgba(255, 224, 185, 0.88);
+      }
+
+      .recruit-envelope-card .resume-envelope-paper {
+        transform: translateY(-10px) !important;
+        opacity: 0.98 !important;
+      }
+
+      .recruit-envelope-card.opened .resume-envelope-paper {
+        transform: translateY(-58px) !important;
+      }
+
+      .recruit-envelope-card.envelope-white .resume-envelope-visual {
+        filter: drop-shadow(0 18px 18px rgba(0,0,0,0.35)) drop-shadow(0 0 16px rgba(255, 228, 138, 0.56));
+      }
+
+      .recruit-envelope-card.envelope-brown .resume-envelope-visual {
+        filter: drop-shadow(0 18px 18px rgba(0,0,0,0.38)) drop-shadow(0 0 22px rgba(255, 166, 45, 0.82));
+      }
+
+      .recruit-envelope-card.envelope-black .resume-envelope-visual {
+        filter: drop-shadow(0 18px 18px rgba(0,0,0,0.42)) drop-shadow(0 0 25px rgba(187, 126, 255, 0.82));
+      }
+
+      .recruit-envelope-card.envelope-black .resume-envelope-back,
+      .recruit-envelope-card.envelope-black .resume-envelope-body,
+      .recruit-envelope-card.envelope-black .resume-envelope-flap {
+        border-color: rgba(190, 145, 255, 0.56) !important;
+      }
+
+      .recruit-envelope-card.envelope-brown .resume-envelope-back,
+      .recruit-envelope-card.envelope-brown .resume-envelope-body,
+      .recruit-envelope-card.envelope-brown .resume-envelope-flap {
+        border-color: rgba(255, 197, 92, 0.58) !important;
       }
     `}</style>
 
@@ -17409,7 +19053,7 @@ return (
           <div style={{ fontSize: 42, lineHeight: 1, marginBottom: 10 }}>🏘️</div>
           <p style={{ margin: "0 0 6px", letterSpacing: 2, fontSize: 12, opacity: 0.82 }}>NOGUCHI CORPORATION PRESENTS</p>
           <h1 style={{ margin: "0 0 8px", fontSize: 28, lineHeight: 1.25 }}>箱庭不動産経営<br />シミュレーション</h1>
-          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>Version 108</p>
+          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>Version 116</p>
 
           <div
             style={{
@@ -17628,15 +19272,21 @@ return (
   <div className="popup-log">
     <div className={`popup-log-card employee-gacha-card rarity-${String(employeeGachaResult.rarity || "N").toLowerCase()}`}>
       <div className="gacha-ticket-animation">
-        <span className="gacha-ticket-icon">🎫</span>
+        <span className="gacha-ticket-icon">{employeeGachaResult.awakened ? "🌟" : "🎫"}</span>
         <span className="gacha-ticket-flash">✨</span>
       </div>
-      <h2>{employeeGachaResult.ticketType === "premium" ? "プレミアム社員獲得！" : "社員獲得！"}</h2>
+      <h2>{employeeGachaResult.awakened ? "社員覚醒！" : employeeGachaResult.ticketType === "premium" ? "プレミアム社員採用！" : "社員採用！"}</h2>
       <p className="employee-gacha-rarity">{getRarityLabel(employeeGachaResult.rarity)}</p>
       <h3>{employeeGachaResult.name}</h3>
+      {employeeGachaResult.awakened && (
+        <p className="employee-awakening-result">覚醒 +{employeeGachaResult.beforeAwakening} → +{employeeGachaResult.afterAwakening}</p>
+      )}
       <p>
         統率 {employeeGachaResult.leadership ?? 0} / 営業 {employeeGachaResult.sales ?? 0} / 建築 {employeeGachaResult.construction ?? 0} / 管理 {employeeGachaResult.management ?? 0}
       </p>
+      {employeeGachaResult.awakeningMessages && (
+        <p>{employeeGachaResult.awakeningMessages.join(" / ")}</p>
+      )}
       <p>月給 {renderEmployeeSalaryValue(employeeGachaResult)}</p>
       <p>特殊能力 {getEmployeeSpecialText(employeeGachaResult)}</p>
       <button onClick={() => setEmployeeGachaResult(null)}>OK</button>
@@ -17644,6 +19294,127 @@ return (
   </div>
 )}
 
+{employeeRecruitmentOffer && (
+  <div className="popup-log recruit-popup-stage">
+    <div className="popup-log-card employee-recruitment-card recruit-desk-card">
+      <div className="recruit-desk-decoration recruit-ink-bottle"></div>
+      <div className="recruit-desk-decoration recruit-pen"></div>
+      <div className="recruit-sparkle sparkle-a">✦</div>
+      <div className="recruit-sparkle sparkle-b">✦</div>
+      <div className="recruit-sparkle sparkle-c">✦</div>
+      <div className="recruit-sparkle sparkle-d">✦</div>
+
+      <div className="recruit-title-area">
+        <div className="recruit-ornament">◇</div>
+        <h2>{employeeRecruitmentOffer.ticketType === "premium" ? "プレミアム社員募集" : "社員募集"}</h2>
+        <div className="recruit-ornament">◇</div>
+        <p>履歴書が5通届きました</p>
+      </div>
+
+      <div className="recruit-envelope-grid recruit-envelope-desk-row">
+        {employeeRecruitmentOffer.applicants.map((applicant, index) => {
+          const isNewApplicant = !findOwnedEmployeeById(applicant.id);
+          return (
+            <button
+              key={applicant.envelopeId}
+              type="button"
+              className={`recruit-envelope-card envelope-${applicant.envelopeType} ${applicant.opened ? "opened" : "closed"} ${employeeRecruitmentOffer.selectedEnvelopeId === applicant.envelopeId ? "selected" : ""}`}
+              onClick={() => openRecruitEnvelope(applicant.envelopeId)}
+              aria-label={`履歴書${index + 1}を開封する`}
+            >
+              {isNewApplicant && <span className="recruit-new-stamp envelope-new-stamp">NEW!</span>}
+              <span className="resume-envelope-visual" aria-hidden="true">
+                <span className="resume-envelope-back"></span>
+                <span className="resume-envelope-paper">
+                  <span className="resume-paper-title">履歴書</span>
+                  <span className="resume-paper-line"></span>
+                  <span className="resume-paper-line short"></span>
+                </span>
+                <span className="resume-envelope-flap"></span>
+                <span className="resume-envelope-body"></span>
+                <span className="resume-envelope-logo">NOGUCHI<br />CORP.</span>
+                <span className="resume-envelope-seal"><span className="resume-seal-emblem" aria-hidden="true"></span></span>
+                <span className="resume-envelope-shine"></span>
+              </span>
+              <span className="recruit-applicant-summary">
+                {applicant.opened ? "開封済み" : "タップして確認"}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="recruit-tap-guide">封筒をタップして履歴書を確認してください</div>
+
+      {(() => {
+        const selectedApplicant = employeeRecruitmentOffer.applicants.find((applicant) => applicant.envelopeId === employeeRecruitmentOffer.selectedEnvelopeId);
+        if (!selectedApplicant || !selectedApplicant.opened) {
+          return (
+            <div className="recruit-profile-panel recruit-profile-empty">
+              <div className="recruit-profile-empty-title">まだ履歴書が選択されていません</div>
+              <p>封筒を開くと、ここに応募者のプロフィールと能力が表示されます。</p>
+            </div>
+          );
+        }
+
+        const isNewApplicant = !findOwnedEmployeeById(selectedApplicant.id);
+        const awakeningText = isNewApplicant ? "新規採用" : "所持済み：採用すると覚醒";
+
+        return (
+          <div className="recruit-profile-wrap">
+            <div className="recruit-profile-panel">
+              <div className="recruit-profile-photo">
+                {isNewApplicant && <span className="recruit-new-stamp profile-new-stamp">NEW!</span>}
+                <div className={`recruit-avatar recruit-avatar-${selectedApplicant.gender === "female" ? "female" : "male"}`}>
+                  <span>{selectedApplicant.name.slice(0, 1)}</span>
+                </div>
+              </div>
+
+              <div className="recruit-profile-main">
+                <div className="recruit-profile-header">
+                  <h3>{selectedApplicant.name}</h3>
+                  <div className="recruit-job-and-stars">
+                    <span className="recruit-job-badge">レア度</span>
+                    <span className={`employee-rarity-label rarity-label-${String(selectedApplicant.rarity || "N").toLowerCase()}`}>{getRarityLabel(selectedApplicant.rarity)}</span>
+                  </div>
+                </div>
+
+                <div className="recruit-profile-subrow">
+                  <span>Lv.{selectedApplicant.level ?? 1}</span>
+                  <span>{awakeningText}</span>
+                </div>
+
+                <div className="recruit-stat-grid">
+                  <div><span>統率</span><strong>{selectedApplicant.leadership ?? 0}</strong></div>
+                  <div><span>営業</span><strong>{selectedApplicant.sales ?? 0}</strong></div>
+                  <div><span>建築</span><strong>{selectedApplicant.construction ?? 0}</strong></div>
+                  <div><span>管理</span><strong>{selectedApplicant.management ?? 0}</strong></div>
+                  <div><span>月給</span><strong>{renderEmployeeSalaryValue(selectedApplicant)}</strong></div>
+                </div>
+
+                <div className="recruit-special-box">
+                  <span>特性</span>
+                  <strong>{getEmployeeSpecialText(selectedApplicant)}</strong>
+                </div>
+              </div>
+            </div>
+
+            <div className="recruit-hire-side">
+              <button className="recruit-hire-button" onClick={() => confirmRecruitApplicant(selectedApplicant)}>
+                この社員を採用する
+              </button>
+              <p>※採用できるのは1名のみです</p>
+            </div>
+          </div>
+        );
+      })()}
+
+      <div className="recruit-required-note recruit-required-note-fantasy">
+        採用すると残り4通の履歴書とは縁がなかったことになります。
+      </div>
+    </div>
+  </div>
+)}
 {employeeLevelUpResult && (
   <div className="popup-log">
     <div className="popup-log-card employee-levelup-card">
@@ -17860,7 +19631,7 @@ return (
     <div className="popup-log-card employee-detail-card">
       <h2>社員詳細</h2>
       <h3>{selectedEmployeeDetail.name}</h3>
-      <p>レアリティ：{getRarityLabel(selectedEmployeeDetail.rarity)}</p>
+      <p>レアリティ：{getRarityLabel(selectedEmployeeDetail.rarity)} / 覚醒 +{selectedEmployeeDetail.awakening ?? 0}</p>
       <p>所属：{getCompanyEmployeeOfficeName(selectedEmployeeDetail, selectedEmployeeDetail.isStoredEmployee === true)}</p>
       <p>Lv {selectedEmployeeDetail.level ?? 1} / EXP {selectedEmployeeDetail.exp ?? 0} / 次Lv必要 {getEmployeeRequiredExp(selectedEmployeeDetail.level ?? 1)} / 残り {Math.max(0, getEmployeeRequiredExp(selectedEmployeeDetail.level ?? 1) - (selectedEmployeeDetail.exp ?? 0))}</p>
       <table className="employee-detail-table">
@@ -18962,7 +20733,7 @@ return (
 
     {pendingBranchPlacement && (
       <div className="build-placement-guide">
-        <p>支店を建てる土地を選択中です。行動範囲内で、本社・他支店から7マス以上離れた自分の空き土地をマップでクリックしてください。</p>
+        <p>支店を建てる土地を選択中です。本社・支店の行動範囲内にある自分の空き土地をマップでクリックしてください。近すぎると営業範囲は広がりにくくなります。</p>
         <button
           type="button"
           onClick={() => {
@@ -19102,7 +20873,7 @@ return (
             <span>社員上限: +10人</span>
             <span>営業範囲: 10マス</span>
             <span>条件: 次の支店数 × 5人以上の社員が配属中</span>
-            <span>条件: 本社・他支店から7マス以上離す</span>
+            <span>条件: 本社・支店の行動範囲内の自分の空き土地</span>
             <span>工期: 6ヶ月</span>
           </button>
         </>
