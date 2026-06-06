@@ -2633,3 +2633,689 @@ td {
     padding: 1px 4px !important;
   }
 }
+.recruit-character-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* ===== v124：社員詳細 顔グラ表示 ===== */
+
+.employee-detail-portrait-wrap {
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.employee-detail-portrait-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.employee-detail-portrait-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #eef2ff, #e9d5ff);
+}
+
+.employee-detail-portrait-avatar-male {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+}
+
+.employee-detail-portrait-avatar-female {
+  background: linear-gradient(135deg, #fce7f3, #ddd6fe);
+}
+
+/* ===== v125：社員図鑑・社員詳細カード化 ===== */
+
+.employee-library-panel {
+  width: 100%;
+}
+
+.employee-library-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.employee-library-header h2 {
+  margin: 0 0 6px;
+}
+
+.employee-library-header p {
+  margin: 0;
+  color: #4b5563;
+  font-weight: 700;
+}
+
+.employee-library-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.employee-library-summary-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid #d1d5db;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.employee-library-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 16px;
+}
+
+.employee-library-filter-row button {
+  min-height: 34px !important;
+  padding: 6px 14px !important;
+  font-weight: 900 !important;
+}
+
+.employee-library-filter-row button.active {
+  background: #fff3cd !important;
+  border-color: #f0b429 !important;
+}
+
+.employee-library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.employee-library-card {
+  display: grid !important;
+  grid-template-columns: 72px 1fr;
+  gap: 10px;
+  align-items: center;
+  width: 100% !important;
+  min-height: 112px !important;
+  padding: 10px !important;
+  border-radius: 18px !important;
+  text-align: left !important;
+  background: linear-gradient(135deg, #ffffff, #f8fafc) !important;
+  border: 2px solid #d1d5db !important;
+  overflow: hidden;
+}
+
+.employee-library-card:hover {
+  transform: translateY(-2px);
+}
+
+.employee-library-portrait {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #eef2ff, #e9d5ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  font-weight: 900;
+}
+
+.employee-library-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.employee-library-card-body {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.employee-library-card-body strong {
+  font-size: 15px;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.employee-library-card-body small {
+  color: #4b5563;
+  font-size: 11px;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.employee-library-rarity,
+.employee-detail-rarity-badge {
+  width: fit-content;
+  min-width: 44px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  color: #111;
+  background: #e5e7eb;
+  border: 1px solid #d1d5db;
+}
+
+.rarity-label-hr,
+.employee-library-summary-chip.rarity-hr {
+  background: #dbeafe;
+  border-color: #60a5fa;
+}
+
+.rarity-label-sr,
+.employee-library-summary-chip.rarity-sr {
+  background: #ede9fe;
+  border-color: #a78bfa;
+}
+
+.rarity-label-ssr,
+.employee-library-summary-chip.rarity-ssr {
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.rarity-label-ur,
+.employee-library-summary-chip.rarity-ur {
+  background: linear-gradient(90deg, #fee2e2, #fef3c7, #dcfce7, #dbeafe, #ede9fe);
+  border-color: #a855f7;
+}
+
+.rarity-card-hr {
+  border-color: #60a5fa !important;
+}
+
+.rarity-card-sr {
+  border-color: #a78bfa !important;
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.12) !important;
+}
+
+.rarity-card-ssr {
+  border-color: #f59e0b !important;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.20) !important;
+}
+
+.rarity-card-ur {
+  border-color: transparent !important;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet) border-box !important;
+  box-shadow: 0 8px 26px rgba(126, 87, 194, 0.28) !important;
+}
+
+.employee-detail-card-modern {
+  width: min(92vw, 720px) !important;
+  padding: 0 !important;
+  overflow: auto !important;
+  border-radius: 24px !important;
+}
+
+.employee-detail-hero {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: 22px;
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.employee-detail-main-info h2 {
+  margin: 6px 0 8px;
+  font-size: 20px;
+}
+
+.employee-detail-main-info h3 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  line-height: 1.15;
+}
+
+.employee-detail-main-info p {
+  margin: 5px 0;
+  color: #4b5563;
+  font-weight: 700;
+}
+
+.employee-detail-portrait-wrap {
+  width: 220px;
+  height: 220px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.employee-detail-portrait-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.employee-detail-portrait-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 78px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #eef2ff, #e9d5ff);
+}
+
+.employee-detail-portrait-avatar-male {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+}
+
+.employee-detail-portrait-avatar-female {
+  background: linear-gradient(135deg, #fce7f3, #ddd6fe);
+}
+
+.employee-detail-stat-card {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  padding: 16px 22px;
+}
+
+.employee-detail-stat-card div {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.employee-detail-stat-card span {
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.employee-detail-stat-card strong {
+  color: #111827;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.employee-detail-section-title {
+  margin: 4px 22px 10px !important;
+}
+
+.employee-skill-list-modern {
+  padding: 0 22px 18px;
+}
+
+.employee-skill-item-modern {
+  border: 1px solid #e5e7eb !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  padding: 12px !important;
+  margin-bottom: 8px !important;
+}
+
+.employee-skill-item-modern strong {
+  font-size: 16px;
+}
+
+.employee-skill-item-modern p {
+  margin: 6px 0 0;
+  color: #4b5563;
+}
+
+.employee-detail-close-button {
+  width: calc(100% - 44px) !important;
+  margin: 0 22px 22px !important;
+}
+
+.rarity-detail-ssr .employee-detail-hero {
+  background: linear-gradient(135deg, #fff7ed, #ffffff, #fef3c7);
+}
+
+.rarity-detail-ur .employee-detail-hero {
+  background: linear-gradient(135deg, #fee2e2, #fef3c7, #dcfce7, #dbeafe, #ede9fe);
+}
+
+@media (max-width: 700px) {
+  .employee-library-header {
+    display: grid;
+  }
+
+  .employee-library-summary {
+    justify-content: flex-start;
+  }
+
+  .employee-library-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .employee-detail-hero {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .employee-detail-stat-card {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .employee-detail-stat-card div:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ===== v126：社員図鑑カード簡易ステータス表示 ===== */
+
+.employee-library-card {
+  min-height: 104px;
+}
+
+.employee-library-card-body {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.employee-library-card-body strong {
+  display: block;
+  max-width: 100%;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.employee-library-level-line {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  line-height: 1.2;
+  color: #1f2937;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.employee-library-mini-stats {
+  margin-top: 4px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 6px;
+  font-size: 10px;
+  line-height: 1.15;
+  color: #1f2937;
+  font-weight: 800;
+}
+
+.employee-library-mini-stats span {
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.employee-library-card-body small:not(.employee-library-level-line) {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .employee-library-mini-stats {
+    font-size: 9px;
+    gap: 2px 4px;
+  }
+
+  .employee-library-level-line {
+    font-size: 9px;
+  }
+}
+
+/* ===== v127：社員図鑑カード 角丸控えめ・はみ出し対策 ===== */
+
+.employee-library-grid {
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+.employee-library-card {
+  min-height: 112px !important;
+  border-radius: 22px !important;
+  padding: 12px !important;
+  display: grid !important;
+  grid-template-columns: 82px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: center !important;
+  overflow: hidden !important;
+}
+
+.employee-library-portrait {
+  width: 78px !important;
+  height: 78px !important;
+  min-width: 78px !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+.employee-library-portrait img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.employee-library-portrait span {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 16px !important;
+  font-size: 38px !important;
+  line-height: 1 !important;
+}
+
+.employee-library-card-body {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.employee-library-card-body strong {
+  display: block !important;
+  max-width: 100% !important;
+  margin-bottom: 3px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 15px !important;
+  line-height: 1.15 !important;
+}
+
+.employee-library-rarity {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 42px !important;
+  height: 22px !important;
+  padding: 1px 8px !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+}
+
+.employee-library-level-line {
+  margin-top: 4px !important;
+  font-size: 10px !important;
+  line-height: 1.2 !important;
+}
+
+.employee-library-mini-stats {
+  margin-top: 4px !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 2px 5px !important;
+  font-size: 9px !important;
+  line-height: 1.15 !important;
+}
+
+.employee-library-mini-stats span {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+}
+
+@media (max-width: 700px) {
+  .employee-library-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  .employee-library-card {
+    grid-template-columns: 70px minmax(0, 1fr) !important;
+    gap: 9px !important;
+    padding: 10px !important;
+    border-radius: 18px !important;
+  }
+
+  .employee-library-portrait {
+    width: 66px !important;
+    height: 66px !important;
+    min-width: 66px !important;
+    border-radius: 14px !important;
+  }
+
+  .employee-library-card-body strong {
+    font-size: 13px !important;
+  }
+
+  .employee-library-mini-stats {
+    font-size: 8px !important;
+  }
+}
+
+/* ===== v128：社員メニュー統合・採用ボタン演出・社員詳細整理 ===== */
+
+.employee-subnav-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 14px;
+}
+
+.employee-subnav-row button {
+  min-height: 34px !important;
+  padding: 6px 14px !important;
+  border-radius: 999px !important;
+  border: 1px solid #cfd8dc !important;
+  background: linear-gradient(180deg, #ffffff, #f5f8f6) !important;
+  color: #123524 !important;
+  font-weight: 900 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+}
+
+.employee-subnav-row button.active {
+  color: #ffffff !important;
+  border-color: #0f5132 !important;
+  background: linear-gradient(135deg, #0f5132, #146c43) !important;
+}
+
+.employee-library-subnav-row {
+  margin-top: 6px;
+  margin-bottom: 8px;
+}
+
+.employee-ticket-button {
+  position: relative;
+  overflow: hidden;
+  min-height: 54px !important;
+  border-radius: 999px !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+}
+
+.employee-ticket-button::after {
+  content: "✦";
+  position: absolute;
+  right: 14px;
+  top: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  animation: employeeTicketSparkle 1.2s ease-in-out infinite alternate;
+}
+
+.normal-ticket-button:not(:disabled) {
+  color: #ffffff !important;
+  border-color: #0f5132 !important;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.55), transparent 24%),
+    linear-gradient(135deg, #0f5132, #198754) !important;
+  box-shadow: 0 0 18px rgba(25, 135, 84, 0.32) !important;
+}
+
+.premium-ticket-button:not(:disabled) {
+  color: #3b2200 !important;
+  border-color: #f0b429 !important;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.8), transparent 24%),
+    linear-gradient(135deg, #fff3cd, #ffd166, #ffb703) !important;
+  box-shadow: 0 0 22px rgba(255, 193, 7, 0.42) !important;
+}
+
+@keyframes employeeTicketSparkle {
+  from {
+    transform: scale(0.9) rotate(-8deg);
+    opacity: 0.45;
+  }
+  to {
+    transform: scale(1.25) rotate(8deg);
+    opacity: 1;
+  }
+}
+
+.employee-detail-main-info h2 {
+  display: none !important;
+}
+
+.employee-detail-card,
+.employee-detail-main-info {
+  border-radius: 22px;
+}
+
+.employee-detail-main-info h3 {
+  margin-top: 2px !important;
+  margin-bottom: 8px !important;
+  font-size: clamp(22px, 3vw, 34px) !important;
+  line-height: 1.15 !important;
+}
+
+@media (max-width: 700px) {
+  .employee-subnav-row {
+    gap: 6px;
+  }
+
+  .employee-subnav-row button {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 120px;
+  }
+
+  .employee-ticket-button {
+    font-size: 13px !important;
+    min-height: 48px !important;
+  }
+}

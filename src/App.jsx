@@ -713,8349 +713,5856 @@ const BUILDING_CATEGORIES = [
 ];
 
 const EMPLOYEE_POOL = [
-{
-id: 1,
-name: "森 誠",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 34,
-construction: 37,
-management: 45,
-salary: 19,
-specialNames: []
-},
-
-{
-id: 2,
-name: "神谷 陽介",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 28,
-construction: 38,
-management: 41,
-salary: 26,
-specialNames: []
-},
-
-{
-id: 3,
-name: "市川 凛",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 25,
-sales: 44,
-construction: 40,
-management: 45,
-salary: 21,
-specialNames: [
-"飽き性",
-]
-},
-
-{
-id: 4,
-name: "千葉 美穂",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 40,
-construction: 26,
-management: 35,
-salary: 30,
-specialNames: [
-"飽き性",
-]
-},
-
-{
-id: 5,
-name: "斎藤 誠",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 28,
-sales: 40,
-construction: 34,
-management: 31,
-salary: 27,
-specialNames: [
-"現場嫌い",
-]
-},
-
-{
-id: 6,
-name: "内藤 翔",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 40,
-construction: 39,
-management: 33,
-salary: 20,
-specialNames: [
-"慎重すぎる",
-]
-},
-
-{
-id: 7,
-name: "水野 樹",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 40,
-construction: 44,
-management: 29,
-salary: 27,
-specialNames: []
-},
-
-{
-id: 8,
-name: "川崎 花子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 44,
-construction: 25,
-management: 33,
-salary: 30,
-specialNames: []
-},
-
-{
-id: 9,
-name: "片山 仁",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 38,
-construction: 45,
-management: 44,
-salary: 18,
-specialNames: []
-},
-
-{
-id: 10,
-name: "久保田 悠人",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 32,
-construction: 35,
-management: 44,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 11,
-name: "上田 隆弘",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 29,
-construction: 34,
-management: 36,
-salary: 18,
-specialNames: [
-"遅刻癖",
-]
-},
-
-{
-id: 12,
-name: "浅井 太一",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 28,
-sales: 32,
-construction: 42,
-management: 38,
-salary: 27,
-specialNames: [
-"見栄っ張り",
-]
-},
-
-{
-id: 13,
-name: "ミラー ナタリー",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 44,
-construction: 30,
-management: 36,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 14,
-name: "岩田 さくら",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 40,
-construction: 28,
-management: 42,
-salary: 22,
-specialNames: [
-"報連相不足",
-]
-},
-
-{
-id: 15,
-name: "田中 海斗",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 25,
-construction: 27,
-management: 25,
-salary: 27,
-specialNames: [
-"遅刻癖",
-]
-},
-
-{
-id: 16,
-name: "酒井 祐奈",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 32,
-construction: 25,
-management: 30,
-salary: 29,
-specialNames: [
-"気分屋",
-]
-},
-
-{
-id: 17,
-name: "松田 早苗",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 43,
-sales: 40,
-construction: 41,
-management: 45,
-salary: 30,
-specialNames: []
-},
-
-{
-id: 18,
-name: "小林 一樹",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 37,
-construction: 33,
-management: 25,
-salary: 21,
-specialNames: [
-"浪費家",
-]
-},
-
-{
-id: 19,
-name: "新井 莉子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 40,
-construction: 40,
-management: 40,
-salary: 18,
-specialNames: [
-"見栄っ張り",
-]
-},
-
-{
-id: 20,
-name: "竹田 琴音",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 26,
-sales: 31,
-construction: 37,
-management: 41,
-salary: 17,
-specialNames: [
-"抱え込み",
-]
-},
-
-{
-id: 21,
-name: "藤田 佳奈",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 28,
-sales: 45,
-construction: 37,
-management: 44,
-salary: 30,
-specialNames: [
-"設備音痴",
-]
-},
-
-{
-id: 22,
-name: "丹羽 源",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 27,
-construction: 43,
-management: 39,
-salary: 22,
-specialNames: [
-"朝が弱い",
-]
-},
-
-{
-id: 23,
-name: "内藤 朝陽",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 31,
-sales: 45,
-construction: 45,
-management: 43,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 24,
-name: "榊原 心春",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 38,
-sales: 40,
-construction: 27,
-management: 41,
-salary: 21,
-specialNames: [
-"交渉下手",
-]
-},
-
-{
-id: 25,
-name: "神谷 夏帆",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 27,
-construction: 41,
-management: 43,
-salary: 19,
-specialNames: [
-"慎重すぎる",
-]
-},
-
-{
-id: 26,
-name: "宮本 慎吾",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 25,
-construction: 31,
-management: 43,
-salary: 23,
-specialNames: []
-},
-
-{
-id: 27,
-name: "藤原 健二",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 38,
-construction: 30,
-management: 38,
-salary: 21,
-specialNames: [
-"抱え込み",
-]
-},
-
-{
-id: 28,
-name: "青木 愛",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 37,
-construction: 29,
-management: 45,
-salary: 27,
-specialNames: [
-"交渉下手",
-]
-},
-
-{
-id: 29,
-name: "浅井 遥",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 44,
-construction: 35,
-management: 41,
-salary: 30,
-specialNames: [
-"気分屋",
-]
-},
-
-{
-id: 30,
-name: "水野 結衣",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 28,
-sales: 44,
-construction: 44,
-management: 38,
-salary: 15,
-specialNames: []
-},
-
-{
-id: 31,
-name: "辻 祐奈",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 36,
-construction: 39,
-management: 39,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 32,
-name: "鈴木 達也",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 25,
-construction: 45,
-management: 25,
-salary: 21,
-specialNames: [
-"抱え込み",
-]
-},
-
-{
-id: 33,
-name: "西村 透",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 39,
-construction: 36,
-management: 42,
-salary: 21,
-specialNames: [
-"数字が苦手",
-]
-},
-
-{
-id: 34,
-name: "稲垣 亜美",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 36,
-construction: 34,
-management: 27,
-salary: 21,
-specialNames: [
-"整理下手",
-]
-},
-
-{
-id: 35,
-name: "内田 陽介",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 28,
-sales: 36,
-construction: 45,
-management: 40,
-salary: 27,
-specialNames: [
-"整理下手",
-]
-},
-
-{
-id: 36,
-name: "尾崎 早苗",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 29,
-sales: 30,
-construction: 36,
-management: 37,
-salary: 19,
-specialNames: [
-"朝が弱い",
-]
-},
-
-{
-id: 37,
-name: "シュミット ハナ",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 28,
-sales: 38,
-construction: 36,
-management: 26,
-salary: 17,
-specialNames: []
-},
-
-{
-id: 38,
-name: "ブラウン アレックス",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 26,
-sales: 31,
-construction: 29,
-management: 43,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 39,
-name: "水谷 大地",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 37,
-construction: 45,
-management: 32,
-salary: 17,
-specialNames: [
-"詰めが甘い",
-]
-},
-
-{
-id: 40,
-name: "片岡 奈々",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 36,
-construction: 35,
-management: 27,
-salary: 15,
-specialNames: [
-"慎重すぎる",
-]
-},
-
-{
-id: 41,
-name: "内藤 美琴",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 44,
-construction: 25,
-management: 36,
-salary: 15,
-specialNames: [
-"飽き性",
-]
-},
-
-{
-id: 42,
-name: "森 亜美",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 45,
-construction: 29,
-management: 43,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 43,
-name: "松井 慶太",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 41,
-construction: 36,
-management: 44,
-salary: 27,
-specialNames: [
-"空回り",
-]
-},
-
-{
-id: 44,
-name: "西田 陽菜",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 31,
-sales: 42,
-construction: 40,
-management: 31,
-salary: 27,
-specialNames: [
-"押しが弱い",
-]
-},
-
-{
-id: 45,
-name: "榊原 柚葉",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 29,
-sales: 45,
-construction: 40,
-management: 31,
-salary: 27,
-specialNames: []
-},
-
-{
-id: 46,
-name: "東 葵",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 25,
-construction: 27,
-management: 41,
-salary: 16,
-specialNames: []
-},
-
-{
-id: 47,
-name: "永井 綾乃",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 28,
-construction: 39,
-management: 45,
-salary: 18,
-specialNames: []
-},
-
-{
-id: 48,
-name: "松田 颯太",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 30,
-construction: 33,
-management: 32,
-salary: 16,
-specialNames: [
-"気分屋",
-]
-},
-
-{
-id: 49,
-name: "畑中 紬",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 28,
-sales: 29,
-construction: 36,
-management: 27,
-salary: 20,
-specialNames: []
-},
-
-{
-id: 50,
-name: "久保田 修",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 34,
-construction: 43,
-management: 40,
-salary: 24,
-specialNames: [
-"飽き性",
-]
-},
-
-{
-id: 51,
-name: "ガルシア オリバー",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 30,
-sales: 39,
-construction: 29,
-management: 36,
-salary: 16,
-specialNames: []
-},
-
-{
-id: 52,
-name: "早川 湊",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 38,
-sales: 44,
-construction: 37,
-management: 37,
-salary: 18,
-specialNames: []
-},
-
-{
-id: 53,
-name: "内藤 彩乃",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 38,
-sales: 35,
-construction: 29,
-management: 43,
-salary: 30,
-specialNames: [
-"短気",
-]
-},
-
-{
-id: 54,
-name: "山口 乃愛",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 35,
-construction: 43,
-management: 42,
-salary: 19,
-specialNames: [
-"短気",
-]
-},
-
-{
-id: 55,
-name: "服部 梨花",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 35,
-sales: 35,
-construction: 41,
-management: 45,
-salary: 25,
-specialNames: [
-"設備音痴",
-]
-},
-
-{
-id: 56,
-name: "川口 美月",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 35,
-sales: 33,
-construction: 27,
-management: 38,
-salary: 15,
-specialNames: [
-"朝が弱い",
-]
-},
-
-{
-id: 57,
-name: "ビアンキ アレックス",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 36,
-construction: 36,
-management: 25,
-salary: 20,
-specialNames: []
-},
-
-{
-id: 58,
-name: "吉村 美穂",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 39,
-construction: 39,
-management: 44,
-salary: 22,
-specialNames: []
-},
-
-{
-id: 59,
-name: "水谷 義弘",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 30,
-sales: 39,
-construction: 45,
-management: 32,
-salary: 30,
-specialNames: [
-"慎重すぎる",
-]
-},
-
-{
-id: 60,
-name: "中川 乃愛",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 45,
-construction: 25,
-management: 34,
-salary: 15,
-specialNames: [
-"設備音痴",
-]
-},
-
-{
-id: 61,
-name: "パク ダニエル",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 43,
-construction: 33,
-management: 29,
-salary: 19,
-specialNames: [
-"空回り",
-]
-},
-
-{
-id: 62,
-name: "小松 美和",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 25,
-construction: 39,
-management: 45,
-salary: 29,
-specialNames: []
-},
-
-{
-id: 63,
-name: "久保 修",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 38,
-sales: 41,
-construction: 27,
-management: 44,
-salary: 21,
-specialNames: [
-"短気",
-]
-},
-
-{
-id: 64,
-name: "工藤 乃愛",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 30,
-construction: 34,
-management: 30,
-salary: 26,
-specialNames: []
-},
-
-{
-id: 65,
-name: "斎藤 里奈",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 38,
-construction: 33,
-management: 45,
-salary: 23,
-specialNames: []
-},
-
-{
-id: 66,
-name: "水野 美月",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 29,
-sales: 35,
-construction: 27,
-management: 35,
-salary: 19,
-specialNames: [
-"空回り",
-]
-},
-
-{
-id: 67,
-name: "伊藤 明日香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 31,
-construction: 29,
-management: 34,
-salary: 30,
-specialNames: []
-},
-
-{
-id: 68,
-name: "近藤 菜月",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 41,
-construction: 28,
-management: 39,
-salary: 15,
-specialNames: []
-},
-
-{
-id: 69,
-name: "森本 杏",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 32,
-construction: 25,
-management: 45,
-salary: 20,
-specialNames: []
-},
-
-{
-id: 70,
-name: "田島 千尋",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 45,
-construction: 35,
-management: 32,
-salary: 15,
-specialNames: []
-},
-
-{
-id: 71,
-name: "渡辺 達也",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 43,
-sales: 31,
-construction: 27,
-management: 39,
-salary: 24,
-specialNames: [
-"整理下手",
-]
-},
-
-{
-id: 72,
-name: "ガルシア リー",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 30,
-sales: 27,
-construction: 45,
-management: 35,
-salary: 19,
-specialNames: [
-"報連相不足",
-]
-},
-
-{
-id: 73,
-name: "中村 遼",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 25,
-sales: 38,
-construction: 37,
-management: 32,
-salary: 28,
-specialNames: [
-"気分屋",
-]
-},
-
-{
-id: 74,
-name: "石井 真央",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 35,
-sales: 37,
-construction: 37,
-management: 37,
-salary: 28,
-specialNames: []
-},
-
-{
-id: 75,
-name: "中山 真由",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 43,
-construction: 25,
-management: 30,
-salary: 30,
-specialNames: []
-},
-
-{
-id: 76,
-name: "山口 帆波",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 35,
-sales: 26,
-construction: 33,
-management: 45,
-salary: 29,
-specialNames: [
-"浪費家",
-]
-},
-
-{
-id: 77,
-name: "三浦 直美",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 45,
-construction: 34,
-management: 28,
-salary: 25,
-specialNames: []
-},
-
-{
-id: 78,
-name: "林 美月",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 38,
-construction: 33,
-management: 30,
-salary: 24,
-specialNames: [
-"遅刻癖",
-]
-},
-
-{
-id: 79,
-name: "永井 美咲",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 41,
-construction: 39,
-management: 44,
-salary: 21,
-specialNames: [
-"朝が弱い",
-]
-},
-
-{
-id: 80,
-name: "石井 美和",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 25,
-sales: 35,
-construction: 38,
-management: 33,
-salary: 18,
-specialNames: []
-},
-
-{
-id: 81,
-name: "滝沢 陽菜",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 31,
-sales: 25,
-construction: 44,
-management: 42,
-salary: 26,
-specialNames: []
-},
-
-{
-id: 82,
-name: "浅井 智子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 45,
-construction: 38,
-management: 38,
-salary: 17,
-specialNames: [
-"見栄っ張り",
-]
-},
-
-{
-id: 83,
-name: "デイビス サミュエル",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 26,
-sales: 42,
-construction: 43,
-management: 25,
-salary: 17,
-specialNames: []
-},
-
-{
-id: 84,
-name: "小松 久美",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 31,
-construction: 37,
-management: 41,
-salary: 16,
-specialNames: []
-},
-
-{
-id: 85,
-name: "尾崎 由佳",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 38,
-construction: 25,
-management: 34,
-salary: 23,
-specialNames: [
-"短気",
-]
-},
-
-{
-id: 86,
-name: "坂本 友香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 25,
-sales: 28,
-construction: 36,
-management: 29,
-salary: 26,
-specialNames: [
-"気分屋",
-]
-},
-
-{
-id: 87,
-name: "高島 光一",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 26,
-construction: 30,
-management: 41,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 88,
-name: "和田 真央",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 26,
-sales: 25,
-construction: 30,
-management: 31,
-salary: 20,
-specialNames: []
-},
-
-{
-id: 89,
-name: "酒井 絵里",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 25,
-construction: 34,
-management: 45,
-salary: 22,
-specialNames: [
-"交渉下手",
-]
-},
-
-{
-id: 90,
-name: "土屋 慶太",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 32,
-construction: 31,
-management: 25,
-salary: 25,
-specialNames: []
-},
-
-{
-id: 91,
-name: "ミュラー アンナ",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 25,
-construction: 40,
-management: 45,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 92,
-name: "小島 春香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 29,
-sales: 32,
-construction: 45,
-management: 29,
-salary: 30,
-specialNames: [
-"飽き性",
-]
-},
-
-{
-id: 93,
-name: "山崎 颯太",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 32,
-construction: 35,
-management: 40,
-salary: 29,
-specialNames: []
-},
-
-{
-id: 94,
-name: "小池 美和",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 25,
-construction: 31,
-management: 39,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 95,
-name: "平野 恵",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 35,
-construction: 42,
-management: 27,
-salary: 19,
-specialNames: [
-"遅刻癖",
-]
-},
-
-{
-id: 96,
-name: "中川 仁",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 45,
-construction: 27,
-management: 31,
-salary: 24,
-specialNames: [
-"見栄っ張り",
-]
-},
-
-{
-id: 97,
-name: "島田 誠",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 30,
-construction: 42,
-management: 25,
-salary: 16,
-specialNames: [
-"押しが弱い",
-]
-},
-
-{
-id: 98,
-name: "上田 修",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 32,
-construction: 32,
-management: 26,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 99,
-name: "古川 佳奈",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 26,
-construction: 28,
-management: 45,
-salary: 19,
-specialNames: [
-"詰めが甘い",
-]
-},
-
-{
-id: 100,
-name: "吉村 匠",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 25,
-construction: 40,
-management: 33,
-salary: 19,
-specialNames: []
-},
-
-{
-id: 101,
-name: "藤本 義弘",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 35,
-sales: 28,
-construction: 32,
-management: 28,
-salary: 26,
-specialNames: []
-},
-
-{
-id: 102,
-name: "坂口 修",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 28,
-sales: 37,
-construction: 25,
-management: 38,
-salary: 23,
-specialNames: [
-"朝が弱い",
-]
-},
-
-{
-id: 103,
-name: "森 美穂",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 29,
-sales: 39,
-construction: 27,
-management: 35,
-salary: 21,
-specialNames: [
-"慎重すぎる",
-]
-},
-
-{
-id: 104,
-name: "安藤 景子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 29,
-sales: 39,
-construction: 42,
-management: 42,
-salary: 19,
-specialNames: []
-},
-
-{
-id: 105,
-name: "後藤 晴翔",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 26,
-sales: 31,
-construction: 42,
-management: 40,
-salary: 20,
-specialNames: [
-"遅刻癖",
-]
-},
-
-{
-id: 106,
-name: "竹内 英明",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 37,
-construction: 45,
-management: 35,
-salary: 16,
-specialNames: [
-"見栄っ張り",
-]
-},
-
-{
-id: 107,
-name: "若松 香織",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 30,
-sales: 30,
-construction: 44,
-management: 42,
-salary: 30,
-specialNames: []
-},
-
-{
-id: 108,
-name: "岡田 啓太",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 25,
-construction: 33,
-management: 43,
-salary: 30,
-specialNames: []
-},
-
-{
-id: 109,
-name: "河合 遥",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 31,
-construction: 33,
-management: 29,
-salary: 27,
-specialNames: []
-},
-
-{
-id: 110,
-name: "若松 英明",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 35,
-construction: 37,
-management: 43,
-salary: 27,
-specialNames: [
-"短気",
-]
-},
-
-{
-id: 111,
-name: "杉浦 智久",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 40,
-construction: 32,
-management: 30,
-salary: 26,
-specialNames: [
-"慎重すぎる",
-]
-},
-
-{
-id: 112,
-name: "山内 菜月",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 26,
-construction: 34,
-management: 36,
-salary: 22,
-specialNames: [
-"書類ミス",
-]
-},
-
-{
-id: 113,
-name: "後藤 悠人",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 34,
-construction: 45,
-management: 25,
-salary: 29,
-specialNames: [
-"抱え込み",
-]
-},
-
-{
-id: 114,
-name: "服部 大地",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 27,
-construction: 40,
-management: 35,
-salary: 23,
-specialNames: []
-},
-
-{
-id: 115,
-name: "堀田 裕子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 39,
-construction: 25,
-management: 31,
-salary: 25,
-specialNames: []
-},
-
-{
-id: 116,
-name: "平田 友香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 25,
-sales: 30,
-construction: 35,
-management: 28,
-salary: 18,
-specialNames: []
-},
-
-{
-id: 117,
-name: "藤田 伸一",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 28,
-sales: 33,
-construction: 31,
-management: 25,
-salary: 29,
-specialNames: []
-},
-
-{
-id: 118,
-name: "川口 彩香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 33,
-construction: 30,
-management: 32,
-salary: 16,
-specialNames: [
-"詰めが甘い",
-]
-},
-
-{
-id: 119,
-name: "堀 雄大",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 33,
-construction: 29,
-management: 31,
-salary: 16,
-specialNames: [
-"詰めが甘い",
-]
-},
-
-{
-id: 120,
-name: "榊原 玲奈",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 42,
-construction: 42,
-management: 45,
-salary: 23,
-specialNames: []
-},
-
-{
-id: 121,
-name: "リー マリア",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 31,
-sales: 36,
-construction: 45,
-management: 34,
-salary: 26,
-specialNames: [
-"押しが弱い",
-]
-},
-
-{
-id: 122,
-name: "林 恵",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 34,
-construction: 32,
-management: 45,
-salary: 15,
-specialNames: []
-},
-
-{
-id: 123,
-name: "小川 智久",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 25,
-sales: 44,
-construction: 45,
-management: 40,
-salary: 23,
-specialNames: []
-},
-
-{
-id: 124,
-name: "谷口 紀子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 37,
-construction: 25,
-management: 34,
-salary: 28,
-specialNames: [
-"数字が苦手",
-]
-},
-
-{
-id: 125,
-name: "上田 絵里",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 25,
-construction: 42,
-management: 44,
-salary: 25,
-specialNames: [
-"飽き性",
-]
-},
-
-{
-id: 126,
-name: "桜井 義弘",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 33,
-construction: 45,
-management: 32,
-salary: 25,
-specialNames: []
-},
-
-{
-id: 127,
-name: "高木 慶太",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 27,
-construction: 45,
-management: 25,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 128,
-name: "清水 真由",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 35,
-sales: 44,
-construction: 32,
-management: 40,
-salary: 26,
-specialNames: [
-"浪費家",
-]
-},
-
-{
-id: 129,
-name: "橋本 実咲",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 42,
-construction: 25,
-management: 34,
-salary: 19,
-specialNames: []
-},
-
-{
-id: 130,
-name: "山田 実咲",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 30,
-sales: 42,
-construction: 33,
-management: 32,
-salary: 18,
-specialNames: [
-"見栄っ張り",
-]
-},
-
-{
-id: 131,
-name: "山田 直樹",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 45,
-construction: 32,
-management: 25,
-salary: 28,
-specialNames: []
-},
-
-{
-id: 132,
-name: "森田 慶太",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 28,
-sales: 45,
-construction: 29,
-management: 41,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 133,
-name: "小川 紀子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 45,
-construction: 27,
-management: 28,
-salary: 20,
-specialNames: []
-},
-
-{
-id: 134,
-name: "マルティン クリス",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 28,
-construction: 32,
-management: 30,
-salary: 30,
-specialNames: [
-"浪費家",
-]
-},
-
-{
-id: 135,
-name: "竹内 直人",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 40,
-construction: 41,
-management: 33,
-salary: 27,
-specialNames: []
-},
-
-{
-id: 136,
-name: "リー アンナ",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 35,
-construction: 27,
-management: 27,
-salary: 21,
-specialNames: [
-"短気",
-]
-},
-
-{
-id: 137,
-name: "杉浦 大輔",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 34,
-construction: 41,
-management: 37,
-salary: 20,
-specialNames: [
-"朝が弱い",
-]
-},
-
-{
-id: 138,
-name: "若松 良",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 43,
-construction: 39,
-management: 36,
-salary: 15,
-specialNames: []
-},
-
-{
-id: 139,
-name: "石井 義弘",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 43,
-construction: 44,
-management: 27,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 140,
-name: "山下 学",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 32,
-construction: 45,
-management: 39,
-salary: 16,
-specialNames: [
-"遅刻癖",
-]
-},
-
-{
-id: 141,
-name: "大西 美琴",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 35,
-construction: 31,
-management: 26,
-salary: 16,
-specialNames: []
-},
-
-{
-id: 142,
-name: "近藤 杏",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 41,
-construction: 30,
-management: 45,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 143,
-name: "リー ミア",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 36,
-construction: 45,
-management: 25,
-salary: 25,
-specialNames: [
-"遅刻癖",
-]
-},
-
-{
-id: 144,
-name: "飯田 春香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 29,
-sales: 39,
-construction: 34,
-management: 34,
-salary: 22,
-specialNames: [
-"報連相不足",
-]
-},
-
-{
-id: 145,
-name: "林 伸一",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 37,
-construction: 43,
-management: 36,
-salary: 23,
-specialNames: [
-"抱え込み",
-]
-},
-
-{
-id: 146,
-name: "菅原 奈々",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 37,
-construction: 39,
-management: 29,
-salary: 18,
-specialNames: [
-"詰めが甘い",
-]
-},
-
-{
-id: 147,
-name: "加藤 大地",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 40,
-construction: 35,
-management: 32,
-salary: 18,
-specialNames: [
-"空回り",
-]
-},
-
-{
-id: 148,
-name: "佐野 琴音",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 35,
-construction: 42,
-management: 33,
-salary: 27,
-specialNames: []
-},
-
-{
-id: 149,
-name: "武田 琴音",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 43,
-construction: 37,
-management: 42,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 150,
-name: "山本 柚葉",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 38,
-construction: 43,
-management: 36,
-salary: 19,
-specialNames: [
-"整理下手",
-]
-},
-
-{
-id: 151,
-name: "永田 蒼空",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 26,
-sales: 39,
-construction: 33,
-management: 27,
-salary: 15,
-specialNames: []
-},
-
-{
-id: 152,
-name: "小松 春香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 43,
-sales: 32,
-construction: 25,
-management: 27,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 153,
-name: "杉山 真希",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 42,
-construction: 41,
-management: 44,
-salary: 28,
-specialNames: []
-},
-
-{
-id: 154,
-name: "福島 翔太",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 43,
-construction: 45,
-management: 25,
-salary: 28,
-specialNames: [
-"数字が苦手",
-]
-},
-
-{
-id: 155,
-name: "神谷 希",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 31,
-sales: 43,
-construction: 36,
-management: 33,
-salary: 20,
-specialNames: []
-},
-
-{
-id: 156,
-name: "藤原 莉子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 39,
-construction: 44,
-management: 29,
-salary: 26,
-specialNames: [
-"設備音痴",
-]
-},
-
-{
-id: 157,
-name: "谷口 健二",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 27,
-construction: 31,
-management: 31,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 158,
-name: "福田 達也",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 37,
-construction: 45,
-management: 44,
-salary: 19,
-specialNames: []
-},
-
-{
-id: 159,
-name: "後藤 友香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 27,
-construction: 27,
-management: 38,
-salary: 29,
-specialNames: [
-"浪費家",
-]
-},
-
-{
-id: 160,
-name: "島田 朝陽",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 35,
-sales: 30,
-construction: 41,
-management: 31,
-salary: 26,
-specialNames: [
-"整理下手",
-]
-},
-
-{
-id: 161,
-name: "中山 久美",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 31,
-construction: 40,
-management: 31,
-salary: 16,
-specialNames: [
-"抱え込み",
-]
-},
-
-{
-id: 162,
-name: "増田 遼",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 38,
-construction: 45,
-management: 43,
-salary: 23,
-specialNames: []
-},
-
-{
-id: 163,
-name: "千葉 楓",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 40,
-construction: 32,
-management: 30,
-salary: 22,
-specialNames: [
-"設備音痴",
-]
-},
-
-{
-id: 164,
-name: "川上 源",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 27,
-construction: 29,
-management: 33,
-salary: 19,
-specialNames: [
-"整理下手",
-]
-},
-
-{
-id: 165,
-name: "福田 隆弘",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 29,
-construction: 44,
-management: 31,
-salary: 21,
-specialNames: [
-"設備音痴",
-]
-},
-
-{
-id: 166,
-name: "ロッシ ミア",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 34,
-construction: 38,
-management: 45,
-salary: 21,
-specialNames: [
-"見栄っ張り",
-]
-},
-
-{
-id: 167,
-name: "渡部 次郎",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 43,
-construction: 31,
-management: 25,
-salary: 26,
-specialNames: []
-},
-
-{
-id: 168,
-name: "小松 健吾",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 29,
-construction: 36,
-management: 26,
-salary: 15,
-specialNames: []
-},
-
-{
-id: 169,
-name: "藤本 凛",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 38,
-sales: 25,
-construction: 38,
-management: 37,
-salary: 21,
-specialNames: [
-"詰めが甘い",
-]
-},
-
-{
-id: 170,
-name: "西田 乃愛",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 30,
-sales: 45,
-construction: 36,
-management: 37,
-salary: 15,
-specialNames: [
-"押しが弱い",
-]
-},
-
-{
-id: 171,
-name: "渡辺 裕子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 34,
-construction: 32,
-management: 25,
-salary: 25,
-specialNames: [
-"見栄っ張り",
-]
-},
-
-{
-id: 172,
-name: "服部 遥",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 38,
-sales: 39,
-construction: 36,
-management: 37,
-salary: 27,
-specialNames: [
-"空回り",
-]
-},
-
-{
-id: 173,
-name: "畑中 朝陽",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 25,
-construction: 45,
-management: 36,
-salary: 17,
-specialNames: [
-"見栄っ張り",
-]
-},
-
-{
-id: 174,
-name: "高木 美和",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 35,
-sales: 40,
-construction: 45,
-management: 42,
-salary: 17,
-specialNames: []
-},
-
-{
-id: 175,
-name: "榊原 大地",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 29,
-construction: 43,
-management: 43,
-salary: 18,
-specialNames: [
-"遅刻癖",
-]
-},
-
-{
-id: 176,
-name: "渡部 信也",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 43,
-sales: 35,
-construction: 32,
-management: 34,
-salary: 30,
-specialNames: [
-"交渉下手",
-]
-},
-
-{
-id: 177,
-name: "佐藤 さくら",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 43,
-sales: 28,
-construction: 42,
-management: 45,
-salary: 22,
-specialNames: []
-},
-
-{
-id: 178,
-name: "野口 三郎",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 39,
-construction: 31,
-management: 42,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 179,
-name: "北村 忠司",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 38,
-sales: 39,
-construction: 36,
-management: 28,
-salary: 17,
-specialNames: []
-},
-
-{
-id: 180,
-name: "高田 由佳",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 43,
-construction: 28,
-management: 31,
-salary: 30,
-specialNames: [
-"詰めが甘い",
-]
-},
-
-{
-id: 181,
-name: "東 悠人",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 40,
-construction: 39,
-management: 31,
-salary: 15,
-specialNames: []
-},
-
-{
-id: 182,
-name: "阿部 剛",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 38,
-sales: 30,
-construction: 45,
-management: 36,
-salary: 20,
-specialNames: []
-},
-
-{
-id: 183,
-name: "和田 静香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 31,
-sales: 37,
-construction: 37,
-management: 45,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 184,
-name: "高田 乃愛",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 42,
-construction: 30,
-management: 42,
-salary: 27,
-specialNames: []
-},
-
-{
-id: 185,
-name: "宮崎 久美",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 34,
-construction: 25,
-management: 35,
-salary: 19,
-specialNames: [
-"気分屋",
-]
-},
-
-{
-id: 186,
-name: "松井 芽衣",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 30,
-sales: 41,
-construction: 41,
-management: 31,
-salary: 20,
-specialNames: []
-},
-
-{
-id: 187,
-name: "渡部 美月",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 29,
-construction: 25,
-management: 35,
-salary: 19,
-specialNames: []
-},
-
-{
-id: 188,
-name: "加藤 千夏",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 32,
-construction: 44,
-management: 29,
-salary: 18,
-specialNames: [
-"数字が苦手",
-]
-},
-
-{
-id: 189,
-name: "阿部 結衣",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 40,
-construction: 25,
-management: 45,
-salary: 17,
-specialNames: [
-"朝が弱い",
-]
-},
-
-{
-id: 190,
-name: "岡崎 清隆",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 42,
-construction: 43,
-management: 39,
-salary: 23,
-specialNames: [
-"数字が苦手",
-]
-},
-
-{
-id: 191,
-name: "川村 悠人",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 38,
-sales: 33,
-construction: 34,
-management: 25,
-salary: 28,
-specialNames: [
-"短気",
-]
-},
-
-{
-id: 192,
-name: "早川 友香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 42,
-construction: 29,
-management: 44,
-salary: 25,
-specialNames: []
-},
-
-{
-id: 193,
-name: "青木 次郎",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 40,
-construction: 33,
-management: 31,
-salary: 29,
-specialNames: []
-},
-
-{
-id: 194,
-name: "関口 颯太",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 25,
-sales: 26,
-construction: 41,
-management: 37,
-salary: 28,
-specialNames: [
-"浪費家",
-]
-},
-
-{
-id: 195,
-name: "近藤 直樹",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 28,
-sales: 38,
-construction: 41,
-management: 27,
-salary: 25,
-specialNames: []
-},
-
-{
-id: 196,
-name: "遠藤 葵",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 36,
-construction: 41,
-management: 30,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 197,
-name: "中村 悟",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 32,
-construction: 45,
-management: 39,
-salary: 29,
-specialNames: [
-"押しが弱い",
-]
-},
-
-{
-id: 198,
-name: "酒井 乃愛",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 28,
-construction: 39,
-management: 30,
-salary: 16,
-specialNames: [
-"数字が苦手",
-]
-},
-
-{
-id: 199,
-name: "酒井 誠",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 25,
-construction: 42,
-management: 38,
-salary: 20,
-specialNames: [
-"遅刻癖",
-]
-},
-
-{
-id: 200,
-name: "清水 葵",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 30,
-sales: 25,
-construction: 40,
-management: 32,
-salary: 21,
-specialNames: [
-"抱え込み",
-]
-},
-
-{
-id: 201,
-name: "杉浦 陽翔",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 30,
-construction: 29,
-management: 40,
-salary: 21,
-specialNames: [
-"見栄っ張り",
-]
-},
-
-{
-id: 202,
-name: "藤井 学",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 38,
-sales: 25,
-construction: 43,
-management: 30,
-salary: 15,
-specialNames: [
-"押しが弱い",
-]
-},
-
-{
-id: 203,
-name: "平野 朋美",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 26,
-construction: 31,
-management: 45,
-salary: 22,
-specialNames: [
-"詰めが甘い",
-]
-},
-
-{
-id: 204,
-name: "清水 愛",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 26,
-sales: 36,
-construction: 41,
-management: 45,
-salary: 30,
-specialNames: []
-},
-
-{
-id: 205,
-name: "柴田 凛",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 28,
-construction: 29,
-management: 30,
-salary: 16,
-specialNames: [
-"現場嫌い",
-]
-},
-
-{
-id: 206,
-name: "丸山 奈々",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 35,
-sales: 45,
-construction: 28,
-management: 30,
-salary: 29,
-specialNames: []
-},
-
-{
-id: 207,
-name: "横山 花子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 35,
-construction: 29,
-management: 32,
-salary: 27,
-specialNames: [
-"報連相不足",
-]
-},
-
-{
-id: 208,
-name: "ジョンソン リナ",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 33,
-construction: 28,
-management: 36,
-salary: 15,
-specialNames: [
-"書類ミス",
-]
-},
-
-{
-id: 209,
-name: "十文字 晴翔",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 36,
-construction: 32,
-management: 25,
-salary: 18,
-specialNames: [
-"抱え込み",
-]
-},
-
-{
-id: 210,
-name: "服部 亜美",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 26,
-construction: 27,
-management: 45,
-salary: 22,
-specialNames: []
-},
-
-{
-id: 211,
-name: "岡本 由佳",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 26,
-construction: 30,
-management: 39,
-salary: 17,
-specialNames: []
-},
-
-{
-id: 212,
-name: "宮崎 綾乃",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 37,
-construction: 45,
-management: 45,
-salary: 19,
-specialNames: []
-},
-
-{
-id: 213,
-name: "西田 三郎",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 42,
-construction: 30,
-management: 34,
-salary: 20,
-specialNames: [
-"詰めが甘い",
-]
-},
-
-{
-id: 214,
-name: "島田 愛",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 29,
-sales: 32,
-construction: 40,
-management: 26,
-salary: 26,
-specialNames: [
-"交渉下手",
-]
-},
-
-{
-id: 215,
-name: "稲垣 典子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 32,
-construction: 31,
-management: 45,
-salary: 19,
-specialNames: []
-},
-
-{
-id: 216,
-name: "島田 湊",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 40,
-construction: 37,
-management: 41,
-salary: 28,
-specialNames: [
-"短気",
-]
-},
-
-{
-id: 217,
-name: "久保 静香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 35,
-construction: 30,
-management: 43,
-salary: 28,
-specialNames: [
-"朝が弱い",
-]
-},
-
-{
-id: 218,
-name: "山田 悠斗",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 25,
-sales: 45,
-construction: 31,
-management: 29,
-salary: 27,
-specialNames: [
-"詰めが甘い",
-]
-},
-
-{
-id: 219,
-name: "大谷 悟",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 36,
-construction: 43,
-management: 37,
-salary: 29,
-specialNames: []
-},
-
-{
-id: 220,
-name: "安田 忠司",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 32,
-construction: 26,
-management: 40,
-salary: 27,
-specialNames: [
-"慎重すぎる",
-]
-},
-
-{
-id: 221,
-name: "東 直人",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 26,
-sales: 41,
-construction: 39,
-management: 36,
-salary: 23,
-specialNames: []
-},
-
-{
-id: 222,
-name: "水野 清隆",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 29,
-construction: 41,
-management: 28,
-salary: 23,
-specialNames: [
-"数字が苦手",
-]
-},
-
-{
-id: 223,
-name: "ワン ジュリアン",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 40,
-construction: 28,
-management: 29,
-salary: 22,
-specialNames: []
-},
-
-{
-id: 224,
-name: "上田 玲央",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 38,
-construction: 25,
-management: 30,
-salary: 30,
-specialNames: []
-},
-
-{
-id: 225,
-name: "山内 花子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 39,
-construction: 33,
-management: 34,
-salary: 17,
-specialNames: []
-},
-
-{
-id: 226,
-name: "宮田 智也",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 35,
-sales: 39,
-construction: 37,
-management: 38,
-salary: 29,
-specialNames: []
-},
-
-{
-id: 227,
-name: "渡辺 竜也",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 39,
-construction: 29,
-management: 35,
-salary: 25,
-specialNames: []
-},
-
-{
-id: 228,
-name: "大島 健二",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 41,
-construction: 39,
-management: 37,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 229,
-name: "伊藤 英明",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 37,
-construction: 30,
-management: 31,
-salary: 27,
-specialNames: [
-"遅刻癖",
-]
-},
-
-{
-id: 230,
-name: "中島 詩織",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 43,
-sales: 42,
-construction: 31,
-management: 26,
-salary: 25,
-specialNames: []
-},
-
-{
-id: 231,
-name: "千葉 真希",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 42,
-construction: 37,
-management: 45,
-salary: 28,
-specialNames: [
-"数字が苦手",
-]
-},
-
-{
-id: 232,
-name: "市川 次郎",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 25,
-construction: 32,
-management: 30,
-salary: 22,
-specialNames: []
-},
-
-{
-id: 233,
-name: "村上 隆弘",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 43,
-construction: 45,
-management: 33,
-salary: 19,
-specialNames: [
-"整理下手",
-]
-},
-
-{
-id: 234,
-name: "酒井 太一",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 37,
-construction: 45,
-management: 26,
-salary: 26,
-specialNames: [
-"報連相不足",
-]
-},
-
-{
-id: 235,
-name: "久保 大輔",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 37,
-construction: 38,
-management: 33,
-salary: 20,
-specialNames: []
-},
-
-{
-id: 236,
-name: "阿部 仁",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 25,
-sales: 30,
-construction: 44,
-management: 44,
-salary: 22,
-specialNames: []
-},
-
-{
-id: 237,
-name: "飯田 義弘",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 25,
-construction: 26,
-management: 42,
-salary: 29,
-specialNames: []
-},
-
-{
-id: 238,
-name: "望月 亮",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 33,
-construction: 44,
-management: 34,
-salary: 19,
-specialNames: [
-"交渉下手",
-]
-},
-
-{
-id: 239,
-name: "小林 真司",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 37,
-construction: 45,
-management: 33,
-salary: 20,
-specialNames: []
-},
-
-{
-id: 240,
-name: "川崎 紬",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 34,
-construction: 34,
-management: 45,
-salary: 17,
-specialNames: []
-},
-
-{
-id: 241,
-name: "原 大和",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 33,
-construction: 35,
-management: 25,
-salary: 16,
-specialNames: []
-},
-
-{
-id: 242,
-name: "ワン オリバー",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 37,
-construction: 27,
-management: 43,
-salary: 30,
-specialNames: []
-},
-
-{
-id: 243,
-name: "杉山 修",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 25,
-sales: 36,
-construction: 30,
-management: 30,
-salary: 24,
-specialNames: [
-"飽き性",
-]
-},
-
-{
-id: 244,
-name: "原田 心春",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 32,
-construction: 26,
-management: 31,
-salary: 23,
-specialNames: [
-"慎重すぎる",
-]
-},
-
-{
-id: 245,
-name: "宮本 真由",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 26,
-sales: 40,
-construction: 35,
-management: 29,
-salary: 16,
-specialNames: [
-"慎重すぎる",
-]
-},
-
-{
-id: 246,
-name: "土屋 玲奈",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 44,
-construction: 39,
-management: 27,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 247,
-name: "原田 千夏",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 36,
-construction: 25,
-management: 40,
-salary: 27,
-specialNames: []
-},
-
-{
-id: 248,
-name: "北村 紀子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 32,
-construction: 43,
-management: 40,
-salary: 18,
-specialNames: []
-},
-
-{
-id: 249,
-name: "杉山 祐介",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 38,
-sales: 45,
-construction: 42,
-management: 29,
-salary: 20,
-specialNames: []
-},
-
-{
-id: 250,
-name: "トラン マルコ",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 25,
-sales: 45,
-construction: 27,
-management: 33,
-salary: 25,
-specialNames: [
-"見栄っ張り",
-]
-},
-
-{
-id: 251,
-name: "近藤 一樹",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 26,
-sales: 44,
-construction: 41,
-management: 42,
-salary: 19,
-specialNames: [
-"報連相不足",
-]
-},
-
-{
-id: 252,
-name: "田村 英明",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 25,
-sales: 29,
-construction: 45,
-management: 41,
-salary: 15,
-specialNames: [
-"押しが弱い",
-]
-},
-
-{
-id: 253,
-name: "ガルシア ダニエル",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 38,
-sales: 36,
-construction: 39,
-management: 40,
-salary: 28,
-specialNames: [
-"抱え込み",
-]
-},
-
-{
-id: 254,
-name: "松井 陽介",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 25,
-sales: 38,
-construction: 42,
-management: 27,
-salary: 15,
-specialNames: []
-},
-
-{
-id: 255,
-name: "菅野 陽翔",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 30,
-sales: 33,
-construction: 39,
-management: 25,
-salary: 28,
-specialNames: []
-},
-
-{
-id: 256,
-name: "樋口 美琴",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 28,
-construction: 27,
-management: 27,
-salary: 27,
-specialNames: [
-"現場嫌い",
-]
-},
-
-{
-id: 257,
-name: "関口 一樹",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 30,
-sales: 31,
-construction: 38,
-management: 38,
-salary: 17,
-specialNames: [
-"飽き性",
-]
-},
-
-{
-id: 258,
-name: "三浦 杏",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 32,
-construction: 28,
-management: 37,
-salary: 27,
-specialNames: [
-"浪費家",
-]
-},
-
-{
-id: 259,
-name: "川口 絵里",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 29,
-sales: 43,
-construction: 28,
-management: 37,
-salary: 22,
-specialNames: [
-"気分屋",
-]
-},
-
-{
-id: 260,
-name: "北村 文也",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 38,
-construction: 45,
-management: 30,
-salary: 23,
-specialNames: []
-},
-
-{
-id: 261,
-name: "片岡 大和",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 44,
-construction: 33,
-management: 28,
-salary: 18,
-specialNames: []
-},
-
-{
-id: 262,
-name: "森 千尋",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 29,
-construction: 38,
-management: 37,
-salary: 20,
-specialNames: [
-"気分屋",
-]
-},
-
-{
-id: 263,
-name: "岡田 彩香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 41,
-construction: 44,
-management: 39,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 264,
-name: "岡崎 紬",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 43,
-sales: 27,
-construction: 31,
-management: 42,
-salary: 28,
-specialNames: [
-"数字が苦手",
-]
-},
-
-{
-id: 265,
-name: "松本 心春",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 39,
-construction: 42,
-management: 29,
-salary: 26,
-specialNames: [
-"押しが弱い",
-]
-},
-
-{
-id: 266,
-name: "渡辺 彩乃",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 28,
-sales: 35,
-construction: 36,
-management: 30,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 267,
-name: "大野 蓮",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 45,
-construction: 34,
-management: 32,
-salary: 25,
-specialNames: [
-"抱え込み",
-]
-},
-
-{
-id: 268,
-name: "川崎 典子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 35,
-construction: 34,
-management: 37,
-salary: 20,
-specialNames: [
-"報連相不足",
-]
-},
-
-{
-id: 269,
-name: "増田 清隆",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 33,
-construction: 31,
-management: 29,
-salary: 27,
-specialNames: [
-"気分屋",
-]
-},
-
-{
-id: 270,
-name: "島田 一樹",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 26,
-construction: 40,
-management: 29,
-salary: 28,
-specialNames: [
-"数字が苦手",
-]
-},
-
-{
-id: 271,
-name: "杉本 静香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 43,
-sales: 27,
-construction: 35,
-management: 36,
-salary: 20,
-specialNames: []
-},
-
-{
-id: 272,
-name: "ビアンキ エミリー",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 27,
-construction: 28,
-management: 45,
-salary: 15,
-specialNames: []
-},
-
-{
-id: 273,
-name: "吉川 遼",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 34,
-sales: 34,
-construction: 38,
-management: 43,
-salary: 28,
-specialNames: []
-},
-
-{
-id: 274,
-name: "中山 智子",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 35,
-sales: 28,
-construction: 38,
-management: 29,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 275,
-name: "石井 遥",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 29,
-sales: 27,
-construction: 42,
-management: 42,
-salary: 17,
-specialNames: []
-},
-
-{
-id: 276,
-name: "田村 俊介",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 28,
-construction: 43,
-management: 26,
-salary: 25,
-specialNames: []
-},
-
-{
-id: 277,
-name: "菅野 悠真",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 27,
-construction: 44,
-management: 37,
-salary: 28,
-specialNames: []
-},
-
-{
-id: 278,
-name: "辻 早苗",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 31,
-construction: 36,
-management: 34,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 279,
-name: "池田 沙織",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 35,
-construction: 29,
-management: 38,
-salary: 29,
-specialNames: []
-},
-
-{
-id: 280,
-name: "ミラー オリバー",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 40,
-construction: 45,
-management: 32,
-salary: 24,
-specialNames: [
-"報連相不足",
-]
-},
-
-{
-id: 281,
-name: "新井 太一",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 40,
-construction: 45,
-management: 32,
-salary: 22,
-specialNames: [
-"押しが弱い",
-]
-},
-
-{
-id: 282,
-name: "柴田 海斗",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 42,
-construction: 35,
-management: 38,
-salary: 24,
-specialNames: []
-},
-
-{
-id: 283,
-name: "十文字 朝陽",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 36,
-sales: 44,
-construction: 43,
-management: 36,
-salary: 25,
-specialNames: []
-},
-
-{
-id: 284,
-name: "太田 春香",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 27,
-construction: 31,
-management: 45,
-salary: 20,
-specialNames: []
-},
-
-{
-id: 285,
-name: "森田 葵",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 37,
-sales: 33,
-construction: 25,
-management: 29,
-salary: 30,
-specialNames: [
-"押しが弱い",
-]
-},
-
-{
-id: 286,
-name: "坂口 克己",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 25,
-construction: 31,
-management: 31,
-salary: 27,
-specialNames: []
-},
-
-{
-id: 287,
-name: "千葉 真司",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 31,
-construction: 31,
-management: 41,
-salary: 23,
-specialNames: []
-},
-
-{
-id: 288,
-name: "岡田 陽翔",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 38,
-construction: 45,
-management: 26,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 289,
-name: "後藤 絵里",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 30,
-sales: 25,
-construction: 41,
-management: 33,
-salary: 19,
-specialNames: [
-"設備音痴",
-]
-},
-
-{
-id: 290,
-name: "山崎 英明",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 33,
-construction: 45,
-management: 31,
-salary: 28,
-specialNames: []
-},
-
-{
-id: 291,
-name: "水野 隆弘",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 29,
-sales: 39,
-construction: 41,
-management: 30,
-salary: 17,
-specialNames: []
-},
-
-{
-id: 292,
-name: "永田 千夏",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 30,
-construction: 42,
-management: 32,
-salary: 30,
-specialNames: []
-},
-
-{
-id: 293,
-name: "川村 達也",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 32,
-sales: 40,
-construction: 32,
-management: 35,
-salary: 17,
-specialNames: []
-},
-
-{
-id: 294,
-name: "ミュラー エマ",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 31,
-sales: 42,
-construction: 25,
-management: 42,
-salary: 29,
-specialNames: []
-},
-
-{
-id: 295,
-name: "村田 直樹",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 39,
-sales: 27,
-construction: 33,
-management: 42,
-salary: 17,
-specialNames: []
-},
-
-{
-id: 296,
-name: "滝沢 千尋",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 44,
-construction: 36,
-management: 45,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 297,
-name: "ロペス カミラ",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 29,
-construction: 29,
-management: 32,
-salary: 30,
-specialNames: [
-"気分屋",
-]
-},
-
-{
-id: 298,
-name: "太田 正人",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 27,
-sales: 26,
-construction: 45,
-management: 32,
-salary: 26,
-specialNames: []
-},
-
-{
-id: 299,
-name: "吉田 直樹",
-gender: "male",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 33,
-sales: 29,
-construction: 43,
-management: 42,
-salary: 21,
-specialNames: []
-},
-
-{
-id: 300,
-name: "吉田 結衣",
-gender: "female",
-rarity: "N",
-level: 1,
-exp: 0,
-leadership: 29,
-sales: 44,
-construction: 31,
-management: 28,
-salary: 15,
-specialNames: [
-"整理下手",
-]
-},
-
-{
-id: 301,
-name: "林 陽子",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 47,
-sales: 54,
-construction: 45,
-management: 50,
-salary: 28,
-specialNames: [
-"カリスマ",
-"弱気",
-]
-},
-
-{
-id: 302,
-name: "高木 清隆",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 46,
-sales: 42,
-construction: 47,
-management: 52,
-salary: 23,
-specialNames: [
-"数字に強い",
-]
-},
-
-{
-id: 303,
-name: "中川 和也",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 56,
-sales: 40,
-construction: 47,
-management: 48,
-salary: 27,
-specialNames: [
-"法務感覚",
-"抱え込み",
-]
-},
-
-{
-id: 304,
-name: "佐藤 大地",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 55,
-sales: 49,
-construction: 60,
-management: 53,
-salary: 33,
-specialNames: [
-"成長株",
-"整理下手",
-]
-},
-
-{
-id: 305,
-name: "渡辺 紬",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 48,
-sales: 49,
-construction: 53,
-management: 48,
-salary: 31,
-specialNames: [
-"原価管理",
-]
-},
-
-{
-id: 306,
-name: "村田 優斗",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 57,
-sales: 50,
-construction: 60,
-management: 54,
-salary: 27,
-specialNames: [
-"入居者目線",
-]
-},
-
-{
-id: 307,
-name: "高島 啓太",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 60,
-sales: 40,
-construction: 59,
-management: 53,
-salary: 30,
-specialNames: [
-"数字に強い",
-"整理下手",
-]
-},
-
-{
-id: 308,
-name: "小野 慎一",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 56,
-sales: 40,
-construction: 55,
-management: 55,
-salary: 32,
-specialNames: [
-"法務感覚",
-"慎重すぎる",
-]
-},
-
-{
-id: 309,
-name: "竹田 梨花",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 53,
-sales: 51,
-construction: 42,
-management: 59,
-salary: 23,
-specialNames: [
-"クレーム処理",
-]
-},
-
-{
-id: 310,
-name: "十文字 匠",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 46,
-construction: 53,
-management: 44,
-salary: 28,
-specialNames: [
-"鉄壁管理",
-"整理下手",
-]
-},
-
-{
-id: 311,
-name: "高橋 夏帆",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 53,
-sales: 60,
-construction: 43,
-management: 56,
-salary: 31,
-specialNames: [
-"数字に強い",
-]
-},
-
-{
-id: 312,
-name: "阿部 海斗",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 47,
-sales: 58,
-construction: 49,
-management: 44,
-salary: 35,
-specialNames: [
-"調整役",
-"慎重すぎる",
-]
-},
-
-{
-id: 313,
-name: "沢田 太郎",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 42,
-construction: 60,
-management: 52,
-salary: 30,
-specialNames: [
-"カリスマ",
-]
-},
-
-{
-id: 314,
-name: "佐野 沙織",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 59,
-sales: 53,
-construction: 40,
-management: 54,
-salary: 30,
-specialNames: [
-"粘り腰",
-]
-},
-
-{
-id: 315,
-name: "千葉 雄大",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 46,
-sales: 50,
-construction: 60,
-management: 58,
-salary: 35,
-specialNames: [
-"客付け名人",
-]
-},
-
-{
-id: 316,
-name: "岩崎 翔",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 56,
-sales: 40,
-construction: 49,
-management: 46,
-salary: 31,
-specialNames: [
-"チーム統率",
-"詰めが甘い",
-]
-},
-
-{
-id: 317,
-name: "マルティン オリビア",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 42,
-construction: 53,
-management: 44,
-salary: 30,
-specialNames: [
-"即断即決",
-]
-},
-
-{
-id: 318,
-name: "山内 剛",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 42,
-construction: 48,
-management: 56,
-salary: 28,
-specialNames: [
-"資金繰り",
-]
-},
-
-{
-id: 319,
-name: "ロッシ サラ",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 59,
-sales: 42,
-construction: 40,
-management: 60,
-salary: 29,
-specialNames: [
-"努力家",
-]
-},
-
-{
-id: 320,
-name: "今井 次郎",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 46,
-sales: 40,
-construction: 45,
-management: 56,
-salary: 30,
-specialNames: [
-"即断即決",
-]
-},
-
-{
-id: 321,
-name: "村田 智子",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 56,
-sales: 57,
-construction: 59,
-management: 60,
-salary: 35,
-specialNames: [
-"一点突破",
-]
-},
-
-{
-id: 322,
-name: "後藤 悟",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 51,
-sales: 49,
-construction: 60,
-management: 59,
-salary: 29,
-specialNames: [
-"家賃査定士",
-]
-},
-
-{
-id: 323,
-name: "今井 直樹",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 43,
-sales: 45,
-construction: 60,
-management: 40,
-salary: 26,
-specialNames: [
-"名工",
-"慎重すぎる",
-]
-},
-
-{
-id: 324,
-name: "松尾 文也",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 49,
-sales: 53,
-construction: 60,
-management: 54,
-salary: 28,
-specialNames: [
-"市場分析",
-]
-},
-
-{
-id: 325,
-name: "福島 美咲",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 52,
-sales: 58,
-construction: 53,
-management: 56,
-salary: 34,
-specialNames: [
-"資金繰り",
-]
-},
-
-{
-id: 326,
-name: "高島 拓也",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 51,
-sales: 59,
-construction: 49,
-management: 45,
-salary: 32,
-specialNames: [
-"カリスマ",
-"慎重すぎる",
-]
-},
-
-{
-id: 327,
-name: "樋口 和也",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 53,
-sales: 52,
-construction: 47,
-management: 52,
-salary: 26,
-specialNames: [
-"数字に強い",
-"慎重すぎる",
-]
-},
-
-{
-id: 328,
-name: "河合 花子",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 58,
-sales: 54,
-construction: 54,
-management: 51,
-salary: 34,
-specialNames: [
-"人脈豊富",
-]
-},
-
-{
-id: 329,
-name: "酒井 優奈",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 53,
-sales: 58,
-construction: 52,
-management: 47,
-salary: 24,
-specialNames: [
-"冷静沈着",
-]
-},
-
-{
-id: 330,
-name: "神谷 祐奈",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 54,
-sales: 42,
-construction: 55,
-management: 52,
-salary: 30,
-specialNames: [
-"即断即決",
-"現場嫌い",
-]
-},
-
-{
-id: 331,
-name: "若松 龍二",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 55,
-sales: 40,
-construction: 44,
-management: 52,
-salary: 31,
-specialNames: [
-"冷静沈着",
-"数字が苦手",
-]
-},
-
-{
-id: 332,
-name: "菊池 慎吾",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 60,
-sales: 48,
-construction: 51,
-management: 40,
-salary: 31,
-specialNames: [
-"スピード対応",
-"現場嫌い",
-]
-},
-
-{
-id: 333,
-name: "川上 由美",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 51,
-sales: 40,
-construction: 42,
-management: 55,
-salary: 27,
-specialNames: [
-"堅実運用",
-"朝が弱い",
-]
-},
-
-{
-id: 334,
-name: "森本 優斗",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 51,
-construction: 55,
-management: 49,
-salary: 21,
-specialNames: [
-"費用圧縮",
-]
-},
-
-{
-id: 335,
-name: "ワン ユナ",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 60,
-sales: 40,
-construction: 56,
-management: 51,
-salary: 30,
-specialNames: [
-"入居者目線",
-"設備音痴",
-]
-},
-
-{
-id: 336,
-name: "林 優奈",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 51,
-sales: 58,
-construction: 55,
-management: 43,
-salary: 20,
-specialNames: [
-"名工",
-]
-},
-
-{
-id: 337,
-name: "平野 奈々",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 52,
-sales: 47,
-construction: 58,
-management: 51,
-salary: 31,
-specialNames: [
-"現場主義",
-"空回り",
-]
-},
-
-{
-id: 338,
-name: "本田 悠斗",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 57,
-sales: 47,
-construction: 40,
-management: 51,
-salary: 32,
-specialNames: [
-"段取り上手",
-]
-},
-
-{
-id: 339,
-name: "菅原 平蔵",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 55,
-sales: 40,
-construction: 60,
-management: 45,
-salary: 24,
-specialNames: [
-"物件再生",
-"設備音痴",
-]
-},
-
-{
-id: 340,
-name: "坂本 湊",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 49,
-construction: 58,
-management: 40,
-salary: 29,
-specialNames: [
-"管理の鬼",
-"弱気",
-]
-},
-
-{
-id: 341,
-name: "久保 雄大",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 52,
-sales: 55,
-construction: 60,
-management: 44,
-salary: 30,
-specialNames: [
-"物件再生",
-"報連相不足",
-]
-},
-
-{
-id: 342,
-name: "岡本 美央",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 48,
-sales: 48,
-construction: 40,
-management: 57,
-salary: 34,
-specialNames: [
-"粘り腰",
-"朝が弱い",
-]
-},
-
-{
-id: 343,
-name: "藤井 真司",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 51,
-sales: 54,
-construction: 56,
-management: 48,
-salary: 23,
-specialNames: [
-"成長株",
-"押しが弱い",
-]
-},
-
-{
-id: 344,
-name: "吉村 亮平",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 49,
-construction: 41,
-management: 49,
-salary: 32,
-specialNames: [
-"鉄壁管理",
-]
-},
-
-{
-id: 345,
-name: "福島 隆弘",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 56,
-sales: 57,
-construction: 54,
-management: 45,
-salary: 33,
-specialNames: [
-"人脈豊富",
-"朝が弱い",
-]
-},
-
-{
-id: 346,
-name: "松井 千尋",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 59,
-sales: 50,
-construction: 53,
-management: 49,
-salary: 28,
-specialNames: [
-"金融感覚",
-"慎重すぎる",
-]
-},
-
-{
-id: 347,
-name: "増田 葵",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 43,
-sales: 49,
-construction: 57,
-management: 51,
-salary: 21,
-specialNames: [
-"軍師",
-]
-},
-
-{
-id: 348,
-name: "村田 朱里",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 53,
-sales: 42,
-construction: 58,
-management: 57,
-salary: 25,
-specialNames: [
-"軍師",
-]
-},
-
-{
-id: 349,
-name: "村上 詩織",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 60,
-sales: 50,
-construction: 44,
-management: 58,
-salary: 35,
-specialNames: [
-"客付け名人",
-]
-},
-
-{
-id: 350,
-name: "高橋 優斗",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 57,
-sales: 45,
-construction: 54,
-management: 59,
-salary: 28,
-specialNames: [
-"段取り上手",
-]
-},
-
-{
-id: 351,
-name: "ビアンキ マリア",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 49,
-sales: 52,
-construction: 47,
-management: 60,
-salary: 29,
-specialNames: [
-"成長株",
-]
-},
-
-{
-id: 352,
-name: "服部 詩織",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 55,
-sales: 46,
-construction: 56,
-management: 57,
-salary: 22,
-specialNames: [
-"段取り上手",
-"気分屋",
-]
-},
-
-{
-id: 353,
-name: "石川 平蔵",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 49,
-sales: 54,
-construction: 59,
-management: 49,
-salary: 22,
-specialNames: [
-"法務感覚",
-"見栄っ張り",
-]
-},
-
-{
-id: 354,
-name: "ワン ジュリア",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 56,
-sales: 46,
-construction: 43,
-management: 43,
-salary: 32,
-specialNames: [
-"原価管理",
-"短気",
-]
-},
-
-{
-id: 355,
-name: "丹羽 龍二",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 59,
-sales: 45,
-construction: 45,
-management: 51,
-salary: 33,
-specialNames: [
-"客付け名人",
-]
-},
-
-{
-id: 356,
-name: "平井 颯太",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 43,
-sales: 60,
-construction: 60,
-management: 48,
-salary: 26,
-specialNames: [
-"家賃査定士",
-"気分屋",
-]
-},
-
-{
-id: 357,
-name: "古川 陽子",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 46,
-sales: 40,
-construction: 57,
-management: 60,
-salary: 30,
-specialNames: [
-"カリスマ",
-"遅刻癖",
-]
-},
-
-{
-id: 358,
-name: "山田 樹",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 41,
-sales: 52,
-construction: 59,
-management: 45,
-salary: 32,
-specialNames: [
-"家主目線",
-"空回り",
-]
-},
-
-{
-id: 359,
-name: "大谷 帆波",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 49,
-sales: 47,
-construction: 54,
-management: 52,
-salary: 33,
-specialNames: [
-"クレーム処理",
-]
-},
-
-{
-id: 360,
-name: "今井 美央",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 60,
-sales: 60,
-construction: 47,
-management: 60,
-salary: 22,
-specialNames: [
-"クレーム処理",
-]
-},
-
-{
-id: 361,
-name: "河野 美月",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 50,
-sales: 51,
-construction: 48,
-management: 49,
-salary: 20,
-specialNames: [
-"集中力",
-"抱え込み",
-]
-},
-
-{
-id: 362,
-name: "村瀬 康平",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 54,
-sales: 45,
-construction: 57,
-management: 46,
-salary: 24,
-specialNames: [
-"原価管理",
-"押しが弱い",
-]
-},
-
-{
-id: 363,
-name: "原 香織",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 47,
-sales: 55,
-construction: 54,
-management: 50,
-salary: 20,
-specialNames: [
-"火消し役",
-]
-},
-
-{
-id: 364,
-name: "内田 竜也",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 48,
-construction: 60,
-management: 42,
-salary: 26,
-specialNames: [
-"カリスマ",
-"見栄っ張り",
-]
-},
-
-{
-id: 365,
-name: "工藤 千尋",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 51,
-construction: 58,
-management: 48,
-salary: 31,
-specialNames: [
-"情報通",
-"朝が弱い",
-]
-},
-
-{
-id: 366,
-name: "北村 帆波",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 53,
-sales: 41,
-construction: 43,
-management: 53,
-salary: 23,
-specialNames: [
-"改善提案",
-"書類ミス",
-]
-},
-
-{
-id: 367,
-name: "シュミット レオン",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 52,
-sales: 57,
-construction: 47,
-management: 47,
-salary: 21,
-specialNames: [
-"法務感覚",
-"報連相不足",
-]
-},
-
-{
-id: 368,
-name: "宮崎 美咲",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 57,
-sales: 54,
-construction: 51,
-management: 53,
-salary: 32,
-specialNames: [
-"職人気質",
-"空回り",
-]
-},
-
-{
-id: 369,
-name: "田中 直人",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 59,
-sales: 49,
-construction: 49,
-management: 48,
-salary: 23,
-specialNames: [
-"費用圧縮",
-"整理下手",
-]
-},
-
-{
-id: 370,
-name: "川口 沙織",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 59,
-sales: 58,
-construction: 46,
-management: 59,
-salary: 33,
-specialNames: [
-"粘り腰",
-]
-},
-
-{
-id: 371,
-name: "中西 葵",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 60,
-construction: 50,
-management: 55,
-salary: 35,
-specialNames: [
-"現場監督",
-]
-},
-
-{
-id: 372,
-name: "菅野 玲央",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 51,
-sales: 60,
-construction: 42,
-management: 57,
-salary: 31,
-specialNames: [
-"入居者目線",
-"設備音痴",
-]
-},
-
-{
-id: 373,
-name: "林 三郎",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 60,
-construction: 44,
-management: 54,
-salary: 21,
-specialNames: [
-"資金繰り",
-]
-},
-
-{
-id: 374,
-name: "西村 三郎",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 54,
-sales: 49,
-construction: 45,
-management: 53,
-salary: 30,
-specialNames: [
-"慎重派",
-]
-},
-
-{
-id: 375,
-name: "矢口 拓海",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 59,
-sales: 56,
-construction: 57,
-management: 54,
-salary: 26,
-specialNames: [
-"現場監督",
-]
-},
-
-{
-id: 376,
-name: "中島 次郎",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 60,
-sales: 56,
-construction: 60,
-management: 47,
-salary: 28,
-specialNames: [
-"図面読み",
-]
-},
-
-{
-id: 377,
-name: "山内 実咲",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 53,
-sales: 51,
-construction: 51,
-management: 59,
-salary: 23,
-specialNames: [
-"即断即決",
-]
-},
-
-{
-id: 378,
-name: "ブラウン ジュリア",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 48,
-sales: 54,
-construction: 42,
-management: 54,
-salary: 24,
-specialNames: [
-"市場分析",
-"押しが弱い",
-]
-},
-
-{
-id: 379,
-name: "中山 祐奈",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 40,
-sales: 58,
-construction: 54,
-management: 50,
-salary: 20,
-specialNames: [
-"調整役",
-"押しが弱い",
-]
-},
-
-{
-id: 380,
-name: "近藤 亮介",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 50,
-sales: 47,
-construction: 53,
-management: 40,
-salary: 27,
-specialNames: [
-"家賃査定士",
-]
-},
-
-{
-id: 381,
-name: "チェン エマ",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 42,
-sales: 47,
-construction: 59,
-management: 50,
-salary: 32,
-specialNames: [
-"家賃査定士",
-"設備音痴",
-]
-},
-
-{
-id: 382,
-name: "グエン エリック",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 54,
-sales: 49,
-construction: 48,
-management: 56,
-salary: 20,
-specialNames: [
-"現場監督",
-]
-},
-
-{
-id: 383,
-name: "宮崎 紀子",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 53,
-sales: 50,
-construction: 46,
-management: 60,
-salary: 25,
-specialNames: [
-"即断即決",
-"空回り",
-]
-},
-
-{
-id: 384,
-name: "大橋 陸",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 48,
-sales: 48,
-construction: 47,
-management: 50,
-salary: 31,
-specialNames: [
-"堅実運用",
-]
-},
-
-{
-id: 385,
-name: "関口 典子",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 57,
-sales: 44,
-construction: 52,
-management: 60,
-salary: 20,
-specialNames: [
-"DIY達人",
-"浪費家",
-]
-},
-
-{
-id: 386,
-name: "石田 彩香",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 51,
-sales: 59,
-construction: 40,
-management: 49,
-salary: 26,
-specialNames: [
-"火消し役",
-"遅刻癖",
-]
-},
-
-{
-id: 387,
-name: "滝沢 平蔵",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 43,
-sales: 49,
-construction: 57,
-management: 57,
-salary: 22,
-specialNames: [
-"空室キラー",
-]
-},
-
-{
-id: 388,
-name: "菊池 一樹",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 60,
-sales: 60,
-construction: 45,
-management: 40,
-salary: 23,
-specialNames: [
-"段取り上手",
-]
-},
-
-{
-id: 389,
-name: "佐野 美央",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 60,
-sales: 55,
-construction: 54,
-management: 51,
-salary: 35,
-specialNames: [
-"原価管理",
-"現場嫌い",
-]
-},
-
-{
-id: 390,
-name: "上田 平蔵",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 46,
-sales: 55,
-construction: 60,
-management: 41,
-salary: 29,
-specialNames: [
-"粘り腰",
-"交渉下手",
-]
-},
-
-{
-id: 391,
-name: "桜井 里奈",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 43,
-sales: 47,
-construction: 50,
-management: 60,
-salary: 32,
-specialNames: [
-"冷静沈着",
-"短気",
-]
-},
-
-{
-id: 392,
-name: "高野 隆弘",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 54,
-sales: 51,
-construction: 60,
-management: 56,
-salary: 23,
-specialNames: [
-"金融感覚",
-"飽き性",
-]
-},
-
-{
-id: 393,
-name: "松本 裕子",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 59,
-sales: 46,
-construction: 59,
-management: 56,
-salary: 28,
-specialNames: [
-"交渉人",
-"現場嫌い",
-]
-},
-
-{
-id: 394,
-name: "チェン アンナ",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 52,
-sales: 52,
-construction: 54,
-management: 49,
-salary: 35,
-specialNames: [
-"段取り上手",
-]
-},
-
-{
-id: 395,
-name: "西村 亮平",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 59,
-construction: 53,
-management: 51,
-salary: 27,
-specialNames: [
-"先読み",
-]
-},
-
-{
-id: 396,
-name: "武田 三郎",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 47,
-sales: 56,
-construction: 60,
-management: 49,
-salary: 21,
-specialNames: [
-"若手育成",
-]
-},
-
-{
-id: 397,
-name: "山崎 恵",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 56,
-sales: 48,
-construction: 43,
-management: 60,
-salary: 35,
-specialNames: [
-"修繕眼",
-"数字が苦手",
-]
-},
-
-{
-id: 398,
-name: "野村 紬",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 59,
-sales: 58,
-construction: 44,
-management: 54,
-salary: 24,
-specialNames: [
-"空室キラー",
-]
-},
-
-{
-id: 399,
-name: "渡部 透",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 54,
-sales: 52,
-construction: 43,
-management: 41,
-salary: 35,
-specialNames: [
-"軍師",
-"遅刻癖",
-]
-},
-
-{
-id: 400,
-name: "斎藤 英明",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 56,
-sales: 52,
-construction: 44,
-management: 54,
-salary: 35,
-specialNames: [
-"改善提案",
-]
-},
-
-{
-id: 401,
-name: "野口 隆弘",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 53,
-sales: 55,
-construction: 51,
-management: 56,
-salary: 34,
-specialNames: [
-"即断即決",
-]
-},
-
-{
-id: 402,
-name: "神谷 雅人",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 60,
-sales: 56,
-construction: 60,
-management: 40,
-salary: 27,
-specialNames: [
-"火消し役",
-"整理下手",
-]
-},
-
-{
-id: 403,
-name: "加藤 さくら",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 43,
-construction: 52,
-management: 54,
-salary: 25,
-specialNames: [
-"交渉人",
-]
-},
-
-{
-id: 404,
-name: "榊原 拓海",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 45,
-sales: 57,
-construction: 50,
-management: 58,
-salary: 25,
-specialNames: [
-"市場分析",
-"詰めが甘い",
-]
-},
-
-{
-id: 405,
-name: "坂本 優奈",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 59,
-sales: 55,
-construction: 56,
-management: 60,
-salary: 34,
-specialNames: [
-"スピード対応",
-"弱気",
-]
-},
-
-{
-id: 406,
-name: "石川 紬",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 47,
-sales: 60,
-construction: 57,
-management: 46,
-salary: 22,
-specialNames: [
-"調整役",
-"詰めが甘い",
-]
-},
-
-{
-id: 407,
-name: "藤本 次郎",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 52,
-sales: 55,
-construction: 56,
-management: 55,
-salary: 29,
-specialNames: [
-"物件再生",
-"設備音痴",
-]
-},
-
-{
-id: 408,
-name: "片岡 英明",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 49,
-sales: 58,
-construction: 53,
-management: 59,
-salary: 30,
-specialNames: [
-"粘り腰",
-"設備音痴",
-]
-},
-
-{
-id: 409,
-name: "小川 美奈子",
-gender: "female",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 57,
-sales: 48,
-construction: 41,
-management: 45,
-salary: 30,
-specialNames: [
-"家賃査定士",
-"抱え込み",
-]
-},
-
-{
-id: 410,
-name: "中山 悠人",
-gender: "male",
-rarity: "R",
-level: 1,
-exp: 0,
-leadership: 44,
-sales: 56,
-construction: 60,
-management: 45,
-salary: 21,
-specialNames: [
-"調整役",
-]
-},
-
-{
-id: 411,
-name: "横山 葵",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 63,
-sales: 71,
-construction: 66,
-management: 69,
-salary: 66,
-specialNames: [
-"鉄壁管理",
-"物件再生",
-]
-},
-
-{
-id: 412,
-name: "川口 芽衣",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 56,
-sales: 68,
-construction: 68,
-management: 75,
-salary: 47,
-specialNames: [
-"堅実運用",
-]
-},
-
-{
-id: 413,
-name: "野村 智子",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 70,
-sales: 59,
-construction: 66,
-management: 58,
-salary: 58,
-specialNames: [
-"修繕眼",
-"段取り上手",
-]
-},
-
-{
-id: 414,
-name: "鈴木 忠司",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 70,
-sales: 63,
-construction: 75,
-management: 59,
-salary: 67,
-specialNames: [
-"調整役",
-]
-},
-
-{
-id: 415,
-name: "藤井 拓海",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 69,
-sales: 75,
-construction: 58,
-management: 69,
-salary: 66,
-specialNames: [
-"スピード対応",
-]
-},
-
-{
-id: 416,
-name: "樋口 拓海",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 72,
-sales: 67,
-construction: 75,
-management: 61,
-salary: 69,
-specialNames: [
-"交渉人",
-]
-},
-
-{
-id: 417,
-name: "中野 直美",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 66,
-sales: 55,
-construction: 72,
-management: 70,
-salary: 68,
-specialNames: [
-"原価管理",
-]
-},
-
-{
-id: 418,
-name: "竹内 樹",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 68,
-sales: 67,
-construction: 59,
-management: 71,
-salary: 49,
-specialNames: [
-"若手育成",
-"入居者目線",
-]
-},
-
-{
-id: 419,
-name: "神谷 亜美",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 68,
-sales: 66,
-construction: 66,
-management: 69,
-salary: 66,
-specialNames: [
-"資金繰り",
-"努力家",
-]
-},
-
-{
-id: 420,
-name: "小野 翔",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 59,
-sales: 66,
-construction: 70,
-management: 56,
-salary: 51,
-specialNames: [
-"職人気質",
-]
-},
-
-{
-id: 421,
-name: "高島 健一",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 60,
-sales: 68,
-construction: 75,
-management: 62,
-salary: 47,
-specialNames: [
-"費用圧縮",
-]
-},
-
-{
-id: 422,
-name: "長谷川 美月",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 56,
-sales: 61,
-construction: 69,
-management: 61,
-salary: 69,
-specialNames: [
-"管理の鬼",
-"広告上手",
-]
-},
-
-{
-id: 423,
-name: "大西 忠司",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 70,
-sales: 65,
-construction: 69,
-management: 57,
-salary: 56,
-specialNames: [
-"カリスマ",
-]
-},
-
-{
-id: 424,
-name: "丸山 翔太",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 61,
-sales: 65,
-construction: 58,
-management: 60,
-salary: 56,
-specialNames: [
-"職人気質",
-"家主目線",
-]
-},
-
-{
-id: 425,
-name: "久保田 啓太",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 70,
-sales: 67,
-construction: 71,
-management: 64,
-salary: 61,
-specialNames: [
-"段取り上手",
-]
-},
-
-{
-id: 426,
-name: "堀 智久",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 65,
-sales: 62,
-construction: 67,
-management: 63,
-salary: 65,
-specialNames: [
-"家賃査定士",
-]
-},
-
-{
-id: 427,
-name: "安田 真司",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 65,
-sales: 63,
-construction: 65,
-management: 57,
-salary: 56,
-specialNames: [
-"火消し役",
-]
-},
-
-{
-id: 428,
-name: "滝沢 拓海",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 67,
-sales: 59,
-construction: 75,
-management: 55,
-salary: 67,
-specialNames: [
-"火消し役",
-"費用圧縮",
-]
-},
-
-{
-id: 429,
-name: "神谷 由美",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 68,
-sales: 75,
-construction: 67,
-management: 74,
-salary: 45,
-specialNames: [
-"一点突破",
-]
-},
-
-{
-id: 430,
-name: "柴田 直樹",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 60,
-sales: 56,
-construction: 60,
-management: 61,
-salary: 64,
-specialNames: [
-"火消し役",
-"調整役",
-]
-},
-
-{
-id: 431,
-name: "内藤 真司",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 74,
-sales: 66,
-construction: 57,
-management: 55,
-salary: 66,
-specialNames: [
-"聞き上手",
-"交渉人",
-]
-},
-
-{
-id: 432,
-name: "宮本 優奈",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 55,
-sales: 71,
-construction: 56,
-management: 57,
-salary: 49,
-specialNames: [
-"スピード対応",
-]
-},
-
-{
-id: 433,
-name: "久保 友香",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 65,
-sales: 56,
-construction: 75,
-management: 65,
-salary: 58,
-specialNames: [
-"一点突破",
-]
-},
-
-{
-id: 434,
-name: "丹羽 圭介",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 68,
-sales: 60,
-construction: 70,
-management: 59,
-salary: 69,
-specialNames: [
-"金融感覚",
-"チーム統率",
-]
-},
-
-{
-id: 435,
-name: "斎藤 陽翔",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 71,
-sales: 73,
-construction: 67,
-management: 65,
-salary: 69,
-specialNames: [
-"情報通",
-"満室請負人",
-]
-},
-
-{
-id: 436,
-name: "久保 紀子",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 58,
-sales: 67,
-construction: 64,
-management: 66,
-salary: 55,
-specialNames: [
-"図面読み",
-"法務感覚",
-]
-},
-
-{
-id: 437,
-name: "渡辺 悠真",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 72,
-sales: 57,
-construction: 75,
-management: 57,
-salary: 65,
-specialNames: [
-"軍師",
-"客付け名人",
-]
-},
-
-{
-id: 438,
-name: "藤原 里奈",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 67,
-sales: 65,
-construction: 72,
-management: 60,
-salary: 68,
-specialNames: [
-"原価管理",
-]
-},
-
-{
-id: 439,
-name: "川上 朝陽",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 58,
-sales: 69,
-construction: 68,
-management: 71,
-salary: 52,
-specialNames: [
-"入居者目線",
-]
-},
-
-{
-id: 440,
-name: "村上 恵",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 59,
-sales: 66,
-construction: 61,
-management: 55,
-salary: 47,
-specialNames: [
-"先読み",
-]
-},
-
-{
-id: 441,
-name: "丹羽 文也",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 74,
-sales: 57,
-construction: 75,
-management: 60,
-salary: 70,
-specialNames: [
-"満室請負人",
-]
-},
-
-{
-id: 442,
-name: "スミス ミア",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 61,
-sales: 71,
-construction: 68,
-management: 70,
-salary: 63,
-specialNames: [
-"物件再生",
-]
-},
-
-{
-id: 443,
-name: "高木 静香",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 63,
-sales: 62,
-construction: 60,
-management: 68,
-salary: 64,
-specialNames: [
-"空室キラー",
-"現場主義",
-]
-},
-
-{
-id: 444,
-name: "菅野 龍二",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 70,
-sales: 73,
-construction: 68,
-management: 58,
-salary: 48,
-specialNames: [
-"慎重派",
-"物件再生",
-]
-},
-
-{
-id: 445,
-name: "新井 清隆",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 72,
-sales: 69,
-construction: 58,
-management: 59,
-salary: 48,
-specialNames: [
-"情報通",
-"段取り上手",
-]
-},
-
-{
-id: 446,
-name: "藤田 典子",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 55,
-sales: 63,
-construction: 65,
-management: 69,
-salary: 50,
-specialNames: [
-"カリスマ",
-]
-},
-
-{
-id: 447,
-name: "丸山 蒼空",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 72,
-sales: 66,
-construction: 64,
-management: 67,
-salary: 69,
-specialNames: [
-"火消し役",
-]
-},
-
-{
-id: 448,
-name: "グエン ソフィア",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 69,
-sales: 68,
-construction: 72,
-management: 65,
-salary: 64,
-specialNames: [
-"費用圧縮",
-]
-},
-
-{
-id: 449,
-name: "奥村 実咲",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 68,
-sales: 69,
-construction: 62,
-management: 71,
-salary: 62,
-specialNames: [
-"慎重派",
-"冷静沈着",
-]
-},
-
-{
-id: 450,
-name: "西村 美琴",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 73,
-sales: 56,
-construction: 65,
-management: 66,
-salary: 54,
-specialNames: [
-"金融感覚",
-"広告上手",
-]
-},
-
-{
-id: 451,
-name: "久保 健吾",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 72,
-sales: 62,
-construction: 61,
-management: 64,
-salary: 53,
-specialNames: [
-"慎重派",
-]
-},
-
-{
-id: 452,
-name: "木下 彩香",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 69,
-sales: 58,
-construction: 55,
-management: 75,
-salary: 67,
-specialNames: [
-"修繕眼",
-"粘り腰",
-]
-},
-
-{
-id: 453,
-name: "池田 さくら",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 72,
-sales: 55,
-construction: 74,
-management: 75,
-salary: 69,
-specialNames: [
-"火消し役",
-"家賃査定士",
-]
-},
-
-{
-id: 454,
-name: "太田 香織",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 60,
-sales: 67,
-construction: 55,
-management: 68,
-salary: 59,
-specialNames: [
-"クレーム処理",
-]
-},
-
-{
-id: 455,
-name: "高田 奈々",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 61,
-sales: 66,
-construction: 59,
-management: 65,
-salary: 47,
-specialNames: [
-"調整役",
-"法人営業",
-]
-},
-
-{
-id: 456,
-name: "安田 源",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 63,
-sales: 66,
-construction: 65,
-management: 66,
-salary: 63,
-specialNames: [
-"家主目線",
-]
-},
-
-{
-id: 457,
-name: "小松 朋美",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 61,
-sales: 73,
-construction: 72,
-management: 73,
-salary: 58,
-specialNames: [
-"火消し役",
-]
-},
-
-{
-id: 458,
-name: "菊池 隆弘",
-gender: "male",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 69,
-sales: 69,
-construction: 67,
-management: 55,
-salary: 58,
-specialNames: [
-"法務感覚",
-"空室キラー",
-]
-},
-
-{
-id: 459,
-name: "山本 朱里",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 69,
-sales: 62,
-construction: 65,
-management: 74,
-salary: 56,
-specialNames: [
-"成長株",
-"家賃査定士",
-]
-},
-
-{
-id: 460,
-name: "吉川 莉子",
-gender: "female",
-rarity: "HR",
-level: 1,
-exp: 0,
-leadership: 66,
-sales: 60,
-construction: 63,
-management: 75,
-salary: 48,
-specialNames: [
-"入居者目線",
-"慎重派",
-]
-},
-
-{
-id: 461,
-name: "久保 香織",
-gender: "female",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 90,
-sales: 86,
-construction: 81,
-management: 86,
-salary: 164,
-specialNames: [
-"調整役",
-"改善提案",
-]
-},
-
-{
-id: 462,
-name: "菊池 光一",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 90,
-sales: 83,
-construction: 84,
-management: 84,
-salary: 130,
-specialNames: [
-"冷静沈着",
-"努力家",
-]
-},
-
-{
-id: 463,
-name: "北村 平蔵",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 76,
-sales: 70,
-construction: 81,
-management: 75,
-salary: 109,
-specialNames: [
-"物件再生",
-"鉄壁管理",
-]
-},
-
-{
-id: 464,
-name: "ウィリアムズ ハナ",
-gender: "female",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 82,
-sales: 82,
-construction: 76,
-management: 87,
-salary: 156,
-specialNames: [
-"家賃査定士",
-"資金繰り",
-]
-},
-
-{
-id: 465,
-name: "ミュラー エレナ",
-gender: "female",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 74,
-sales: 89,
-construction: 86,
-management: 83,
-salary: 185,
-specialNames: [
-"数字に強い",
-"粘り腰",
-]
-},
-
-{
-id: 466,
-name: "古川 亮",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 85,
-sales: 71,
-construction: 81,
-management: 77,
-salary: 134,
-specialNames: [
-"現場主義",
-"情報通",
-]
-},
-
-{
-id: 467,
-name: "増田 大地",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 70,
-sales: 79,
-construction: 90,
-management: 86,
-salary: 181,
-specialNames: [
-"堅実運用",
-"満室請負人",
-]
-},
-
-{
-id: 468,
-name: "中川 夏帆",
-gender: "female",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 89,
-sales: 79,
-construction: 88,
-management: 88,
-salary: 188,
-specialNames: [
-"法務感覚",
-"金融感覚",
-]
-},
-
-{
-id: 469,
-name: "杉山 竜也",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 90,
-sales: 73,
-construction: 74,
-management: 85,
-salary: 102,
-specialNames: [
-"努力家",
-"家主目線",
-]
-},
-
-{
-id: 470,
-name: "金子 湊",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 74,
-sales: 82,
-construction: 73,
-management: 77,
-salary: 173,
-specialNames: [
-"物件再生",
-"冷静沈着",
-]
-},
-
-{
-id: 471,
-name: "ミラー トーマス",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 90,
-sales: 75,
-construction: 74,
-management: 79,
-salary: 126,
-specialNames: [
-"DIY達人",
-"市場分析",
-]
-},
-
-{
-id: 472,
-name: "川村 龍二",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 84,
-sales: 76,
-construction: 76,
-management: 72,
-salary: 162,
-specialNames: [
-"法務感覚",
-"粘り腰",
-]
-},
-
-{
-id: 473,
-name: "関口 剛",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 72,
-sales: 85,
-construction: 86,
-management: 70,
-salary: 141,
-specialNames: [
-"粘り腰",
-"堅実運用",
-]
-},
-
-{
-id: 474,
-name: "岩田 康平",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 74,
-sales: 82,
-construction: 78,
-management: 77,
-salary: 108,
-specialNames: [
-"成長株",
-"費用圧縮",
-]
-},
-
-{
-id: 475,
-name: "ジョーンズ ローラ",
-gender: "female",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 85,
-sales: 88,
-construction: 80,
-management: 86,
-salary: 147,
-specialNames: [
-"数字に強い",
-"クレーム処理",
-]
-},
-
-{
-id: 476,
-name: "戸田 奈々",
-gender: "female",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 85,
-sales: 89,
-construction: 78,
-management: 90,
-salary: 187,
-specialNames: [
-"名工",
-"数字に強い",
-]
-},
-
-{
-id: 477,
-name: "樋口 悟",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 83,
-sales: 74,
-construction: 90,
-management: 70,
-salary: 128,
-specialNames: [
-"管理の鬼",
-"空室キラー",
-]
-},
-
-{
-id: 478,
-name: "中村 圭介",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 84,
-sales: 82,
-construction: 87,
-management: 76,
-salary: 125,
-specialNames: [
-"慎重派",
-"修繕眼",
-]
-},
-
-{
-id: 479,
-name: "横山 亮平",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 77,
-sales: 77,
-construction: 87,
-management: 80,
-salary: 132,
-specialNames: [
-"交渉人",
-"改善提案",
-]
-},
-
-{
-id: 480,
-name: "藤原 さくら",
-gender: "female",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 85,
-sales: 85,
-construction: 86,
-management: 78,
-salary: 168,
-specialNames: [
-"名工",
-"冷静沈着",
-]
-},
-
-{
-id: 481,
-name: "橋本 次郎",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 90,
-sales: 74,
-construction: 90,
-management: 70,
-salary: 133,
-specialNames: [
-"努力家",
-"火消し役",
-]
-},
-
-{
-id: 482,
-name: "ロッシ マルコ",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 83,
-sales: 82,
-construction: 78,
-management: 85,
-salary: 103,
-specialNames: [
-"軍師",
-"現場主義",
-]
-},
-
-{
-id: 483,
-name: "高田 源",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 81,
-sales: 79,
-construction: 90,
-management: 76,
-salary: 160,
-specialNames: [
-"調整役",
-"法人営業",
-]
-},
-
-{
-id: 484,
-name: "松岡 清隆",
-gender: "male",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 76,
-sales: 80,
-construction: 70,
-management: 89,
-salary: 129,
-specialNames: [
-"入居者目線",
-"情報通",
-]
-},
-
-{
-id: 485,
-name: "樋口 朱里",
-gender: "female",
-rarity: "SR",
-level: 1,
-exp: 0,
-leadership: 84,
-sales: 73,
-construction: 79,
-management: 85,
-salary: 123,
-specialNames: [
-"家主目線",
-"集中力",
-]
-},
-
-{
-id: 486,
-name: "藤原 隆弘",
-gender: "male",
-rarity: "SSR",
-level: 1,
-exp: 0,
-leadership: 86,
-sales: 97,
-construction: 100,
-management: 96,
-salary: 459,
-specialNames: [
-"数字に強い",
-"市場分析",
-"超能力者",
-]
-},
-
-{
-id: 487,
-name: "新井 健吾",
-gender: "male",
-rarity: "SSR",
-level: 1,
-exp: 0,
-leadership: 99,
-sales: 85,
-construction: 95,
-management: 88,
-salary: 401,
-specialNames: [
-"家主目線",
-"市場分析",
-"超能力者",
-]
-},
-
-{
-id: 488,
-name: "三浦 久美",
-gender: "female",
-rarity: "SSR",
-level: 1,
-exp: 0,
-leadership: 100,
-sales: 94,
-construction: 89,
-management: 91,
-salary: 493,
-specialNames: [
-"地域密着",
-"法務感覚",
-"絶対交渉権",
-]
-},
-
-{
-id: 489,
-name: "菊池 由美",
-gender: "female",
-rarity: "SSR",
-level: 1,
-exp: 0,
-leadership: 85,
-sales: 99,
-construction: 93,
-management: 93,
-salary: 436,
-specialNames: [
-"原価管理",
-"現場主義",
-"満室神話",
-]
-},
-
-{
-id: 490,
-name: "榊原 静香",
-gender: "female",
-rarity: "SSR",
-level: 1,
-exp: 0,
-leadership: 98,
-sales: 85,
-construction: 93,
-management: 89,
-salary: 406,
-specialNames: [
-"法務感覚",
-"図面読み",
-"王者の査定眼",
-]
-},
-
-{
-id: 491,
-name: "河合 匠",
-gender: "male",
-rarity: "SSR",
-level: 1,
-exp: 0,
-leadership: 92,
-sales: 100,
-construction: 85,
-management: 96,
-salary: 466,
-specialNames: [
-"粘り腰",
-"管理の鬼",
-"超能力者",
-]
-},
-
-{
-id: 492,
-name: "水野 匠",
-gender: "male",
-rarity: "SSR",
-level: 1,
-exp: 0,
-leadership: 98,
-sales: 87,
-construction: 90,
-management: 87,
-salary: 441,
-specialNames: [
-"カリスマ",
-"スピード対応",
-"超能力者",
-]
-},
-
-{
-id: 493,
-name: "石井 英明",
-gender: "male",
-rarity: "SSR",
-level: 1,
-exp: 0,
-leadership: 98,
-sales: 87,
-construction: 98,
-management: 90,
-salary: 380,
-specialNames: [
-"市場分析",
-"段取り上手",
-"満室神話",
-]
-},
-
-{
-id: 494,
-name: "竹田 希",
-gender: "female",
-rarity: "SSR",
-level: 1,
-exp: 0,
-leadership: 91,
-sales: 94,
-construction: 85,
-management: 100,
-salary: 383,
-specialNames: [
-"成長株",
-"現場主義",
-"黄金の人脈",
-]
-},
-
-{
-id: 495,
-name: "金子 由佳",
-gender: "female",
-rarity: "SSR",
-level: 1,
-exp: 0,
-leadership: 89,
-sales: 98,
-construction: 96,
-management: 85,
-salary: 377,
-specialNames: [
-"修繕眼",
-"カリスマ",
-"王者の査定眼",
-]
-},
-
-{
-id: 496,
-name: "沢田 菫",
-gender: "female",
-rarity: "UR",
-level: 1,
-exp: 0,
-leadership: 108,
-sales: 96,
-construction: 97,
-management: 106,
-salary: 670,
-specialNames: [
-"若手育成",
-"軍師",
-"満室請負人",
-"都市開発の覇者",
-]
-},
-
-{
-id: 497,
-name: "新井 紬",
-gender: "female",
-rarity: "UR",
-level: 1,
-exp: 0,
-leadership: 109,
-sales: 110,
-construction: 107,
-management: 105,
-salary: 749,
-specialNames: [
-"市場分析",
-"段取り上手",
-"即断即決",
-"利益の錬金術師",
-]
-},
-
-{
-id: 498,
-name: "西田 慎一",
-gender: "male",
-rarity: "UR",
-level: 1,
-exp: 0,
-leadership: 97,
-sales: 99,
-construction: 101,
-management: 109,
-salary: 747,
-specialNames: [
-"改善提案",
-"家主目線",
-"情報通",
-"黄金の人脈",
-]
-},
-
-{
-id: 499,
-name: "久保 蒼空",
-gender: "male",
-rarity: "UR",
-level: 1,
-exp: 0,
-leadership: 110,
-sales: 100,
-construction: 102,
-management: 95,
-salary: 721,
-specialNames: [
-"鉄壁管理",
-"現場監督",
-"市場分析",
-"再生の魔術師",
-]
-},
-
-{
-id: 500,
-name: "佐野 伸一",
-gender: "male",
-rarity: "UR",
-level: 1,
-exp: 0,
-leadership: 109,
-sales: 95,
-construction: 105,
-management: 95,
-salary: 749,
-specialNames: [
-"物件再生",
-"慎重派",
-"法務感覚",
-"満室神話",
-]
-}
+  {
+    id: 1,
+    name: "青井アリス",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 14,
+    sales: 17,
+    construction: 38,
+    management: 31,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 2,
+    name: "赤城 蒼太",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 38,
+    sales: 22,
+    construction: 15,
+    management: 35,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 3,
+    name: "秋月 葵",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 29,
+    sales: 23,
+    construction: 31,
+    management: 29,
+    salary: 19,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 4,
+    name: "浅倉 茜",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 13,
+    sales: 22,
+    construction: 45,
+    management: 26,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 5,
+    name: "朝比奈 朝陽",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 26,
+    sales: 40,
+    construction: 34,
+    management: 35,
+    salary: 19,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 6,
+    name: "芦田エマ",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 22,
+    sales: 35,
+    construction: 39,
+    management: 27,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 7,
+    name: "アステリア・リージュ",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 44,
+    sales: 47,
+    construction: 30,
+    management: 33,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 8,
+    name: "東野リナ",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 20,
+    sales: 21,
+    construction: 44,
+    management: 44,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 9,
+    name: "天城 明日香",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 21,
+    sales: 28,
+    construction: 29,
+    management: 34,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 10,
+    name: "天野 彩",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 56,
+    sales: 20,
+    construction: 28,
+    management: 17,
+    salary: 22,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 11,
+    name: "有坂 歩",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 38,
+    sales: 14,
+    construction: 24,
+    management: 47,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 12,
+    name: "有馬リア",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 23,
+    sales: 31,
+    construction: 30,
+    management: 39,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 13,
+    name: "安藤 一樹",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 15,
+    sales: 30,
+    construction: 44,
+    management: 20,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 14,
+    name: "飯島 彩花",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 36,
+    sales: 23,
+    construction: 47,
+    management: 32,
+    salary: 18,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 15,
+    name: "飯田 一真",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 31,
+    sales: 39,
+    construction: 32,
+    management: 49,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 16,
+    name: "五十嵐ノア",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 25,
+    sales: 48,
+    construction: 47,
+    management: 22,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 17,
+    name: "池上 彩乃",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 38,
+    sales: 31,
+    construction: 25,
+    management: 13,
+    salary: 19,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 18,
+    name: "池田 綾音",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 25,
+    sales: 30,
+    construction: 27,
+    management: 44,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 19,
+    name: "石上 一翔",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 21,
+    sales: 14,
+    construction: 32,
+    management: 37,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 20,
+    name: "石川 一成",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 13,
+    sales: 15,
+    construction: 22,
+    management: 48,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 21,
+    name: "石橋 伊吹",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 10,
+    sales: 37,
+    construction: 29,
+    management: 28,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 22,
+    name: "石森ミア",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 23,
+    sales: 17,
+    construction: 34,
+    management: 31,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 23,
+    name: "泉 瑛太",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 45,
+    sales: 20,
+    construction: 32,
+    management: 37,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 24,
+    name: "伊勢リオ",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 41,
+    sales: 36,
+    construction: 34,
+    management: 41,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 25,
+    name: "磯部 英司",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 30,
+    sales: 41,
+    construction: 40,
+    management: 27,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 26,
+    name: "市川エレン",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 25,
+    sales: 35,
+    construction: 27,
+    management: 40,
+    salary: 18,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 27,
+    name: "一条 杏",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 35,
+    sales: 36,
+    construction: 30,
+    management: 17,
+    salary: 21,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 28,
+    name: "一ノ瀬 大輝",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 37,
+    sales: 39,
+    construction: 37,
+    management: 27,
+    salary: 22,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 29,
+    name: "伊東 杏奈",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 20,
+    sales: 36,
+    construction: 36,
+    management: 28,
+    salary: 18,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 30,
+    name: "伊吹 伊織",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 37,
+    sales: 34,
+    construction: 44,
+    management: 15,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 31,
+    name: "今井 大地",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 42,
+    sales: 30,
+    construction: 35,
+    management: 48,
+    salary: 23,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 32,
+    name: "岩倉 一華",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 53,
+    sales: 20,
+    construction: 35,
+    management: 20,
+    salary: 22,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 33,
+    name: "岩崎 詩織",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 22,
+    sales: 44,
+    construction: 30,
+    management: 18,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 34,
+    name: "上杉 海斗",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 49,
+    sales: 16,
+    construction: 39,
+    management: 37,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 35,
+    name: "上原 海翔",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 32,
+    sales: 31,
+    construction: 42,
+    management: 48,
+    salary: 22,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 36,
+    name: "宇佐美セリア",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 26,
+    sales: 32,
+    construction: 24,
+    management: 23,
+    salary: 18,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 37,
+    name: "内田 岳",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 27,
+    sales: 30,
+    construction: 25,
+    management: 46,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 38,
+    name: "アステリア・レイン",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 27,
+    sales: 47,
+    construction: 31,
+    management: 32,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 39,
+    name: "梅原 羽月",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 36,
+    sales: 42,
+    construction: 34,
+    management: 38,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 40,
+    name: "江川 奏太",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 29,
+    sales: 19,
+    construction: 46,
+    management: 28,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 41,
+    name: "アステリア・アクア",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 17,
+    sales: 21,
+    construction: 51,
+    management: 18,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 42,
+    name: "アステリア・ミスティ",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 23,
+    sales: 34,
+    construction: 17,
+    management: 30,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 43,
+    name: "江口クララ",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 40,
+    sales: 38,
+    construction: 36,
+    management: 27,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 44,
+    name: "榎本 恭平",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 34,
+    sales: 47,
+    construction: 17,
+    management: 24,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 45,
+    name: "遠藤 圭",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 33,
+    sales: 33,
+    construction: 42,
+    management: 32,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 46,
+    name: "大沢 英里",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 18,
+    sales: 41,
+    construction: 19,
+    management: 28,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 47,
+    name: "大島 圭吾",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 25,
+    sales: 34,
+    construction: 41,
+    management: 26,
+    salary: 17,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 48,
+    name: "大月 健",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 37,
+    sales: 38,
+    construction: 31,
+    management: 15,
+    salary: 19,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 49,
+    name: "大友 恵",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 42,
+    sales: 35,
+    construction: 19,
+    management: 31,
+    salary: 21,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 50,
+    name: "大西 絵里香",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 44,
+    sales: 37,
+    construction: 33,
+    management: 37,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 51,
+    name: "大野 央奈",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 28,
+    sales: 36,
+    construction: 32,
+    management: 29,
+    salary: 19,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 52,
+    name: "岡崎 桜",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 30,
+    sales: 44,
+    construction: 59,
+    management: 19,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 53,
+    name: "アステリア・レクレス",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 36,
+    sales: 14,
+    construction: 31,
+    management: 28,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 54,
+    name: "岡田 健太",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 30,
+    sales: 45,
+    construction: 29,
+    management: 42,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 55,
+    name: "岡野 桜子",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 23,
+    sales: 24,
+    construction: 22,
+    management: 26,
+    salary: 19,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 56,
+    name: "小笠原 音羽",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 39,
+    sales: 44,
+    construction: 40,
+    management: 28,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 57,
+    name: "小川サラ",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 40,
+    sales: 25,
+    construction: 38,
+    management: 40,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 58,
+    name: "奥田 健斗",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 43,
+    sales: 47,
+    construction: 28,
+    management: 27,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 59,
+    name: "小倉 航",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 40,
+    sales: 41,
+    construction: 13,
+    management: 34,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 60,
+    name: "小沢 佳奈",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 38,
+    sales: 18,
+    construction: 21,
+    management: 30,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 61,
+    name: "アステリア・オリヴィア",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 44,
+    sales: 43,
+    construction: 29,
+    management: 16,
+    salary: 19,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 62,
+    name: "小田レイナ",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 13,
+    sales: 28,
+    construction: 35,
+    management: 41,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 63,
+    name: "小野寺 香澄",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 44,
+    sales: 35,
+    construction: 42,
+    management: 25,
+    salary: 22,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 64,
+    name: "アステリア・イリア",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 35,
+    sales: 43,
+    construction: 35,
+    management: 10,
+    salary: 21,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 65,
+    name: "小原 花蓮",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 28,
+    sales: 24,
+    construction: 23,
+    management: 20,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 66,
+    name: "小山 航平",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 27,
+    sales: 16,
+    construction: 31,
+    management: 46,
+    salary: 18,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 67,
+    name: "海藤 希",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 20,
+    sales: 18,
+    construction: 26,
+    management: 31,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 68,
+    name: "香坂 季奈",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 26,
+    sales: 25,
+    construction: 26,
+    management: 27,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 69,
+    name: "風間 光希",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 29,
+    sales: 39,
+    construction: 16,
+    management: 18,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 70,
+    name: "アステリア・ノヴァ",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 47,
+    sales: 24,
+    construction: 14,
+    management: 41,
+    salary: 19,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 71,
+    name: "片桐 康介",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 29,
+    sales: 32,
+    construction: 25,
+    management: 20,
+    salary: 19,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 72,
+    name: "片瀬 孝太郎",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 28,
+    sales: 31,
+    construction: 26,
+    management: 35,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 73,
+    name: "加藤 琴音",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 41,
+    sales: 18,
+    construction: 24,
+    management: 24,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 74,
+    name: "金沢 悟",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 25,
+    sales: 36,
+    construction: 22,
+    management: 33,
+    salary: 18,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 75,
+    name: "神崎 小春",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 42,
+    sales: 41,
+    construction: 48,
+    management: 19,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 76,
+    name: "神谷 朔",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 35,
+    sales: 15,
+    construction: 35,
+    management: 47,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 77,
+    name: "狩野 紗季",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 16,
+    sales: 20,
+    construction: 42,
+    management: 24,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 78,
+    name: "川上 颯",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 54,
+    sales: 35,
+    construction: 23,
+    management: 34,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 79,
+    name: "川島 紗良",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 15,
+    sales: 33,
+    construction: 19,
+    management: 32,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 80,
+    name: "川瀬 咲",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 29,
+    sales: 40,
+    construction: 41,
+    management: 25,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 81,
+    name: "川端 颯太",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 39,
+    sales: 20,
+    construction: 43,
+    management: 41,
+    salary: 23,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 82,
+    name: "アステリア・ルーン",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 19,
+    sales: 15,
+    construction: 22,
+    management: 41,
+    salary: 17,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 83,
+    name: "アステリア・セレス",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 47,
+    sales: 31,
+    construction: 17,
+    management: 15,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 84,
+    name: "河村 咲良",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 10,
+    sales: 38,
+    construction: 41,
+    management: 32,
+    salary: 19,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 85,
+    name: "神田 颯真",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 32,
+    sales: 10,
+    construction: 37,
+    management: 49,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 86,
+    name: "菊池 沙耶",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 43,
+    sales: 44,
+    construction: 35,
+    management: 32,
+    salary: 21,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 87,
+    name: "岸本 修",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 33,
+    sales: 20,
+    construction: 38,
+    management: 14,
+    salary: 18,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 88,
+    name: "アステリア・フィリア",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 21,
+    sales: 39,
+    construction: 31,
+    management: 28,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 89,
+    name: "北川 詩乃",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 27,
+    sales: 32,
+    construction: 25,
+    management: 13,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 90,
+    name: "北条 志穂",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 42,
+    sales: 29,
+    construction: 31,
+    management: 35,
+    salary: 22,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 91,
+    name: "北見 朱里",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 32,
+    sales: 39,
+    construction: 34,
+    management: 42,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 92,
+    name: "木下 隼人",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 13,
+    sales: 51,
+    construction: 18,
+    management: 18,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 93,
+    name: "木島 純奈",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 31,
+    sales: 29,
+    construction: 34,
+    management: 12,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 94,
+    name: "木戸リリア",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 31,
+    sales: 40,
+    construction: 37,
+    management: 37,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 95,
+    name: "霧島 鈴",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 32,
+    sales: 52,
+    construction: 30,
+    management: 35,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 96,
+    name: "桐谷 澄香",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 33,
+    sales: 10,
+    construction: 28,
+    management: 35,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 97,
+    name: "久我 星奈",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 28,
+    sales: 37,
+    construction: 48,
+    management: 33,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 98,
+    name: "草薙 翔",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 21,
+    sales: 26,
+    construction: 43,
+    management: 45,
+    salary: 18,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 99,
+    name: "久保 翔太",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 33,
+    sales: 15,
+    construction: 38,
+    management: 27,
+    salary: 21,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 100,
+    name: "熊谷 翔真",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 26,
+    sales: 32,
+    construction: 26,
+    management: 24,
+    salary: 19,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 101,
+    name: "倉田 新",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 23,
+    sales: 37,
+    construction: 39,
+    management: 24,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 102,
+    name: "黒川 慎",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 38,
+    sales: 31,
+    construction: 36,
+    management: 33,
+    salary: 18,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 103,
+    name: "黒崎マリア",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 38,
+    sales: 36,
+    construction: 22,
+    management: 50,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 104,
+    name: "黒瀬 芹奈",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 25,
+    sales: 26,
+    construction: 33,
+    management: 24,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 105,
+    name: "桑原 千尋",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 29,
+    sales: 23,
+    construction: 23,
+    management: 53,
+    salary: 22,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 106,
+    name: "アステリア・レグナ",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 22,
+    sales: 29,
+    construction: 16,
+    management: 43,
+    salary: 15,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 107,
+    name: "小泉 慎一",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 42,
+    sales: 22,
+    construction: 10,
+    management: 26,
+    salary: 19,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 108,
+    name: "小清水 千夏",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 28,
+    sales: 13,
+    construction: 11,
+    management: 47,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 109,
+    name: "小柴レナ",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 28,
+    sales: 30,
+    construction: 39,
+    management: 36,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 110,
+    name: "小杉 樹",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 42,
+    sales: 23,
+    construction: 41,
+    management: 41,
+    salary: 21,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 111,
+    name: "小滝エリカ",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 33,
+    sales: 44,
+    construction: 37,
+    management: 41,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 112,
+    name: "小鳥遊 月乃",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 29,
+    sales: 44,
+    construction: 26,
+    management: 44,
+    salary: 23,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 113,
+    name: "近藤 駿",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 48,
+    sales: 29,
+    construction: 32,
+    management: 35,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 114,
+    name: "西園寺 純",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 21,
+    sales: 29,
+    construction: 39,
+    management: 18,
+    salary: 21,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 115,
+    name: "斎賀 椿",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 40,
+    sales: 44,
+    construction: 23,
+    management: 22,
+    salary: 21,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
+    ],
+  },
+  {
+    id: 116,
+    name: "斉藤 凪",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 39,
+    sales: 25,
+    construction: 45,
+    management: 35,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 117,
+    name: "榊原カレン",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 39,
+    sales: 28,
+    construction: 30,
+    management: 27,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 118,
+    name: "坂井ソフィア",
+    gender: "male",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 41,
+    sales: 41,
+    construction: 36,
+    management: 12,
+    salary: 19,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 119,
+    name: "坂口 奈緒",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 24,
+    sales: 56,
+    construction: 18,
+    management: 19,
+    salary: 16,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 120,
+    name: "坂下 菜月",
+    gender: "female",
+    rarity: "N",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 28,
+    sales: 35,
+    construction: 36,
+    management: 32,
+    salary: 17,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [],
+    specialCodes: [],
+    specialDescriptions: [],
+  },
+  {
+    id: 121,
+    name: "坂本 七瀬",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 43,
+    sales: 41,
+    construction: 21,
+    management: 45,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "交渉上手",
+    ],
+    specialCodes: [
+      "NEGOTIATION_GOOD",
+    ],
+    specialDescriptions: [
+      "土地購入価格を3％下げる。",
+    ],
+  },
+  {
+    id: 122,
+    name: "佐伯 仁",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 58,
+    sales: 48,
+    construction: 52,
+    management: 33,
+    salary: 36,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
+    ],
+  },
+  {
+    id: 123,
+    name: "佐久間 奈々",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 33,
+    sales: 41,
+    construction: 50,
+    management: 41,
+    salary: 29,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "買い叩き",
+    ],
+    specialCodes: [
+      "BARGAIN_BUYER",
+    ],
+    specialDescriptions: [
+      "土地購入価格を8％下げる。",
+    ],
+  },
+  {
+    id: 124,
+    name: "桜井 菜々子",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 35,
+    sales: 54,
+    construction: 52,
+    management: 64,
+    salary: 36,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 125,
+    name: "笹原ミラ",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 40,
+    sales: 31,
+    construction: 55,
+    management: 31,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "カリスマ営業",
+    ],
+    specialCodes: [
+      "CHARISMA_SALES",
+    ],
+    specialDescriptions: [
+      "営業能力を10上げる。",
+    ],
+  },
+  {
+    id: 126,
+    name: "佐々木 仁美",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 45,
+    sales: 42,
+    construction: 47,
+    management: 36,
+    salary: 32,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
+    ],
+  },
+  {
+    id: 127,
+    name: "里見 乃愛",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 32,
+    sales: 42,
+    construction: 66,
+    management: 29,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "ヘッドハンター",
+    ],
+    specialCodes: [
+      "HEADHUNTER",
+    ],
+    specialDescriptions: [
+      "社員募集時の募集人数を1人増やす。",
+    ],
+  },
+  {
+    id: 128,
+    name: "真田 誠",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 29,
+    sales: 33,
+    construction: 37,
+    management: 54,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
+    ],
+  },
+  {
+    id: 129,
+    name: "沢城 遥",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 54,
+    sales: 15,
+    construction: 52,
+    management: 46,
+    salary: 23,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "ベテラン大工",
+    ],
+    specialCodes: [
+      "VETERAN_CARPENTER",
+    ],
+    specialDescriptions: [
+      "工期を15％短縮する。",
+    ],
+  },
+  {
+    id: 130,
+    name: "沢村 陽菜",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 23,
+    sales: 40,
+    construction: 51,
+    management: 46,
+    salary: 27,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 131,
+    name: "椎名 ひかり",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 47,
+    sales: 62,
+    construction: 22,
+    management: 46,
+    salary: 31,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "品質第一",
+    ],
+    specialCodes: [
+      "QUALITY_FIRST",
+    ],
+    specialDescriptions: [
+      "建物状態を10上げる。",
+    ],
+  },
+  {
+    id: 132,
+    name: "篠原 日菜子",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 46,
+    sales: 56,
+    construction: 49,
+    management: 32,
+    salary: 37,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
+    ],
+  },
+  {
+    id: 133,
+    name: "アステリア・クロノ",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 52,
+    sales: 33,
+    construction: 41,
+    management: 48,
+    salary: 33,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "DIY職人",
+    ],
+    specialCodes: [
+      "DIY_CRAFTSMAN",
+    ],
+    specialDescriptions: [
+      "軽修繕費を50％下げる。",
+    ],
+  },
+  {
+    id: 134,
+    name: "柴崎ルナ",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 27,
+    sales: 53,
+    construction: 35,
+    management: 49,
+    salary: 23,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
+    ],
+  },
+  {
+    id: 135,
+    name: "柴田 雛乃",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 42,
+    sales: 33,
+    construction: 28,
+    management: 49,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "管理の達人",
+    ],
+    specialCodes: [
+      "MANAGEMENT_MASTER",
+    ],
+    specialDescriptions: [
+      "空室率を5％改善する。",
+    ],
+  },
+  {
+    id: 136,
+    name: "アステリア・アルカ",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 39,
+    sales: 47,
+    construction: 48,
+    management: 37,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 137,
+    name: "渋谷シオン",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 49,
+    sales: 49,
+    construction: 17,
+    management: 43,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "お客様第一",
+    ],
+    specialCodes: [
+      "CUSTOMER_FIRST",
+    ],
+    specialDescriptions: [
+      "退去率を10％下げる。",
+    ],
+  },
+  {
+    id: 138,
+    name: "島崎 蒼真",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 36,
+    sales: 41,
+    construction: 36,
+    management: 60,
+    salary: 36,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
+    ],
+  },
+  {
+    id: 139,
+    name: "島田 壮太",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 21,
+    sales: 55,
+    construction: 58,
+    management: 61,
+    salary: 32,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "クレーム対応力",
+    ],
+    specialCodes: [
+      "CLAIM_HANDLER",
+    ],
+    specialDescriptions: [
+      "入居者満足度を10上げる。",
+    ],
+  },
+  {
+    id: 140,
+    name: "清水 太一",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 36,
+    sales: 35,
+    construction: 47,
+    management: 33,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
+    ],
+  },
+  {
+    id: 141,
+    name: "白石 大吾",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 63,
+    sales: 39,
+    construction: 38,
+    management: 49,
+    salary: 37,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "リーダー",
+    ],
+    specialCodes: [
+      "LEADER",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を3％上げる。",
+    ],
+  },
+  {
+    id: 142,
+    name: "白鳥 文香",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 30,
+    sales: 31,
+    construction: 51,
+    management: 48,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 143,
+    name: "新庄 大介",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 41,
+    sales: 31,
+    construction: 56,
+    management: 34,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "カリスマ所長",
+    ],
+    specialCodes: [
+      "CHARISMA_MANAGER",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を10％上げる。",
+    ],
+  },
+  {
+    id: 144,
+    name: "新田 拓海",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 47,
+    sales: 30,
+    construction: 50,
+    management: 38,
+    salary: 33,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
+    ],
+  },
+  {
+    id: 145,
+    name: "末永ルカ",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 46,
+    sales: 43,
+    construction: 46,
+    management: 25,
+    salary: 26,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "熱血上司",
+    ],
+    specialCodes: [
+      "PASSIONATE_BOSS",
+    ],
+    specialDescriptions: [
+      "獲得経験値を20％上げる。",
+    ],
+  },
+  {
+    id: 146,
+    name: "菅原 拓也",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 54,
+    sales: 49,
+    construction: 53,
+    management: 30,
+    salary: 36,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
+    ],
+  },
+  {
+    id: 147,
+    name: "杉浦 穂乃花",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 59,
+    sales: 34,
+    construction: 46,
+    management: 44,
+    salary: 31,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "交渉上手",
+    ],
+    specialCodes: [
+      "NEGOTIATION_GOOD",
+    ],
+    specialDescriptions: [
+      "土地購入価格を3％下げる。",
+    ],
+  },
+  {
+    id: 148,
+    name: "杉本 真央",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 48,
+    sales: 38,
+    construction: 50,
+    management: 34,
+    salary: 27,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 149,
+    name: "鈴原 真希",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 50,
+    sales: 47,
+    construction: 51,
+    management: 30,
+    salary: 33,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "買い叩き",
+    ],
+    specialCodes: [
+      "BARGAIN_BUYER",
+    ],
+    specialDescriptions: [
+      "土地購入価格を8％下げる。",
+    ],
+  },
+  {
+    id: 150,
+    name: "須藤 真琴",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 28,
+    sales: 56,
+    construction: 56,
+    management: 52,
+    salary: 40,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
+    ],
+  },
+  {
+    id: 151,
+    name: "瀬川 真白",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 50,
+    sales: 41,
+    construction: 57,
+    management: 54,
+    salary: 39,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "カリスマ営業",
+    ],
+    specialCodes: [
+      "CHARISMA_SALES",
+    ],
+    specialDescriptions: [
+      "営業能力を10上げる。",
+    ],
+  },
+  {
+    id: 152,
+    name: "瀬戸 匠",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 52,
+    sales: 27,
+    construction: 51,
+    management: 60,
+    salary: 38,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
+    ],
+  },
+  {
+    id: 153,
+    name: "芹沢 美緒",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 45,
+    sales: 27,
+    construction: 46,
+    management: 58,
+    salary: 28,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "ヘッドハンター",
+    ],
+    specialCodes: [
+      "HEADHUNTER",
+    ],
+    specialDescriptions: [
+      "社員募集時の募集人数を1人増やす。",
+    ],
+  },
+  {
+    id: 154,
+    name: "園田 司",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 52,
+    sales: 37,
+    construction: 45,
+    management: 64,
+    salary: 37,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 155,
+    name: "高岡 美咲",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 58,
+    sales: 46,
+    construction: 43,
+    management: 48,
+    salary: 33,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "ベテラン大工",
+    ],
+    specialCodes: [
+      "VETERAN_CARPENTER",
+    ],
+    specialDescriptions: [
+      "工期を15％短縮する。",
+    ],
+  },
+  {
+    id: 156,
+    name: "高城 美月",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 38,
+    sales: 45,
+    construction: 44,
+    management: 29,
+    salary: 29,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
+    ],
+  },
+  {
+    id: 157,
+    name: "高瀬 美波",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 44,
+    sales: 49,
+    construction: 34,
+    management: 47,
+    salary: 29,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "品質第一",
+    ],
+    specialCodes: [
+      "QUALITY_FIRST",
+    ],
+    specialDescriptions: [
+      "建物状態を10上げる。",
+    ],
+  },
+  {
+    id: 158,
+    name: "高槻 美優",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 24,
+    sales: 58,
+    construction: 52,
+    management: 43,
+    salary: 29,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
+    ],
+  },
+  {
+    id: 159,
+    name: "高梨 美結",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 51,
+    sales: 43,
+    construction: 32,
+    management: 24,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "DIY職人",
+    ],
+    specialCodes: [
+      "DIY_CRAFTSMAN",
+    ],
+    specialDescriptions: [
+      "軽修繕費を50％下げる。",
+    ],
+  },
+  {
+    id: 160,
+    name: "高野 翼",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 46,
+    sales: 34,
+    construction: 58,
+    management: 52,
+    salary: 37,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 161,
+    name: "高橋 瑞希",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 37,
+    sales: 31,
+    construction: 35,
+    management: 47,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "管理の達人",
+    ],
+    specialCodes: [
+      "MANAGEMENT_MASTER",
+    ],
+    specialDescriptions: [
+      "空室率を5％改善する。",
+    ],
+  },
+  {
+    id: 162,
+    name: "高柳レオン",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 38,
+    sales: 50,
+    construction: 41,
+    management: 36,
+    salary: 34,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
+    ],
+  },
+  {
+    id: 163,
+    name: "滝沢カイ",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 34,
+    sales: 54,
+    construction: 26,
+    management: 46,
+    salary: 26,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "お客様第一",
+    ],
+    specialCodes: [
+      "CUSTOMER_FIRST",
+    ],
+    specialDescriptions: [
+      "退去率を10％下げる。",
+    ],
+  },
+  {
+    id: 164,
+    name: "アステリア・ルーチェ",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 51,
+    sales: 57,
+    construction: 48,
+    management: 44,
+    salary: 40,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
+    ],
+  },
+  {
+    id: 165,
+    name: "武内 瑞穂",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 55,
+    sales: 51,
+    construction: 46,
+    management: 35,
+    salary: 33,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "クレーム対応力",
+    ],
+    specialCodes: [
+      "CLAIM_HANDLER",
+    ],
+    specialDescriptions: [
+      "入居者満足度を10上げる。",
+    ],
+  },
+  {
+    id: 166,
+    name: "アステリア・ベル",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 37,
+    sales: 39,
+    construction: 43,
+    management: 48,
+    salary: 29,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 167,
+    name: "竹下 哲也",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 46,
+    sales: 48,
+    construction: 48,
+    management: 54,
+    salary: 35,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "リーダー",
+    ],
+    specialCodes: [
+      "LEADER",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を3％上げる。",
+    ],
+  },
+  {
+    id: 168,
+    name: "竹中 湊",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 44,
+    sales: 34,
+    construction: 55,
+    management: 43,
+    salary: 40,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
+    ],
+  },
+  {
+    id: 169,
+    name: "橘ユリス",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 42,
+    sales: 48,
+    construction: 28,
+    management: 45,
+    salary: 27,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "カリスマ所長",
+    ],
+    specialCodes: [
+      "CHARISMA_MANAGER",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を10％上げる。",
+    ],
+  },
+  {
+    id: 170,
+    name: "田島 徹",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 48,
+    sales: 44,
+    construction: 40,
+    management: 66,
+    salary: 38,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
+    ],
+  },
+  {
+    id: 171,
+    name: "田代 未来",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 55,
+    sales: 35,
+    construction: 48,
+    management: 47,
+    salary: 35,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "熱血上司",
+    ],
+    specialCodes: [
+      "PASSIONATE_BOSS",
+    ],
+    specialDescriptions: [
+      "獲得経験値を20％上げる。",
+    ],
+  },
+  {
+    id: 172,
+    name: "立花ノエル",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 46,
+    sales: 39,
+    construction: 27,
+    management: 48,
+    salary: 24,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 173,
+    name: "田中リオン",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 47,
+    sales: 18,
+    construction: 43,
+    management: 46,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "交渉上手",
+    ],
+    specialCodes: [
+      "NEGOTIATION_GOOD",
+    ],
+    specialDescriptions: [
+      "土地購入価格を3％下げる。",
+    ],
+  },
+  {
+    id: 174,
+    name: "アステリア・クラウン",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 42,
+    sales: 52,
+    construction: 56,
+    management: 49,
+    salary: 40,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
+    ],
+  },
+  {
+    id: 175,
+    name: "田辺 芽衣",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 47,
+    sales: 49,
+    construction: 60,
+    management: 45,
+    salary: 40,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "買い叩き",
+    ],
+    specialCodes: [
+      "BARGAIN_BUYER",
+    ],
+    specialDescriptions: [
+      "土地購入価格を8％下げる。",
+    ],
+  },
+  {
+    id: 176,
+    name: "谷口 芽依",
+    gender: "female",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 36,
+    sales: 44,
+    construction: 40,
+    management: 41,
+    salary: 20,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
+    ],
+  },
+  {
+    id: 177,
+    name: "千葉 直樹",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 54,
+    sales: 39,
+    construction: 38,
+    management: 52,
+    salary: 34,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "カリスマ営業",
+    ],
+    specialCodes: [
+      "CHARISMA_SALES",
+    ],
+    specialDescriptions: [
+      "営業能力を10上げる。",
+    ],
+  },
+  {
+    id: 178,
+    name: "月城 直人",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 55,
+    sales: 51,
+    construction: 37,
+    management: 32,
+    salary: 25,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
+    ],
+  },
+  {
+    id: 179,
+    name: "アステリア・ヴェール",
+    gender: "male",
+    rarity: "R",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
+    leadership: 58,
+    sales: 56,
+    construction: 24,
+    management: 53,
+    salary: 38,
+    officeId: "storage",
+    graphicCode: null,
+    specialNames: [
+      "ヘッドハンター",
+    ],
+    specialCodes: [
+      "HEADHUNTER",
+    ],
+    specialDescriptions: [
+      "社員募集時の募集人数を1人増やす。",
+   ],
+},
+{
+id: 501,
+    name: "風間 優莉",
+    gender: "female",
+    rarity: "HR",
+    leadership: 55,
+    sales: 76,
+    construction: 44,
+    management: 53,
+    salary: 44,
+    graphicCode: "HR001",
+    specialNames: [
+      "お客様第一"
+    ]
+  },
+
+{
+    id: 502,
+    name: "椎名 陽葵",
+    gender: "female",
+    rarity: "HR",
+    leadership: 70,
+    sales: 42,
+    construction: 59,
+    management: 71,
+    salary: 55,
+    graphicCode: "HR002",
+    specialNames: [
+      "不動産鑑定士"
+    ]
+  },
+
+{
+    id: 503,
+    name: "真白 杏奈",
+    gender: "female",
+    rarity: "HR",
+    leadership: 56,
+    sales: 54,
+    construction: 67,
+    management: 63,
+    salary: 55,
+    graphicCode: "HR003",
+    specialNames: [
+      "名将",
+    ]
+  },
+
+{
+    id: 504,
+    name: "宮藤 千歳",
+    gender: "female",
+    rarity: "HR",
+    leadership: 74,
+    sales: 78,
+    construction: 72,
+    management: 45,
+    salary: 55,
+    graphicCode: "HR004",
+    specialNames: [
+      "巡回名人"
+    ]
+  },
+
+{
+    id: 505,
+    name: "久遠 奏",
+    gender: "female",
+    rarity: "HR",
+    leadership: 65,
+    sales: 57,
+    construction: 76,
+    management: 49,
+    salary: 55,
+    graphicCode: "HR005",
+    specialNames: [
+      "交渉上手",
+    ]
+  },
+
+{
+    id: 506,
+    name: "葛城 澪",
+    gender: "female",
+    rarity: "HR",
+    leadership: 60,
+    sales: 49,
+    construction: 69,
+    management: 70,
+    salary: 55,
+    graphicCode: "HR006",
+    specialNames: [
+      "ヘッドハンター",
+    ]
+  },
+
+{
+    id: 507,
+    name: "氷室 真琴",
+    gender: "female",
+    rarity: "HR",
+    leadership: 69,
+    sales: 61,
+    construction: 64,
+    management: 66,
+    salary: 55,
+    graphicCode: "HR007",
+    specialNames: [
+      "修繕の匠"
+    ]
+  },
+
+{
+    id: 508,
+    name: "藤堂 陽菜",
+    gender: "female",
+    rarity: "HR",
+    leadership: 50,
+    sales: 80,
+    construction: 64,
+    management: 61,
+    salary: 55,
+    graphicCode: "HR008",
+    specialNames: [
+      "買い叩き",
+    ]
+  },
+
+{
+    id: 509,
+    name: "七瀬 灯里",
+    gender: "female",
+    rarity: "HR",
+    leadership: 65,
+    sales: 70,
+    construction: 47,
+    management: 57,
+    salary: 55,
+    graphicCode: "HR009",
+    specialNames: [
+      "管理の達人",
+    ]
+  },
+
+{
+    id: 510,
+    name: "榊 莉子",
+    gender: "female",
+    rarity: "HR",
+    leadership: 76,
+    sales: 69,
+    construction: 64,
+    management: 55,
+    salary: 55,
+    graphicCode: "HR010",
+    specialNames: [
+      "ヘッドハンター"
+    ]
+  },
+
+{
+    id: 511,
+    name: "橘 花蓮",
+    gender: "female",
+    rarity: "HR",
+    leadership: 53,
+    sales: 42,
+    construction: 51,
+    management: 60,
+    salary: 42,
+    graphicCode: "HR011",
+    specialNames: [
+      "品質第一"
+    ]
+  },
+
+{
+    id: 512,
+    name: "天城 美咲",
+    gender: "female",
+    rarity: "HR",
+    leadership: 62,
+    sales: 46,
+    construction: 58,
+    management: 52,
+    salary: 40,
+    graphicCode: "HR012",
+    specialNames: [
+      "お客様第一",
+    ]
+  },
+
+{
+    id: 513,
+    name: "東雲 詩織",
+    gender: "female",
+    rarity: "HR",
+    leadership: 64,
+    sales: 60,
+    construction: 44,
+    management: 42,
+    salary: 46,
+    graphicCode: "HR013",
+    specialNames: [
+      "ベテラン大工",
+    ]
+  },
+
+{
+    id: 514,
+    name: "姫宮 楓",
+    gender: "female",
+    rarity: "HR",
+    leadership: 64,
+    sales: 50,
+    construction: 77,
+    management: 75,
+    salary: 55,
+    graphicCode: "HR014",
+    specialNames: [
+      "お客様第一"
+    ]
+  },
+
+{
+    id: 515,
+    name: "有栖 美月",
+    gender: "female",
+    rarity: "HR",
+    leadership: 67,
+    sales: 43,
+    construction: 76,
+    management: 71,
+    salary: 55,
+    graphicCode: "HR015",
+    specialNames: [
+      "お客様第一"
+    ]
+  },
+
+{
+    id: 516,
+    name: "桜庭 紬",
+    gender: "female",
+    rarity: "HR",
+    leadership: 66,
+    sales: 44,
+    construction: 73,
+    management: 47,
+    salary: 44,
+    graphicCode: "HR016",
+    specialNames: [
+      "カリスマ所長"
+    ]
+  },
+
+{
+    id: 517,
+    name: "御影 雫",
+    gender: "female",
+    rarity: "HR",
+    leadership: 75,
+    sales: 76,
+    construction: 55,
+    management: 48,
+    salary: 55,
+    graphicCode: "HR017",
+    specialNames: [
+      "節約家",
+    ]
+  },
+
+{
+    id: 518,
+    name: "浅倉 凛",
+    gender: "female",
+    rarity: "HR",
+    leadership: 80,
+    sales: 63,
+    construction: 71,
+    management: 46,
+    salary: 55,
+    graphicCode: "HR018",
+    specialNames: [
+      "不動産鑑定士",
+    ]
+  },
+
+{
+    id: 519,
+    name: "霧島 小春",
+    gender: "female",
+    rarity: "HR",
+    leadership: 78,
+    sales: 63,
+    construction: 66,
+    management: 43,
+    salary: 55,
+    graphicCode: "HR019",
+    specialNames: [
+      "一級建築士"
+    ]
+  },
+
+{
+    id: 520,
+    name: "相沢 彩葉",
+    gender: "female",
+    rarity: "HR",
+    leadership: 78,
+    sales: 79,
+    construction: 62,
+    management: 48,
+    salary: 55,
+    graphicCode: "HR020",
+    specialNames: [
+      "買い叩き"
+    ]
+  },
+
+{
+    id: 521,
+    name: "成瀬 瑞希",
+    gender: "female",
+    rarity: "HR",
+    leadership: 43,
+    sales: 58,
+    construction: 65,
+    management: 76,
+    salary: 51,
+    graphicCode: "HR021",
+    specialNames: [
+      "クレーム対応力",
+    ]
+  },
+
+{
+    id: 522,
+    name: "柏木 詩音",
+    gender: "female",
+    rarity: "HR",
+    leadership: 68,
+    sales: 50,
+    construction: 72,
+    management: 46,
+    salary: 55,
+    graphicCode: "HR022",
+    specialNames: [
+      "ヘッドハンター",
+    ]
+  },
+
+{
+    id: 523,
+    name: "長瀬 莉奈",
+    gender: "female",
+    rarity: "HR",
+    leadership: 80,
+    sales: 47,
+    construction: 70,
+    management: 71,
+    salary: 55,
+    graphicCode: "HR023",
+    specialNames: [
+      "凄腕交渉人"
+    ]
+  },
+
+{
+    id: 524,
+    name: "神谷 心春",
+    gender: "female",
+    rarity: "HR",
+    leadership: 46,
+    sales: 43,
+    construction: 71,
+    management: 54,
+    salary: 46,
+    graphicCode: "HR024",
+    specialNames: [
+      "交渉上手",
+    ]
+  },
+
+{
+    id: 525,
+    name: "相馬 優菜",
+    gender: "female",
+    rarity: "HR",
+    leadership: 64,
+    sales: 56,
+    construction: 50,
+    management: 42,
+    salary: 46,
+    graphicCode: "HR025",
+    specialNames: [
+      "ベテラン大工"
+    ]
+  },
+
+{
+    id: 526,
+    name: "月城 琴葉",
+    gender: "female",
+    rarity: "HR",
+    leadership: 48,
+    sales: 47,
+    construction: 62,
+    management: 77,
+    salary: 47,
+    graphicCode: "HR026",
+    specialNames: [
+      "管理の達人"
+    ]
+  },
+
+{
+    id: 527,
+    name: "冬月 澪奈",
+    gender: "female",
+    rarity: "HR",
+    leadership: 77,
+    sales: 44,
+    construction: 63,
+    management: 48,
+    salary: 55,
+    graphicCode: "HR027",
+    specialNames: [
+      "交渉上手"
+    ]
+  },
+
+{
+    id: 528,
+    name: "夏目 凛花",
+    gender: "female",
+    rarity: "HR",
+    leadership: 70,
+    sales: 48,
+    construction: 45,
+    management: 45,
+    salary: 43,
+    graphicCode: "HR028",
+    specialNames: [
+      "カリスマ所長"
+    ]
+  },
+
+{
+    id: 529,
+    name: "蓮見 若菜",
+    gender: "female",
+    rarity: "HR",
+    leadership: 75,
+    sales: 43,
+    construction: 42,
+    management: 75,
+    salary: 49,
+    graphicCode: "HR029",
+    specialNames: [
+      "お客様第一"
+    ]
+  },
+
+{
+    id: 530,
+    name: "白河 美帆",
+    gender: "female",
+    rarity: "HR",
+    leadership: 49,
+    sales: 51,
+    construction: 65,
+    management: 62,
+    salary: 44,
+    graphicCode: "HR030",
+    specialNames: [
+      "教育係"
+    ]
+  },
+
+{
+    id: 531,
+    name: "黒崎 沙耶",
+    gender: "female",
+    rarity: "HR",
+    leadership: 59,
+    sales: 56,
+    construction: 62,
+    management: 70,
+    salary: 55,
+    graphicCode: "HR031",
+    specialNames: [
+      "クレーム対応力"
+    ]
+  },
+
+{
+    id: 532,
+    name: "一条 乃愛",
+    gender: "female",
+    rarity: "HR",
+    leadership: 60,
+    sales: 48,
+    construction: 64,
+    management: 63,
+    salary: 53,
+    graphicCode: "HR032",
+    specialNames: [
+      "巡回名人"
+    ]
+  },
+
+{
+    id: 533,
+    name: "鳴海 由依",
+    gender: "female",
+    rarity: "HR",
+    leadership: 68,
+    sales: 50,
+    construction: 58,
+    management: 67,
+    salary: 55,
+    graphicCode: "HR033",
+    specialNames: [
+      "熱血上司"
+    ]
+  },
+
+{
+    id: 534,
+    name: "高瀬 美優",
+    gender: "female",
+    rarity: "HR",
+    leadership: 50,
+    sales: 58,
+    construction: 79,
+    management: 68,
+    salary: 55,
+    graphicCode: "HR034",
+    specialNames: [
+      "巡回名人",
+    ]
+  },
+
+{
+    id: 535,
+    name: "青柳 結衣",
+    gender: "female",
+    rarity: "HR",
+    leadership: 77,
+    sales: 61,
+    construction: 46,
+    management: 59,
+    salary: 55,
+    graphicCode: "HR035",
+    specialNames: [
+      "人脈王",
+    ]
+  },
+
+{
+    id: 536,
+    name: "白石 エレナ",
+    gender: "female",
+    rarity: "HR",
+    leadership: 78,
+    sales: 72,
+    construction: 54,
+    management: 43,
+    salary: 55,
+    graphicCode: "HR036",
+    specialNames: [
+      "お客様第一",
+    ]
+  },
+
+{
+    id: 537,
+    name: "神崎 レイナ",
+    gender: "female",
+    rarity: "HR",
+    leadership: 56,
+    sales: 56,
+    construction: 46,
+    management: 75,
+    salary: 52,
+    graphicCode: "HR037",
+    specialNames: [
+      "管理の達人"
+    ]
+  },
+
+{
+    id: 538,
+    name: "朝倉 アリサ",
+    gender: "female",
+    rarity: "HR",
+    leadership: 56,
+    sales: 69,
+    construction: 61,
+    management: 53,
+    salary: 55,
+    graphicCode: "HR038",
+    specialNames: [
+      "カリスマ所長"
+    ]
+  },
+
+{
+    id: 539,
+    name: "高城 ミレイ",
+    gender: "female",
+    rarity: "HR",
+    leadership: 42,
+    sales: 62,
+    construction: 53,
+    management: 71,
+    salary: 53,
+    graphicCode: "HR039",
+    specialNames: [
+      "教育係"
+    ]
+  },
+
+{
+    id: 540,
+    name: "結城 セリナ",
+    gender: "female",
+    rarity: "HR",
+    leadership: 44,
+    sales: 74,
+    construction: 75,
+    management: 43,
+    salary: 51,
+    graphicCode: "HR040",
+    specialNames: [
+      "一級建築士"
+    ]
+  },
+
+{
+    id: 541,
+    name: "篠宮 リア",
+    gender: "female",
+    rarity: "HR",
+    leadership: 55,
+    sales: 46,
+    construction: 61,
+    management: 57,
+    salary: 45,
+    graphicCode: "HR041",
+    specialNames: [
+      "ベテラン大工"
+    ]
+  },
+
+{
+    id: 542,
+    name: "天音 エマ",
+    gender: "female",
+    rarity: "HR",
+    leadership: 45,
+    sales: 59,
+    construction: 42,
+    management: 76,
+    salary: 55,
+    graphicCode: "HR042",
+    specialNames: [
+      "管理の達人",
+    ]
+  },
+
+{
+    id: 543,
+    name: "御剣 レナ",
+    gender: "female",
+    rarity: "HR",
+    leadership: 47,
+    sales: 70,
+    construction: 79,
+    management: 70,
+    salary: 55,
+    graphicCode: "HR043",
+    specialNames: [
+      "DIY職人"
+    ]
+  },
+
+{
+    id: 544,
+    name: "西野 アンナ",
+    gender: "female",
+    rarity: "HR",
+    leadership: 48,
+    sales: 48,
+    construction: 58,
+    management: 71,
+    salary: 54,
+    graphicCode: "HR044",
+    specialNames: [
+      "ヘッドハンター"
+    ]
+  },
+
+{
+    id: 545,
+    name: "三条 ミア",
+    gender: "female",
+    rarity: "HR",
+    leadership: 65,
+    sales: 53,
+    construction: 65,
+    management: 53,
+    salary: 51,
+    graphicCode: "HR045",
+    specialNames: [
+      "不動産鑑定士"
+    ]
+  },
+
+{
+    id: 546,
+    name: "ヴィオレッタ・グレイス",
+    gender: "female",
+    rarity: "HR",
+    leadership: 78,
+    sales: 58,
+    construction: 46,
+    management: 73,
+    salary: 55,
+    graphicCode: "HR046",
+    specialNames: [
+      "カリスマ所長"
+    ]
+  },
+
+{
+    id: 547,
+    name: "セラフィナ・レイン",
+    gender: "female",
+    rarity: "HR",
+    leadership: 47,
+    sales: 78,
+    construction: 75,
+    management: 68,
+    salary: 55,
+    graphicCode: "HR047",
+    specialNames: [
+      "凄腕交渉人",
+    ]
+  },
+
+{
+    id: 548,
+    name: "アステリア・クロフォード",
+    gender: "female",
+    rarity: "HR",
+    leadership: 57,
+    sales: 59,
+    construction: 47,
+    management: 72,
+    salary: 55,
+    graphicCode: "HR048",
+    specialNames: [
+      "管理の達人"
+    ]
+  },
+
+{
+    id: 549,
+    name: "ノエリア・フォスター",
+    gender: "female",
+    rarity: "HR",
+    leadership: 66,
+    sales: 55,
+    construction: 50,
+    management: 46,
+    salary: 50,
+    graphicCode: "HR049",
+    specialNames: [
+      "人脈王"
+    ]
+  },
+
+{
+    id: 550,
+    name: "リリアナ・ベルモンド",
+    gender: "female",
+    rarity: "HR",
+    leadership: 51,
+    sales: 69,
+    construction: 65,
+    management: 78,
+    salary: 55,
+    graphicCode: "HR050",
+    specialNames: [
+      "家賃回収人",
+    ]
+  },
+
+{
+    id: 651,
+    name: "神楽 美琴",
+    gender: "female",
+    rarity: "SR",
+    leadership: 82,
+    sales: 77,
+    construction: 57,
+    management: 62,
+    salary: 66,
+    graphicCode: "SR001",
+    specialNames: [
+      "リーダー",
+      "伝説の営業マン"
+    ]
+  },
+
+{
+    id: 652,
+    name: "朝霧 麗奈",
+    gender: "female",
+    rarity: "SR",
+    leadership: 84,
+    sales: 68,
+    construction: 90,
+    management: 57,
+    salary: 89,
+    graphicCode: "SR002",
+    specialNames: [
+      "現場監督",
+      "修繕の匠"
+    ]
+  },
+
+{
+    id: 653,
+    name: "如月 朱音",
+    gender: "female",
+    rarity: "SR",
+    leadership: 87,
+    sales: 58,
+    construction: 64,
+    management: 61,
+    salary: 70,
+    graphicCode: "SR003",
+    specialNames: [
+      "名将",
+      "交渉上手"
+    ]
+  },
+
+{
+    id: 654,
+    name: "羽柴 琴音",
+    gender: "female",
+    rarity: "SR",
+    leadership: 60,
+    sales: 66,
+    construction: 94,
+    management: 70,
+    salary: 74,
+    graphicCode: "SR004",
+    specialNames: [
+      "熱血上司",
+      "解体屋"
+    ]
+  },
+
+{
+    id: 655,
+    name: "高梨 華蓮",
+    gender: "female",
+    rarity: "SR",
+    leadership: 66,
+    sales: 66,
+    construction: 55,
+    management: 93,
+    salary: 68,
+    graphicCode: "SR005",
+    specialNames: [
+      "クレーム対応力",
+      "巡回名人"
+    ]
+  },
+
+{
+    id: 656,
+    name: "雪村 沙羅",
+    gender: "female",
+    rarity: "SR",
+    leadership: 59,
+    sales: 79,
+    construction: 79,
+    management: 84,
+    salary: 96,
+    graphicCode: "SR006",
+    specialNames: [
+      "クレーム対応力",
+      "買い叩き"
+    ]
+  },
+
+{
+    id: 657,
+    name: "秋月 瑠奈",
+    gender: "female",
+    rarity: "SR",
+    leadership: 65,
+    sales: 94,
+    construction: 73,
+    management: 75,
+    salary: 91,
+    graphicCode: "SR007",
+    specialNames: [
+      "修繕の匠",
+      "リーダー"
+    ]
+  },
+
+{
+    id: 658,
+    name: "桐谷 美羽",
+    gender: "female",
+    rarity: "SR",
+    leadership: 78,
+    sales: 89,
+    construction: 61,
+    management: 56,
+    salary: 74,
+    graphicCode: "SR008",
+    specialNames: [
+      "人脈王",
+      "一級建築士"
+    ]
+  },
+
+{
+    id: 659,
+    name: "速水 紗夜",
+    gender: "female",
+    rarity: "SR",
+    leadership: 84,
+    sales: 66,
+    construction: 65,
+    management: 59,
+    salary: 75,
+    graphicCode: "SR009",
+    specialNames: [
+      "再生屋",
+      "熱血上司"
+    ]
+  },
+
+{
+    id: 660,
+    name: "森川 紗月",
+    gender: "female",
+    rarity: "SR",
+    leadership: 67,
+    sales: 58,
+    construction: 68,
+    management: 69,
+    salary: 60,
+    graphicCode: "SR010",
+    specialNames: [
+      "賃貸王",
+      "不動産投資家"
+    ]
+  },
+
+{
+    id: 661,
+    name: "北条 美桜",
+    gender: "female",
+    rarity: "SR",
+    leadership: 82,
+    sales: 89,
+    construction: 90,
+    management: 56,
+    salary: 97,
+    graphicCode: "SR011",
+    specialNames: [
+      "熱血上司",
+      "不動産鑑定士"
+    ]
+  },
+
+{
+    id: 662,
+    name: "南雲 千尋",
+    gender: "female",
+    rarity: "SR",
+    leadership: 81,
+    sales: 63,
+    construction: 95,
+    management: 63,
+    salary: 97,
+    graphicCode: "SR012",
+    specialNames: [
+      "ヘッドハンター",
+      "カリスマ所長"
+    ]
+  },
+
+{
+    id: 663,
+    name: "瀬戸 美緒",
+    gender: "female",
+    rarity: "SR",
+    leadership: 60,
+    sales: 75,
+    construction: 57,
+    management: 95,
+    salary: 83,
+    graphicCode: "SR013",
+    specialNames: [
+      "クレーム対応力",
+      "ベテラン大工"
+    ]
+  },
+
+{
+    id: 664,
+    name: "伊吹 涼音",
+    gender: "female",
+    rarity: "SR",
+    leadership: 63,
+    sales: 89,
+    construction: 76,
+    management: 79,
+    salary: 87,
+    graphicCode: "SR014",
+    specialNames: [
+      "賃貸王",
+      "お客様第一"
+    ]
+  },
+
+{
+    id: 665,
+    name: "白雪 美里",
+    gender: "female",
+    rarity: "SR",
+    leadership: 62,
+    sales: 61,
+    construction: 72,
+    management: 63,
+    salary: 60,
+    graphicCode: "SR015",
+    specialNames: [
+      "リーダー",
+      "交渉上手"
+    ]
+  },
+
+{
+    id: 666,
+    name: "桐生 遥香",
+    gender: "female",
+    rarity: "SR",
+    leadership: 83,
+    sales: 68,
+    construction: 77,
+    management: 70,
+    salary: 93,
+    graphicCode: "SR016",
+    specialNames: [
+      "カリスマ営業",
+      "お客様第一"
+    ]
+  },
+
+{
+    id: 667,
+    name: "天宮 香澄",
+    gender: "female",
+    rarity: "SR",
+    leadership: 70,
+    sales: 89,
+    construction: 72,
+    management: 57,
+    salary: 69,
+    graphicCode: "SR017",
+    specialNames: [
+      "一級建築士",
+      "名将"
+    ]
+  },
+
+{
+    id: 668,
+    name: "月島 明日香",
+    gender: "female",
+    rarity: "SR",
+    leadership: 61,
+    sales: 65,
+    construction: 61,
+    management: 73,
+    salary: 60,
+    graphicCode: "SR018",
+    specialNames: [
+      "凄腕交渉人",
+      "ベテラン大工"
+    ]
+  },
+
+{
+    id: 669,
+    name: "御門 琴乃",
+    gender: "female",
+    rarity: "SR",
+    leadership: 78,
+    sales: 74,
+    construction: 59,
+    management: 86,
+    salary: 76,
+    graphicCode: "SR019",
+    specialNames: [
+      "交渉上手",
+      "賃貸王"
+    ]
+  },
+
+{
+    id: 670,
+    name: "白鷺 美奈",
+    gender: "female",
+    rarity: "SR",
+    leadership: 55,
+    sales: 73,
+    construction: 63,
+    management: 95,
+    salary: 64,
+    graphicCode: "SR020",
+    specialNames: [
+      "人脈王",
+      "カリスマ営業"
+    ]
+  },
+
+{
+    id: 671,
+    name: "鷹司 由奈",
+    gender: "female",
+    rarity: "SR",
+    leadership: 75,
+    sales: 83,
+    construction: 56,
+    management: 76,
+    salary: 69,
+    graphicCode: "SR021",
+    specialNames: [
+      "人脈王",
+      "賃貸王"
+    ]
+  },
+
+{
+    id: 672,
+    name: "榎本 エリカ",
+    gender: "female",
+    rarity: "SR",
+    leadership: 95,
+    sales: 63,
+    construction: 55,
+    management: 88,
+    salary: 82,
+    graphicCode: "SR022",
+    specialNames: [
+      "名将",
+      "カリスマ所長"
+    ]
+  },
+
+{
+    id: 673,
+    name: "藤崎 リナ",
+    gender: "female",
+    rarity: "SR",
+    leadership: 62,
+    sales: 92,
+    construction: 72,
+    management: 67,
+    salary: 85,
+    graphicCode: "SR023",
+    specialNames: [
+      "伝説の営業マン",
+      "再生屋"
+    ]
+  },
+
+{
+    id: 674,
+    name: "綾瀬 ミナ",
+    gender: "female",
+    rarity: "SR",
+    leadership: 67,
+    sales: 69,
+    construction: 60,
+    management: 95,
+    salary: 75,
+    graphicCode: "SR024",
+    specialNames: [
+      "ヘッドハンター",
+      "買い叩き"
+    ]
+  },
+
+{
+    id: 675,
+    name: "若宮 セイラ",
+    gender: "female",
+    rarity: "SR",
+    leadership: 68,
+    sales: 82,
+    construction: 77,
+    management: 79,
+    salary: 87,
+    graphicCode: "SR025",
+    specialNames: [
+      "人脈王",
+      "節約家"
+    ]
+  },
+
+{
+    id: 676,
+    name: "日向 ノア",
+    gender: "female",
+    rarity: "SR",
+    leadership: 58,
+    sales: 72,
+    construction: 68,
+    management: 82,
+    salary: 73,
+    graphicCode: "SR026",
+    specialNames: [
+      "クレーム対応力",
+      "人脈王"
+    ]
+  },
+
+{
+    id: 677,
+    name: "水城 リオ",
+    gender: "female",
+    rarity: "SR",
+    leadership: 82,
+    sales: 77,
+    construction: 71,
+    management: 67,
+    salary: 77,
+    graphicCode: "SR027",
+    specialNames: [
+      "管理の達人",
+      "カリスマ営業"
+    ]
+  },
+
+{
+    id: 678,
+    name: "雨宮 カレン",
+    gender: "female",
+    rarity: "SR",
+    leadership: 72,
+    sales: 55,
+    construction: 69,
+    management: 65,
+    salary: 61,
+    graphicCode: "SR028",
+    specialNames: [
+      "買い叩き",
+      "軍師"
+    ]
+  },
+
+{
+    id: 679,
+    name: "花宮 ルナ",
+    gender: "female",
+    rarity: "SR",
+    leadership: 84,
+    sales: 78,
+    construction: 73,
+    management: 80,
+    salary: 96,
+    graphicCode: "SR029",
+    specialNames: [
+      "巡回名人",
+      "軍師"
+    ]
+  },
+
+{
+    id: 680,
+    name: "フレデリカ・スターリング",
+    gender: "female",
+    rarity: "SR",
+    leadership: 65,
+    sales: 69,
+    construction: 71,
+    management: 77,
+    salary: 72,
+    graphicCode: "SR030",
+    specialNames: [
+      "管理の達人",
+      "買い叩き"
+    ]
+  },
+
+{
+    id: 781,
+    name: "神宮寺 薫",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 82,
+    sales: 86,
+    construction: 91,
+    management: 80,
+    salary: 104,
+    graphicCode: "SSR001",
+    specialNames: [
+      "管理の達人",
+      "人脈王",
+      "野口メソッド"
+    ]
+  },
+
+{
+    id: 782,
+    name: "水無月 麗華",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 81,
+    sales: 99,
+    construction: 68,
+    management: 98,
+    salary: 103,
+    graphicCode: "SSR002",
+    specialNames: [
+      "軍師",
+      "お客様第一",
+      "地方創生"
+    ]
+  },
+
+{
+    id: 783,
+    name: "九条院 美玲",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 82,
+    sales: 96,
+    construction: 74,
+    management: 89,
+    salary: 97,
+    graphicCode: "SSR003",
+    specialNames: [
+      "不動産鑑定士",
+      "交渉上手",
+      "百戦錬磨"
+    ]
+  },
+
+{
+    id: 784,
+    name: "一ノ瀬 美和",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 96,
+    sales: 85,
+    construction: 78,
+    management: 98,
+    salary: 134,
+    graphicCode: "SSR004",
+    specialNames: [
+      "教育係",
+      "買い叩き",
+      "不動産神"
+    ]
+  },
+
+{
+    id: 785,
+    name: "桐嶋 涼",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 71,
+    sales: 90,
+    construction: 94,
+    management: 83,
+    salary: 103,
+    graphicCode: "SSR005",
+    specialNames: [
+      "一級建築士",
+      "現場監督",
+      "百戦錬磨"
+    ]
+  },
+
+{
+    id: 786,
+    name: "神代 霞",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 100,
+    sales: 87,
+    construction: 88,
+    management: 76,
+    salary: 113,
+    graphicCode: "SSR006",
+    specialNames: [
+      "巡回名人",
+      "伝説の営業マン",
+      "百戦錬磨"
+    ]
+  },
+
+{
+    id: 787,
+    name: "皇 玲",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 100,
+    sales: 80,
+    construction: 92,
+    management: 93,
+    salary: 133,
+    graphicCode: "SSR007",
+    specialNames: [
+      "交渉上手",
+      "不動産鑑定士",
+      "地方創生"
+    ]
+  },
+
+{
+    id: 788,
+    name: "鳳 芹奈",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 72,
+    sales: 80,
+    construction: 67,
+    management: 100,
+    salary: 80,
+    graphicCode: "SSR008",
+    specialNames: [
+      "お客様第一",
+      "カリスマ営業",
+      "野口メソッド"
+    ]
+  },
+
+{
+    id: 789,
+    name: "宝生 紫苑",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 94,
+    sales: 77,
+    construction: 76,
+    management: 92,
+    salary: 112,
+    graphicCode: "SSR009",
+    specialNames: [
+      "一級建築士",
+      "カリスマ営業",
+      "不動産神"
+    ]
+  },
+
+{
+    id: 790,
+    name: "飛鳥 凪沙",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 87,
+    sales: 95,
+    construction: 83,
+    management: 75,
+    salary: 98,
+    graphicCode: "SSR010",
+    specialNames: [
+      "ヘッドハンター",
+      "名将",
+      "不動産神"
+    ]
+  },
+
+{
+    id: 791,
+    name: "白鳥 セレナ",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 95,
+    sales: 89,
+    construction: 80,
+    management: 70,
+    salary: 106,
+    graphicCode: "SSR011",
+    specialNames: [
+      "買い叩き",
+      "名将",
+      "不動産神"
+    ]
+  },
+
+{
+    id: 792,
+    name: "橘川 レイラ",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 98,
+    sales: 69,
+    construction: 77,
+    management: 76,
+    salary: 80,
+    graphicCode: "SSR012",
+    specialNames: [
+      "お客様第一",
+      "名将",
+      "不動産神"
+    ]
+  },
+
+{
+    id: 793,
+    name: "アリアノート・アークライト",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 85,
+    sales: 83,
+    construction: 78,
+    management: 67,
+    salary: 80,
+    graphicCode: "SSR013",
+    specialNames: [
+      "名将",
+      "お客様第一",
+      "不動産神"
+    ]
+  },
+
+{
+    id: 794,
+    name: "オフィーリア・ヴァレンタイン",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 93,
+    sales: 94,
+    construction: 85,
+    management: 91,
+    salary: 132,
+    graphicCode: "SSR014",
+    specialNames: [
+      "熱血上司",
+      "伝説の営業マン",
+      "不動産神"
+    ]
+  },
+
+{
+    id: 795,
+    name: "エヴァンジェリン・ローゼン",
+    gender: "female",
+    rarity: "SSR",
+    leadership: 68,
+    sales: 66,
+    construction: 92,
+    management: 93,
+    salary: 86,
+    graphicCode: "SSR015",
+    specialNames: [
+      "管理の達人",
+      "家賃回収人",
+      "地方創生"
+    ]
+  },
+
+{
+    id: 896,
+    name: "天海 美空",
+    gender: "female",
+    rarity: "UR",
+    leadership: 86,
+    sales: 88,
+    construction: 97,
+    management: 98,
+    salary: 110,
+    graphicCode: "UR001",
+    specialNames: [
+      "巡回名人",
+      "リーダー",
+      "修繕の匠",
+      "地価予言者"
+    ]
+  },
+
+{
+    id: 897,
+    name: "瑞原 深雪",
+    gender: "female",
+    rarity: "UR",
+    leadership: 100,
+    sales: 82,
+    construction: 89,
+    management: 105,
+    salary: 110,
+    graphicCode: "UR002",
+    specialNames: [
+      "家賃回収人",
+      "お客様第一",
+      "品質第一",
+      "野口コーポレーション創業者"
+    ]
+  },
+
+{
+    id: 898,
+    name: "篠原 瑠璃",
+    gender: "female",
+    rarity: "UR",
+    leadership: 87,
+    sales: 97,
+    construction: 91,
+    management: 96,
+    salary: 115,
+    graphicCode: "UR003",
+    specialNames: [
+      "品質第一",
+      "カリスマ営業",
+      "一級建築士",
+      "伝説の再生王"
+    ]
+  },
+
+{
+    id: 899,
+    name: "黒羽 美亜",
+    gender: "female",
+    rarity: "UR",
+    leadership: 82,
+    sales: 99,
+    construction: 96,
+    management: 108,
+    salary: 135,
+    graphicCode: "UR004",
+    specialNames: [
+      "熱血上司",
+      "品質第一",
+      "カリスマ所長",
+      "伝説の再生王",
+    ]
+  },
+
+{
+    id: 900,
+    name: "アメリア・セレスティア",
+    gender: "female",
+    rarity: "UR",
+    leadership: 97,
+    sales: 95,
+    construction: 92,
+    management: 98,
+    salary: 139,
+    graphicCode: "UR005",
+    specialNames: [
+      "リーダー",
+      "巡回名人",
+      "賃貸王",
+      "野口コーポレーション創業者"
+    ]
+  }
 ];
+
 
 const MAX_EMPLOYEES_PER_OFFICE = 10;
 const EMPLOYEE_RECRUITMENT_ENVELOPE_COUNT = 5;
@@ -10139,6 +7646,7 @@ const [companySortDirection, setCompanySortDirection] = useState("desc");
 const [employeeGachaResult, setEmployeeGachaResult] = useState(null);
 const [employeeRecruitmentOffer, setEmployeeRecruitmentOffer] = useState(null);
 const [selectedEmployeeDetail, setSelectedEmployeeDetail] = useState(null);
+const [employeeLibraryFilter, setEmployeeLibraryFilter] = useState("ALL");
 const [actionEmployeeRequest, setActionEmployeeRequest] = useState(null);
 const [actionEmployeeSelectionIds, setActionEmployeeSelectionIds] = useState([]);
 const [employeeLevelUpResult, setEmployeeLevelUpResult] = useState(null);
@@ -10312,6 +7820,7 @@ function getFloatingPanelTitle(panelName = activePanel) {
   if (panelName === "land") return "土地・建物情報";
   if (panelName === "build") return "建設メニュー";
   if (panelName === "employee") return "社員管理";
+  if (panelName === "employeeLibrary") return "社員図鑑";
   return "操作パネル";
 }
 
@@ -12516,15 +10025,7 @@ function confirmRecruitApplicant(applicant) {
     }
 
     setEmployeeRecruitmentOffer(null);
-    setEmployeeGachaResult({
-      ...awakeningPreview.employee,
-      ticketType: employeeRecruitmentOffer.ticketType,
-      awakened: true,
-      wasMaxAwakening: awakeningPreview.wasMaxAwakening,
-      beforeAwakening: awakeningPreview.beforeAwakening,
-      afterAwakening: awakeningPreview.afterAwakening,
-      awakeningMessages: awakeningPreview.statMessages,
-    });
+    setEmployeeGachaResult(null);
     setLog(
       `${applicant.name}がダブりました。覚醒+${awakeningPreview.afterAwakening}になりました。${awakeningPreview.statMessages.join(" / ")}`
     );
@@ -12558,10 +10059,7 @@ function confirmRecruitApplicant(applicant) {
     storedEmployee,
   ]);
   setEmployeeRecruitmentOffer(null);
-  setEmployeeGachaResult({
-    ...storedEmployee,
-    ticketType: employeeRecruitmentOffer.ticketType,
-  });
+  setEmployeeGachaResult(null);
 
   setLog(`${storedEmployee.name}（${storedEmployee.rarity}）を採用しました。社員保管庫に追加されました。`);
 }
@@ -17014,6 +14512,33 @@ function turnBgmOff() {
   setIsBgmOn(false);
 }
 
+const employeeLibraryRarityOptions = ["ALL", "N", "R", "HR", "SR", "SSR", "UR"];
+
+const ownedEmployeeLibrary = Array.from(
+  new Map(
+    [
+      ...employees.filter((employee) => employee.id !== 0),
+      ...employeeStorage,
+    ].map((employee) => [employee.id, employee])
+  ).values()
+);
+
+const employeeLibraryCounts = ownedEmployeeLibrary.reduce((counts, employee) => {
+  const rarity = employee.rarity ?? "N";
+  return {
+    ...counts,
+    [rarity]: (counts[rarity] ?? 0) + 1,
+  };
+}, {});
+
+const filteredEmployeeLibrary = employeeLibraryFilter === "ALL"
+  ? ownedEmployeeLibrary
+  : ownedEmployeeLibrary.filter((employee) => employee.rarity === employeeLibraryFilter);
+
+const employeeLibraryCompletionRate = EMPLOYEE_POOL.length > 0
+  ? Math.round((ownedEmployeeLibrary.length / EMPLOYEE_POOL.length) * 100)
+  : 0;
+
 return (
   <>
     <audio
@@ -19365,9 +16890,17 @@ return (
             <div className="recruit-profile-panel">
               <div className="recruit-profile-photo">
                 {isNewApplicant && <span className="recruit-new-stamp profile-new-stamp">NEW!</span>}
-                <div className={`recruit-avatar recruit-avatar-${selectedApplicant.gender === "female" ? "female" : "male"}`}>
-                  <span>{selectedApplicant.name.slice(0, 1)}</span>
-                </div>
+                {selectedApplicant.graphicCode ? (
+  <img
+    className="recruit-character-image"
+    src={`/characters/${selectedApplicant.graphicCode}.png`}
+    alt={selectedApplicant.name}
+  />
+) : (
+  <div className={`recruit-avatar recruit-avatar-${selectedApplicant.gender === "female" ? "female" : "male"}`}>
+    <span>{selectedApplicant.name.slice(0, 1)}</span>
+  </div>
+)}
               </div>
 
               <div className="recruit-profile-main">
@@ -19628,26 +17161,49 @@ return (
 
 {selectedEmployeeDetail && (
   <div className="popup-log">
-    <div className="popup-log-card employee-detail-card">
-      <h2>社員詳細</h2>
-      <h3>{selectedEmployeeDetail.name}</h3>
-      <p>レアリティ：{getRarityLabel(selectedEmployeeDetail.rarity)} / 覚醒 +{selectedEmployeeDetail.awakening ?? 0}</p>
-      <p>所属：{getCompanyEmployeeOfficeName(selectedEmployeeDetail, selectedEmployeeDetail.isStoredEmployee === true)}</p>
-      <p>Lv {selectedEmployeeDetail.level ?? 1} / EXP {selectedEmployeeDetail.exp ?? 0} / 次Lv必要 {getEmployeeRequiredExp(selectedEmployeeDetail.level ?? 1)} / 残り {Math.max(0, getEmployeeRequiredExp(selectedEmployeeDetail.level ?? 1) - (selectedEmployeeDetail.exp ?? 0))}</p>
-      <table className="employee-detail-table">
-        <tbody>
-          <tr><th>統率</th><td>{renderEmployeeStatValue(selectedEmployeeDetail, "leadership", "baseLeadership")}</td></tr>
-          <tr><th>営業</th><td>{renderEmployeeStatValue(selectedEmployeeDetail, "sales", "baseSales")}</td></tr>
-          <tr><th>建築</th><td>{renderEmployeeStatValue(selectedEmployeeDetail, "construction", "baseConstruction")}</td></tr>
-          <tr><th>管理</th><td>{renderEmployeeStatValue(selectedEmployeeDetail, "management", "baseManagement")}</td></tr>
-          <tr><th>月給</th><td>{renderEmployeeSalaryValue(selectedEmployeeDetail)}</td></tr>
-        </tbody>
-      </table>
-      <h3>特殊能力</h3>
+    <div className={`popup-log-card employee-detail-card employee-detail-card-modern rarity-detail-${String(selectedEmployeeDetail.rarity || "N").toLowerCase()}`}>
+      <div className="employee-detail-hero">
+        <div className="employee-detail-portrait-wrap">
+          {selectedEmployeeDetail.graphicCode ? (
+            <img
+              className="employee-detail-portrait-image"
+              src={`/characters/${selectedEmployeeDetail.graphicCode}.png`}
+              alt={selectedEmployeeDetail.name}
+            />
+          ) : (
+            <div className={`employee-detail-portrait-avatar employee-detail-portrait-avatar-${selectedEmployeeDetail.gender === "female" ? "female" : "male"}`}>
+              <span>{selectedEmployeeDetail.name.slice(0, 1)}</span>
+            </div>
+          )}
+        </div>
+
+        <div className="employee-detail-main-info">
+          <span className={`employee-detail-rarity-badge rarity-label-${String(selectedEmployeeDetail.rarity || "N").toLowerCase()}`}>
+            {getRarityLabel(selectedEmployeeDetail.rarity)}
+          </span>
+          <h3>{selectedEmployeeDetail.name}</h3>
+          <p>覚醒 +{selectedEmployeeDetail.awakening ?? 0} / 所属：{getCompanyEmployeeOfficeName(selectedEmployeeDetail, selectedEmployeeDetail.isStoredEmployee === true)}</p>
+          <p>
+            Lv {selectedEmployeeDetail.level ?? 1} / EXP {selectedEmployeeDetail.exp ?? 0}
+            / 次Lv必要 {getEmployeeRequiredExp(selectedEmployeeDetail.level ?? 1)}
+            / 残り {Math.max(0, getEmployeeRequiredExp(selectedEmployeeDetail.level ?? 1) - (selectedEmployeeDetail.exp ?? 0))}
+          </p>
+        </div>
+      </div>
+
+      <div className="employee-detail-stat-card">
+        <div><span>統率</span><strong>{renderEmployeeStatValue(selectedEmployeeDetail, "leadership", "baseLeadership")}</strong></div>
+        <div><span>営業</span><strong>{renderEmployeeStatValue(selectedEmployeeDetail, "sales", "baseSales")}</strong></div>
+        <div><span>建築</span><strong>{renderEmployeeStatValue(selectedEmployeeDetail, "construction", "baseConstruction")}</strong></div>
+        <div><span>管理</span><strong>{renderEmployeeStatValue(selectedEmployeeDetail, "management", "baseManagement")}</strong></div>
+        <div><span>月給</span><strong>{renderEmployeeSalaryValue(selectedEmployeeDetail)}</strong></div>
+      </div>
+
+      <h3 className="employee-detail-section-title">特殊能力</h3>
       {(Array.isArray(selectedEmployeeDetail.specialNames) && selectedEmployeeDetail.specialNames.length > 0) ? (
-        <div className="employee-skill-list">
+        <div className="employee-skill-list employee-skill-list-modern">
           {selectedEmployeeDetail.specialNames.map((skillName) => (
-            <div key={skillName} className="employee-skill-item">
+            <div key={skillName} className="employee-skill-item employee-skill-item-modern">
               <strong>{skillName}</strong>
               <p>{getSpecialSkillDescription(skillName)}</p>
             </div>
@@ -19656,7 +17212,8 @@ return (
       ) : (
         <p>特殊能力なし</p>
       )}
-      <button onClick={() => setSelectedEmployeeDetail(null)}>閉じる</button>
+
+      <button className="employee-detail-close-button" onClick={() => setSelectedEmployeeDetail(null)}>閉じる</button>
     </div>
   </div>
 )}
@@ -19994,7 +17551,7 @@ return (
 </nav>
 <div className="game-layout"></div>
 
-      <main className={`main-layout ${(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "property" || activePanel === "log" || activePanel === "option" || activePanel === "info" || activePanel === "bank") ? "full-panel" : ""}`}>
+      <main className={`main-layout ${(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "employeeLibrary" || activePanel === "property" || activePanel === "log" || activePanel === "option" || activePanel === "info" || activePanel === "bank") ? "full-panel" : ""}`}>
         {(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build") && (
         <section className="map-section">
           <div className="panel-title-row map-title-row">
@@ -20187,7 +17744,7 @@ return (
         </section>
         )}
 
-        {(activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee") && (
+        {(activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "employeeLibrary") && (
   <section
     key={isFloatingPanelMode() ? `floating-panel-${floatingPanelResetKey}` : "normal-side-section"}
     className={isFloatingPanelMode() ? "side-section floating-panel" : "side-section"}
@@ -20525,6 +18082,23 @@ return (
   <div className="detail-card">
     <h2>社員管理</h2>
 
+    <div className="employee-subnav-row">
+      <button
+        type="button"
+        className={activePanel === "employee" ? "active" : ""}
+        onClick={() => setActivePanel("employee")}
+      >
+        社員管理
+      </button>
+      <button
+        type="button"
+        className={activePanel === "employeeLibrary" ? "active" : ""}
+        onClick={() => setActivePanel("employeeLibrary")}
+      >
+        社員図鑑
+      </button>
+    </div>
+
     <p>
       配属社員: {employeeCountText}人 / 保有社員: {ownedEmployeeCount}人 / 待機社員: {employeeStorage.length}人 / 月給合計: {employeeSalaryTotal}万円 / 社員チケット: {employeeTickets}枚 / プレミアム: {premiumEmployeeTickets}枚
     </p>
@@ -20537,13 +18111,13 @@ return (
         onClick={recruitEmployees}
       >
         {employeeTickets < 1
-          ? "社員チケット不足"
-          : "社員チケットを使う"}
+          ? "社員採用（チケット不足）"
+          : "社員採用"}
       </button>
 
       {isDemoMode && (
         <button onClick={addEmployeeTicketForDemo}>
-          デモ用：社員チケット+1
+          採用券+1
         </button>
       )}
 
@@ -20553,13 +18127,13 @@ return (
         onClick={recruitPremiumEmployees}
       >
         {premiumEmployeeTickets < 1
-          ? "プレミアムチケット不足"
-          : "社員プレミアムチケットを使う（SR以上確定）"}
+          ? "社員採用（プラチナ不足）"
+          : "社員採用（プラチナ）"}
       </button>
 
       {isDemoMode && (
         <button onClick={addPremiumEmployeeTicketForDemo}>
-          デモ用：社員プレミアムチケット+1
+          プラチナ採用券+1
         </button>
       )}
     </div>
@@ -20708,6 +18282,97 @@ return (
             ))}
           </tbody>
         </table>
+      </div>
+    )}
+  </div>
+)}
+
+
+{activePanel === "employeeLibrary" && (
+  <div className="detail-card employee-library-panel">
+    <div className="employee-library-header">
+      <div>
+        <h2>社員図鑑</h2>
+        <div className="employee-subnav-row employee-library-subnav-row">
+          <button
+            type="button"
+            onClick={() => setActivePanel("employee")}
+          >
+            社員管理
+          </button>
+          <button
+            type="button"
+            className="active"
+            onClick={() => setActivePanel("employeeLibrary")}
+          >
+            社員図鑑
+          </button>
+        </div>
+        <p>
+          採用済み {ownedEmployeeLibrary.length}人 / 全{EMPLOYEE_POOL.length}人
+          （コンプリート率 {employeeLibraryCompletionRate}%）
+        </p>
+      </div>
+      <div className="employee-library-summary">
+        {employeeLibraryRarityOptions.filter((rarity) => rarity !== "ALL").map((rarity) => (
+          <span key={rarity} className={`employee-library-summary-chip rarity-${String(rarity).toLowerCase()}`}>
+            {rarity}: {employeeLibraryCounts[rarity] ?? 0}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <div className="employee-library-filter-row">
+      {employeeLibraryRarityOptions.map((rarity) => (
+        <button
+          key={rarity}
+          type="button"
+          onClick={() => setEmployeeLibraryFilter(rarity)}
+          className={employeeLibraryFilter === rarity ? "active" : ""}
+        >
+          {rarity === "ALL" ? "全員" : rarity}
+        </button>
+      ))}
+    </div>
+
+    {filteredEmployeeLibrary.length === 0 ? (
+      <p>この条件に一致する採用済み社員はいません。</p>
+    ) : (
+      <div className="employee-library-grid">
+        {sortEmployeesForDisplay(filteredEmployeeLibrary).map((employee) => (
+          <button
+            key={employee.id}
+            type="button"
+            className={`employee-library-card rarity-card-${String(employee.rarity || "N").toLowerCase()}`}
+            onClick={() => setSelectedEmployeeDetail(employee)}
+          >
+            <div className="employee-library-portrait">
+              {employee.graphicCode ? (
+                <img
+                  src={`/characters/${employee.graphicCode}.png`}
+                  alt={employee.name}
+                />
+              ) : (
+                <span>{employee.name.slice(0, 1)}</span>
+              )}
+            </div>
+            <div className="employee-library-card-body">
+              <strong>{employee.name}</strong>
+              <span className={`employee-library-rarity rarity-label-${String(employee.rarity || "N").toLowerCase()}`}>
+                {getRarityLabel(employee.rarity)}
+              </span>
+              <small className="employee-library-level-line">
+                Lv.{employee.level ?? 1} / 覚醒+{employee.awakening ?? 0}
+              </small>
+              <div className="employee-library-mini-stats">
+                <span>統率 {employee.leadership ?? 0}</span>
+                <span>営業 {employee.sales ?? 0}</span>
+                <span>建築 {employee.construction ?? 0}</span>
+                <span>管理 {employee.management ?? 0}</span>
+              </div>
+            </div>
+          </button>
+        ))}
       </div>
     )}
   </div>
@@ -21858,3 +19523,4 @@ const rent = occupiedRooms.reduce(
   </>
 );
 }
+
