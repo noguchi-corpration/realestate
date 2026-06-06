@@ -7425,7 +7425,7 @@ function loadSavedGameSafely() {
 export default function App() {
 
   useEffect(() => {
-    document.title = "箱庭不動産経営シミュレーター V109";
+    document.title = "箱庭不動産経営シミュレーター V128";
 
     if (typeof window === "undefined") return;
     if (!("serviceWorker" in navigator)) return;
@@ -16578,7 +16578,7 @@ return (
           <div style={{ fontSize: 42, lineHeight: 1, marginBottom: 10 }}>🏘️</div>
           <p style={{ margin: "0 0 6px", letterSpacing: 2, fontSize: 12, opacity: 0.82 }}>NOGUCHI CORPORATION PRESENTS</p>
           <h1 style={{ margin: "0 0 8px", fontSize: 28, lineHeight: 1.25 }}>箱庭不動産経営<br />シミュレーション</h1>
-          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>Version 116</p>
+          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>Version 128</p>
 
           <div
             style={{
@@ -17302,7 +17302,7 @@ return (
 
       <header className="top-header compact-top-header">
         <div className="top-title-wrap">
-          <h1 className="v73-title">箱庭不動産経営シミュレーター V108{isDemoMode ? "（デモ版）" : ""}</h1>
+          <h1 className="v73-title">箱庭不動産経営シミュレーター V128{isDemoMode ? "（デモ版）" : ""}</h1>
         </div>
       </header>
 
