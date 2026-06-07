@@ -3,7 +3,9 @@ import "./App.css";
 
 /*
   箱庭不動産経営シミュレーター
-  PC・スマホ両対応版
+  v139: 社員募集画面圧縮・ライバル本社購入制限強化
+  PC・スマホ両対応版 / v133 配属上限撤廃・役職補正強化・拠点表示整理
+  v131：特殊能力効果拡張（入居・家賃・融資・採用対応）
 
   方針：
   ・ゲーム処理はPC/スマホ共通
@@ -712,6 +714,435 @@ const BUILDING_CATEGORIES = [
   "工業",
 ];
 
+const SPECIAL_SKILLS = {
+  DIY_CRAFTSMAN: {
+    id: "DIY_CRAFTSMAN",
+    name: "DIY職人",
+    description: "軽修繕費を50％下げる。",
+    addedByAi: false,
+    extractedCount: 3,
+    effects: {
+      "lightRepairCostDiscountRate": 0.5
+    },
+  },
+  CUSTOMER_FIRST: {
+    id: "CUSTOMER_FIRST",
+    name: "お客様第一",
+    description: "退去率を10％下げる。",
+    addedByAi: false,
+    extractedCount: 14,
+    effects: {
+      "moveOutRateReductionRate": 0.1
+    },
+  },
+  CHARISMA_SALES: {
+    id: "CHARISMA_SALES",
+    name: "カリスマ営業",
+    description: "営業能力を10上げる。",
+    addedByAi: false,
+    extractedCount: 9,
+    effects: {
+      "salesBonusFlat": 10
+    },
+  },
+  CHARISMA_MANAGER: {
+    id: "CHARISMA_MANAGER",
+    name: "カリスマ所長",
+    description: "同じ支店の社員能力を10％上げる。",
+    addedByAi: false,
+    extractedCount: 9,
+    effects: {
+      "officeAllStatsRateBonus": 0.1
+    },
+  },
+  CLAIM_HANDLER: {
+    id: "CLAIM_HANDLER",
+    name: "クレーム対応力",
+    description: "入居者満足度を10上げる。",
+    addedByAi: false,
+    extractedCount: 8,
+    effects: {
+      "tenantSatisfactionBonus": 10
+    },
+  },
+  HEADHUNTER: {
+    id: "HEADHUNTER",
+    name: "ヘッドハンター",
+    description: "社員募集時の募集人数を1人増やす。",
+    addedByAi: false,
+    extractedCount: 10,
+    effects: {
+      "recruitApplicantBonus": 1
+    },
+  },
+  VETERAN_CARPENTER: {
+    id: "VETERAN_CARPENTER",
+    name: "ベテラン大工",
+    description: "工期を15％短縮する。",
+    addedByAi: false,
+    extractedCount: 7,
+    effects: {
+      "buildMonthReductionRate": 0.15
+    },
+  },
+  LEADER: {
+    id: "LEADER",
+    name: "リーダー",
+    description: "同じ支店の社員能力を3％上げる。",
+    addedByAi: false,
+    extractedCount: 7,
+    effects: {
+      "officeAllStatsRateBonus": 0.03
+    },
+  },
+  CLUMSY: {
+    id: "CLUMSY",
+    name: "不器用",
+    description: "建築能力が10下がる。",
+    addedByAi: false,
+    extractedCount: 10,
+    effects: {
+      "constructionBonusFlat": -10
+    },
+  },
+  NEGOTIATION_GOOD: {
+    id: "NEGOTIATION_GOOD",
+    name: "交渉上手",
+    description: "土地購入価格を3％下げる。",
+    addedByAi: false,
+    extractedCount: 11,
+    effects: {
+      "landPurchaseDiscountRate": 0.03
+    },
+  },
+  QUALITY_FIRST: {
+    id: "QUALITY_FIRST",
+    name: "品質第一",
+    description: "建物状態を10上げる。",
+    addedByAi: false,
+    extractedCount: 6,
+    effects: {
+      "buildingConditionBonusFlat": 10
+    },
+  },
+  SPENDER: {
+    id: "SPENDER",
+    name: "浪費家",
+    description: "給与が20％上がる。",
+    addedByAi: false,
+    extractedCount: 9,
+    effects: {
+      "salaryRateBonus": 0.2
+    },
+  },
+  PASSIONATE_BOSS: {
+    id: "PASSIONATE_BOSS",
+    name: "熱血上司",
+    description: "獲得経験値を20％上げる。",
+    addedByAi: false,
+    extractedCount: 8,
+    effects: {
+      "expBonusRate": 0.2
+    },
+  },
+  MANAGEMENT_MASTER: {
+    id: "MANAGEMENT_MASTER",
+    name: "管理の達人",
+    description: "空室率を5％改善する。",
+    addedByAi: false,
+    extractedCount: 11,
+    effects: {
+      "vacancyRateReductionRate": 0.05
+    },
+  },
+  BARGAIN_BUYER: {
+    id: "BARGAIN_BUYER",
+    name: "買い叩き",
+    description: "土地購入価格を8％下げる。",
+    addedByAi: false,
+    extractedCount: 11,
+    effects: {
+      "landPurchaseDiscountRate": 0.08
+    },
+  },
+  LATE_COMER: {
+    id: "LATE_COMER",
+    name: "遅刻魔",
+    description: "行動成功率を5％下げる。",
+    addedByAi: false,
+    extractedCount: 20,
+    effects: {
+      "actionSuccessRateBonus": -0.05
+    },
+  },
+  LAZY: {
+    id: "LAZY",
+    name: "面倒くさがり",
+    description: "管理能力が10下がる。",
+    addedByAi: false,
+    extractedCount: 30,
+    effects: {
+      "managementBonusFlat": -10
+    },
+  },
+  FIRST_CLASS_ARCHITECT: {
+    id: "FIRST_CLASS_ARCHITECT",
+    name: "一級建築士",
+    description: "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
+    addedByAi: true,
+    extractedCount: 7,
+    effects: {
+      "constructionBonusFlat": 15,
+      "buildMonthReductionFlat": 1
+    },
+  },
+  REAL_ESTATE_INVESTOR: {
+    id: "REAL_ESTATE_INVESTOR",
+    name: "不動産投資家",
+    description: "購入判断成功率を8％上げ、家賃収入を2％上げる。",
+    addedByAi: true,
+    extractedCount: 1,
+    effects: {
+      "propertyEvaluationSuccessRateBonus": 0.08,
+      "rentIncomeBonusRate": 0.02
+    },
+  },
+  REAL_ESTATE_GOD: {
+    id: "REAL_ESTATE_GOD",
+    name: "不動産神",
+    description: "全能力を10％上げ、家賃収入を5％上げる。",
+    addedByAi: true,
+    extractedCount: 7,
+    effects: {
+      "allStatsRateBonus": 0.1,
+      "rentIncomeBonusRate": 0.05
+    },
+  },
+  REAL_ESTATE_APPRAISER: {
+    id: "REAL_ESTATE_APPRAISER",
+    name: "不動産鑑定士",
+    description: "物件調査・査定精度が上がり、購入判断成功率を8％上げる。",
+    addedByAi: true,
+    extractedCount: 6,
+    effects: {
+      "propertyEvaluationSuccessRateBonus": 0.08
+    },
+  },
+  NETWORK_KING: {
+    id: "NETWORK_KING",
+    name: "人脈王",
+    description: "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
+    addedByAi: true,
+    extractedCount: 8,
+    effects: {
+      "recruitApplicantBonus": 1,
+      "loanConsultSuccessRateBonus": 0.05
+    },
+  },
+  LEGENDARY_RENOVATION_KING: {
+    id: "LEGENDARY_RENOVATION_KING",
+    name: "伝説の再生王",
+    description: "修繕費を20％下げ、築古物件の入居率を8％上げる。",
+    addedByAi: true,
+    extractedCount: 2,
+    effects: {
+      "repairCostDiscountRate": 0.2,
+      "oldPropertyOccupancyBonus": 0.08
+    },
+  },
+  LEGENDARY_SALESPERSON: {
+    id: "LEGENDARY_SALESPERSON",
+    name: "伝説の営業マン",
+    description: "営業能力を20上げ、入居率を5％上げる。",
+    addedByAi: true,
+    extractedCount: 4,
+    effects: {
+      "salesBonusFlat": 20,
+      "occupancyBonus": 0.05
+    },
+  },
+  REPAIR_MASTER: {
+    id: "REPAIR_MASTER",
+    name: "修繕の匠",
+    description: "修繕費を15％下げ、建物状態の回復量を10上げる。",
+    addedByAi: true,
+    extractedCount: 4,
+    effects: {
+      "repairCostDiscountRate": 0.15,
+      "repairConditionBonusFlat": 10
+    },
+  },
+  RENOVATOR: {
+    id: "RENOVATOR",
+    name: "再生屋",
+    description: "築古物件の修繕費を10％下げ、建物状態の回復量を15上げる。",
+    addedByAi: true,
+    extractedCount: 2,
+    effects: {
+      "oldPropertyRepairCostDiscountRate": 0.1,
+      "repairConditionBonusFlat": 15
+    },
+  },
+  ACE_NEGOTIATOR: {
+    id: "ACE_NEGOTIATOR",
+    name: "凄腕交渉人",
+    description: "土地購入価格を10％下げる。",
+    addedByAi: true,
+    extractedCount: 3,
+    effects: {
+      "landPurchaseDiscountRate": 0.1
+    },
+  },
+  GREAT_COMMANDER: {
+    id: "GREAT_COMMANDER",
+    name: "名将",
+    description: "同じ事務所の社員能力を8％上げる。",
+    addedByAi: true,
+    extractedCount: 8,
+    effects: {
+      "officeAllStatsRateBonus": 0.08
+    },
+  },
+  LAND_PRICE_PROPHET: {
+    id: "LAND_PRICE_PROPHET",
+    name: "地価予言者",
+    description: "地価上昇イベントの察知率を上げ、購入判断成功率を10％上げる。",
+    addedByAi: true,
+    extractedCount: 1,
+    effects: {
+      "landPriceForecastBonus": 0.1,
+      "propertyEvaluationSuccessRateBonus": 0.1
+    },
+  },
+  REGIONAL_REVITALIZER: {
+    id: "REGIONAL_REVITALIZER",
+    name: "地方創生",
+    description: "郊外・地方エリアの入居率を5％上げる。",
+    addedByAi: true,
+    extractedCount: 3,
+    effects: {
+      "regionalOccupancyBonus": 0.05
+    },
+  },
+  RENT_COLLECTOR: {
+    id: "RENT_COLLECTOR",
+    name: "家賃回収人",
+    description: "家賃回収率を5％上げ、滞納発生率を10％下げる。",
+    addedByAi: true,
+    extractedCount: 3,
+    effects: {
+      "rentCollectionRateBonus": 0.05,
+      "delinquencyRateReductionRate": 0.1
+    },
+  },
+  INSPECTION_MASTER: {
+    id: "INSPECTION_MASTER",
+    name: "巡回名人",
+    description: "管理能力を15上げ、退去率を5％下げる。",
+    addedByAi: true,
+    extractedCount: 8,
+    effects: {
+      "managementBonusFlat": 15,
+      "moveOutRateReductionRate": 0.05
+    },
+  },
+  MENTOR: {
+    id: "MENTOR",
+    name: "教育係",
+    description: "同じ事務所の社員の獲得経験値を10％上げる。",
+    addedByAi: true,
+    extractedCount: 3,
+    effects: {
+      "officeExpBonusRate": 0.1
+    },
+  },
+  SITE_SUPERVISOR: {
+    id: "SITE_SUPERVISOR",
+    name: "現場監督",
+    description: "建築能力を10上げ、建築費を5％下げる。",
+    addedByAi: true,
+    extractedCount: 2,
+    effects: {
+      "constructionBonusFlat": 10,
+      "buildCostDiscountRate": 0.05
+    },
+  },
+  VETERAN_STRATEGIST: {
+    id: "VETERAN_STRATEGIST",
+    name: "百戦錬磨",
+    description: "行動成功率を10％上げる。",
+    addedByAi: true,
+    extractedCount: 3,
+    effects: {
+      "actionSuccessRateBonus": 0.1
+    },
+  },
+  SAVER: {
+    id: "SAVER",
+    name: "節約家",
+    description: "維持費を10％下げる。",
+    addedByAi: true,
+    extractedCount: 2,
+    effects: {
+      "maintenanceReductionRate": 0.1
+    },
+  },
+  DEMOLITION_EXPERT: {
+    id: "DEMOLITION_EXPERT",
+    name: "解体屋",
+    description: "解体費を20％下げる。",
+    addedByAi: true,
+    extractedCount: 1,
+    effects: {
+      "demolitionCostDiscountRate": 0.2
+    },
+  },
+  RENTAL_KING: {
+    id: "RENTAL_KING",
+    name: "賃貸王",
+    description: "入居率を10％上げ、家賃収入を3％上げる。",
+    addedByAi: true,
+    extractedCount: 5,
+    effects: {
+      "occupancyBonus": 0.1,
+      "rentIncomeBonusRate": 0.03
+    },
+  },
+  STRATEGIST: {
+    id: "STRATEGIST",
+    name: "軍師",
+    description: "同じ事務所の社員能力を5％上げ、行動成功率を5％上げる。",
+    addedByAi: true,
+    extractedCount: 3,
+    effects: {
+      "officeAllStatsRateBonus": 0.05,
+      "actionSuccessRateBonus": 0.05
+    },
+  },
+  NOGUCHI_CORP_FOUNDER: {
+    id: "NOGUCHI_CORP_FOUNDER",
+    name: "野口コーポレーション創業者",
+    description: "全能力を15％上げ、同じ事務所の社員能力を5％上げる。",
+    addedByAi: true,
+    extractedCount: 2,
+    effects: {
+      "allStatsRateBonus": 0.15,
+      "officeAllStatsRateBonus": 0.05
+    },
+  },
+  NOGUCHI_METHOD: {
+    id: "NOGUCHI_METHOD",
+    name: "野口メソッド",
+    description: "築古再生の成功率を15％上げ、修繕費を10％下げる。",
+    addedByAi: true,
+    extractedCount: 2,
+    effects: {
+      "renovationSuccessRateBonus": 0.15,
+      "repairCostDiscountRate": 0.1
+    },
+  },
+};
+
 const EMPLOYEE_POOL = [
   {
     id: 1,
@@ -729,14 +1160,8 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -755,9 +1180,7 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 3,
@@ -775,9 +1198,7 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 4,
@@ -795,14 +1216,8 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -821,9 +1236,7 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 6,
@@ -841,9 +1254,7 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 7,
@@ -861,14 +1272,8 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -887,9 +1292,7 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 9,
@@ -907,9 +1310,7 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 10,
@@ -927,14 +1328,8 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -953,9 +1348,7 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 12,
@@ -973,9 +1366,7 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 13,
@@ -993,14 +1384,8 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1019,9 +1404,7 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 15,
@@ -1039,9 +1422,7 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 16,
@@ -1059,14 +1440,8 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -1085,9 +1460,7 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 18,
@@ -1105,9 +1478,7 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 19,
@@ -1125,14 +1496,8 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1151,9 +1516,7 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 21,
@@ -1171,9 +1534,7 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 22,
@@ -1191,14 +1552,8 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -1217,9 +1572,7 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 24,
@@ -1237,9 +1590,7 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 25,
@@ -1257,14 +1608,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1283,9 +1628,7 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 27,
@@ -1303,9 +1646,7 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 28,
@@ -1323,14 +1664,8 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -1349,9 +1684,7 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 30,
@@ -1369,9 +1702,7 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 31,
@@ -1389,14 +1720,8 @@ const EMPLOYEE_POOL = [
     salary: 23,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1415,9 +1740,7 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 33,
@@ -1435,9 +1758,7 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 34,
@@ -1455,14 +1776,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -1481,9 +1796,7 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 36,
@@ -1501,9 +1814,7 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 37,
@@ -1521,14 +1832,8 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1547,9 +1852,7 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 39,
@@ -1567,9 +1870,7 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 40,
@@ -1587,14 +1888,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -1613,9 +1908,7 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 42,
@@ -1633,9 +1926,7 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 43,
@@ -1653,14 +1944,8 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1679,9 +1964,7 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 45,
@@ -1699,9 +1982,7 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 46,
@@ -1719,14 +2000,8 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -1745,9 +2020,7 @@ const EMPLOYEE_POOL = [
     salary: 17,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 48,
@@ -1765,9 +2038,7 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 49,
@@ -1785,14 +2056,8 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1811,9 +2076,7 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 51,
@@ -1831,9 +2094,7 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 52,
@@ -1851,14 +2112,8 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -1877,9 +2132,7 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 54,
@@ -1897,9 +2150,7 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 55,
@@ -1917,14 +2168,8 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1943,9 +2188,7 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 57,
@@ -1963,9 +2206,7 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 58,
@@ -1983,14 +2224,8 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -2009,9 +2244,7 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 60,
@@ -2029,9 +2262,7 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 61,
@@ -2049,14 +2280,8 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2075,9 +2300,7 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 63,
@@ -2095,9 +2318,7 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 64,
@@ -2115,14 +2336,8 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -2141,9 +2356,7 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 66,
@@ -2161,9 +2374,7 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 67,
@@ -2181,14 +2392,8 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2207,9 +2412,7 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 69,
@@ -2227,9 +2430,7 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 70,
@@ -2247,14 +2448,8 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -2273,9 +2468,7 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 72,
@@ -2293,9 +2486,7 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 73,
@@ -2313,14 +2504,8 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2339,9 +2524,7 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 75,
@@ -2359,9 +2542,7 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 76,
@@ -2379,14 +2560,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -2405,9 +2580,7 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 78,
@@ -2425,9 +2598,7 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 79,
@@ -2445,14 +2616,8 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2471,9 +2636,7 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 81,
@@ -2491,9 +2654,7 @@ const EMPLOYEE_POOL = [
     salary: 23,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 82,
@@ -2511,14 +2672,8 @@ const EMPLOYEE_POOL = [
     salary: 17,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -2537,9 +2692,7 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 84,
@@ -2557,9 +2710,7 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 85,
@@ -2577,14 +2728,8 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2603,9 +2748,7 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 87,
@@ -2623,9 +2766,7 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 88,
@@ -2643,14 +2784,8 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -2669,9 +2804,7 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 90,
@@ -2689,9 +2822,7 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 91,
@@ -2709,14 +2840,8 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2735,9 +2860,7 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 93,
@@ -2755,9 +2878,7 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 94,
@@ -2775,14 +2896,8 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -2801,9 +2916,7 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 96,
@@ -2821,9 +2934,7 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 97,
@@ -2841,14 +2952,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2867,9 +2972,7 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 99,
@@ -2887,9 +2990,7 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 100,
@@ -2907,14 +3008,8 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -2933,9 +3028,7 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 102,
@@ -2953,9 +3046,7 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 103,
@@ -2973,14 +3064,8 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2999,9 +3084,7 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 105,
@@ -3019,9 +3102,7 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 106,
@@ -3039,14 +3120,8 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -3065,9 +3140,7 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 108,
@@ -3085,9 +3158,7 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 109,
@@ -3105,14 +3176,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -3131,9 +3196,7 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 111,
@@ -3151,9 +3214,7 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 112,
@@ -3171,14 +3232,8 @@ const EMPLOYEE_POOL = [
     salary: 23,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -3197,9 +3252,7 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 114,
@@ -3217,9 +3270,7 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 115,
@@ -3237,14 +3288,8 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "遅刻魔",
-    ],
-    specialCodes: [
+    skillIds: [
       "LATE_COMER",
-    ],
-    specialDescriptions: [
-      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -3263,9 +3308,7 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 117,
@@ -3283,9 +3326,7 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 118,
@@ -3303,14 +3344,8 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -3329,9 +3364,7 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 120,
@@ -3349,9 +3382,7 @@ const EMPLOYEE_POOL = [
     salary: 17,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [],
-    specialCodes: [],
-    specialDescriptions: [],
+    skillIds: [],
   },
   {
     id: 121,
@@ -3369,14 +3400,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "交渉上手",
-    ],
-    specialCodes: [
+    skillIds: [
       "NEGOTIATION_GOOD",
-    ],
-    specialDescriptions: [
-      "土地購入価格を3％下げる。",
     ],
   },
   {
@@ -3395,14 +3420,8 @@ const EMPLOYEE_POOL = [
     salary: 36,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "不器用",
-    ],
-    specialCodes: [
+    skillIds: [
       "CLUMSY",
-    ],
-    specialDescriptions: [
-      "建築能力が10下がる。",
     ],
   },
   {
@@ -3421,14 +3440,8 @@ const EMPLOYEE_POOL = [
     salary: 29,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "買い叩き",
-    ],
-    specialCodes: [
+    skillIds: [
       "BARGAIN_BUYER",
-    ],
-    specialDescriptions: [
-      "土地購入価格を8％下げる。",
     ],
   },
   {
@@ -3447,14 +3460,8 @@ const EMPLOYEE_POOL = [
     salary: 36,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -3473,14 +3480,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "カリスマ営業",
-    ],
-    specialCodes: [
+    skillIds: [
       "CHARISMA_SALES",
-    ],
-    specialDescriptions: [
-      "営業能力を10上げる。",
     ],
   },
   {
@@ -3499,14 +3500,8 @@ const EMPLOYEE_POOL = [
     salary: 32,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "浪費家",
-    ],
-    specialCodes: [
+    skillIds: [
       "SPENDER",
-    ],
-    specialDescriptions: [
-      "給与が20％上がる。",
     ],
   },
   {
@@ -3525,14 +3520,8 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "ヘッドハンター",
-    ],
-    specialCodes: [
+    skillIds: [
       "HEADHUNTER",
-    ],
-    specialDescriptions: [
-      "社員募集時の募集人数を1人増やす。",
     ],
   },
   {
@@ -3551,14 +3540,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "不器用",
-    ],
-    specialCodes: [
+    skillIds: [
       "CLUMSY",
-    ],
-    specialDescriptions: [
-      "建築能力が10下がる。",
     ],
   },
   {
@@ -3577,14 +3560,8 @@ const EMPLOYEE_POOL = [
     salary: 23,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "ベテラン大工",
-    ],
-    specialCodes: [
+    skillIds: [
       "VETERAN_CARPENTER",
-    ],
-    specialDescriptions: [
-      "工期を15％短縮する。",
     ],
   },
   {
@@ -3603,14 +3580,8 @@ const EMPLOYEE_POOL = [
     salary: 27,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -3629,14 +3600,8 @@ const EMPLOYEE_POOL = [
     salary: 31,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "品質第一",
-    ],
-    specialCodes: [
+    skillIds: [
       "QUALITY_FIRST",
-    ],
-    specialDescriptions: [
-      "建物状態を10上げる。",
     ],
   },
   {
@@ -3655,14 +3620,8 @@ const EMPLOYEE_POOL = [
     salary: 37,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "浪費家",
-    ],
-    specialCodes: [
+    skillIds: [
       "SPENDER",
-    ],
-    specialDescriptions: [
-      "給与が20％上がる。",
     ],
   },
   {
@@ -3681,14 +3640,8 @@ const EMPLOYEE_POOL = [
     salary: 33,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "DIY職人",
-    ],
-    specialCodes: [
+    skillIds: [
       "DIY_CRAFTSMAN",
-    ],
-    specialDescriptions: [
-      "軽修繕費を50％下げる。",
     ],
   },
   {
@@ -3707,14 +3660,8 @@ const EMPLOYEE_POOL = [
     salary: 23,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "不器用",
-    ],
-    specialCodes: [
+    skillIds: [
       "CLUMSY",
-    ],
-    specialDescriptions: [
-      "建築能力が10下がる。",
     ],
   },
   {
@@ -3733,14 +3680,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "管理の達人",
-    ],
-    specialCodes: [
+    skillIds: [
       "MANAGEMENT_MASTER",
-    ],
-    specialDescriptions: [
-      "空室率を5％改善する。",
     ],
   },
   {
@@ -3759,14 +3700,8 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -3785,14 +3720,8 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "お客様第一",
-    ],
-    specialCodes: [
+    skillIds: [
       "CUSTOMER_FIRST",
-    ],
-    specialDescriptions: [
-      "退去率を10％下げる。",
     ],
   },
   {
@@ -3811,14 +3740,8 @@ const EMPLOYEE_POOL = [
     salary: 36,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "浪費家",
-    ],
-    specialCodes: [
+    skillIds: [
       "SPENDER",
-    ],
-    specialDescriptions: [
-      "給与が20％上がる。",
     ],
   },
   {
@@ -3837,14 +3760,8 @@ const EMPLOYEE_POOL = [
     salary: 32,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "クレーム対応力",
-    ],
-    specialCodes: [
+    skillIds: [
       "CLAIM_HANDLER",
-    ],
-    specialDescriptions: [
-      "入居者満足度を10上げる。",
     ],
   },
   {
@@ -3863,14 +3780,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "不器用",
-    ],
-    specialCodes: [
+    skillIds: [
       "CLUMSY",
-    ],
-    specialDescriptions: [
-      "建築能力が10下がる。",
     ],
   },
   {
@@ -3889,14 +3800,8 @@ const EMPLOYEE_POOL = [
     salary: 37,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "リーダー",
-    ],
-    specialCodes: [
+    skillIds: [
       "LEADER",
-    ],
-    specialDescriptions: [
-      "同じ支店の社員能力を3％上げる。",
     ],
   },
   {
@@ -3915,14 +3820,8 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -3941,14 +3840,8 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "カリスマ所長",
-    ],
-    specialCodes: [
+    skillIds: [
       "CHARISMA_MANAGER",
-    ],
-    specialDescriptions: [
-      "同じ支店の社員能力を10％上げる。",
     ],
   },
   {
@@ -3967,14 +3860,8 @@ const EMPLOYEE_POOL = [
     salary: 33,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "浪費家",
-    ],
-    specialCodes: [
+    skillIds: [
       "SPENDER",
-    ],
-    specialDescriptions: [
-      "給与が20％上がる。",
     ],
   },
   {
@@ -3993,14 +3880,8 @@ const EMPLOYEE_POOL = [
     salary: 26,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "熱血上司",
-    ],
-    specialCodes: [
+    skillIds: [
       "PASSIONATE_BOSS",
-    ],
-    specialDescriptions: [
-      "獲得経験値を20％上げる。",
     ],
   },
   {
@@ -4019,14 +3900,8 @@ const EMPLOYEE_POOL = [
     salary: 36,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "不器用",
-    ],
-    specialCodes: [
+    skillIds: [
       "CLUMSY",
-    ],
-    specialDescriptions: [
-      "建築能力が10下がる。",
     ],
   },
   {
@@ -4045,14 +3920,8 @@ const EMPLOYEE_POOL = [
     salary: 31,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "交渉上手",
-    ],
-    specialCodes: [
+    skillIds: [
       "NEGOTIATION_GOOD",
-    ],
-    specialDescriptions: [
-      "土地購入価格を3％下げる。",
     ],
   },
   {
@@ -4071,14 +3940,8 @@ const EMPLOYEE_POOL = [
     salary: 27,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -4097,14 +3960,8 @@ const EMPLOYEE_POOL = [
     salary: 33,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "買い叩き",
-    ],
-    specialCodes: [
+    skillIds: [
       "BARGAIN_BUYER",
-    ],
-    specialDescriptions: [
-      "土地購入価格を8％下げる。",
     ],
   },
   {
@@ -4123,14 +3980,8 @@ const EMPLOYEE_POOL = [
     salary: 40,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "浪費家",
-    ],
-    specialCodes: [
+    skillIds: [
       "SPENDER",
-    ],
-    specialDescriptions: [
-      "給与が20％上がる。",
     ],
   },
   {
@@ -4149,14 +4000,8 @@ const EMPLOYEE_POOL = [
     salary: 39,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "カリスマ営業",
-    ],
-    specialCodes: [
+    skillIds: [
       "CHARISMA_SALES",
-    ],
-    specialDescriptions: [
-      "営業能力を10上げる。",
     ],
   },
   {
@@ -4175,14 +4020,8 @@ const EMPLOYEE_POOL = [
     salary: 38,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "不器用",
-    ],
-    specialCodes: [
+    skillIds: [
       "CLUMSY",
-    ],
-    specialDescriptions: [
-      "建築能力が10下がる。",
     ],
   },
   {
@@ -4201,14 +4040,8 @@ const EMPLOYEE_POOL = [
     salary: 28,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "ヘッドハンター",
-    ],
-    specialCodes: [
+    skillIds: [
       "HEADHUNTER",
-    ],
-    specialDescriptions: [
-      "社員募集時の募集人数を1人増やす。",
     ],
   },
   {
@@ -4227,14 +4060,8 @@ const EMPLOYEE_POOL = [
     salary: 37,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -4253,14 +4080,8 @@ const EMPLOYEE_POOL = [
     salary: 33,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "ベテラン大工",
-    ],
-    specialCodes: [
+    skillIds: [
       "VETERAN_CARPENTER",
-    ],
-    specialDescriptions: [
-      "工期を15％短縮する。",
     ],
   },
   {
@@ -4279,14 +4100,8 @@ const EMPLOYEE_POOL = [
     salary: 29,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "浪費家",
-    ],
-    specialCodes: [
+    skillIds: [
       "SPENDER",
-    ],
-    specialDescriptions: [
-      "給与が20％上がる。",
     ],
   },
   {
@@ -4305,14 +4120,8 @@ const EMPLOYEE_POOL = [
     salary: 29,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "品質第一",
-    ],
-    specialCodes: [
+    skillIds: [
       "QUALITY_FIRST",
-    ],
-    specialDescriptions: [
-      "建物状態を10上げる。",
     ],
   },
   {
@@ -4331,14 +4140,8 @@ const EMPLOYEE_POOL = [
     salary: 29,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "不器用",
-    ],
-    specialCodes: [
+    skillIds: [
       "CLUMSY",
-    ],
-    specialDescriptions: [
-      "建築能力が10下がる。",
     ],
   },
   {
@@ -4357,14 +4160,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "DIY職人",
-    ],
-    specialCodes: [
+    skillIds: [
       "DIY_CRAFTSMAN",
-    ],
-    specialDescriptions: [
-      "軽修繕費を50％下げる。",
     ],
   },
   {
@@ -4383,14 +4180,8 @@ const EMPLOYEE_POOL = [
     salary: 37,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -4409,14 +4200,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "管理の達人",
-    ],
-    specialCodes: [
+    skillIds: [
       "MANAGEMENT_MASTER",
-    ],
-    specialDescriptions: [
-      "空室率を5％改善する。",
     ],
   },
   {
@@ -4435,14 +4220,8 @@ const EMPLOYEE_POOL = [
     salary: 34,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "浪費家",
-    ],
-    specialCodes: [
+    skillIds: [
       "SPENDER",
-    ],
-    specialDescriptions: [
-      "給与が20％上がる。",
     ],
   },
   {
@@ -4461,14 +4240,8 @@ const EMPLOYEE_POOL = [
     salary: 26,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "お客様第一",
-    ],
-    specialCodes: [
+    skillIds: [
       "CUSTOMER_FIRST",
-    ],
-    specialDescriptions: [
-      "退去率を10％下げる。",
     ],
   },
   {
@@ -4487,14 +4260,8 @@ const EMPLOYEE_POOL = [
     salary: 40,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "不器用",
-    ],
-    specialCodes: [
+    skillIds: [
       "CLUMSY",
-    ],
-    specialDescriptions: [
-      "建築能力が10下がる。",
     ],
   },
   {
@@ -4513,14 +4280,8 @@ const EMPLOYEE_POOL = [
     salary: 33,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "クレーム対応力",
-    ],
-    specialCodes: [
+    skillIds: [
       "CLAIM_HANDLER",
-    ],
-    specialDescriptions: [
-      "入居者満足度を10上げる。",
     ],
   },
   {
@@ -4539,14 +4300,8 @@ const EMPLOYEE_POOL = [
     salary: 29,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -4565,14 +4320,8 @@ const EMPLOYEE_POOL = [
     salary: 35,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "リーダー",
-    ],
-    specialCodes: [
+    skillIds: [
       "LEADER",
-    ],
-    specialDescriptions: [
-      "同じ支店の社員能力を3％上げる。",
     ],
   },
   {
@@ -4591,14 +4340,8 @@ const EMPLOYEE_POOL = [
     salary: 40,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "浪費家",
-    ],
-    specialCodes: [
+    skillIds: [
       "SPENDER",
-    ],
-    specialDescriptions: [
-      "給与が20％上がる。",
     ],
   },
   {
@@ -4617,14 +4360,8 @@ const EMPLOYEE_POOL = [
     salary: 27,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "カリスマ所長",
-    ],
-    specialCodes: [
+    skillIds: [
       "CHARISMA_MANAGER",
-    ],
-    specialDescriptions: [
-      "同じ支店の社員能力を10％上げる。",
     ],
   },
   {
@@ -4643,14 +4380,8 @@ const EMPLOYEE_POOL = [
     salary: 38,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "不器用",
-    ],
-    specialCodes: [
+    skillIds: [
       "CLUMSY",
-    ],
-    specialDescriptions: [
-      "建築能力が10下がる。",
     ],
   },
   {
@@ -4669,14 +4400,8 @@ const EMPLOYEE_POOL = [
     salary: 35,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "熱血上司",
-    ],
-    specialCodes: [
+    skillIds: [
       "PASSIONATE_BOSS",
-    ],
-    specialDescriptions: [
-      "獲得経験値を20％上げる。",
     ],
   },
   {
@@ -4695,14 +4420,8 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -4721,14 +4440,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "交渉上手",
-    ],
-    specialCodes: [
+    skillIds: [
       "NEGOTIATION_GOOD",
-    ],
-    specialDescriptions: [
-      "土地購入価格を3％下げる。",
     ],
   },
   {
@@ -4747,14 +4460,8 @@ const EMPLOYEE_POOL = [
     salary: 40,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "浪費家",
-    ],
-    specialCodes: [
+    skillIds: [
       "SPENDER",
-    ],
-    specialDescriptions: [
-      "給与が20％上がる。",
     ],
   },
   {
@@ -4773,14 +4480,8 @@ const EMPLOYEE_POOL = [
     salary: 40,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "買い叩き",
-    ],
-    specialCodes: [
+    skillIds: [
       "BARGAIN_BUYER",
-    ],
-    specialDescriptions: [
-      "土地購入価格を8％下げる。",
     ],
   },
   {
@@ -4799,14 +4500,8 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "不器用",
-    ],
-    specialCodes: [
+    skillIds: [
       "CLUMSY",
-    ],
-    specialDescriptions: [
-      "建築能力が10下がる。",
     ],
   },
   {
@@ -4825,14 +4520,8 @@ const EMPLOYEE_POOL = [
     salary: 34,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "カリスマ営業",
-    ],
-    specialCodes: [
+    skillIds: [
       "CHARISMA_SALES",
-    ],
-    specialDescriptions: [
-      "営業能力を10上げる。",
     ],
   },
   {
@@ -4851,14 +4540,8 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "面倒くさがり",
-    ],
-    specialCodes: [
+    skillIds: [
       "LAZY",
-    ],
-    specialDescriptions: [
-      "管理能力が10下がる。",
     ],
   },
   {
@@ -4877,1695 +4560,2090 @@ const EMPLOYEE_POOL = [
     salary: 38,
     officeId: "storage",
     graphicCode: null,
-    specialNames: [
-      "ヘッドハンター",
-    ],
-    specialCodes: [
+    skillIds: [
       "HEADHUNTER",
     ],
-    specialDescriptions: [
-      "社員募集時の募集人数を1人増やす。",
-   ],
-},
-{
-id: 501,
+  },
+  {
+    id: 501,
     name: "風間 優莉",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 55,
     sales: 76,
     construction: 44,
     management: 53,
     salary: 44,
+    officeId: "storage",
     graphicCode: "HR001",
-    specialNames: [
-      "お客様第一"
-    ]
+    skillIds: [
+      "CUSTOMER_FIRST",
+    ],
   },
-
-{
+  {
     id: 502,
     name: "椎名 陽葵",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 70,
     sales: 42,
     construction: 59,
     management: 71,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR002",
-    specialNames: [
-      "不動産鑑定士"
-    ]
+    skillIds: [
+      "REAL_ESTATE_APPRAISER",
+    ],
   },
-
-{
+  {
     id: 503,
     name: "真白 杏奈",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 56,
     sales: 54,
     construction: 67,
     management: 63,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR003",
-    specialNames: [
-      "名将",
-    ]
+    skillIds: [
+      "GREAT_COMMANDER",
+    ],
   },
-
-{
+  {
     id: 504,
     name: "宮藤 千歳",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 74,
     sales: 78,
     construction: 72,
     management: 45,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR004",
-    specialNames: [
-      "巡回名人"
-    ]
+    skillIds: [
+      "INSPECTION_MASTER",
+    ],
   },
-
-{
+  {
     id: 505,
     name: "久遠 奏",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 65,
     sales: 57,
     construction: 76,
     management: 49,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR005",
-    specialNames: [
-      "交渉上手",
-    ]
+    skillIds: [
+      "NEGOTIATION_GOOD",
+    ],
   },
-
-{
+  {
     id: 506,
     name: "葛城 澪",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 60,
     sales: 49,
     construction: 69,
     management: 70,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR006",
-    specialNames: [
-      "ヘッドハンター",
-    ]
+    skillIds: [
+      "HEADHUNTER",
+    ],
   },
-
-{
+  {
     id: 507,
     name: "氷室 真琴",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 69,
     sales: 61,
     construction: 64,
     management: 66,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR007",
-    specialNames: [
-      "修繕の匠"
-    ]
+    skillIds: [
+      "REPAIR_MASTER",
+    ],
   },
-
-{
+  {
     id: 508,
     name: "藤堂 陽菜",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 50,
     sales: 80,
     construction: 64,
     management: 61,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR008",
-    specialNames: [
-      "買い叩き",
-    ]
+    skillIds: [
+      "BARGAIN_BUYER",
+    ],
   },
-
-{
+  {
     id: 509,
     name: "七瀬 灯里",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 65,
     sales: 70,
     construction: 47,
     management: 57,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR009",
-    specialNames: [
-      "管理の達人",
-    ]
+    skillIds: [
+      "MANAGEMENT_MASTER",
+    ],
   },
-
-{
+  {
     id: 510,
     name: "榊 莉子",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 76,
     sales: 69,
     construction: 64,
     management: 55,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR010",
-    specialNames: [
-      "ヘッドハンター"
-    ]
+    skillIds: [
+      "HEADHUNTER",
+    ],
   },
-
-{
+  {
     id: 511,
     name: "橘 花蓮",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 53,
     sales: 42,
     construction: 51,
     management: 60,
     salary: 42,
+    officeId: "storage",
     graphicCode: "HR011",
-    specialNames: [
-      "品質第一"
-    ]
+    skillIds: [
+      "QUALITY_FIRST",
+    ],
   },
-
-{
+  {
     id: 512,
     name: "天城 美咲",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 62,
     sales: 46,
     construction: 58,
     management: 52,
     salary: 40,
+    officeId: "storage",
     graphicCode: "HR012",
-    specialNames: [
-      "お客様第一",
-    ]
+    skillIds: [
+      "CUSTOMER_FIRST",
+    ],
   },
-
-{
+  {
     id: 513,
     name: "東雲 詩織",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 64,
     sales: 60,
     construction: 44,
     management: 42,
     salary: 46,
+    officeId: "storage",
     graphicCode: "HR013",
-    specialNames: [
-      "ベテラン大工",
-    ]
+    skillIds: [
+      "VETERAN_CARPENTER",
+    ],
   },
-
-{
+  {
     id: 514,
     name: "姫宮 楓",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 64,
     sales: 50,
     construction: 77,
     management: 75,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR014",
-    specialNames: [
-      "お客様第一"
-    ]
+    skillIds: [
+      "CUSTOMER_FIRST",
+    ],
   },
-
-{
+  {
     id: 515,
     name: "有栖 美月",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 67,
     sales: 43,
     construction: 76,
     management: 71,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR015",
-    specialNames: [
-      "お客様第一"
-    ]
+    skillIds: [
+      "CUSTOMER_FIRST",
+    ],
   },
-
-{
+  {
     id: 516,
     name: "桜庭 紬",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 66,
     sales: 44,
     construction: 73,
     management: 47,
     salary: 44,
+    officeId: "storage",
     graphicCode: "HR016",
-    specialNames: [
-      "カリスマ所長"
-    ]
+    skillIds: [
+      "CHARISMA_MANAGER",
+    ],
   },
-
-{
+  {
     id: 517,
     name: "御影 雫",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 75,
     sales: 76,
     construction: 55,
     management: 48,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR017",
-    specialNames: [
-      "節約家",
-    ]
+    skillIds: [
+      "SAVER",
+    ],
   },
-
-{
+  {
     id: 518,
     name: "浅倉 凛",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 80,
     sales: 63,
     construction: 71,
     management: 46,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR018",
-    specialNames: [
-      "不動産鑑定士",
-    ]
+    skillIds: [
+      "REAL_ESTATE_APPRAISER",
+    ],
   },
-
-{
+  {
     id: 519,
     name: "霧島 小春",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 78,
     sales: 63,
     construction: 66,
     management: 43,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR019",
-    specialNames: [
-      "一級建築士"
-    ]
+    skillIds: [
+      "FIRST_CLASS_ARCHITECT",
+    ],
   },
-
-{
+  {
     id: 520,
     name: "相沢 彩葉",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 78,
     sales: 79,
     construction: 62,
     management: 48,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR020",
-    specialNames: [
-      "買い叩き"
-    ]
+    skillIds: [
+      "BARGAIN_BUYER",
+    ],
   },
-
-{
+  {
     id: 521,
     name: "成瀬 瑞希",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 43,
     sales: 58,
     construction: 65,
     management: 76,
     salary: 51,
+    officeId: "storage",
     graphicCode: "HR021",
-    specialNames: [
-      "クレーム対応力",
-    ]
+    skillIds: [
+      "CLAIM_HANDLER",
+    ],
   },
-
-{
+  {
     id: 522,
     name: "柏木 詩音",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 68,
     sales: 50,
     construction: 72,
     management: 46,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR022",
-    specialNames: [
-      "ヘッドハンター",
-    ]
+    skillIds: [
+      "HEADHUNTER",
+    ],
   },
-
-{
+  {
     id: 523,
     name: "長瀬 莉奈",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 80,
     sales: 47,
     construction: 70,
     management: 71,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR023",
-    specialNames: [
-      "凄腕交渉人"
-    ]
+    skillIds: [
+      "ACE_NEGOTIATOR",
+    ],
   },
-
-{
+  {
     id: 524,
     name: "神谷 心春",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 46,
     sales: 43,
     construction: 71,
     management: 54,
     salary: 46,
+    officeId: "storage",
     graphicCode: "HR024",
-    specialNames: [
-      "交渉上手",
-    ]
+    skillIds: [
+      "NEGOTIATION_GOOD",
+    ],
   },
-
-{
+  {
     id: 525,
     name: "相馬 優菜",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 64,
     sales: 56,
     construction: 50,
     management: 42,
     salary: 46,
+    officeId: "storage",
     graphicCode: "HR025",
-    specialNames: [
-      "ベテラン大工"
-    ]
+    skillIds: [
+      "VETERAN_CARPENTER",
+    ],
   },
-
-{
+  {
     id: 526,
     name: "月城 琴葉",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 48,
     sales: 47,
     construction: 62,
     management: 77,
     salary: 47,
+    officeId: "storage",
     graphicCode: "HR026",
-    specialNames: [
-      "管理の達人"
-    ]
+    skillIds: [
+      "MANAGEMENT_MASTER",
+    ],
   },
-
-{
+  {
     id: 527,
     name: "冬月 澪奈",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 77,
     sales: 44,
     construction: 63,
     management: 48,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR027",
-    specialNames: [
-      "交渉上手"
-    ]
+    skillIds: [
+      "NEGOTIATION_GOOD",
+    ],
   },
-
-{
+  {
     id: 528,
     name: "夏目 凛花",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 70,
     sales: 48,
     construction: 45,
     management: 45,
     salary: 43,
+    officeId: "storage",
     graphicCode: "HR028",
-    specialNames: [
-      "カリスマ所長"
-    ]
+    skillIds: [
+      "CHARISMA_MANAGER",
+    ],
   },
-
-{
+  {
     id: 529,
     name: "蓮見 若菜",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 75,
     sales: 43,
     construction: 42,
     management: 75,
     salary: 49,
+    officeId: "storage",
     graphicCode: "HR029",
-    specialNames: [
-      "お客様第一"
-    ]
+    skillIds: [
+      "CUSTOMER_FIRST",
+    ],
   },
-
-{
+  {
     id: 530,
     name: "白河 美帆",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 49,
     sales: 51,
     construction: 65,
     management: 62,
     salary: 44,
+    officeId: "storage",
     graphicCode: "HR030",
-    specialNames: [
-      "教育係"
-    ]
+    skillIds: [
+      "MENTOR",
+    ],
   },
-
-{
+  {
     id: 531,
     name: "黒崎 沙耶",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 59,
     sales: 56,
     construction: 62,
     management: 70,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR031",
-    specialNames: [
-      "クレーム対応力"
-    ]
+    skillIds: [
+      "CLAIM_HANDLER",
+    ],
   },
-
-{
+  {
     id: 532,
     name: "一条 乃愛",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 60,
     sales: 48,
     construction: 64,
     management: 63,
     salary: 53,
+    officeId: "storage",
     graphicCode: "HR032",
-    specialNames: [
-      "巡回名人"
-    ]
+    skillIds: [
+      "INSPECTION_MASTER",
+    ],
   },
-
-{
+  {
     id: 533,
     name: "鳴海 由依",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 68,
     sales: 50,
     construction: 58,
     management: 67,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR033",
-    specialNames: [
-      "熱血上司"
-    ]
+    skillIds: [
+      "PASSIONATE_BOSS",
+    ],
   },
-
-{
+  {
     id: 534,
     name: "高瀬 美優",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 50,
     sales: 58,
     construction: 79,
     management: 68,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR034",
-    specialNames: [
-      "巡回名人",
-    ]
+    skillIds: [
+      "INSPECTION_MASTER",
+    ],
   },
-
-{
+  {
     id: 535,
     name: "青柳 結衣",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 77,
     sales: 61,
     construction: 46,
     management: 59,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR035",
-    specialNames: [
-      "人脈王",
-    ]
+    skillIds: [
+      "NETWORK_KING",
+    ],
   },
-
-{
+  {
     id: 536,
     name: "白石 エレナ",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 78,
     sales: 72,
     construction: 54,
     management: 43,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR036",
-    specialNames: [
-      "お客様第一",
-    ]
+    skillIds: [
+      "CUSTOMER_FIRST",
+    ],
   },
-
-{
+  {
     id: 537,
     name: "神崎 レイナ",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 56,
     sales: 56,
     construction: 46,
     management: 75,
     salary: 52,
+    officeId: "storage",
     graphicCode: "HR037",
-    specialNames: [
-      "管理の達人"
-    ]
+    skillIds: [
+      "MANAGEMENT_MASTER",
+    ],
   },
-
-{
+  {
     id: 538,
     name: "朝倉 アリサ",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 56,
     sales: 69,
     construction: 61,
     management: 53,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR038",
-    specialNames: [
-      "カリスマ所長"
-    ]
+    skillIds: [
+      "CHARISMA_MANAGER",
+    ],
   },
-
-{
+  {
     id: 539,
     name: "高城 ミレイ",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 42,
     sales: 62,
     construction: 53,
     management: 71,
     salary: 53,
+    officeId: "storage",
     graphicCode: "HR039",
-    specialNames: [
-      "教育係"
-    ]
+    skillIds: [
+      "MENTOR",
+    ],
   },
-
-{
+  {
     id: 540,
     name: "結城 セリナ",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 44,
     sales: 74,
     construction: 75,
     management: 43,
     salary: 51,
+    officeId: "storage",
     graphicCode: "HR040",
-    specialNames: [
-      "一級建築士"
-    ]
+    skillIds: [
+      "FIRST_CLASS_ARCHITECT",
+    ],
   },
-
-{
+  {
     id: 541,
     name: "篠宮 リア",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 55,
     sales: 46,
     construction: 61,
     management: 57,
     salary: 45,
+    officeId: "storage",
     graphicCode: "HR041",
-    specialNames: [
-      "ベテラン大工"
-    ]
+    skillIds: [
+      "VETERAN_CARPENTER",
+    ],
   },
-
-{
+  {
     id: 542,
     name: "天音 エマ",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 45,
     sales: 59,
     construction: 42,
     management: 76,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR042",
-    specialNames: [
-      "管理の達人",
-    ]
+    skillIds: [
+      "MANAGEMENT_MASTER",
+    ],
   },
-
-{
+  {
     id: 543,
     name: "御剣 レナ",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 47,
     sales: 70,
     construction: 79,
     management: 70,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR043",
-    specialNames: [
-      "DIY職人"
-    ]
+    skillIds: [
+      "DIY_CRAFTSMAN",
+    ],
   },
-
-{
+  {
     id: 544,
     name: "西野 アンナ",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 48,
     sales: 48,
     construction: 58,
     management: 71,
     salary: 54,
+    officeId: "storage",
     graphicCode: "HR044",
-    specialNames: [
-      "ヘッドハンター"
-    ]
+    skillIds: [
+      "HEADHUNTER",
+    ],
   },
-
-{
+  {
     id: 545,
     name: "三条 ミア",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 65,
     sales: 53,
     construction: 65,
     management: 53,
     salary: 51,
+    officeId: "storage",
     graphicCode: "HR045",
-    specialNames: [
-      "不動産鑑定士"
-    ]
+    skillIds: [
+      "REAL_ESTATE_APPRAISER",
+    ],
   },
-
-{
+  {
     id: 546,
     name: "ヴィオレッタ・グレイス",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 78,
     sales: 58,
     construction: 46,
     management: 73,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR046",
-    specialNames: [
-      "カリスマ所長"
-    ]
+    skillIds: [
+      "CHARISMA_MANAGER",
+    ],
   },
-
-{
+  {
     id: 547,
     name: "セラフィナ・レイン",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 47,
     sales: 78,
     construction: 75,
     management: 68,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR047",
-    specialNames: [
-      "凄腕交渉人",
-    ]
+    skillIds: [
+      "ACE_NEGOTIATOR",
+    ],
   },
-
-{
+  {
     id: 548,
     name: "アステリア・クロフォード",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 57,
     sales: 59,
     construction: 47,
     management: 72,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR048",
-    specialNames: [
-      "管理の達人"
-    ]
+    skillIds: [
+      "MANAGEMENT_MASTER",
+    ],
   },
-
-{
+  {
     id: 549,
     name: "ノエリア・フォスター",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 66,
     sales: 55,
     construction: 50,
     management: 46,
     salary: 50,
+    officeId: "storage",
     graphicCode: "HR049",
-    specialNames: [
-      "人脈王"
-    ]
+    skillIds: [
+      "NETWORK_KING",
+    ],
   },
-
-{
+  {
     id: 550,
     name: "リリアナ・ベルモンド",
     gender: "female",
     rarity: "HR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 51,
     sales: 69,
     construction: 65,
     management: 78,
     salary: 55,
+    officeId: "storage",
     graphicCode: "HR050",
-    specialNames: [
-      "家賃回収人",
-    ]
+    skillIds: [
+      "RENT_COLLECTOR",
+    ],
   },
-
-{
+  {
     id: 651,
     name: "神楽 美琴",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 82,
     sales: 77,
     construction: 57,
     management: 62,
     salary: 66,
+    officeId: "storage",
     graphicCode: "SR001",
-    specialNames: [
-      "リーダー",
-      "伝説の営業マン"
-    ]
+    skillIds: [
+      "LEADER",
+      "LEGENDARY_SALESPERSON",
+    ],
   },
-
-{
+  {
     id: 652,
     name: "朝霧 麗奈",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 84,
     sales: 68,
     construction: 90,
     management: 57,
     salary: 89,
+    officeId: "storage",
     graphicCode: "SR002",
-    specialNames: [
-      "現場監督",
-      "修繕の匠"
-    ]
+    skillIds: [
+      "SITE_SUPERVISOR",
+      "REPAIR_MASTER",
+    ],
   },
-
-{
+  {
     id: 653,
     name: "如月 朱音",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 87,
     sales: 58,
     construction: 64,
     management: 61,
     salary: 70,
+    officeId: "storage",
     graphicCode: "SR003",
-    specialNames: [
-      "名将",
-      "交渉上手"
-    ]
+    skillIds: [
+      "GREAT_COMMANDER",
+      "NEGOTIATION_GOOD",
+    ],
   },
-
-{
+  {
     id: 654,
     name: "羽柴 琴音",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 60,
     sales: 66,
     construction: 94,
     management: 70,
     salary: 74,
+    officeId: "storage",
     graphicCode: "SR004",
-    specialNames: [
-      "熱血上司",
-      "解体屋"
-    ]
+    skillIds: [
+      "PASSIONATE_BOSS",
+      "DEMOLITION_EXPERT",
+    ],
   },
-
-{
+  {
     id: 655,
     name: "高梨 華蓮",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 66,
     sales: 66,
     construction: 55,
     management: 93,
     salary: 68,
+    officeId: "storage",
     graphicCode: "SR005",
-    specialNames: [
-      "クレーム対応力",
-      "巡回名人"
-    ]
+    skillIds: [
+      "CLAIM_HANDLER",
+      "INSPECTION_MASTER",
+    ],
   },
-
-{
+  {
     id: 656,
     name: "雪村 沙羅",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 59,
     sales: 79,
     construction: 79,
     management: 84,
     salary: 96,
+    officeId: "storage",
     graphicCode: "SR006",
-    specialNames: [
-      "クレーム対応力",
-      "買い叩き"
-    ]
+    skillIds: [
+      "CLAIM_HANDLER",
+      "BARGAIN_BUYER",
+    ],
   },
-
-{
+  {
     id: 657,
     name: "秋月 瑠奈",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 65,
     sales: 94,
     construction: 73,
     management: 75,
     salary: 91,
+    officeId: "storage",
     graphicCode: "SR007",
-    specialNames: [
-      "修繕の匠",
-      "リーダー"
-    ]
+    skillIds: [
+      "REPAIR_MASTER",
+      "LEADER",
+    ],
   },
-
-{
+  {
     id: 658,
     name: "桐谷 美羽",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 78,
     sales: 89,
     construction: 61,
     management: 56,
     salary: 74,
+    officeId: "storage",
     graphicCode: "SR008",
-    specialNames: [
-      "人脈王",
-      "一級建築士"
-    ]
+    skillIds: [
+      "NETWORK_KING",
+      "FIRST_CLASS_ARCHITECT",
+    ],
   },
-
-{
+  {
     id: 659,
     name: "速水 紗夜",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 84,
     sales: 66,
     construction: 65,
     management: 59,
     salary: 75,
+    officeId: "storage",
     graphicCode: "SR009",
-    specialNames: [
-      "再生屋",
-      "熱血上司"
-    ]
+    skillIds: [
+      "RENOVATOR",
+      "PASSIONATE_BOSS",
+    ],
   },
-
-{
+  {
     id: 660,
     name: "森川 紗月",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 67,
     sales: 58,
     construction: 68,
     management: 69,
     salary: 60,
+    officeId: "storage",
     graphicCode: "SR010",
-    specialNames: [
-      "賃貸王",
-      "不動産投資家"
-    ]
+    skillIds: [
+      "RENTAL_KING",
+      "REAL_ESTATE_INVESTOR",
+    ],
   },
-
-{
+  {
     id: 661,
     name: "北条 美桜",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 82,
     sales: 89,
     construction: 90,
     management: 56,
     salary: 97,
+    officeId: "storage",
     graphicCode: "SR011",
-    specialNames: [
-      "熱血上司",
-      "不動産鑑定士"
-    ]
+    skillIds: [
+      "PASSIONATE_BOSS",
+      "REAL_ESTATE_APPRAISER",
+    ],
   },
-
-{
+  {
     id: 662,
     name: "南雲 千尋",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 81,
     sales: 63,
     construction: 95,
     management: 63,
     salary: 97,
+    officeId: "storage",
     graphicCode: "SR012",
-    specialNames: [
-      "ヘッドハンター",
-      "カリスマ所長"
-    ]
+    skillIds: [
+      "HEADHUNTER",
+      "CHARISMA_MANAGER",
+    ],
   },
-
-{
+  {
     id: 663,
     name: "瀬戸 美緒",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 60,
     sales: 75,
     construction: 57,
     management: 95,
     salary: 83,
+    officeId: "storage",
     graphicCode: "SR013",
-    specialNames: [
-      "クレーム対応力",
-      "ベテラン大工"
-    ]
+    skillIds: [
+      "CLAIM_HANDLER",
+      "VETERAN_CARPENTER",
+    ],
   },
-
-{
+  {
     id: 664,
     name: "伊吹 涼音",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 63,
     sales: 89,
     construction: 76,
     management: 79,
     salary: 87,
+    officeId: "storage",
     graphicCode: "SR014",
-    specialNames: [
-      "賃貸王",
-      "お客様第一"
-    ]
+    skillIds: [
+      "RENTAL_KING",
+      "CUSTOMER_FIRST",
+    ],
   },
-
-{
+  {
     id: 665,
     name: "白雪 美里",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 62,
     sales: 61,
     construction: 72,
     management: 63,
     salary: 60,
+    officeId: "storage",
     graphicCode: "SR015",
-    specialNames: [
-      "リーダー",
-      "交渉上手"
-    ]
+    skillIds: [
+      "LEADER",
+      "NEGOTIATION_GOOD",
+    ],
   },
-
-{
+  {
     id: 666,
     name: "桐生 遥香",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 83,
     sales: 68,
     construction: 77,
     management: 70,
     salary: 93,
+    officeId: "storage",
     graphicCode: "SR016",
-    specialNames: [
-      "カリスマ営業",
-      "お客様第一"
-    ]
+    skillIds: [
+      "CHARISMA_SALES",
+      "CUSTOMER_FIRST",
+    ],
   },
-
-{
+  {
     id: 667,
     name: "天宮 香澄",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 70,
     sales: 89,
     construction: 72,
     management: 57,
     salary: 69,
+    officeId: "storage",
     graphicCode: "SR017",
-    specialNames: [
-      "一級建築士",
-      "名将"
-    ]
+    skillIds: [
+      "FIRST_CLASS_ARCHITECT",
+      "GREAT_COMMANDER",
+    ],
   },
-
-{
+  {
     id: 668,
     name: "月島 明日香",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 61,
     sales: 65,
     construction: 61,
     management: 73,
     salary: 60,
+    officeId: "storage",
     graphicCode: "SR018",
-    specialNames: [
-      "凄腕交渉人",
-      "ベテラン大工"
-    ]
+    skillIds: [
+      "ACE_NEGOTIATOR",
+      "VETERAN_CARPENTER",
+    ],
   },
-
-{
+  {
     id: 669,
     name: "御門 琴乃",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 78,
     sales: 74,
     construction: 59,
     management: 86,
     salary: 76,
+    officeId: "storage",
     graphicCode: "SR019",
-    specialNames: [
-      "交渉上手",
-      "賃貸王"
-    ]
+    skillIds: [
+      "NEGOTIATION_GOOD",
+      "RENTAL_KING",
+    ],
   },
-
-{
+  {
     id: 670,
     name: "白鷺 美奈",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 55,
     sales: 73,
     construction: 63,
     management: 95,
     salary: 64,
+    officeId: "storage",
     graphicCode: "SR020",
-    specialNames: [
-      "人脈王",
-      "カリスマ営業"
-    ]
+    skillIds: [
+      "NETWORK_KING",
+      "CHARISMA_SALES",
+    ],
   },
-
-{
+  {
     id: 671,
     name: "鷹司 由奈",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 75,
     sales: 83,
     construction: 56,
     management: 76,
     salary: 69,
+    officeId: "storage",
     graphicCode: "SR021",
-    specialNames: [
-      "人脈王",
-      "賃貸王"
-    ]
+    skillIds: [
+      "NETWORK_KING",
+      "RENTAL_KING",
+    ],
   },
-
-{
+  {
     id: 672,
     name: "榎本 エリカ",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 95,
     sales: 63,
     construction: 55,
     management: 88,
     salary: 82,
+    officeId: "storage",
     graphicCode: "SR022",
-    specialNames: [
-      "名将",
-      "カリスマ所長"
-    ]
+    skillIds: [
+      "GREAT_COMMANDER",
+      "CHARISMA_MANAGER",
+    ],
   },
-
-{
+  {
     id: 673,
     name: "藤崎 リナ",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 62,
     sales: 92,
     construction: 72,
     management: 67,
     salary: 85,
+    officeId: "storage",
     graphicCode: "SR023",
-    specialNames: [
-      "伝説の営業マン",
-      "再生屋"
-    ]
+    skillIds: [
+      "LEGENDARY_SALESPERSON",
+      "RENOVATOR",
+    ],
   },
-
-{
+  {
     id: 674,
     name: "綾瀬 ミナ",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 67,
     sales: 69,
     construction: 60,
     management: 95,
     salary: 75,
+    officeId: "storage",
     graphicCode: "SR024",
-    specialNames: [
-      "ヘッドハンター",
-      "買い叩き"
-    ]
+    skillIds: [
+      "HEADHUNTER",
+      "BARGAIN_BUYER",
+    ],
   },
-
-{
+  {
     id: 675,
     name: "若宮 セイラ",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 68,
     sales: 82,
     construction: 77,
     management: 79,
     salary: 87,
+    officeId: "storage",
     graphicCode: "SR025",
-    specialNames: [
-      "人脈王",
-      "節約家"
-    ]
+    skillIds: [
+      "NETWORK_KING",
+      "SAVER",
+    ],
   },
-
-{
+  {
     id: 676,
     name: "日向 ノア",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 58,
     sales: 72,
     construction: 68,
     management: 82,
     salary: 73,
+    officeId: "storage",
     graphicCode: "SR026",
-    specialNames: [
-      "クレーム対応力",
-      "人脈王"
-    ]
+    skillIds: [
+      "CLAIM_HANDLER",
+      "NETWORK_KING",
+    ],
   },
-
-{
+  {
     id: 677,
     name: "水城 リオ",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 82,
     sales: 77,
     construction: 71,
     management: 67,
     salary: 77,
+    officeId: "storage",
     graphicCode: "SR027",
-    specialNames: [
-      "管理の達人",
-      "カリスマ営業"
-    ]
+    skillIds: [
+      "MANAGEMENT_MASTER",
+      "CHARISMA_SALES",
+    ],
   },
-
-{
+  {
     id: 678,
     name: "雨宮 カレン",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 72,
     sales: 55,
     construction: 69,
     management: 65,
     salary: 61,
+    officeId: "storage",
     graphicCode: "SR028",
-    specialNames: [
-      "買い叩き",
-      "軍師"
-    ]
+    skillIds: [
+      "BARGAIN_BUYER",
+      "STRATEGIST",
+    ],
   },
-
-{
+  {
     id: 679,
     name: "花宮 ルナ",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 84,
     sales: 78,
     construction: 73,
     management: 80,
     salary: 96,
+    officeId: "storage",
     graphicCode: "SR029",
-    specialNames: [
-      "巡回名人",
-      "軍師"
-    ]
+    skillIds: [
+      "INSPECTION_MASTER",
+      "STRATEGIST",
+    ],
   },
-
-{
+  {
     id: 680,
     name: "フレデリカ・スターリング",
     gender: "female",
     rarity: "SR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 65,
     sales: 69,
     construction: 71,
     management: 77,
     salary: 72,
+    officeId: "storage",
     graphicCode: "SR030",
-    specialNames: [
-      "管理の達人",
-      "買い叩き"
-    ]
+    skillIds: [
+      "MANAGEMENT_MASTER",
+      "BARGAIN_BUYER",
+    ],
   },
-
-{
+  {
     id: 781,
     name: "神宮寺 薫",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 82,
     sales: 86,
     construction: 91,
     management: 80,
     salary: 104,
+    officeId: "storage",
     graphicCode: "SSR001",
-    specialNames: [
-      "管理の達人",
-      "人脈王",
-      "野口メソッド"
-    ]
+    skillIds: [
+      "MANAGEMENT_MASTER",
+      "NETWORK_KING",
+      "NOGUCHI_METHOD",
+    ],
   },
-
-{
+  {
     id: 782,
     name: "水無月 麗華",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 81,
     sales: 99,
     construction: 68,
     management: 98,
     salary: 103,
+    officeId: "storage",
     graphicCode: "SSR002",
-    specialNames: [
-      "軍師",
-      "お客様第一",
-      "地方創生"
-    ]
+    skillIds: [
+      "STRATEGIST",
+      "CUSTOMER_FIRST",
+      "REGIONAL_REVITALIZER",
+    ],
   },
-
-{
+  {
     id: 783,
     name: "九条院 美玲",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 82,
     sales: 96,
     construction: 74,
     management: 89,
     salary: 97,
+    officeId: "storage",
     graphicCode: "SSR003",
-    specialNames: [
-      "不動産鑑定士",
-      "交渉上手",
-      "百戦錬磨"
-    ]
+    skillIds: [
+      "REAL_ESTATE_APPRAISER",
+      "NEGOTIATION_GOOD",
+      "VETERAN_STRATEGIST",
+    ],
   },
-
-{
+  {
     id: 784,
     name: "一ノ瀬 美和",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 96,
     sales: 85,
     construction: 78,
     management: 98,
     salary: 134,
+    officeId: "storage",
     graphicCode: "SSR004",
-    specialNames: [
-      "教育係",
-      "買い叩き",
-      "不動産神"
-    ]
+    skillIds: [
+      "MENTOR",
+      "BARGAIN_BUYER",
+      "REAL_ESTATE_GOD",
+    ],
   },
-
-{
+  {
     id: 785,
     name: "桐嶋 涼",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 71,
     sales: 90,
     construction: 94,
     management: 83,
     salary: 103,
+    officeId: "storage",
     graphicCode: "SSR005",
-    specialNames: [
-      "一級建築士",
-      "現場監督",
-      "百戦錬磨"
-    ]
+    skillIds: [
+      "FIRST_CLASS_ARCHITECT",
+      "SITE_SUPERVISOR",
+      "VETERAN_STRATEGIST",
+    ],
   },
-
-{
+  {
     id: 786,
     name: "神代 霞",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 100,
     sales: 87,
     construction: 88,
     management: 76,
     salary: 113,
+    officeId: "storage",
     graphicCode: "SSR006",
-    specialNames: [
-      "巡回名人",
-      "伝説の営業マン",
-      "百戦錬磨"
-    ]
+    skillIds: [
+      "INSPECTION_MASTER",
+      "LEGENDARY_SALESPERSON",
+      "VETERAN_STRATEGIST",
+    ],
   },
-
-{
+  {
     id: 787,
     name: "皇 玲",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 100,
     sales: 80,
     construction: 92,
     management: 93,
     salary: 133,
+    officeId: "storage",
     graphicCode: "SSR007",
-    specialNames: [
-      "交渉上手",
-      "不動産鑑定士",
-      "地方創生"
-    ]
+    skillIds: [
+      "NEGOTIATION_GOOD",
+      "REAL_ESTATE_APPRAISER",
+      "REGIONAL_REVITALIZER",
+    ],
   },
-
-{
+  {
     id: 788,
     name: "鳳 芹奈",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 72,
     sales: 80,
     construction: 67,
     management: 100,
     salary: 80,
+    officeId: "storage",
     graphicCode: "SSR008",
-    specialNames: [
-      "お客様第一",
-      "カリスマ営業",
-      "野口メソッド"
-    ]
+    skillIds: [
+      "CUSTOMER_FIRST",
+      "CHARISMA_SALES",
+      "NOGUCHI_METHOD",
+    ],
   },
-
-{
+  {
     id: 789,
     name: "宝生 紫苑",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 94,
     sales: 77,
     construction: 76,
     management: 92,
     salary: 112,
+    officeId: "storage",
     graphicCode: "SSR009",
-    specialNames: [
-      "一級建築士",
-      "カリスマ営業",
-      "不動産神"
-    ]
+    skillIds: [
+      "FIRST_CLASS_ARCHITECT",
+      "CHARISMA_SALES",
+      "REAL_ESTATE_GOD",
+    ],
   },
-
-{
+  {
     id: 790,
     name: "飛鳥 凪沙",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 87,
     sales: 95,
     construction: 83,
     management: 75,
     salary: 98,
+    officeId: "storage",
     graphicCode: "SSR010",
-    specialNames: [
-      "ヘッドハンター",
-      "名将",
-      "不動産神"
-    ]
+    skillIds: [
+      "HEADHUNTER",
+      "GREAT_COMMANDER",
+      "REAL_ESTATE_GOD",
+    ],
   },
-
-{
+  {
     id: 791,
     name: "白鳥 セレナ",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 95,
     sales: 89,
     construction: 80,
     management: 70,
     salary: 106,
+    officeId: "storage",
     graphicCode: "SSR011",
-    specialNames: [
-      "買い叩き",
-      "名将",
-      "不動産神"
-    ]
+    skillIds: [
+      "BARGAIN_BUYER",
+      "GREAT_COMMANDER",
+      "REAL_ESTATE_GOD",
+    ],
   },
-
-{
+  {
     id: 792,
     name: "橘川 レイラ",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 98,
     sales: 69,
     construction: 77,
     management: 76,
     salary: 80,
+    officeId: "storage",
     graphicCode: "SSR012",
-    specialNames: [
-      "お客様第一",
-      "名将",
-      "不動産神"
-    ]
+    skillIds: [
+      "CUSTOMER_FIRST",
+      "GREAT_COMMANDER",
+      "REAL_ESTATE_GOD",
+    ],
   },
-
-{
+  {
     id: 793,
     name: "アリアノート・アークライト",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 85,
     sales: 83,
     construction: 78,
     management: 67,
     salary: 80,
+    officeId: "storage",
     graphicCode: "SSR013",
-    specialNames: [
-      "名将",
-      "お客様第一",
-      "不動産神"
-    ]
+    skillIds: [
+      "GREAT_COMMANDER",
+      "CUSTOMER_FIRST",
+      "REAL_ESTATE_GOD",
+    ],
   },
-
-{
+  {
     id: 794,
     name: "オフィーリア・ヴァレンタイン",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 93,
     sales: 94,
     construction: 85,
     management: 91,
     salary: 132,
+    officeId: "storage",
     graphicCode: "SSR014",
-    specialNames: [
-      "熱血上司",
-      "伝説の営業マン",
-      "不動産神"
-    ]
+    skillIds: [
+      "PASSIONATE_BOSS",
+      "LEGENDARY_SALESPERSON",
+      "REAL_ESTATE_GOD",
+    ],
   },
-
-{
+  {
     id: 795,
     name: "エヴァンジェリン・ローゼン",
     gender: "female",
     rarity: "SSR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 68,
     sales: 66,
     construction: 92,
     management: 93,
     salary: 86,
+    officeId: "storage",
     graphicCode: "SSR015",
-    specialNames: [
-      "管理の達人",
-      "家賃回収人",
-      "地方創生"
-    ]
+    skillIds: [
+      "MANAGEMENT_MASTER",
+      "RENT_COLLECTOR",
+      "REGIONAL_REVITALIZER",
+    ],
   },
-
-{
+  {
     id: 896,
     name: "天海 美空",
     gender: "female",
     rarity: "UR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 86,
     sales: 88,
     construction: 97,
     management: 98,
     salary: 110,
+    officeId: "storage",
     graphicCode: "UR001",
-    specialNames: [
-      "巡回名人",
-      "リーダー",
-      "修繕の匠",
-      "地価予言者"
-    ]
+    skillIds: [
+      "INSPECTION_MASTER",
+      "LEADER",
+      "REPAIR_MASTER",
+      "LAND_PRICE_PROPHET",
+    ],
   },
-
-{
+  {
     id: 897,
     name: "瑞原 深雪",
     gender: "female",
     rarity: "UR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 100,
     sales: 82,
     construction: 89,
     management: 105,
     salary: 110,
+    officeId: "storage",
     graphicCode: "UR002",
-    specialNames: [
-      "家賃回収人",
-      "お客様第一",
-      "品質第一",
-      "野口コーポレーション創業者"
-    ]
+    skillIds: [
+      "RENT_COLLECTOR",
+      "CUSTOMER_FIRST",
+      "QUALITY_FIRST",
+      "NOGUCHI_CORP_FOUNDER",
+    ],
   },
-
-{
+  {
     id: 898,
     name: "篠原 瑠璃",
     gender: "female",
     rarity: "UR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 87,
     sales: 97,
     construction: 91,
     management: 96,
     salary: 115,
+    officeId: "storage",
     graphicCode: "UR003",
-    specialNames: [
-      "品質第一",
-      "カリスマ営業",
-      "一級建築士",
-      "伝説の再生王"
-    ]
+    skillIds: [
+      "QUALITY_FIRST",
+      "CHARISMA_SALES",
+      "FIRST_CLASS_ARCHITECT",
+      "LEGENDARY_RENOVATION_KING",
+    ],
   },
-
-{
+  {
     id: 899,
     name: "黒羽 美亜",
     gender: "female",
     rarity: "UR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 82,
     sales: 99,
     construction: 96,
     management: 108,
     salary: 135,
+    officeId: "storage",
     graphicCode: "UR004",
-    specialNames: [
-      "熱血上司",
-      "品質第一",
-      "カリスマ所長",
-      "伝説の再生王",
-    ]
+    skillIds: [
+      "PASSIONATE_BOSS",
+      "QUALITY_FIRST",
+      "CHARISMA_MANAGER",
+      "LEGENDARY_RENOVATION_KING",
+    ],
   },
-
-{
+  {
     id: 900,
     name: "アメリア・セレスティア",
     gender: "female",
     rarity: "UR",
+    level: 1,
+    exp: 0,
+    awakening: 0,
+    awakeningMax: 0,
     leadership: 97,
     sales: 95,
     construction: 92,
     management: 98,
     salary: 139,
+    officeId: "storage",
     graphicCode: "UR005",
-    specialNames: [
-      "リーダー",
-      "巡回名人",
-      "賃貸王",
-      "野口コーポレーション創業者"
-    ]
+    skillIds: [
+      "LEADER",
+      "INSPECTION_MASTER",
+      "RENTAL_KING",
+      "NOGUCHI_CORP_FOUNDER",
+    ],
   }
 ];
 
 
 const MAX_EMPLOYEES_PER_OFFICE = 10;
-const EMPLOYEE_RECRUITMENT_ENVELOPE_COUNT = 5;
+const EMPLOYEE_RECRUITMENT_ENVELOPE_COUNT = 4;
 const EMPLOYEE_AWAKENING_MAX = 5;
 const BRANCH_OFFICE_COST = 10000;
 const BRANCH_OFFICE_BASE_MONTHS = 6;
@@ -6595,6 +6673,30 @@ function getNearestPointDistance(x, y, points, fallbackX, fallbackY) {
 
 function isBuildableTile(tile) {
   return tile.terrain === TERRAIN.PLAIN && tile.feature === FEATURE.NONE;
+}
+
+function sanitizeMapForV138(mapData) {
+  if (!mapData || !Array.isArray(mapData.tiles)) return mapData;
+
+  return {
+    ...mapData,
+    tiles: mapData.tiles.map((tile) => {
+      const invalidFacilityOnNonPlain =
+        tile.terrain !== TERRAIN.PLAIN &&
+        (tile.feature === FEATURE.STATION || tile.feature === FEATURE.FACTORY || tile.feature === FEATURE.SCHOOL);
+
+      if (!invalidFacilityOnNonPlain) return tile;
+
+      return {
+        ...tile,
+        feature: FEATURE.NONE,
+        rail: tile.feature === FEATURE.STATION ? false : tile.rail,
+        building: null,
+        buildingMainId: null,
+        rooms: [],
+      };
+    }),
+  };
 }
 
 function calculateLandPrice(
@@ -7173,9 +7275,8 @@ function getRivalOfficeCandidates(minDistanceFromPlaced = 0, placedRivalOffices 
   return tiles.filter((tile) => {
     if (tile.terrain !== TERRAIN.PLAIN) return false;
     if (tile.feature !== FEATURE.NONE) return false;
-    if (tile.building) return false;
-    if (tile.owner === OWNER.PUBLIC) return false;
-    if (tile.owner === OWNER.RIVAL) return false;
+    if (tile.building || tile.buildingMainId) return false;
+    if (tile.owner !== OWNER.SALE) return false;
     if (requireRoadOrRail && !isTileNearRoadOrRail(tile, tiles)) return false;
 
     return placedRivalOffices.every((placedTile) => {
@@ -7318,24 +7419,50 @@ function calculateBuildingValue(tile) {
   return Math.round(building.cost * ageRate * conditionRate);
 }
 function calculateMonthlyExpenses(tile) {
-  if (!tile?.building) return 0;
+  const details = calculateMonthlyExpenseDetails(tile);
+  return details.total;
+}
+
+function calculateMonthlyExpenseDetails(tile) {
+  if (!tile?.building) {
+    return {
+      managementFee: 0,
+      insurance: 0,
+      repairReserve: 0,
+      propertyTaxMonthlyReference: 0,
+      total: 0,
+    };
+  }
 
   const building = BUILDINGS[tile.building];
-  if (!building) return 0;
+  if (!building) {
+    return {
+      managementFee: 0,
+      insurance: 0,
+      repairReserve: 0,
+      propertyTaxMonthlyReference: 0,
+      total: 0,
+    };
+  }
 
-  const occupiedRent = tile.rooms.reduce((sum, room) => {
+  const occupiedRent = (tile.rooms ?? []).reduce((sum, room) => {
     return sum + (room.occupied ? room.rent : 0);
   }, 0);
 
   const managementFee = occupiedRent * 0.05;
   const insurance = building.cost * 0.002 / 12;
   const repairReserve = building.cost * 0.006 / 12;
+  const propertyTaxMonthlyReference = tile.owner === OWNER.PLAYER
+    ? calculateYearlyPropertyTax(tile) / 12
+    : 0;
 
-  return Math.round(
-    managementFee +
-    insurance +
-    repairReserve
-  );
+  return {
+    managementFee: Math.round(managementFee),
+    insurance: Math.round(insurance),
+    repairReserve: Math.round(repairReserve),
+    propertyTaxMonthlyReference: Math.round(propertyTaxMonthlyReference),
+    total: Math.round(managementFee + insurance + repairReserve),
+  };
 }
 
 function calculateYearlyPropertyTax(tile) {
@@ -7425,7 +7552,252 @@ function loadSavedGameSafely() {
 export default function App() {
 
   useEffect(() => {
-    document.title = "箱庭不動産経営シミュレーター V128";
+    document.title = "箱庭不動産経営シミュレーター v139";
+
+    const v134StatusStyleId = "v139-status-ui-style";
+    if (typeof document !== "undefined" && !document.getElementById(v134StatusStyleId)) {
+      const style = document.createElement("style");
+      style.id = v134StatusStyleId;
+      style.textContent = `
+        .status-good { color: #15803d; font-weight: 800; }
+        .status-warn { color: #b45309; font-weight: 800; }
+        .status-bad { color: #b91c1c; font-weight: 800; }
+        .smart-chip.good, .action-good { background: #dcfce7 !important; border-color: #86efac !important; color: #166534 !important; }
+        .smart-chip.bad, .action-bad { background: #fee2e2 !important; border-color: #fca5a5 !important; color: #991b1b !important; }
+        .smart-chip { white-space: nowrap; }
+        .status-chip-row { gap: 6px; flex-wrap: wrap; }
+        .compact-info-grid { grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 6px; }
+        .compact-land-card .smart-info-item { padding: 7px 8px; }
+        .smart-action-row button { min-height: 34px; padding: 6px 10px; border-radius: 10px; }
+        .finance-popup-section { grid-column: 1 / -1; border-top: 1px solid #e5e7eb; padding-top: 8px; margin-top: 8px; display: grid; grid-template-columns: 1fr auto; gap: 5px 10px; align-items: center; }
+        .finance-popup-section:first-of-type { border-top: 0; padding-top: 0; margin-top: 0; }
+        .finance-popup-title { grid-column: 1 / -1; font-size: 12px; font-weight: 800; color: #374151; margin: 0 0 5px; }
+        .finance-popup-section details { grid-column: 1 / -1; }
+        .finance-detail-summary { cursor: pointer; list-style: none; display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+        .finance-detail-summary::-webkit-details-marker { display: none; }
+        .finance-detail-summary .summary-label::before { content: "▼ "; font-size: 10px; color: #64748b; }
+        .finance-detail-box { margin-top: 6px; padding: 7px 8px; border-radius: 10px; background: #f8fafc; display: grid; gap: 4px; font-size: 12px; }
+        .finance-detail-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+        .finance-detail-note { color: #64748b; font-size: 11px; line-height: 1.35; }
+        .finance-total-row strong { font-weight: 900; }
+        .status-muted { color: #64748b; font-weight: 700; }
+
+        .top-info-popup {
+          border-radius: 12px !important;
+          overflow: visible !important;
+        }
+
+        .top-info-popup-grid {
+          background: transparent !important;
+          border: 0 !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+        }
+
+        .finance-popup-section {
+          border-top: 1px solid #d7ddd5 !important;
+          border-radius: 0 !important;
+        }
+
+        .finance-detail-box {
+          border-radius: 6px !important;
+        }
+
+        /* v139: 社員募集画面圧縮・ライバル本社購入制限強化 */
+        .top-info-popup {
+          border-radius: 14px !important;
+          padding: 12px 14px !important;
+        }
+
+        .top-info-popup h3 {
+          margin-bottom: 8px !important;
+          padding-bottom: 7px !important;
+          border-bottom: 1px solid #d7ddd5 !important;
+        }
+
+        .top-info-popup .top-info-popup-grid {
+          background: transparent !important;
+          border: 0 !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+          display: grid !important;
+          grid-template-columns: 1fr auto !important;
+          gap: 0 !important;
+        }
+
+        .top-info-popup .top-info-popup-grid > span,
+        .top-info-popup .top-info-popup-grid > strong {
+          border-bottom: 1px solid #eef2ea !important;
+          padding: 6px 0 !important;
+          line-height: 1.25 !important;
+        }
+
+        .top-info-popup .top-info-popup-grid > span {
+          color: #64748b !important;
+          font-weight: 700 !important;
+        }
+
+        .top-info-popup .top-info-popup-grid > strong {
+          text-align: right !important;
+          font-weight: 900 !important;
+        }
+
+        .top-info-popup .finance-popup-section {
+          grid-column: 1 / -1 !important;
+          border-top: 1px solid #d7ddd5 !important;
+          border-radius: 0 !important;
+          background: transparent !important;
+          padding: 8px 0 2px !important;
+          margin-top: 6px !important;
+          display: grid !important;
+          grid-template-columns: 1fr auto !important;
+          gap: 0 10px !important;
+        }
+
+        .top-info-popup .finance-popup-section:first-of-type {
+          border-top: 0 !important;
+          margin-top: 0 !important;
+          padding-top: 0 !important;
+        }
+
+        .top-info-popup .finance-popup-title {
+          grid-column: 1 / -1 !important;
+          margin: 0 0 3px !important;
+          color: #14532d !important;
+          font-size: 12px !important;
+          font-weight: 900 !important;
+        }
+
+        .top-info-popup .finance-popup-section > span,
+        .top-info-popup .finance-popup-section > strong {
+          padding: 5px 0 !important;
+          border-bottom: 1px solid #eef2ea !important;
+        }
+
+        .top-info-popup .finance-popup-section > span {
+          color: #64748b !important;
+          font-weight: 700 !important;
+        }
+
+        .top-info-popup .finance-popup-section > strong {
+          text-align: right !important;
+          font-weight: 900 !important;
+        }
+
+        .top-info-popup .finance-detail-summary {
+          padding: 5px 0 !important;
+          border-bottom: 1px solid #eef2ea !important;
+        }
+
+        .top-info-popup .finance-detail-box {
+          border-radius: 0 !important;
+          background: transparent !important;
+          border-left: 3px solid #d7ddd5 !important;
+          padding: 4px 0 4px 8px !important;
+          margin: 4px 0 2px !important;
+        }
+
+        .smart-section-card {
+          border: 0 !important;
+          border-radius: 0 !important;
+          background: transparent !important;
+          padding: 8px 2px !important;
+          box-shadow: none !important;
+          border-top: 1px solid #d7ddd5 !important;
+        }
+
+        .smart-section-card:first-of-type {
+          border-top: 0 !important;
+        }
+
+        .smart-section-title {
+          padding-bottom: 5px !important;
+          border-bottom: 1px solid #eef2ea !important;
+          margin-bottom: 2px !important;
+        }
+
+        .smart-info-grid,
+        .compact-info-grid {
+          grid-template-columns: 1fr !important;
+          gap: 0 !important;
+        }
+
+        .smart-info-item {
+          border: 0 !important;
+          border-radius: 0 !important;
+          background: transparent !important;
+          padding: 6px 0 !important;
+          box-shadow: none !important;
+          display: grid !important;
+          grid-template-columns: minmax(80px, 1fr) auto !important;
+          align-items: center !important;
+          border-bottom: 1px solid #eef2ea !important;
+        }
+
+        .smart-info-item span {
+          font-size: 12px !important;
+          color: #64748b !important;
+          font-weight: 700 !important;
+        }
+
+        .smart-info-item strong {
+          font-size: 13px !important;
+          text-align: right !important;
+          white-space: nowrap !important;
+        }
+
+        .office-role-grid {
+          grid-template-columns: 1fr !important;
+          gap: 0 !important;
+        }
+
+        .office-role-card {
+          border: 0 !important;
+          border-radius: 0 !important;
+          background: transparent !important;
+          box-shadow: none !important;
+          padding: 7px 0 !important;
+          border-bottom: 1px solid #eef2ea !important;
+          grid-template-columns: 72px 1fr !important;
+          align-items: center !important;
+          column-gap: 10px !important;
+        }
+
+        .office-role-card.missing {
+          background: transparent !important;
+        }
+
+        .office-role-label {
+          grid-row: 1 / span 2 !important;
+        }
+
+        .office-role-card strong {
+          font-size: 13px !important;
+        }
+
+        .office-role-card small {
+          font-size: 11px !important;
+        }
+
+        .office-skill-list {
+          grid-template-columns: 1fr !important;
+          gap: 0 !important;
+        }
+
+        .office-skill-card {
+          border: 0 !important;
+          border-radius: 0 !important;
+          background: transparent !important;
+          box-shadow: none !important;
+          padding: 7px 0 !important;
+          border-bottom: 1px solid #eef2ea !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
 
     if (typeof window === "undefined") return;
     if (!("serviceWorker" in navigator)) return;
@@ -7438,7 +7810,7 @@ export default function App() {
   }, []);
  const savedGame = loadSavedGameSafely();
 
-const initialMap = savedGame ?? createMap();
+const initialMap = sanitizeMapForV138(savedGame ?? createMap());
 const loadedHqPlaced = Boolean(
   savedGame?.hqPlaced ||
     initialMap.tiles?.some((tile) => tile.owner === OWNER.PLAYER && tile.feature === FEATURE.HQ)
@@ -7516,6 +7888,20 @@ const [employeeTickets, setEmployeeTickets] = useState(
 const [premiumEmployeeTickets, setPremiumEmployeeTickets] = useState(
   savedGame?.premiumEmployeeTickets ?? 0
 );
+
+const [hasEmployeeRecruitNotice, setHasEmployeeRecruitNotice] = useState(false);
+const previousEmployeeTicketTotalRef = useRef((savedGame?.employeeTickets ?? 1) + (savedGame?.premiumEmployeeTickets ?? 0));
+
+useEffect(() => {
+  const currentTicketTotal = employeeTickets + premiumEmployeeTickets;
+
+  if (currentTicketTotal > previousEmployeeTicketTotalRef.current) {
+    setHasEmployeeRecruitNotice(true);
+  }
+
+  previousEmployeeTicketTotalRef.current = currentTicketTotal;
+}, [employeeTickets, premiumEmployeeTickets]);
+
 
 const [employeeSortKey, setEmployeeSortKey] = useState(
   savedGame?.employeeSortKey ?? "rarity"
@@ -7758,6 +8144,13 @@ useEffect(() => {
 const [tileSize, setTileSize] = useState(24);
 const [activePanel, setActivePanel] = useState(loadedHqPlaced ? "home" : "hq");
 const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
+
+useEffect(() => {
+  if (activePanel === "employee" || activePanel === "employeeLibrary") {
+    setHasEmployeeRecruitNotice(false);
+  }
+}, [activePanel]);
+
 const [isMoneyInfoOpen, setIsMoneyInfoOpen] = useState(false);
 const [isDateInfoOpen, setIsDateInfoOpen] = useState(false);
 const DEFAULT_FLOATING_PANEL = { x: 18, y: 118, width: 420, height: 300 };
@@ -8098,17 +8491,33 @@ const demandByCategory = useMemo(() => {
     }, 0);
   }, [playerMainBuildings]);
 
-const totalMaintenance = useMemo(() => {
-  const buildingMaintenance = playerMainBuildings.reduce((sum, tile) => {
-    return sum + calculateMonthlyExpenses(tile);
-  }, 0);
+const maintenanceDetails = useMemo(() => {
+  return playerMainBuildings.reduce((summary, tile) => {
+    const details = calculateMonthlyExpenseDetails(tile);
+    summary.managementFee += details.managementFee;
+    summary.insurance += details.insurance;
+    summary.repairReserve += details.repairReserve;
+    summary.propertyTaxMonthlyReference += details.propertyTaxMonthlyReference;
+    summary.total += details.total;
+    return summary;
+  }, {
+    managementFee: 0,
+    insurance: 0,
+    repairReserve: 0,
+    propertyTaxMonthlyReference: 0,
+    total: 0,
+  });
+}, [playerMainBuildings]);
 
-  const employeePayroll = employees.reduce((sum, employee) => {
+const buildingMaintenance = maintenanceDetails.total;
+
+const employeePayroll = useMemo(() => {
+  return employees.reduce((sum, employee) => {
     return sum + (employee.salary ?? 0);
   }, 0);
+}, [employees]);
 
-  return buildingMaintenance + employeePayroll;
-}, [playerMainBuildings, employees]);
+const totalMaintenance = buildingMaintenance + employeePayroll;
 
 const yearlyTax = useMemo(() => {
   return tiles.reduce((sum, tile) => {
@@ -8307,6 +8716,42 @@ function getNearestOfficeNameForTile(tile) {
   return reachableOffices[0].officeName ?? reachableOffices[0].hqName ?? "本社";
 }
 
+function focusNextPlayerOffice() {
+  if (!officeTiles || officeTiles.length === 0) {
+    alert("本社・支店がまだありません。");
+    return;
+  }
+
+  const currentOfficeIndex = selectedOfficeTile
+    ? officeTiles.findIndex((officeTile) => officeTile.id === selectedOfficeTile.id)
+    : -1;
+  const nextOffice = officeTiles[(currentOfficeIndex + 1) % officeTiles.length];
+
+  if (!nextOffice) return;
+
+  setSelectedId(nextOffice.id);
+  setActivePanel("land");
+  setMapViewMode("normal");
+  setIsMainMenuOpen(false);
+  setIsMoneyInfoOpen(false);
+  setIsDateInfoOpen(false);
+
+  setTimeout(() => {
+    const mapElement = mapScrollRef.current;
+    if (!mapElement) return;
+
+    const headerSize = 28;
+    const nextLeft = Math.max(0, nextOffice.x * tileSize + headerSize - mapElement.clientWidth / 2);
+    const nextTop = Math.max(0, nextOffice.y * tileSize + headerSize - mapElement.clientHeight / 2);
+
+    mapElement.scrollTo({
+      left: nextLeft,
+      top: nextTop,
+      behavior: "smooth",
+    });
+  }, 0);
+}
+
 function getBuildingAreaTiles(startTile, buildingKey) {
   const building = BUILDINGS[buildingKey];
 
@@ -8437,18 +8882,18 @@ const activeOfficeTiles = useMemo(() => {
 }, [officeTiles]);
 
 const employeeLimit = useMemo(() => {
-  if (!hqPlaced) return 0;
+  return Number.POSITIVE_INFINITY;
+}, []);
 
-  return activeOfficeTiles.length * MAX_EMPLOYEES_PER_OFFICE;
-}, [hqPlaced, activeOfficeTiles]);
+const employeeLimitText = "";
 
 const nextBranchRequiredEmployeeCount = useMemo(() => {
-  return (branchCount + 1) * 5;
-}, [branchCount]);
+  return 0;
+}, []);
 
 const canOpenNextBranchByEmployeeCount = useMemo(() => {
-  return employees.length >= nextBranchRequiredEmployeeCount;
-}, [employees, nextBranchRequiredEmployeeCount]);
+  return true;
+}, []);
 
 const companyActionPower = useMemo(() => {
   if (!hqPlaced) return 0;
@@ -8463,8 +8908,8 @@ const employeeSalaryTotal = useMemo(() => {
 }, [employees]);
 
 const employeeCountText = useMemo(() => {
-  return `${employees.length}/${employeeLimit}`;
-}, [employees, employeeLimit]);
+  return `${employees.length}人`;
+}, [employees]);
 
 const ownedEmployeeCount = useMemo(() => {
   return employees.length + employeeStorage.length;
@@ -8620,15 +9065,22 @@ function sortEmployeesForDisplay(employeeList) {
   });
 }
 
-const vacancyRate = useMemo(() => {
+const vacancyRoomStats = useMemo(() => {
   const rooms = playerMainBuildings.flatMap((tile) => tile.rooms || []);
+  const totalRooms = rooms.length;
+  const vacantRooms = rooms.filter((room) => !room.occupied).length;
+  const occupiedRooms = totalRooms - vacantRooms;
+  const rate = totalRooms > 0 ? Math.round((vacantRooms / totalRooms) * 100) : 0;
 
-  if (rooms.length === 0) return 0;
-
-  const vacantCount = rooms.filter((room) => !room.occupied).length;
-
-  return Math.round((vacantCount / rooms.length) * 100);
+  return {
+    totalRooms,
+    vacantRooms,
+    occupiedRooms,
+    rate,
+  };
 }, [playerMainBuildings]);
+
+const vacancyRate = vacancyRoomStats.rate;
 
   function getDemand(tile, buildingKey) {
     const targetTile = getMainTile(tile);
@@ -8717,7 +9169,12 @@ if (hqDistance <= 5) {
   demand *= 1.5;
 }
 
-return Math.min(95, Math.max(50, Math.round(demand)));
+const demandSkillEffects = getAreaSkillEffectTotals(targetTile);
+const occupancySkillRate = getOccupancySkillRate(demandSkillEffects, targetTile);
+
+demand += Math.round(occupancySkillRate * 100);
+
+return Math.min(98, Math.max(50, Math.round(demand)));
   }
 
 function getRentMultiplier(tile, buildingKey) {
@@ -8809,6 +9266,10 @@ else if (stationDistance <= 5) {
   stationRate = 1.1;
 }
 
+// 特殊能力による家賃収入補正
+const rentSkillEffects = getAreaSkillEffectTotals(mainTile);
+const rentIncomeBonusRate = getRentIncomeBonusRate(rentSkillEffects);
+
 // 最終家賃
 const rent =
   building.baseRent *
@@ -8817,7 +9278,8 @@ const rent =
   conditionRate *
   demandRate *
   landPriceRate *
-  stationRate;
+  stationRate *
+  (1 + rentIncomeBonusRate);
 
   return Math.max(3, Math.round(rent));
 }
@@ -9116,14 +9578,7 @@ function getBranchDisplayName(tile) {
 }
 
 function getFirstAvailableOffice() {
-  return activeOfficeTiles.find((officeTile) => {
-    const officeId = officeTile.officeId ?? "hq";
-    const currentCount = employees.filter((employee) => {
-      return (employee.officeId ?? "hq") === officeId;
-    }).length;
-
-    return currentCount < MAX_EMPLOYEES_PER_OFFICE;
-  });
+  return activeOfficeTiles[0] ?? null;
 }
 
 function getEmployeeRarityOrder(rarity) {
@@ -9181,106 +9636,374 @@ function pickRecruitEmployee(availableEmployees, pickedEmployees, premiumOnly = 
 }
 
 
-function getEmployeeSpecialText(employee) {
-  if (Array.isArray(employee.specialNames) && employee.specialNames.length > 0) {
-    return employee.specialNames.join(" / ");
+function getEmployeeSkillIds(employee) {
+  if (!employee) return [];
+
+  if (Array.isArray(employee.skillIds)) {
+    return employee.skillIds.filter((skillId) => SPECIAL_SKILLS[skillId]);
   }
 
-  if (employee.special && employee.special !== "なし") {
+  if (Array.isArray(employee.specialCodes)) {
+    return employee.specialCodes.filter((skillId) => SPECIAL_SKILLS[skillId]);
+  }
+
+  return [];
+}
+
+function getEmployeeSkills(employee) {
+  return getEmployeeSkillIds(employee).map((skillId) => SPECIAL_SKILLS[skillId]).filter(Boolean);
+}
+
+function getEmployeeSpecialText(employee) {
+  const skills = getEmployeeSkills(employee);
+
+  if (skills.length > 0) {
+    return skills.map((skill) => skill.name).join(" / ");
+  }
+
+  if (employee?.special && employee.special !== "なし") {
     return employee.special;
   }
 
   return "なし";
 }
 
-function getSpecialSkillDescription(skillName) {
-  const descriptions = {
-    "なし": "特殊能力なし",
-    "交渉人": "土地購入・売却交渉で有利に働く。",
-    "市場分析": "地価や需要を読む力が高く、営業判断を安定させる。",
-    "数字に強い": "収支判断・管理業務でミスを減らす。",
-    "法務感覚": "契約・売買・トラブル対応でリスクを下げる。",
-    "管理の鬼": "入居管理・維持管理で効果を発揮する。",
-    "鉄壁管理": "管理面の安定性が高く、空室・滞納リスクを抑える。",
-    "入居者目線": "入居率や満足度に良い影響を与える。",
-    "クレーム処理": "退去・苦情・トラブルの悪影響を抑える。",
-    "空室キラー": "空室改善や客付けで効果を発揮する。",
-    "満室請負人": "入居率上昇に大きく貢献する。",
-    "満室神話": "専用級能力。入居率・需要面で強い補正を持つ。",
-    "家賃査定士": "適正家賃の判断に優れ、収益安定に貢献する。",
-    "家主目線": "長期保有・収支管理に強い。",
-    "原価管理": "建築費・修繕費の抑制に役立つ。",
-    "費用圧縮": "維持費・工事費を抑える方向に働く。",
-    "名工": "建築品質・工期短縮に強い。",
-    "現場監督": "建築現場の進行を安定させる。",
-    "現場主義": "建築・修繕系の仕事で力を発揮する。",
-    "職人気質": "建築品質が高いが、営業や調整は苦手な場合がある。",
-    "図面読み": "建築・大型案件の計画で効果を発揮する。",
-    "DIY達人": "小規模修繕や物件再生で有利。",
-    "修繕眼": "劣化や修繕判断に強い。",
-    "物件再生": "古い建物や低状態物件の改善に強い。",
-    "再生の魔術師": "専用級能力。物件再生で大きな補正を持つ。",
-    "段取り上手": "工期遅延を抑え、作業進行を安定させる。",
-    "スピード対応": "短期案件や緊急対応で有利。",
-    "即断即決": "意思決定が早く、行動の遅れを抑える。",
-    "先読み": "イベントやリスクの先読みで安定性を上げる。",
-    "慎重派": "失敗リスクを下げるが、速度はやや落ちることがある。",
-    "冷静沈着": "トラブル時の悪影響を抑える。",
-    "火消し役": "問題発生時の損失を軽減する。",
-    "調整役": "複数人作業や支店運営を安定させる。",
-    "チーム統率": "同じ事務所のチーム作業に良い影響を与える。",
-    "軍師": "統率・判断面に優れ、チーム全体を底上げする。",
-    "カリスマ": "同じ事務所の社員に良い影響を与える。",
-    "若手育成": "社員経験値・成長系に良い影響を与える。",
-    "成長株": "経験値獲得や成長に期待できる。",
-    "努力家": "経験値獲得や長期育成で有利。",
-    "集中力": "担当作業の安定性を高める。",
-    "一点突破": "得意分野で大きな力を発揮する。",
-    "粘り腰": "難航案件で成功率を支える。",
-    "人脈豊富": "営業・採用・紹介系イベントで有利。",
-    "黄金の人脈": "専用級能力。人脈を使う案件で非常に強い。",
-    "法人営業": "商業・法人契約・大型案件で有利。",
-    "広告上手": "入居募集や商業需要に良い影響を与える。",
-    "情報通": "売り物件やチャンス発見に役立つ。",
-    "地域密着": "周辺エリアの営業・入居付けに強い。",
-    "資金繰り": "資金管理・借入・大型投資判断で有利。",
-    "金融感覚": "借入や投資判断で強い。",
-    "堅実運用": "収支安定・リスク低減に貢献する。",
-    "改善提案": "管理・修繕・収益改善で効果を発揮する。",
-    "聞き上手": "入居者対応や交渉で有利。",
-    "客付け名人": "入居付けに強い。",
-    "地元の顔役": "地域での営業・交渉に強い。",
-    "王者の査定眼": "専用級能力。売買価格判断で非常に強い。",
-    "絶対交渉権": "専用級能力。土地購入・売却交渉で非常に強い。",
-    "利益の錬金術師": "専用級能力。収益改善・費用圧縮に非常に強い。",
-    "都市開発の覇者": "専用級能力。広域開発・大型案件で非常に強い。",
-    "超能力者": "専用級能力。月ごとにランダムな好影響が出る可能性がある。",
-    "未来予知": "将来イベントや地価変動の判断に強い。",
-    "不動産王": "売買・建築・管理を総合的に底上げする。",
-    "創業者魂": "会社全体の成長や長期経営に良い影響を与える。",
-    "飽き性": "長期案件で集中力が落ちやすい。",
-    "現場嫌い": "建築・修繕系でマイナスになりやすい。",
-    "慎重すぎる": "失敗は減るが、行動が遅れやすい。",
-    "遅刻癖": "行動開始や工期に悪影響を与えることがある。",
-    "見栄っ張り": "費用増加や判断ミスにつながる場合がある。",
-    "報連相不足": "チーム作業や支店運営でマイナスになりやすい。",
-    "抱え込み": "複数人作業で効率が落ちることがある。",
-    "設備音痴": "設備・修繕系でマイナスになりやすい。",
-    "朝が弱い": "作業開始や短期案件で不安定になる。",
-    "交渉下手": "購入・売却交渉で不利になりやすい。",
-    "数字が苦手": "収支判断・管理業務でミスが出やすい。",
-    "整理下手": "事務処理や管理業務で効率が下がる。",
-    "空回り": "能力はあるが成果が安定しにくい。",
-    "短気": "交渉・入居者対応でトラブルを起こしやすい。",
-    "押しが弱い": "営業・交渉で成果が伸びにくい。",
-    "詰めが甘い": "完了直前のミスや追加費用につながることがある。",
-    "気分屋": "月によって成果がばらつく。",
-    "弱気": "営業や交渉で本来の力を出しにくい。",
-    "浪費家": "維持費・経費が増えやすい。",
-    "書類ミス": "契約・管理でミスが起こりやすい。"
+function getSpecialSkillDescription(skillIdOrName) {
+  const skillById = SPECIAL_SKILLS[skillIdOrName];
+  if (skillById) return skillById.description;
+
+  const skillByName = Object.values(SPECIAL_SKILLS).find((skill) => skill.name === skillIdOrName);
+  if (skillByName) return skillByName.description;
+
+  return "特殊能力なし";
+}
+
+function getSpecialSkillEffects(skillIdOrName) {
+  const skillById = SPECIAL_SKILLS[skillIdOrName];
+  if (skillById) return skillById.effects ?? {};
+
+  const skillByName = Object.values(SPECIAL_SKILLS).find((skill) => skill.name === skillIdOrName);
+  return skillByName?.effects ?? {};
+}
+
+
+function getEmployeeSkillEffectTotals(employee) {
+  const totals = {};
+
+  getEmployeeSkills(employee).forEach((skill) => {
+    const effects = skill.effects ?? {};
+
+    Object.entries(effects).forEach(([key, value]) => {
+      if (typeof value !== "number") return;
+      totals[key] = (totals[key] ?? 0) + value;
+    });
+  });
+
+  return totals;
+}
+
+function getTeamSkillEffectTotals(actionEmployees) {
+  const totals = {};
+  const members = Array.isArray(actionEmployees) ? actionEmployees : [];
+
+  members.forEach((employee) => {
+    const effects = getEmployeeSkillEffectTotals(employee);
+
+    Object.entries(effects).forEach(([key, value]) => {
+      if (typeof value !== "number") return;
+      totals[key] = (totals[key] ?? 0) + value;
+    });
+  });
+
+  return totals;
+}
+
+function getActiveEmployeeSkillEffectTotals(allEmployees) {
+  const activeMembers = Array.isArray(allEmployees)
+    ? allEmployees.filter((employee) => employee && employee.officeId !== "storage")
+    : [];
+
+  return getTeamSkillEffectTotals(activeMembers);
+}
+
+function getTileAgeForSkill(tile) {
+  return Math.max(0, Number(tile?.age ?? 0));
+}
+
+function getOccupancySkillRate(skillEffects, tile = null) {
+  const effects = skillEffects ?? {};
+  let rate = 0;
+
+  rate += effects.occupancyBonus ?? 0;
+  rate += effects.regionalOccupancyBonus ?? 0;
+  rate += effects.vacancyRateReductionRate ?? 0;
+
+  if (getTileAgeForSkill(tile) >= 15) {
+    rate += effects.oldPropertyOccupancyBonus ?? 0;
+  }
+
+  rate += effects.__managementRoleModifier ?? 0;
+
+  return clampRate(rate, -0.5, 0.75);
+}
+
+function getMoveOutReductionRate(skillEffects) {
+  const effects = skillEffects ?? {};
+  const satisfactionReduction = (effects.tenantSatisfactionBonus ?? 0) / 200;
+  return clampRate((effects.moveOutRateReductionRate ?? 0) + satisfactionReduction + (effects.__managementRoleModifier ?? 0), -0.5, 0.75);
+}
+
+function getRentIncomeBonusRate(skillEffects) {
+  return clampRate((skillEffects?.rentIncomeBonusRate ?? 0) + (skillEffects?.__managementRoleModifier ?? 0), -0.5, 0.75);
+}
+
+function getRecruitApplicantBonus(skillEffects) {
+  return Math.min(1, Math.max(0, Math.floor(skillEffects?.recruitApplicantBonus ?? 0)));
+}
+
+function getLoanConsultSkillPowerBonus(skillEffects) {
+  return Math.max(0, Math.round((skillEffects?.loanConsultSuccessRateBonus ?? 0) * 100));
+}
+
+function getEmployeeEffectiveStat(employee, statKey) {
+  if (!employee) return 0;
+
+  const baseValue = Number(employee?.[statKey] ?? 0);
+  const effects = getEmployeeSkillEffectTotals(employee);
+  const flatKey = `${statKey}BonusFlat`;
+  const rateKey = `${statKey}RateBonus`;
+
+  const flatBonus = effects[flatKey] ?? 0;
+  const rateBonus = (effects[rateKey] ?? 0) + (effects.allStatsRateBonus ?? 0);
+
+  return Math.max(1, Math.round((baseValue + flatBonus) * (1 + rateBonus)));
+}
+
+function getOfficeSkillEffectTotals(targetEmployee, allEmployees) {
+  const totals = {};
+  if (!targetEmployee || !Array.isArray(allEmployees)) return totals;
+
+  const targetOfficeId = targetEmployee.officeId ?? "hq";
+  const officeMembers = allEmployees.filter((employee) => {
+    return (employee.officeId ?? "hq") === targetOfficeId && employee.id !== targetEmployee.id;
+  });
+
+  officeMembers.forEach((employee) => {
+    const effects = getEmployeeSkillEffectTotals(employee);
+
+    Object.entries(effects).forEach(([key, value]) => {
+      if (typeof value !== "number") return;
+      totals[key] = (totals[key] ?? 0) + value;
+    });
+  });
+
+  return totals;
+}
+
+function getEmployeeExpBonusRate(employee, allEmployees) {
+  const ownEffects = getEmployeeSkillEffectTotals(employee);
+  const officeEffects = getOfficeSkillEffectTotals(employee, allEmployees);
+
+  return (ownEffects.expBonusRate ?? 0) + (officeEffects.officeExpBonusRate ?? 0);
+}
+
+function clampRate(value, minValue, maxValue) {
+  return Math.max(minValue, Math.min(maxValue, value));
+}
+
+function applySkillDiscount(baseValue, discountRate) {
+  const safeBaseValue = Math.max(0, Math.round(baseValue ?? 0));
+  const safeDiscountRate = clampRate(discountRate ?? 0, -0.5, 0.75);
+  return Math.max(1, Math.round(safeBaseValue * (1 - safeDiscountRate)));
+}
+
+function getActionSkillSummary(actionEmployees) {
+  const skills = [];
+  const seen = new Set();
+
+  (Array.isArray(actionEmployees) ? actionEmployees : []).forEach((employee) => {
+    getEmployeeSkills(employee).forEach((skill) => {
+      if (seen.has(skill.id)) return;
+      seen.add(skill.id);
+      skills.push(skill.name);
+    });
+  });
+
+  return skills.length > 0 ? skills.join("・") : "なし";
+}
+
+function getOfficeMembersById(officeId) {
+  return employees.filter((employee) => {
+    if (!employee || employee.id === 0) return false;
+    return (employee.officeId ?? "hq") === (officeId ?? "hq");
+  });
+}
+
+function getOfficeMembers(officeTile) {
+  if (!officeTile) return [];
+  return getOfficeMembersById(officeTile.officeId ?? "hq");
+}
+
+function getEmployeeRoleBaseStat(employee, statKey) {
+  return getEmployeeEffectiveStat(employee, statKey);
+}
+
+function getOfficeRoleAssignments(officeTileOrId) {
+  const officeId = typeof officeTileOrId === "string"
+    ? officeTileOrId
+    : officeTileOrId?.officeId ?? "hq";
+
+  const members = getOfficeMembersById(officeId);
+  const usedIds = new Set();
+
+  const pickOne = (scoreFn) => {
+    const candidates = members.filter((employee) => !usedIds.has(employee.id));
+    if (candidates.length === 0) return null;
+
+    const picked = [...candidates].sort((a, b) => {
+      const scoreDiff = scoreFn(b) - scoreFn(a);
+      if (scoreDiff !== 0) return scoreDiff;
+
+      const rarityDiff = getEmployeeRarityOrder(b.rarity) - getEmployeeRarityOrder(a.rarity);
+      if (rarityDiff !== 0) return rarityDiff;
+
+      return (a.id ?? 0) - (b.id ?? 0);
+    })[0];
+
+    if (picked) usedIds.add(picked.id);
+    return picked ?? null;
   };
 
-  return descriptions[skillName] ?? "効果未設定。今後の特殊能力実装で効果を設定予定。";
+  const branchManager = pickOne((employee) => {
+    return getEmployeeRoleBaseStat(employee, "leadership") + getEmployeeRoleBaseStat(employee, "sales");
+  });
+
+  const constructionChief = pickOne((employee) => {
+    return getEmployeeRoleBaseStat(employee, "construction");
+  });
+
+  const managementChief = pickOne((employee) => {
+    return getEmployeeRoleBaseStat(employee, "management");
+  });
+
+  return {
+    branchManager,
+    constructionChief,
+    managementChief,
+  };
+}
+
+function getRoleModifierFromScore(score, threshold) {
+  return clampRate((Number(score ?? 0) - threshold) / 200, -0.5, 0.5);
+}
+
+function getOfficeRoleActionModifier(officeId, statKey) {
+  const roles = getOfficeRoleAssignments(officeId);
+
+  if (statKey === "sales") {
+    const manager = roles.branchManager;
+    if (!manager) return -1;
+    const score = getEmployeeRoleBaseStat(manager, "leadership") + getEmployeeRoleBaseStat(manager, "sales");
+    return getRoleModifierFromScore(score, 150);
+  }
+
+  if (statKey === "construction") {
+    const chief = roles.constructionChief;
+    if (!chief) return -0.5;
+    return getRoleModifierFromScore(getEmployeeRoleBaseStat(chief, "construction"), 70);
+  }
+
+  if (statKey === "management") {
+    const chief = roles.managementChief;
+    if (!chief) return -0.5;
+    return getRoleModifierFromScore(getEmployeeRoleBaseStat(chief, "management"), 70);
+  }
+
+  return 0;
+}
+
+function getTeamOfficeRoleModifier(actionEmployees, statKey) {
+  const members = Array.isArray(actionEmployees) ? actionEmployees : [];
+  if (members.length === 0) return 0;
+
+  const officeIds = [...new Set(members.map((employee) => employee.officeId ?? "hq"))];
+  if (officeIds.length === 0) return 0;
+
+  const totalModifier = officeIds.reduce((sum, officeId) => {
+    return sum + getOfficeRoleActionModifier(officeId, statKey);
+  }, 0);
+
+  return clampRate(totalModifier / officeIds.length, -0.5, 0.5);
+}
+
+function getAreaOfficeRoleModifier(targetTile, statKey) {
+  const reachableOfficeIds = getReachableOfficeIdsForTile(targetTile);
+  if (reachableOfficeIds.size === 0) return 0;
+
+  const officeIdsWithMembers = [...reachableOfficeIds].filter((officeId) => {
+    return getOfficeMembersById(officeId).length > 0;
+  });
+
+  if (officeIdsWithMembers.length === 0) return 0;
+
+  const totalModifier = officeIdsWithMembers.reduce((sum, officeId) => {
+    return sum + getOfficeRoleActionModifier(officeId, statKey);
+  }, 0);
+
+  return clampRate(totalModifier / officeIdsWithMembers.length, -0.5, 0.5);
+}
+
+function formatRoleModifier(modifier) {
+  const percent = Math.round((modifier ?? 0) * 100);
+  if (percent > 0) return `+${percent}%`;
+  if (percent < 0) return `${percent}%`;
+  return "±0%";
+}
+
+function renderOfficeRoleLine(label, employee, scoreText, modifier) {
+  if (!employee) {
+    return (
+      <div className="office-role-card missing">
+        <span className="office-role-label">{label}</span>
+        <strong>未専任</strong>
+        <small>補正 -50%</small>
+      </div>
+    );
+  }
+
+  return (
+    <div className="office-role-card">
+      <span className="office-role-label">{label}</span>
+      <strong>{employee.name}</strong>
+      <small>{scoreText} / 補正 {formatRoleModifier(modifier)}</small>
+    </div>
+  );
+}
+
+function getAreaSkillEffectTotals(targetTile) {
+  const reachableOfficeIds = getReachableOfficeIdsForTile(targetTile);
+  if (reachableOfficeIds.size === 0) return {};
+
+  const areaMembers = employees.filter((employee) => {
+    if (!employee || employee.id === 0) return false;
+    return reachableOfficeIds.has(employee.officeId ?? "hq");
+  });
+
+  const totals = getTeamSkillEffectTotals(areaMembers);
+  totals.__salesRoleModifier = getAreaOfficeRoleModifier(targetTile, "sales");
+  totals.__constructionRoleModifier = getAreaOfficeRoleModifier(targetTile, "construction");
+  totals.__managementRoleModifier = getAreaOfficeRoleModifier(targetTile, "management");
+
+  return totals;
+}
+
+function getOfficeActiveSkillRows(officeTile) {
+  return getOfficeMembers(officeTile).flatMap((employee) => {
+    return getEmployeeSkills(employee).map((skill) => ({
+      employee,
+      skill,
+    }));
+  });
 }
 
 function renderEmployeeNameButton(employee) {
@@ -9296,15 +10019,6 @@ function renderEmployeeNameButton(employee) {
 }
 
 function moveEmployee(employeeId, officeId) {
-  const targetCount = employees.filter((employee) => {
-    return (employee.officeId ?? "hq") === officeId && employee.id !== employeeId;
-  }).length;
-
-  if (targetCount >= MAX_EMPLOYEES_PER_OFFICE) {
-    alert("異動先の社員枠が満員です");
-    return;
-  }
-
   setEmployees(
     employees.map((employee) => {
       if (employee.id !== employeeId) return employee;
@@ -9545,10 +10259,13 @@ function getEmployeeStatAverage(actionEmployees, statKey) {
   if (!Array.isArray(actionEmployees) || actionEmployees.length === 0) return 50;
 
   const total = actionEmployees.reduce((sum, employee) => {
-    return sum + (employee?.[statKey] ?? 50);
+    return sum + getEmployeeEffectiveStat(employee, statKey);
   }, 0);
 
-  return total / actionEmployees.length;
+  const baseAverage = total / actionEmployees.length;
+  const roleModifier = getTeamOfficeRoleModifier(actionEmployees, statKey);
+
+  return Math.max(1, Math.round(baseAverage * (1 + roleModifier)));
 }
 
 /*
@@ -9576,7 +10293,15 @@ function getTeamEfficiency(actionEmployees, statKey) {
 function estimateActionMonths(baseMonths, actionEmployees, statKey) {
   const standardMonths = Math.max(1, baseMonths ?? 1);
   const efficiency = getTeamEfficiency(actionEmployees, statKey);
+  const teamEffects = getTeamSkillEffectTotals(actionEmployees);
   let estimatedMonths = Math.max(1, Math.round(standardMonths / efficiency));
+
+  if (statKey === "construction") {
+    const reductionRate = clampRate(teamEffects.buildMonthReductionRate ?? 0, 0, 0.5);
+    const reductionFlat = Math.max(0, Math.round(teamEffects.buildMonthReductionFlat ?? 0));
+
+    estimatedMonths = Math.max(1, Math.round(estimatedMonths * (1 - reductionRate)) - reductionFlat);
+  }
 
   const averageStat = getEmployeeStatAverage(actionEmployees, statKey);
   if (averageStat < 35 && actionEmployees.length <= 1) {
@@ -9586,17 +10311,47 @@ function estimateActionMonths(baseMonths, actionEmployees, statKey) {
   return estimatedMonths;
 }
 
-function calculateActionCost(baseCost, actionEmployees, statKey) {
+function calculateActionCost(baseCost, actionEmployees, statKey, actionType = "general", targetTile = null) {
   const standardCost = Math.max(0, baseCost ?? 0);
-  const averageStat = getEmployeeStatAverage(actionEmployees, statKey);
-  const count = Math.max(1, actionEmployees.length);
+  const members = Array.isArray(actionEmployees) ? actionEmployees : [];
+  const averageStat = getEmployeeStatAverage(members, statKey);
+  const count = Math.max(1, members.length);
+  const teamEffects = getTeamSkillEffectTotals(members);
 
   const statRate = (averageStat - 50) * 0.001;
   const teamRate = (count - 1) * 0.008;
   const randomRate = (Math.random() - 0.5) * 0.08;
   const costRate = Math.max(0.8, Math.min(1.25, 1 - statRate - teamRate + randomRate));
 
-  return Math.max(1, Math.round(standardCost * costRate));
+  let calculatedCost = Math.max(1, Math.round(standardCost * costRate));
+  let skillDiscountRate = 0;
+
+  if (actionType === "landPurchase") {
+    skillDiscountRate += teamEffects.landPurchaseDiscountRate ?? 0;
+  }
+
+  if (actionType === "build" || actionType === "branch") {
+    skillDiscountRate += teamEffects.buildCostDiscountRate ?? 0;
+  }
+
+  if (actionType === "repair" || actionType === "lightRepair") {
+    skillDiscountRate += teamEffects.repairCostDiscountRate ?? 0;
+
+    if (actionType === "lightRepair") {
+      skillDiscountRate += teamEffects.lightRepairCostDiscountRate ?? 0;
+    }
+
+    const buildingAge = targetTile?.age ?? 0;
+    if (buildingAge >= 15) {
+      skillDiscountRate += teamEffects.oldPropertyRepairCostDiscountRate ?? 0;
+    }
+  }
+
+  if (actionType === "demolition") {
+    skillDiscountRate += teamEffects.demolitionCostDiscountRate ?? 0;
+  }
+
+  return applySkillDiscount(calculatedCost, skillDiscountRate);
 }
 
 function formatActionEstimate(baseMonths, estimatedMonths) {
@@ -9712,8 +10467,8 @@ function grantEmployeesExp(employeeIds, gainedExp, reason) {
 
   const uniqueEmployeeIds = [...new Set(employeeIds)];
   const ids = new Set(uniqueEmployeeIds);
-  const eachExp = Math.max(1, Math.round(gainedExp / uniqueEmployeeIds.length));
-  const totalPlayerGainedExp = eachExp * uniqueEmployeeIds.length;
+  const baseEachExp = Math.max(1, Math.round(gainedExp / uniqueEmployeeIds.length));
+  let totalPlayerGainedExp = 0;
   const levelUpResults = [];
   const resultMessages = [];
 
@@ -9729,6 +10484,10 @@ function grantEmployeesExp(employeeIds, gainedExp, reason) {
       construction: employee.construction ?? 0,
       management: employee.management ?? 0,
     };
+
+    const expBonusRate = getEmployeeExpBonusRate(employee, currentEmployees);
+    const eachExp = Math.max(1, Math.round(baseEachExp * (1 + expBonusRate)));
+    totalPlayerGainedExp += eachExp;
 
     const result = applyEmployeeLevelUps(employee, eachExp);
     const after = result.employee;
@@ -9835,9 +10594,11 @@ function createRecruitmentApplicants(ticketType) {
     return true;
   });
 
+  const recruitSkillEffects = getActiveEmployeeSkillEffectTotals(employees);
+  const applicantCount = Math.min(5, EMPLOYEE_RECRUITMENT_ENVELOPE_COUNT + getRecruitApplicantBonus(recruitSkillEffects));
   const pickedEmployees = [];
 
-  for (let i = 0; i < EMPLOYEE_RECRUITMENT_ENVELOPE_COUNT; i++) {
+  for (let i = 0; i < applicantCount; i++) {
     const pickedEmployee = pickRecruitEmployee(availableEmployees, pickedEmployees, isPremium);
     if (pickedEmployee) {
       pickedEmployees.push(pickedEmployee);
@@ -10091,6 +10852,8 @@ function grantTicketReward(ticketType, count, reason, showPopup = true) {
     setEmployeeTickets((current) => current + amount);
   }
 
+  setHasEmployeeRecruitNotice(true);
+
   const reward = {
     ticketType,
     count: amount,
@@ -10167,14 +10930,6 @@ function assignStoredEmployee(employee, officeId) {
     return;
   }
 
-  const targetCount = employees.filter((item) => {
-    return (item.officeId ?? "hq") === officeId;
-  }).length;
-
-  if (targetCount >= MAX_EMPLOYEES_PER_OFFICE) {
-    alert("配属先の社員枠が満員です");
-    return;
-  }
 
   const officeName = getOfficeName(officeId);
 
@@ -10216,11 +10971,6 @@ function unassignEmployee(employee) {
 }
 
 function hireEmployee(employee) {
-  if (employees.length >= employeeLimit) {
-    alert(`社員は最大${employeeLimit}人まで雇用できます。支店を開設すると上限が増えます。`);
-    return;
-  }
-
   const alreadyHired = employees.some((item) => item.id === employee.id);
 
   if (alreadyHired) {
@@ -10231,7 +10981,7 @@ function hireEmployee(employee) {
   const targetOffice = getFirstAvailableOffice();
 
   if (!targetOffice) {
-    alert("配属できる空き事務所がありません。支店を開設してください。");
+    alert("配属できる本社・支店がありません。先に本社を設置してください。");
     return;
   }
 
@@ -10297,10 +11047,6 @@ function startBranchPlacement() {
     return;
   }
 
-  if (!canOpenNextBranchByEmployeeCount) {
-    alert(`次の支店開設には、本社・支店に配属中の社員が合計${nextBranchRequiredEmployeeCount}人以上必要です。`);
-    return;
-  }
 
   setPendingBranchPlacement(true);
   setPendingBuildKey(null);
@@ -10363,7 +11109,7 @@ async function buyLand() {
   if (actionEmployees.length === 0) return;
 
   const plannedMonths = estimateActionMonths(2, actionEmployees, "sales");
-  const finalPurchasePrice = calculateActionCost(purchasePrice, actionEmployees, "sales");
+  const finalPurchasePrice = calculateActionCost(purchasePrice, actionEmployees, "sales", "landPurchase", targetTile);
 
   if (finalPurchasePrice > money) {
     alert(`資金不足のため購入できません。\n\n必要額: ${finalPurchasePrice}万円\n現在資金: ${money}万円`);
@@ -10541,10 +11287,6 @@ async function placeBranch(targetTile = selectedTile) {
     return false;
   }
 
-  if (!canOpenNextBranchByEmployeeCount) {
-    alert(`次の支店開設には、本社・支店に配属中の社員が合計${nextBranchRequiredEmployeeCount}人以上必要です。`);
-    return false;
-  }
 
   if (branchTargetTile.owner !== OWNER.PLAYER) {
     alert("支店は自分の空き土地にのみ建設できます");
@@ -10597,13 +11339,12 @@ async function placeBranch(targetTile = selectedTile) {
   if (actionEmployees.length === 0) return false;
 
   const branchBuildMonths = estimateActionMonths(BRANCH_OFFICE_BASE_MONTHS, actionEmployees, "construction");
-  const actualBranchCost = calculateActionCost(BRANCH_OFFICE_COST, actionEmployees, "construction");
+  const actualBranchCost = calculateActionCost(BRANCH_OFFICE_COST, actionEmployees, "construction", "branch", branchTargetTile);
 
   const ok = window.confirm(
     `${officeName}を開設しますか？\n\n` +
       `標準建築費: ${BRANCH_OFFICE_COST}万円\n` +
       `予定建築費: ${actualBranchCost}万円\n` +
-      `社員上限: +${MAX_EMPLOYEES_PER_OFFICE}人\n` +
       `営業範囲: ${BRANCH_ACTION_RANGE}マス\n` +
       `担当: ${actionEmployees.map((employee) => employee.name).join("・")}\n` +
       `標準工期: ${BRANCH_OFFICE_BASE_MONTHS}ヶ月\n` +
@@ -10731,7 +11472,7 @@ if (!placement.ok) {
 
     const standardBuildMonths = building.buildMonths || 1;
     const buildMonths = estimateActionMonths(standardBuildMonths, actionEmployees, "construction");
-    const actualBuildCost = calculateActionCost(building.cost, actionEmployees, "construction");
+    const actualBuildCost = calculateActionCost(building.cost, actionEmployees, "construction", "build", buildTargetTile);
 
 const ok = window.confirm(
   `${building.name}を建設しますか？\n\n` +
@@ -10835,19 +11576,21 @@ async function demolish() {
   }
 
   const building = BUILDINGS[mainTile.building];
-  const demolishCost = Math.max(20, Math.floor(building.cost * 0.08));
+  const standardDemolishCost = Math.max(20, Math.floor(building.cost * 0.08));
+
+  const actionEmployee = await chooseActionEmployee("取り壊し", { targetTile: mainTile });
+
+  if (!actionEmployee) return;
+
+  const demolishCost = calculateActionCost(standardDemolishCost, [actionEmployee], "construction", "demolition", mainTile);
 
   if (money < demolishCost) {
     alert(`取り壊し費用${demolishCost}万円が足りません`);
     return;
   }
 
-  const actionEmployee = await chooseActionEmployee("取り壊し", { targetTile: mainTile });
-
-  if (!actionEmployee) return;
-
   const ok = window.confirm(
-    `${building.name}を取り壊しますか？ 費用は${demolishCost}万円です。`
+    `${building.name}を取り壊しますか？ 標準費用${standardDemolishCost}万円 → 予定費用${demolishCost}万円です。`
   );
 
   if (!ok) return;
@@ -10918,20 +11661,6 @@ async function sellProperty() {
       return;
     }
 
-    const employeeLimitAfterSale = Math.max(
-      0,
-      (officeTiles.length - 1) * MAX_EMPLOYEES_PER_OFFICE
-    );
-
-    if (employees.length > employeeLimitAfterSale) {
-      const overCount = employees.length - employeeLimitAfterSale;
-
-      alert(
-        `${mainTile.officeName ?? "支店"}を売却すると社員上限が${employeeLimitAfterSale}人になります。\n\n` +
-          `現在社員が${employees.length}人いるため、先に${overCount}人分の退職または別支店開設が必要です。`
-      );
-      return;
-    }
   }
 
   const relatedTiles = tiles.filter(
@@ -11072,16 +11801,18 @@ async function repairBuilding(type) {
   if (actionEmployees.length === 0) return;
 
   const actualRepairMonths = estimateActionMonths(option.months, actionEmployees, "construction");
-  const actualRepairCost = calculateActionCost(standardRepairCost, actionEmployees, "construction");
+  const actualRepairCost = calculateActionCost(standardRepairCost, actionEmployees, "construction", type === "light" ? "lightRepair" : "repair", mainTile);
+  const repairSkillEffects = getTeamSkillEffectTotals(actionEmployees);
+  const repairConditionUp = option.conditionUp + Math.max(0, Math.round(repairSkillEffects.repairConditionBonusFlat ?? 0));
 
   const ok = window.confirm(
     `${building.name}に${option.name}を行いますか？\n\n` +
       `標準費用: ${standardRepairCost}万円\n` +
       `予定費用: ${actualRepairCost}万円\n` +
-      `効果: 建物状態 +${option.conditionUp}%\n` +
+      `効果: 建物状態 +${repairConditionUp}%\n` +
       `標準工期: ${option.months}ヶ月\n` +
       `予定工期: ${actualRepairMonths}ヶ月\n` +
-      `建物状態: ${Math.round(mainTile.condition ?? 100)}% → ${nextCondition}%`
+      `建物状態: ${Math.round(mainTile.condition ?? 100)}% → ${Math.min(100, Math.round((mainTile.condition ?? 100) + repairConditionUp))}%`
   );
 
   if (!ok) return;
@@ -11101,7 +11832,7 @@ async function repairBuilding(type) {
           repairStatus: "repairing",
           repairName: option.name,
           repairMonthsLeft: actualRepairMonths,
-          repairConditionUp: option.conditionUp,
+          repairConditionUp,
           repairStandardMonths: option.months,
           repairActualMonths: actualRepairMonths,
           repairStandardCost: standardRepairCost,
@@ -11168,7 +11899,8 @@ function countNearbyMainBuildingsForNextMonth(x, y, range = 3) {
   return count;
 }
 
-if (Math.random() < 0.03) {
+// v138: 工場誘致イベント確率。以前は0.03（3%）で発生が多かったため、1%へ調整。
+if (Math.random() < 0.01) {
 
 const candidateTiles = workingTiles.filter(
   (t) =>
@@ -11211,31 +11943,21 @@ landPrice: tile.landPrice + Math.max(0, 2500 - distance * 400),
   }
 }
 if (Math.random() < 0.02) {
-  const candidateTiles = workingTiles.filter(
-    (t) =>
-      t.rail === true &&
-      t.terrain === TERRAIN.PLAIN &&
-      !t.building &&
-      t.feature !== FEATURE.STATION &&
+  const candidateTiles = workingTiles.filter((t) => {
+    if (t.rail !== true) return false;
+    if (!isBuildableTile(t)) return false;
+    if (t.terrain === TERRAIN.SEA || t.terrain === TERRAIN.RIVER || t.terrain === TERRAIN.MOUNTAIN) return false;
+    if (t.owner === OWNER.PUBLIC || t.owner === OWNER.PLAYER || t.owner === OWNER.RIVAL) return false;
+    if (t.building || t.buildingMainId) return false;
+    if (t.feature === FEATURE.STATION || t.feature === FEATURE.SCHOOL || t.feature === FEATURE.FACTORY) return false;
 
-      (
-        t.zone === ZONE.COMMERCIAL ||
-        t.zone === ZONE.GENERAL
-      ) &&
+    if (!(t.zone === ZONE.COMMERCIAL || t.zone === ZONE.GENERAL)) return false;
 
-[
-  ...workingTiles.filter((tile) => tile.feature === FEATURE.STATION),
-  ...newStationProjects,
-].every(
-  (station) =>
-    getDistance(
-      t.x,
-      t.y,
-      station.x,
-      station.y
-    ) >= 10
-)
-  );
+    return [
+      ...workingTiles.filter((tile) => tile.feature === FEATURE.STATION),
+      ...newStationProjects,
+    ].every((station) => getDistance(t.x, t.y, station.x, station.y) >= 10);
+  });
 
   if (candidateTiles.length > 0) {
   const target =
@@ -11751,10 +12473,12 @@ if (!room.occupied) {
   );
 
  const recoveryBonus = recoveryMode ? 1.5 : 1.0;
+ const leaseSkillEffects = getAreaSkillEffectTotals(tile);
+ const occupancySkillMultiplier = 1 + getOccupancySkillRate(leaseSkillEffects, tile);
 
 if (
   Math.random() * 100 <
-  demand * 0.7 * rentDemandPenalty * recoveryBonus
+  demand * 0.7 * rentDemandPenalty * recoveryBonus * occupancySkillMultiplier
 ) {
     const tenant = TENANT_TYPES[tenantKey];
 
@@ -11808,6 +12532,10 @@ if ((tile.condition ?? 100) < 70) {
 if ((tile.age ?? 0) > 20) {
   vacancyRisk += Math.min(2, ((tile.age ?? 0) - 20) / 10);
 }
+
+const moveOutSkillEffects = getAreaSkillEffectTotals(tile);
+const moveOutReductionRate = getMoveOutReductionRate(moveOutSkillEffects);
+vacancyRisk = Math.max(0.1, vacancyRisk * (1 - moveOutReductionRate));
 
         if (Math.random() * 100 < vacancyRisk) {
           eventLog.push(`${building.name}の${room.roomNo}号室が退去`);
@@ -11953,9 +12681,14 @@ const stationCompletedTiles = updatedTiles.map((tile) => {
 
   if (!project) return tile;
 
+  // v138: 海・川・山の上に新駅が完成しないようにする。
+  // 既存セーブに不正な新駅計画が残っていても、地形を平地へ強制変更しない。
+  if (tile.terrain !== TERRAIN.PLAIN || tile.feature !== FEATURE.NONE || tile.building || tile.buildingMainId) {
+    return tile;
+  }
+
   return {
     ...tile,
-    terrain: TERRAIN.PLAIN,
     feature: FEATURE.STATION,
     rail: true,
     owner: OWNER.PUBLIC,
@@ -12283,7 +13016,7 @@ function createLateRivalCompanyEntry(tileList, companyId = LATE_RIVAL_COMPANY_ID
       if (tile.terrain !== TERRAIN.PLAIN) return false;
       if (tile.feature !== FEATURE.NONE) return false;
       if (tile.building || tile.buildingMainId) return false;
-      if (tile.owner === OWNER.PLAYER || tile.owner === OWNER.PUBLIC || tile.owner === OWNER.RIVAL) return false;
+      if (tile.owner !== OWNER.SALE) return false;
       if (requireRoadOrRail && !isTileNearRoadOrRail(tile, tileList)) return false;
 
       return existingHqTiles.every((hqTile) => {
@@ -12483,8 +13216,8 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
     return employeeList.map((employee, index) => {
       let targetOfficeId = employee.officeId;
 
-      if (!officeIds.includes(targetOfficeId) || (officeCounts.get(targetOfficeId) ?? 0) >= MAX_EMPLOYEES_PER_OFFICE) {
-        targetOfficeId = officeIds.find((officeId) => (officeCounts.get(officeId) ?? 0) < MAX_EMPLOYEES_PER_OFFICE) ?? officeIds[index % officeIds.length];
+      if (!officeIds.includes(targetOfficeId)) {
+        targetOfficeId = officeIds[index % officeIds.length];
       }
 
       officeCounts.set(targetOfficeId, (officeCounts.get(targetOfficeId) ?? 0) + 1);
@@ -12523,7 +13256,7 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
       if (tile.terrain !== TERRAIN.PLAIN) return false;
       if (tile.feature !== FEATURE.NONE) return false;
       if (tile.building || tile.buildingMainId) return false;
-      if (tile.owner === OWNER.PLAYER || tile.owner === OWNER.PUBLIC || tile.owner === OWNER.RIVAL) return false;
+      if (tile.owner !== OWNER.SALE) return false;
       if (!isTileNearRoadOrRail(tile, nextTiles)) return false;
       if (!isInCompanyRange(tile)) return false;
 
@@ -12537,7 +13270,7 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
         if (tile.terrain !== TERRAIN.PLAIN) return false;
         if (tile.feature !== FEATURE.NONE) return false;
         if (tile.building || tile.buildingMainId) return false;
-        if (tile.owner === OWNER.PLAYER || tile.owner === OWNER.PUBLIC || tile.owner === OWNER.RIVAL) return false;
+        if (tile.owner !== OWNER.SALE) return false;
 
         const nearestOfficeDistance = currentRivalOfficeTiles.reduce((minDistance, officeTile) => {
           return Math.min(minDistance, getDistance(tile.x, tile.y, officeTile.x, officeTile.y));
@@ -12552,7 +13285,7 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
         if (tile.terrain !== TERRAIN.PLAIN) return false;
         if (tile.feature !== FEATURE.NONE) return false;
         if (tile.building || tile.buildingMainId) return false;
-        if (tile.owner === OWNER.PLAYER || tile.owner === OWNER.PUBLIC || tile.owner === OWNER.RIVAL) return false;
+        if (tile.owner !== OWNER.SALE) return false;
 
         const nearestOfficeDistance = currentRivalOfficeTiles.reduce((minDistance, officeTile) => {
           return Math.min(minDistance, getDistance(tile.x, tile.y, officeTile.x, officeTile.y));
@@ -12687,13 +13420,10 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
   }
 
   const purchaseCandidates = nextTiles.filter((tile) => {
-    return tile.terrain === TERRAIN.PLAIN &&
-      tile.feature === FEATURE.NONE &&
+    return tile.owner === OWNER.SALE &&
+      isBuildableTile(tile) &&
       !tile.building &&
       !tile.buildingMainId &&
-      tile.owner !== OWNER.PLAYER &&
-      tile.owner !== OWNER.PUBLIC &&
-      tile.owner !== OWNER.RIVAL &&
       isInCompanyRange(tile);
   });
 
@@ -13402,12 +14132,16 @@ async function startLoanConsultation(bankId) {
   if (actionEmployees.length === 0) return;
 
   const employee = actionEmployees[0];
-  const consultationPower = Math.round((employee.sales ?? 0) * 0.6 + (employee.management ?? 0) * 0.4);
+  const employeeSkillEffects = getEmployeeSkillEffectTotals(employee);
+  const effectiveSales = getEmployeeEffectiveStat(employee, "sales");
+  const effectiveManagement = getEmployeeEffectiveStat(employee, "management");
+  const consultationPower = Math.round(effectiveSales * 0.6 + effectiveManagement * 0.4 + getLoanConsultSkillPowerBonus(employeeSkillEffects));
 
   const ok = window.confirm(
     `${bank.name}へ融資相談を行いますか？\n\n` +
       `担当: ${employee.name}\n` +
       `相談力: ${consultationPower}\n` +
+      `特殊能力: ${getActionSkillSummary(actionEmployees)}\n` +
       `期間: 1ヶ月\n\n` +
       `※相談結果では、推定融資枠・銀行員コメントが確認できます。`
   );
@@ -13422,8 +14156,8 @@ async function startLoanConsultation(bankId) {
     employeeId: employee.id,
     employeeName: employee.name,
     consultationPower,
-    sales: employee.sales ?? 0,
-    management: employee.management ?? 0,
+    sales: effectiveSales,
+    management: effectiveManagement,
   });
 
   setPendingLoanConsultations((current) => [consultation, ...current]);
@@ -14664,6 +15398,349 @@ return (
       }
 
 
+
+
+      .office-dashboard-box {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 16px;
+        border: 1px solid var(--hk-line);
+        background: #fbfcfa;
+      }
+
+      .office-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 4px 0 8px;
+      }
+
+      .office-section-header h3 {
+        margin: 0;
+        font-size: 15px;
+      }
+
+      .office-section-header span {
+        font-size: 12px;
+        color: var(--hk-muted);
+        font-weight: 700;
+      }
+
+      .office-role-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .office-role-card {
+        padding: 8px 9px;
+        border-radius: 12px;
+        background: #ffffff;
+        border: 1px solid #dce4dc;
+        display: grid;
+        gap: 2px;
+        min-width: 0;
+      }
+
+      .office-role-card.missing {
+        background: #fff7f4;
+        border-color: #e7c4b8;
+      }
+
+      .office-role-label {
+        font-size: 11px;
+        color: var(--hk-muted);
+        font-weight: 800;
+      }
+
+      .office-role-card strong {
+        font-size: 13px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .office-role-card small,
+      .office-skill-card small,
+      .office-role-note,
+      .office-empty-note {
+        font-size: 11px;
+        color: var(--hk-muted);
+        line-height: 1.35;
+      }
+
+      .office-role-note {
+        margin: 8px 0 12px;
+      }
+
+      .office-skill-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .office-skill-card {
+        padding: 8px 9px;
+        border-radius: 12px;
+        background: #ffffff;
+        border: 1px solid #dce4dc;
+        display: grid;
+        gap: 2px;
+        min-width: 0;
+      }
+
+      .office-skill-card strong,
+      .office-skill-card span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .office-skill-card span {
+        font-weight: 800;
+        color: var(--hk-accent);
+      }
+
+      @media (max-width: 720px) {
+        .office-role-grid,
+        .office-skill-list {
+          grid-template-columns: 1fr;
+        }
+      }
+
+
+      .smart-detail-card {
+        padding: 12px !important;
+        display: grid;
+        gap: 10px;
+      }
+
+      .smart-panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 2px;
+      }
+
+      .smart-panel-head h2,
+      .smart-panel-head h3 {
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.2;
+      }
+
+      .smart-panel-sub {
+        color: var(--hk-muted);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .smart-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .smart-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-height: 26px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: var(--hk-panel-soft);
+        border: 1px solid var(--hk-line);
+        font-size: 12px;
+        font-weight: 800;
+        color: var(--hk-ink);
+      }
+
+      .smart-chip.good {
+        background: #e9f6ee;
+        border-color: #b9dcc5;
+        color: #175332;
+      }
+
+      .smart-chip.bad {
+        background: #fff1ee;
+        border-color: #e8b8ad;
+        color: #873329;
+      }
+
+      .smart-info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+      }
+
+      .smart-info-item {
+        min-width: 0;
+        padding: 8px 9px;
+        border-radius: 13px;
+        border: 1px solid #dfe6df;
+        background: #ffffff;
+        display: grid;
+        gap: 2px;
+      }
+
+      .smart-info-item span {
+        font-size: 11px;
+        color: var(--hk-muted);
+        font-weight: 800;
+      }
+
+      .smart-info-item strong {
+        font-size: 14px;
+        line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .smart-section-card {
+        padding: 10px;
+        border-radius: 16px;
+        background: #fbfcfa;
+        border: 1px solid var(--hk-line);
+        display: grid;
+        gap: 8px;
+      }
+
+      .smart-section-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin: 0;
+      }
+
+      .smart-section-title h3 {
+        margin: 0;
+        font-size: 15px;
+      }
+
+      .smart-section-title span {
+        font-size: 12px;
+        color: var(--hk-muted);
+        font-weight: 800;
+      }
+
+      .smart-action-row {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 7px;
+      }
+
+      .smart-action-row button {
+        min-height: 36px !important;
+        padding: 7px 8px !important;
+        font-size: 12px !important;
+      }
+
+      .smart-room-table {
+        max-height: 220px;
+        overflow: auto;
+        border-radius: 12px;
+        border: 1px solid var(--hk-line);
+      }
+
+      .smart-room-table table {
+        margin: 0 !important;
+      }
+
+      .hq-choice-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .hq-choice-grid button {
+        min-height: 58px !important;
+        border-radius: 14px !important;
+        display: grid !important;
+        gap: 3px;
+        align-content: center;
+      }
+
+      .build-pop-card {
+        padding: 12px !important;
+      }
+
+      .build-icon-menu {
+        display: grid !important;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 7px !important;
+      }
+
+      .build-icon-button {
+        min-height: 52px !important;
+        padding: 7px 6px !important;
+        border-radius: 15px !important;
+        display: grid !important;
+        gap: 2px;
+        place-items: center;
+        font-size: 12px !important;
+      }
+
+      .build-icon {
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .build-detail-popup {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 16px;
+        background: #fbfcfa;
+        border: 1px solid var(--hk-line);
+      }
+
+      .build-detail-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .build-detail-buttons {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px !important;
+      }
+
+      .build-detail-button {
+        padding: 9px 10px !important;
+        border-radius: 14px !important;
+        align-items: flex-start !important;
+        text-align: left !important;
+      }
+
+      .build-detail-button span {
+        font-size: 11px;
+        line-height: 1.25;
+      }
+
+      @media (max-width: 720px) {
+        .smart-info-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .smart-action-row,
+        .hq-choice-grid,
+        .build-detail-buttons {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .build-icon-menu {
+          grid-template-columns: repeat(5, minmax(52px, 1fr));
+          overflow-x: auto;
+          padding-bottom: 3px;
+        }
+      }
+
       .employee-salary-note {
         margin: 6px 0 12px;
         padding: 8px 10px;
@@ -14845,6 +15922,76 @@ return (
         line-height: 1 !important;
         flex: 0 0 42px !important;
         overflow: hidden !important;
+      }
+
+
+
+      .top-icon-button {
+        position: relative !important;
+        width: 44px !important;
+        min-width: 44px !important;
+        max-width: 44px !important;
+        height: 44px !important;
+        min-height: 44px !important;
+        max-height: 44px !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex: 0 0 44px !important;
+      }
+
+      .top-icon-symbol {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.35em;
+        height: 1.35em;
+        line-height: 1;
+        font-size: 20px;
+        transform: translateY(1px);
+      }
+
+      .top-icon-button {
+        overflow: visible !important;
+      }
+
+      .main-menu-wrap,
+      .top-status-chip-wrap {
+        overflow: visible !important;
+      }
+
+      .menu-alert-dot {
+        position: absolute !important;
+        top: 1px !important;
+        right: 1px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 16px !important;
+        height: 16px !important;
+        min-width: 16px !important;
+        border-radius: 999px !important;
+        background: #ef4444 !important;
+        color: #ffffff !important;
+        border: 1px solid #ffffff !important;
+        font-size: 11px !important;
+        font-weight: 900 !important;
+        line-height: 1 !important;
+        box-shadow: 0 3px 8px rgba(239, 68, 68, 0.45) !important;
+        z-index: 50 !important;
+        pointer-events: none !important;
+      }
+
+      .main-menu-popup button {
+        position: relative !important;
+        overflow: visible !important;
+      }
+
+      .main-menu-popup .menu-alert-dot {
+        top: 50% !important;
+        right: 10px !important;
+        transform: translateY(-50%) !important;
       }
 
       .app button:not(.map-tile):disabled,
@@ -16443,6 +17590,178 @@ return (
         }
       }
 
+      /* v139 社員募集画面コンパクト化：PC/スマホとも縦スクロール量を削減 */
+      .popup-log.recruit-popup-stage {
+        padding: 10px !important;
+      }
+
+      .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card {
+        width: min(96vw, 1040px) !important;
+        min-width: 0 !important;
+        max-height: 90vh !important;
+        padding: 14px 18px 14px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-title-area {
+        margin-bottom: 2px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-title-area h2 {
+        font-size: clamp(26px, 3vw, 42px) !important;
+        line-height: 1.05 !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-title-area p {
+        font-size: 13px !important;
+        margin: 4px 0 0 !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-envelope-desk-row {
+        gap: clamp(8px, 1.2vw, 16px) !important;
+        margin: 8px 0 2px !important;
+        padding: 10px 6px 4px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-envelope-card {
+        flex: 0 0 clamp(104px, 11vw, 136px) !important;
+        width: clamp(104px, 11vw, 136px) !important;
+        min-height: clamp(136px, 14vw, 176px) !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-envelope-card .resume-envelope-visual {
+        height: clamp(128px, 13.5vw, 168px) !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-tap-guide {
+        margin: 0 auto 6px !important;
+        padding: 5px 22px !important;
+        font-size: 12px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-profile-wrap {
+        grid-template-columns: minmax(0, 1fr) 190px !important;
+        gap: 14px !important;
+        margin-top: 4px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-profile-panel {
+        grid-template-columns: 180px minmax(0, 1fr) !important;
+        gap: 14px !important;
+        min-height: 190px !important;
+        padding: 12px 14px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-profile-photo {
+        min-height: 170px !important;
+        width: 180px !important;
+        max-width: 180px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-avatar {
+        width: 155px !important;
+        height: 165px !important;
+        min-width: 155px !important;
+        min-height: 165px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-profile-header h3 {
+        font-size: clamp(22px, 2.4vw, 32px) !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-profile-subrow {
+        margin: 6px 0 !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-stat-grid {
+        grid-template-columns: repeat(3, minmax(92px, 1fr)) !important;
+        gap: 6px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-stat-grid div {
+        padding: 6px 8px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-special-box {
+        min-height: 38px !important;
+        padding: 6px 8px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-hire-side {
+        width: 190px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-hire-button {
+        width: 180px !important;
+        min-width: 180px !important;
+        min-height: 58px !important;
+        font-size: 16px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-hire-side p,
+      .popup-log.recruit-popup-stage .recruit-required-note-fantasy {
+        font-size: 11px !important;
+        line-height: 1.25 !important;
+      }
+
+      @media (max-width: 760px) {
+        .popup-log.recruit-popup-stage {
+          padding: 6px !important;
+        }
+
+        .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card {
+          width: 98vw !important;
+          max-height: 92vh !important;
+          padding: 10px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-title-area h2 {
+          font-size: 28px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-envelope-card {
+          flex-basis: 104px !important;
+          width: 104px !important;
+          min-height: 132px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-envelope-card .resume-envelope-visual {
+          height: 128px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-panel {
+          grid-template-columns: 96px minmax(0, 1fr) !important;
+          gap: 8px !important;
+          min-height: 130px !important;
+          padding: 8px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-photo {
+          width: 96px !important;
+          max-width: 96px !important;
+          min-height: 110px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-avatar {
+          width: 86px !important;
+          height: 96px !important;
+          min-width: 86px !important;
+          min-height: 96px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-header h3 {
+          font-size: 22px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-stat-grid {
+          grid-template-columns: repeat(2, minmax(80px, 1fr)) !important;
+          gap: 5px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-hire-button {
+          min-height: 50px !important;
+        }
+      }
+
     `}</style>
 
     <style>{`
@@ -16578,7 +17897,7 @@ return (
           <div style={{ fontSize: 42, lineHeight: 1, marginBottom: 10 }}>🏘️</div>
           <p style={{ margin: "0 0 6px", letterSpacing: 2, fontSize: 12, opacity: 0.82 }}>NOGUCHI CORPORATION PRESENTS</p>
           <h1 style={{ margin: "0 0 8px", fontSize: 28, lineHeight: 1.25 }}>箱庭不動産経営<br />シミュレーション</h1>
-          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>Version 128</p>
+          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>V139</p>
 
           <div
             style={{
@@ -17200,12 +18519,12 @@ return (
       </div>
 
       <h3 className="employee-detail-section-title">特殊能力</h3>
-      {(Array.isArray(selectedEmployeeDetail.specialNames) && selectedEmployeeDetail.specialNames.length > 0) ? (
+      {getEmployeeSkills(selectedEmployeeDetail).length > 0 ? (
         <div className="employee-skill-list employee-skill-list-modern">
-          {selectedEmployeeDetail.specialNames.map((skillName) => (
-            <div key={skillName} className="employee-skill-item employee-skill-item-modern">
-              <strong>{skillName}</strong>
-              <p>{getSpecialSkillDescription(skillName)}</p>
+          {getEmployeeSkills(selectedEmployeeDetail).map((skill) => (
+            <div key={skill.id} className="employee-skill-item employee-skill-item-modern">
+              <strong>{skill.name}</strong>
+              <p>{skill.description}</p>
             </div>
           ))}
         </div>
@@ -17302,7 +18621,8 @@ return (
 
       <header className="top-header compact-top-header">
         <div className="top-title-wrap">
-          <h1 className="v73-title">箱庭不動産経営シミュレーター V128{isDemoMode ? "（デモ版）" : ""}</h1>
+          <h1 className="v73-title">箱庭不動産経営シミュレーター
+  v139 {isDemoMode ? "（デモ版）" : ""}</h1>
         </div>
       </header>
 
@@ -17321,6 +18641,17 @@ return (
     className={`top-icon-button ${activePanel === "home" && mapViewMode === "normal" ? "active" : ""}`}
   >
     <span className="top-icon-symbol">🏠</span>
+  </button>
+
+  <button
+    type="button"
+    title="拠点へ移動"
+    aria-label="拠点へ移動"
+    disabled={!hqPlaced || officeTiles.length === 0}
+    onClick={focusNextPlayerOffice}
+    className={`top-icon-button ${selectedOfficeTile ? "active" : ""}`}
+  >
+    <span className="top-icon-symbol">📍</span>
   </button>
 
   <button
@@ -17381,26 +18712,78 @@ return (
         <div className="top-info-popup top-info-popup-money">
           <h3>💰 資産</h3>
           <div className="top-info-popup-grid">
-            <span>所持金</span>
-            <strong>{money.toLocaleString()}万</strong>
-            <span>総資産</span>
-            <strong>{Math.round(money + assetValue).toLocaleString()}万</strong>
-            <span>借入残高</span>
-            <strong>{totalLoanRemaining.toLocaleString()}万</strong>
-            <span>純資産</span>
-            <strong>{netWorthAfterDebt.toLocaleString()}万</strong>
-            <span>月家賃</span>
-            <strong>{totalRent.toLocaleString()}万</strong>
-            <span>維持費・給与</span>
-            <strong>{totalMaintenance.toLocaleString()}万</strong>
-            <span>月返済</span>
-            <strong>{totalMonthlyLoanPayment.toLocaleString()}万</strong>
-            <span>返済前月利益</span>
-            <strong>{monthlyProfit.toLocaleString()}万</strong>
-            <span>実質月利益</span>
-            <strong>{monthlyProfitSign}{actualMonthlyProfit.toLocaleString()}万</strong>
-            <span>空室率</span>
-            <strong>{vacancyRate}%</strong>
+            <div className="finance-popup-section">
+              <p className="finance-popup-title">資産</p>
+              <span>所持金</span>
+              <strong>{money.toLocaleString()}万</strong>
+              <span>土地・建物</span>
+              <strong>{Math.round(assetValue).toLocaleString()}万</strong>
+              <span>資産総額</span>
+              <strong>{Math.round(money + assetValue).toLocaleString()}万</strong>
+            </div>
+
+            <div className="finance-popup-section">
+              <p className="finance-popup-title">負債</p>
+              <details>
+                <summary className="finance-detail-summary">
+                  <span className="summary-label">借入残高</span>
+                  <strong>{totalLoanRemaining.toLocaleString()}万</strong>
+                </summary>
+                <div className="finance-detail-box">
+                  {loans.length === 0 ? (
+                    <div className="finance-detail-note">借入はありません。</div>
+                  ) : (
+                    loans.map((loan) => (
+                      <div className="finance-detail-row" key={loan.id}>
+                        <span>{loan.bankName}</span>
+                        <strong>{Math.round(loan.remaining ?? 0).toLocaleString()}万</strong>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </details>
+            </div>
+
+            <div className="finance-popup-section">
+              <p className="finance-popup-title">資産評価</p>
+              <span>実質資産</span>
+              <strong>{netWorthAfterDebt.toLocaleString()}万</strong>
+            </div>
+
+            <div className="finance-popup-section">
+              <p className="finance-popup-title">収益</p>
+              <span>月家賃</span>
+              <strong>{totalRent.toLocaleString()}万</strong>
+            </div>
+
+            <div className="finance-popup-section">
+              <p className="finance-popup-title">費用</p>
+              <span>給与</span>
+              <strong>{employeePayroll.toLocaleString()}万</strong>
+              <details>
+                <summary className="finance-detail-summary">
+                  <span className="summary-label">維持費</span>
+                  <strong>{buildingMaintenance.toLocaleString()}万</strong>
+                </summary>
+                <div className="finance-detail-box">
+                  <div className="finance-detail-row"><span>管理料</span><strong>{maintenanceDetails.managementFee.toLocaleString()}万</strong></div>
+                  <div className="finance-detail-row"><span>保険料</span><strong>{maintenanceDetails.insurance.toLocaleString()}万</strong></div>
+                  <div className="finance-detail-row"><span>修繕積立</span><strong>{maintenanceDetails.repairReserve.toLocaleString()}万</strong></div>
+                  <div className="finance-detail-row"><span>固定資産税 月割参考</span><strong>{maintenanceDetails.propertyTaxMonthlyReference.toLocaleString()}万</strong></div>
+                  <div className="finance-detail-note">固定資産税は月利益には含めず、年次処理の参考額として表示しています。</div>
+                </div>
+              </details>
+              <span>月返済</span>
+              <strong>{totalMonthlyLoanPayment.toLocaleString()}万</strong>
+            </div>
+
+            <div className="finance-popup-section">
+              <p className="finance-popup-title">利益</p>
+              <span>実質月利益</span>
+              <strong className={actualMonthlyProfit >= 0 ? "status-good" : "status-bad"}>{monthlyProfitSign}{actualMonthlyProfit.toLocaleString()}万</strong>
+              <span>空室率</span>
+              <strong>{vacancyRoomStats.vacantRooms}/{vacancyRoomStats.totalRooms}戸・{vacancyRate}%</strong>
+            </div>
           </div>
         </div>
       )}
@@ -17446,7 +18829,7 @@ return (
             <span>人口</span>
             <strong>{totalPopulation.toLocaleString()}</strong>
             <span>社員</span>
-            <strong>{employees.length}人 / 上限{employeeLimit}人</strong>
+            <strong>{employees.length}人</strong>
             <span>保管社員</span>
             <strong>{employeeStorage.length}人</strong>
             <span>支店</span>
@@ -17471,6 +18854,7 @@ return (
       className={`top-icon-button ${isMainMenuOpen ? "active" : ""}`}
     >
       <span className="top-icon-symbol">☰</span>
+      {hasEmployeeRecruitNotice && <span className="menu-alert-dot">!</span>}
     </button>
 
     {isMainMenuOpen && (
@@ -17489,11 +18873,13 @@ return (
           type="button"
           onClick={() => {
             setActivePanel("employee");
+            setHasEmployeeRecruitNotice(false);
             setIsMainMenuOpen(false);
           }}
           className={activePanel === "employee" ? "active" : ""}
         >
           👤 社員
+          {hasEmployeeRecruitNotice && <span className="menu-alert-dot">!</span>}
         </button>
         <button
           type="button"
@@ -17782,300 +19168,270 @@ return (
       />
     )}
 {activePanel === "hq" && (
-  <div className="detail-card">
-    <p>最初に本社を設置してください。</p>
+  <div className="detail-card smart-detail-card hq-setup-card">
+    <div className="smart-panel-head">
+      <h2>拠点選択</h2>
+      <span className="smart-panel-sub">最初に置く本社タイプを選択</span>
+    </div>
 
     {selectedTile ? (
-      <div>
-        <p>選択中土地 ({selectedTile.x}, {selectedTile.y})</p>
-        <p>土地価格 {selectedTile.landPrice}万円</p>
-        <p>所有 {getTileOwnerName(selectedTile)}</p>
-        <p>
-          建築 {isBuildableTile(selectedTile) ? "可能" : "不可"}
-        </p>
+      <div className="smart-info-grid">
+        <div className="smart-info-item"><span>座標</span><strong>{selectedTile.x}, {selectedTile.y}</strong></div>
+        <div className="smart-info-item"><span>土地価格</span><strong>{selectedTile.landPrice}万円</strong></div>
+        <div className="smart-info-item"><span>所有</span><strong>{getTileOwnerName(selectedTile)}</strong></div>
+        <div className="smart-info-item"><span>建築</span><strong className={isBuildableTile(selectedTile) ? "status-good" : "status-bad"}>{isBuildableTile(selectedTile) ? "可能" : "不可"}</strong></div>
       </div>
     ) : (
-      <p>マップから売り土地を選択してください。</p>
+      <p className="office-empty-note">マップから売り土地を選択してください。</p>
     )}
 
-<p>本社から5マス以内は</p>
-<p>維持費50%OFF</p>
-<p>入居率50%UP</p>
+    <div className="smart-chip-row">
+      <span className="smart-chip good">本社5マス以内</span>
+      <span className="smart-chip good">維持費50%OFF</span>
+      <span className="smart-chip good">入居率50%UP</span>
+    </div>
 
-    <button onClick={() => placeHQ("normal")}>
-      本社を設置
-      {selectedTile
-        ? `（合計 ${selectedTile.landPrice + 3000}万円）`
-        : "（建設費3000万円）"}
-    </button>
+    <div className="hq-choice-grid">
+      <button onClick={() => placeHQ("normal")}>
+        <strong>本社</strong>
+        <span>{selectedTile ? `合計 ${selectedTile.landPrice + 3000}万円` : "建設費3000万円"}</span>
+      </button>
 
-    <button onClick={() => placeHQ("apartment")}>
-      アパート付き本社を設置
-      {selectedTile
-        ? `（合計 ${selectedTile.landPrice + 8000}万円）`
-        : "（建設費8000万円・4戸付き）"}
-    </button>
+      <button onClick={() => placeHQ("apartment")}>
+        <strong>アパート付き本社</strong>
+        <span>{selectedTile ? `合計 ${selectedTile.landPrice + 8000}万円` : "建設費8000万円・4戸付き"}</span>
+      </button>
+    </div>
   </div>
 )}
 {activePanel === "land" && (
-  <div className="detail-card">
-
+  <div className="detail-card smart-detail-card land-smart-panel">
     {!selectedTile && (
-      <p>マップ上の土地を選択してください。</p>
+      <p className="office-empty-note">マップ上の土地を選択してください。</p>
     )}
 
-    {selectedTile && (
-      <>
-        <p>座標 {selectedTile.x}, {selectedTile.y}</p>
-        <p>地形 {getTerrainName(selectedTile.terrain)}</p>
-        <p>施設 {getFeatureName(selectedTile.feature)}</p>
-        <p>用途地域 {getZoneName(selectedTile.zone)}</p>
-        <p>所有者 {getTileOwnerName(selectedTile)}</p>
-        <p>地価 {selectedTile.landPrice}万円</p>
-        <p>
-          行動範囲 {isTileInOfficeRange(selectedTile) ? `範囲内（${getNearestOfficeNameForTile(selectedTile)}）` : "範囲外"}
-        </p>
-        <p>建築可否 {isBuildableTile(selectedTile) ? "建築可能" : "建築不可"}</p>
+    {selectedTile && (() => {
+      const occupiedRooms = selectedMainTile?.rooms?.filter((room) => room.occupied).length ?? 0;
+      const roomCount = selectedMainTile?.rooms?.length ?? 0;
+      const monthlyRentTotal = selectedMainTile?.rooms?.reduce((sum, room) => sum + (room.occupied ? room.rent : 0), 0) ?? 0;
+      const monthlyExpenses = selectedBuilding ? calculateMonthlyExpenses(selectedMainTile) : 0;
+      const monthlyBalance = monthlyRentTotal - monthlyExpenses;
+      const rangeLabel = isTileInOfficeRange(selectedTile) ? `範囲内（${getNearestOfficeNameForTile(selectedTile)}）` : "範囲外";
+      const rangeClass = isTileInOfficeRange(selectedTile) ? "good" : "bad";
+      const canBuildSelectedTile = isBuildableTile(selectedTile);
+      const buildLabel = canBuildSelectedTile ? "建設可能" : "建設不可";
+      const buildClass = canBuildSelectedTile ? "good" : "bad";
+      const ownerName = getTileOwnerName(selectedTile);
+      const zoneName = getZoneName(selectedTile.zone);
+      const terrainName = getTerrainName(selectedTile.terrain);
+      const featureName = getFeatureName(selectedTile.feature);
 
-        {selectedTile.feature === FEATURE.HQ && (
-          <p>本社 {selectedTile.hqName || "本社"}</p>
-        )}
+      return (
+        <>
+          <div className="smart-panel-head">
+            <h2>{selectedBuilding ? selectedBuilding.name : selectedTile.feature === FEATURE.HQ ? "本社" : selectedTile.feature === FEATURE.BRANCH ? getBranchDisplayName(selectedTile) : "土地情報"}</h2>
+            <span className="smart-panel-sub">座標 {selectedTile.x}, {selectedTile.y}</span>
+          </div>
 
-        {selectedTile.feature === FEATURE.BRANCH && (
-          <p>支店 {getBranchDisplayName(selectedTile)}</p>
-        )}
-        {selectedTile.owner === OWNER.RIVAL && (
-          <div className="rival-company-info">
-            <h3>{getRivalCompanyNameFromTiles(tiles, selectedTile.rivalCompanyId)}</h3>
-            <p>拠点: {selectedTile.rivalOfficeName || "ライバル拠点"}</p>
-            <p>企業カラー: {getRivalCompany(selectedTile.rivalCompanyId).colorName}</p>
-            <h4>所属社員</h4>
-            {(selectedTile.rivalEmployees ?? []).length === 0 ? (
-              <p>所属社員情報はありません。</p>
-            ) : (
-              <div className="rival-table-scroll employee-table-scroll">
-                <table className="rival-employee-table">
-                  <thead>
-                    <tr>
-                      <th>名前</th>
-                      <th>レア</th>
-                      <th>統率</th>
-                      <th>営業</th>
-                      <th>建築</th>
-                      <th>管理</th>
-                      <th>特殊能力</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(selectedTile.rivalEmployees ?? []).map((employee) => (
-                      <tr key={employee.id}>
-                        <td>{employee.name}</td>
-                        <td>{getRarityLabel(employee.rarity)}</td>
-                        <td>{employee.leadership}</td>
-                        <td>{employee.sales}</td>
-                        <td>{employee.construction}</td>
-                        <td>{employee.management}</td>
-                        <td>{getEmployeeSpecialText(employee)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          <div className="smart-chip-row status-chip-row">
+            <span className={`smart-chip ${rangeClass}`}>{rangeLabel}</span>
+            <span className={`smart-chip ${buildClass}`}>{buildLabel}</span>
+            <span className="smart-chip">{ownerName}</span>
+            <span className="smart-chip">{zoneName}</span>
+          </div>
+
+          <div className="smart-section-card compact-land-card">
+            <div className="smart-section-title">
+              <h3>土地</h3>
+              <span>{terrainName} / {featureName}</span>
+            </div>
+            <div className="smart-info-grid compact-info-grid">
+              <div className="smart-info-item"><span>地価</span><strong>{selectedTile.landPrice}万円</strong></div>
+              <div className="smart-info-item"><span>地形</span><strong>{terrainName}</strong></div>
+              <div className="smart-info-item"><span>施設</span><strong>{featureName}</strong></div>
+            </div>
+          </div>
+
+          {selectedTile.owner === OWNER.RIVAL && (
+            <div className="smart-section-card rival-company-info">
+              <div className="smart-section-title">
+                <h3>{getRivalCompanyNameFromTiles(tiles, selectedTile.rivalCompanyId)}</h3>
+                <span>{selectedTile.rivalOfficeName || "ライバル拠点"}</span>
               </div>
-            )}
-          </div>
-        )}
-
-        {(selectedTile.feature === FEATURE.HQ || selectedTile.feature === FEATURE.BRANCH) && (
-          <div className="office-range-info">
-            <strong>この拠点の行動範囲: {getOfficeActionRange(selectedTile)}マス</strong>
-            <br />
-            マップ上の枠線が、この拠点から行動できる範囲です。
-          </div>
-        )}
-
-   {selectedBuilding && (
-  <div className="building-detail-box">
-    <h3>建物情報</h3>
-
-    <p>
-      建物名 {selectedBuilding.name || "建物あり"}
-    </p>
-
-    <p>
-      種別 {selectedBuilding.category || "不明"}
-    </p>
-
-    <p>
-      構造 {selectedBuilding.structure || "不明"}
-    </p>
-
-    <p>
-      築年数 {Math.floor(selectedMainTile.age ?? 0)}年
-    </p>
-
-    <p>
-      建物状態 {Math.round(selectedMainTile.condition ?? 100)}%
-    </p>
-
-    <p>
-      戸数 {selectedMainTile.rooms?.length ?? 0}戸
-    </p>
-
-    <p>
-      入居中 {
-        selectedMainTile.rooms?.filter((room) => room.occupied).length ?? 0
-      }戸
-    </p>
-
-    <p>
-      空室 {
-        (selectedMainTile.rooms?.length ?? 0) -
-        (selectedMainTile.rooms?.filter((room) => room.occupied).length ?? 0)
-      }戸
-    </p>
-
-    <p>
-      月家賃 {
-        selectedMainTile.rooms?.reduce((sum, room) => {
-          return sum + (room.occupied ? room.rent : 0);
-        }, 0) ?? 0
-      }万円
-    </p>
-    <p>
-  需要 {getDemand(selectedMainTile, selectedMainTile.building)}%
-</p>
-
-<p>
-  想定家賃倍率 {getRentMultiplier(selectedMainTile, selectedMainTile.building).toFixed(2)}倍
-</p>
-
-<p>
-  月間維持費 {calculateMonthlyExpenses(selectedMainTile)}万円
-</p>
-
-<p>
-  月間収支 {
-    (selectedMainTile.rooms?.reduce((sum, room) => {
-      return sum + (room.occupied ? room.rent : 0);
-    }, 0) ?? 0) - calculateMonthlyExpenses(selectedMainTile)
-  }万円
-</p>
-
-<p>
-  建物価値 {calculateBuildingValue(selectedMainTile)}万円
-</p>
-
-<p>
-  年間固定資産税 {selectedMainTile.owner === OWNER.PLAYER
-    ? calculateYearlyPropertyTax(selectedMainTile)
-    : calculateCompanyYearlyPropertyTax(selectedMainTile)}万円
-</p>
-
-<p>
-  回収率 {
-    selectedMainTile.building
-      ? (
-          ((selectedMainTile.rooms?.reduce((sum, room) => {
-            return sum + (room.occupied ? room.rent : 0);
-          }, 0) ?? 0) * 12 / Math.max(1, selectedBuilding.cost)) * 100
-        ).toFixed(1)
-      : "0.0"
-  }%
-</p>
-
-  </div>
-  )}
-  {selectedBuilding && (
-  <div className="building-detail-box">
-    <h3>部屋別入居状況</h3>
-
-            {(selectedMainTile.rooms ?? []).length === 0 ? (
-      <p>部屋情報はまだありません。</p>
-    ) : (
-      <div className="table-scroll">
-        <table className="property-table">
-          <thead>
-            <tr>
-              <th>部屋</th>
-              <th>状況</th>
-              <th>入居者</th>
-              <th>人数</th>
-              <th>賃料</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {(selectedMainTile.rooms ?? []).map((room) => (
-              <tr key={room.roomNo}>
-                <td>{room.roomNo}号室</td>
-                <td>{room.occupied ? "入居中" : "空室"}</td>
-                <td>
-                  {room.tenantType
-                    ? TENANT_TYPES[room.tenantType]?.name
-                    : "-"}
-                </td>
-                <td>{room.people ?? 0}人</td>
-                <td>{room.rent ?? 0}万円</td>
-              </tr>
-                        ))}
-          </tbody>
-        </table>
-      </div>
-    )}
-  </div>
-)}
-
-        <div className="button-row">
-          {selectedMainTile?.owner === OWNER.SALE && (
-            <button
-              onClick={buyLand}
-              disabled={!isTileInOfficeRange(selectedMainTile)}
-              title={!isTileInOfficeRange(selectedMainTile) ? "本社・支店の行動範囲外です" : ""}
-            >
-              {isTileInOfficeRange(selectedMainTile) ? "購入する" : "範囲外のため購入不可"}
-            </button>
+              <div className="smart-chip-row">
+                <span className="smart-chip">企業カラー {getRivalCompany(selectedTile.rivalCompanyId).colorName}</span>
+                <span className="smart-chip">所属 {(selectedTile.rivalEmployees ?? []).length}人</span>
+              </div>
+              {(selectedTile.rivalEmployees ?? []).length > 0 && (
+                <div className="smart-room-table employee-table-scroll">
+                  <table className="rival-employee-table">
+                    <thead>
+                      <tr><th>名前</th><th>レア</th><th>統率</th><th>営業</th><th>建築</th><th>管理</th><th>特殊能力</th></tr>
+                    </thead>
+                    <tbody>
+                      {(selectedTile.rivalEmployees ?? []).map((employee) => (
+                        <tr key={employee.id}>
+                          <td>{employee.name}</td>
+                          <td>{getRarityLabel(employee.rarity)}</td>
+                          <td>{employee.leadership}</td>
+                          <td>{employee.sales}</td>
+                          <td>{employee.construction}</td>
+                          <td>{employee.management}</td>
+                          <td>{getEmployeeSpecialText(employee)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           )}
 
-          {selectedTile.owner === OWNER.PLAYER &&
-            isBuildableTile(selectedTile) &&
-            !selectedTile.building && (
-              <button
-                onClick={() => setActivePanel("build")}
-                disabled={!isTileInOfficeRange(selectedTile)}
-                title={!isTileInOfficeRange(selectedTile) ? "本社・支店の行動範囲外です" : ""}
-              >
-                {isTileInOfficeRange(selectedTile) ? "建設する" : "範囲外のため建設不可"}
+          {(selectedTile.feature === FEATURE.HQ || selectedTile.feature === FEATURE.BRANCH) && (
+            <div className="smart-section-card office-range-info">
+              <div className="smart-section-title">
+                <h3>拠点</h3>
+                <span>行動範囲 {getOfficeActionRange(selectedTile)}マス</span>
+              </div>
+              {(() => {
+                const roles = getOfficeRoleAssignments(selectedTile);
+                const activeSkillRows = getOfficeActiveSkillRows(selectedTile);
+                const salesModifier = getOfficeRoleActionModifier(selectedTile.officeId ?? "hq", "sales");
+                const constructionModifier = getOfficeRoleActionModifier(selectedTile.officeId ?? "hq", "construction");
+                const managementModifier = getOfficeRoleActionModifier(selectedTile.officeId ?? "hq", "management");
+
+                return (
+                  <div className="office-dashboard-box">
+                    <div className="office-section-header">
+                      <h3>役職</h3>
+                      <span>所属 {getOfficeMembers(selectedTile).length}人</span>
+                    </div>
+                    <div className="office-role-grid">
+                      {renderOfficeRoleLine(
+                        "支店長",
+                        roles.branchManager,
+                        roles.branchManager ? `統率${getEmployeeRoleBaseStat(roles.branchManager, "leadership")} + 営業${getEmployeeRoleBaseStat(roles.branchManager, "sales")}` : "",
+                        salesModifier
+                      )}
+                      {renderOfficeRoleLine(
+                        "工事責任者",
+                        roles.constructionChief,
+                        roles.constructionChief ? `建築${getEmployeeRoleBaseStat(roles.constructionChief, "construction")}` : "",
+                        constructionModifier
+                      )}
+                      {renderOfficeRoleLine(
+                        "管理責任者",
+                        roles.managementChief,
+                        roles.managementChief ? `管理${getEmployeeRoleBaseStat(roles.managementChief, "management")}` : "",
+                        managementModifier
+                      )}
+                    </div>
+                    <p className="office-role-note">役職の能力が基準未満、または未専任の場合は拠点活動の効率が下がります。</p>
+
+                    <div className="office-section-header">
+                      <h3>特殊能力</h3>
+                      <span>{activeSkillRows.length}件</span>
+                    </div>
+                    {activeSkillRows.length === 0 ? (
+                      <p className="office-empty-note">この拠点で発動中の特殊能力はありません。</p>
+                    ) : (
+                      <div className="office-skill-list">
+                        {activeSkillRows.map(({ employee, skill }) => (
+                          <div className="office-skill-card" key={`${employee.id}-${skill.id}`}>
+                            <strong>{employee.name}</strong>
+                            <span>{skill.name}</span>
+                            <small>{skill.description}</small>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
+          {selectedBuilding && (
+            <div className="smart-section-card">
+              <div className="smart-section-title">
+                <h3>建物</h3>
+                <span>{selectedBuilding.category || "不明"} / {selectedBuilding.structure || "不明"}</span>
+              </div>
+              <div className="smart-info-grid">
+                <div className="smart-info-item"><span>築年数</span><strong>{Math.floor(selectedMainTile.age ?? 0)}年</strong></div>
+                <div className="smart-info-item"><span>状態</span><strong className={(selectedMainTile.condition ?? 100) >= 70 ? "status-good" : (selectedMainTile.condition ?? 100) >= 40 ? "status-warn" : "status-bad"}>{Math.round(selectedMainTile.condition ?? 100)}%</strong></div>
+                <div className="smart-info-item"><span>入居</span><strong className={roomCount > 0 && occupiedRooms === roomCount ? "status-good" : roomCount > 0 && occupiedRooms === 0 ? "status-bad" : "status-warn"}>{occupiedRooms}/{roomCount}戸</strong></div>
+                <div className="smart-info-item"><span>月家賃</span><strong>{monthlyRentTotal}万円</strong></div>
+                <div className="smart-info-item"><span>維持費</span><strong>{monthlyExpenses}万円</strong></div>
+                <div className="smart-info-item"><span>月間収支</span><strong className={monthlyBalance >= 0 ? "status-good" : "status-bad"}>{monthlyBalance}万円</strong></div>
+                <div className="smart-info-item"><span>需要</span><strong className={getDemand(selectedMainTile, selectedMainTile.building) >= 70 ? "status-good" : getDemand(selectedMainTile, selectedMainTile.building) >= 40 ? "status-warn" : "status-bad"}>{getDemand(selectedMainTile, selectedMainTile.building)}%</strong></div>
+                <div className="smart-info-item"><span>家賃倍率</span><strong>{getRentMultiplier(selectedMainTile, selectedMainTile.building).toFixed(2)}倍</strong></div>
+                <div className="smart-info-item"><span>建物価値</span><strong>{calculateBuildingValue(selectedMainTile)}万円</strong></div>
+                <div className="smart-info-item"><span>固定資産税</span><strong>{selectedMainTile.owner === OWNER.PLAYER ? calculateYearlyPropertyTax(selectedMainTile) : calculateCompanyYearlyPropertyTax(selectedMainTile)}万円/年</strong></div>
+                <div className="smart-info-item"><span>回収率</span><strong>{selectedMainTile.building ? (((monthlyRentTotal * 12) / Math.max(1, selectedBuilding.cost)) * 100).toFixed(1) : "0.0"}%</strong></div>
+              </div>
+            </div>
+          )}
+
+          {selectedBuilding && (
+            <div className="smart-section-card">
+              <div className="smart-section-title">
+                <h3>部屋</h3>
+                <span>{occupiedRooms}/{roomCount}戸 入居中</span>
+              </div>
+              {(selectedMainTile.rooms ?? []).length === 0 ? (
+                <p className="office-empty-note">部屋情報はまだありません。</p>
+              ) : (
+                <div className="smart-room-table">
+                  <table className="property-table">
+                    <thead>
+                      <tr><th>部屋</th><th>状況</th><th>入居者</th><th>人数</th><th>賃料</th></tr>
+                    </thead>
+                    <tbody>
+                      {(selectedMainTile.rooms ?? []).map((room) => (
+                        <tr key={room.roomNo}>
+                          <td>{room.roomNo}号室</td>
+                          <td>{room.occupied ? "入居中" : "空室"}</td>
+                          <td>{room.tenantType ? TENANT_TYPES[room.tenantType]?.name : "-"}</td>
+                          <td>{room.people ?? 0}人</td>
+                          <td>{room.rent ?? 0}万円</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="smart-action-row">
+            {selectedMainTile?.owner === OWNER.SALE && (
+              <button className={isTileInOfficeRange(selectedMainTile) ? "action-good" : "action-bad"} onClick={buyLand} disabled={!isTileInOfficeRange(selectedMainTile)} title={!isTileInOfficeRange(selectedMainTile) ? "本社・支店の行動範囲外です" : ""}>
+                {isTileInOfficeRange(selectedMainTile) ? "購入" : "範囲外"}
               </button>
             )}
 
-{selectedMainTile?.owner === OWNER.PLAYER &&
-  selectedMainTile?.building && (
-    <button
-      onClick={() => {
-        setSelectedBuildCategory("修繕");
-        setActivePanel("build");
-      }}
-    >
-      修繕する
-    </button>
-)}
+            {selectedTile.owner === OWNER.PLAYER && isBuildableTile(selectedTile) && !selectedTile.building && (
+              <button className={isTileInOfficeRange(selectedTile) ? "action-good" : "action-bad"} onClick={() => setActivePanel("build")} disabled={!isTileInOfficeRange(selectedTile)} title={!isTileInOfficeRange(selectedTile) ? "本社・支店の行動範囲外です" : ""}>
+                {isTileInOfficeRange(selectedTile) ? "建設" : "建設不可"}
+              </button>
+            )}
 
-{selectedMainTile?.owner === OWNER.PLAYER &&
-  selectedMainTile?.feature !== FEATURE.HQ && (
-    <button onClick={sellProperty}>
-      売却する
-    </button>
-)}
+            {selectedMainTile?.owner === OWNER.PLAYER && selectedMainTile?.building && (
+              <button onClick={() => { setSelectedBuildCategory("修繕"); setActivePanel("build"); }}>修繕</button>
+            )}
 
-{selectedMainTile?.owner === OWNER.PLAYER &&
-  selectedMainTile?.building && (
-    <button onClick={demolish}>
-      取り壊す
-    </button>
-)}
-        </div>
-      </>
-    )}
+            {selectedMainTile?.owner === OWNER.PLAYER && selectedMainTile?.feature !== FEATURE.HQ && (
+              <button onClick={sellProperty}>売却</button>
+            )}
+
+            {selectedMainTile?.owner === OWNER.PLAYER && selectedMainTile?.building && (
+              <button onClick={demolish}>解体</button>
+            )}
+          </div>
+        </>
+      );
+    })()}
   </div>
 )}
             {activePanel === "employee" && (
@@ -18264,15 +19620,13 @@ return (
                       const officeCount = employees.filter((item) => {
                         return (item.officeId ?? "hq") === officeId;
                       }).length;
-                      const isFull = officeCount >= MAX_EMPLOYEES_PER_OFFICE;
 
                       return (
                         <button
                           key={officeId}
-                          disabled={isFull}
                           onClick={() => assignStoredEmployee(employee, officeId)}
                         >
-                          {isFull ? `${officeName}満員` : `${officeName}へ`}
+                          {`${officeName}へ（${officeCount}人）`}
                         </button>
                       );
                     })}
@@ -18535,9 +19889,7 @@ return (
           >
             <strong>支店</strong>
             <span>建築費: 1億円</span>
-            <span>社員上限: +10人</span>
             <span>営業範囲: 10マス</span>
-            <span>条件: 次の支店数 × 5人以上の社員が配属中</span>
             <span>条件: 本社・支店の行動範囲内の自分の空き土地</span>
             <span>工期: 6ヶ月</span>
           </button>
@@ -18988,50 +20340,46 @@ return (
     <div className="player-info-box v74-player-info-box">
       <h3>{playerCompanyName || DEFAULT_COMPANY_NAME}</h3>
       <div className="player-info-grid">
-        <div>
-          <span>所持金</span>
-          <strong>{money.toLocaleString()}万円</strong>
-        </div>
-        <div>
-          <span>総資産</span>
-          <strong>{Math.round(money + assetValue).toLocaleString()}万円</strong>
-        </div>
-        <div>
-          <span>現在</span>
-          <strong>{gameDate.label}</strong>
-        </div>
-        <div>
-          <span>経過</span>
-          <strong>{month}ヶ月</strong>
-        </div>
-        <div>
-          <span>ランク</span>
-          <strong>{playerRank}</strong>
-        </div>
-        <div>
-          <span>EXP</span>
-          <strong>{playerExp} / {getPlayerRequiredExp(playerRank)}</strong>
-        </div>
-        <div>
-          <span>人口</span>
-          <strong>{totalPopulation.toLocaleString()}</strong>
-        </div>
-        <div>
-          <span>社員</span>
-          <strong>{employees.length}人 / 上限{employeeLimit}人</strong>
-        </div>
-        <div>
-          <span>保管社員</span>
-          <strong>{employeeStorage.length}人</strong>
-        </div>
-        <div>
-          <span>支店</span>
-          <strong>{branchCount}店</strong>
-        </div>
-        <div>
-          <span>月利益</span>
-          <strong>{monthlyProfit.toLocaleString()}万円</strong>
-        </div>
+        <div><span>所持金</span><strong>{money.toLocaleString()}万円</strong></div>
+        <div><span>土地・建物</span><strong>{Math.round(assetValue).toLocaleString()}万円</strong></div>
+        <div><span>資産総額</span><strong>{Math.round(money + assetValue).toLocaleString()}万円</strong></div>
+        <div><span>借入残高</span><strong>{totalLoanRemaining.toLocaleString()}万円</strong></div>
+        <div><span>実質資産</span><strong>{netWorthAfterDebt.toLocaleString()}万円</strong></div>
+        <div><span>月家賃</span><strong>{totalRent.toLocaleString()}万円</strong></div>
+        <div><span>給与</span><strong>{employeePayroll.toLocaleString()}万円</strong></div>
+        <div><span>維持費</span><strong>{buildingMaintenance.toLocaleString()}万円</strong></div>
+        <div><span>月返済</span><strong>{totalMonthlyLoanPayment.toLocaleString()}万円</strong></div>
+        <div><span>実質月利益</span><strong>{monthlyProfitSign}{actualMonthlyProfit.toLocaleString()}万円</strong></div>
+        <div><span>空室率</span><strong>{vacancyRoomStats.vacantRooms}/{vacancyRoomStats.totalRooms}戸・{vacancyRate}%</strong></div>
+        <div><span>現在</span><strong>{gameDate.label}</strong></div>
+        <div><span>経過</span><strong>{month}ヶ月</strong></div>
+        <div><span>ランク</span><strong>{playerRank}</strong></div>
+        <div><span>EXP</span><strong>{playerExp} / {getPlayerRequiredExp(playerRank)}</strong></div>
+        <div><span>人口</span><strong>{totalPopulation.toLocaleString()}</strong></div>
+        <div><span>社員</span><strong>{employees.length}人</strong></div>
+        <div><span>保管社員</span><strong>{employeeStorage.length}人</strong></div>
+        <div><span>支店</span><strong>{branchCount}店</strong></div>
+      </div>
+
+      <div className="finance-detail-box" style={{ marginTop: 10 }}>
+        <div className="finance-detail-row"><span>維持費内訳：管理料</span><strong>{maintenanceDetails.managementFee.toLocaleString()}万円</strong></div>
+        <div className="finance-detail-row"><span>維持費内訳：保険料</span><strong>{maintenanceDetails.insurance.toLocaleString()}万円</strong></div>
+        <div className="finance-detail-row"><span>維持費内訳：修繕積立</span><strong>{maintenanceDetails.repairReserve.toLocaleString()}万円</strong></div>
+        <div className="finance-detail-row"><span>固定資産税 月割参考</span><strong>{maintenanceDetails.propertyTaxMonthlyReference.toLocaleString()}万円</strong></div>
+        <div className="finance-detail-note">固定資産税は月利益には含めず、年次処理の参考額です。</div>
+      </div>
+
+      <div className="finance-detail-box" style={{ marginTop: 10 }}>
+        {loans.length === 0 ? (
+          <div className="finance-detail-note">借入はありません。</div>
+        ) : (
+          loans.map((loan) => (
+            <div className="finance-detail-row" key={`info-${loan.id}`}>
+              <span>{loan.bankName} / 残り{loan.monthsLeft ?? 0}ヶ月</span>
+              <strong>{Math.round(loan.remaining ?? 0).toLocaleString()}万円</strong>
+            </div>
+          ))
+        )}
       </div>
     </div>
 
