@@ -3,7 +3,7 @@ import "./App.css";
 
 /*
   箱庭不動産経営シミュレーター
-  v139: 社員募集画面圧縮・ライバル本社購入制限強化
+  v140: スマホ表示最適化・社員募集画面レスポンシブ修正
   PC・スマホ両対応版 / v133 配属上限撤廃・役職補正強化・拠点表示整理
   v131：特殊能力効果拡張（入居・家賃・融資・採用対応）
 
@@ -6672,7 +6672,22 @@ function getNearestPointDistance(x, y, points, fallbackX, fallbackY) {
 
 
 function isBuildableTile(tile) {
-  return tile.terrain === TERRAIN.PLAIN && tile.feature === FEATURE.NONE;
+  if (!tile) return false;
+  if (tile.terrain !== TERRAIN.PLAIN) return false;
+  if (tile.feature !== FEATURE.NONE) return false;
+  // 線路上は建設不可。線路沿いは可だが、線路そのものには本社・支店・建物を置かない。
+  if (tile.rail === true) return false;
+  return true;
+}
+
+function isRailTileForStationPlacement(tile) {
+  // 駅新設だけは線路上に置くため、通常建設判定とは分ける。
+  return !!tile &&
+    tile.terrain === TERRAIN.PLAIN &&
+    tile.rail === true &&
+    tile.feature === FEATURE.NONE &&
+    !tile.building &&
+    !tile.buildingMainId;
 }
 
 function sanitizeMapForV138(mapData) {
@@ -7275,6 +7290,8 @@ function getRivalOfficeCandidates(minDistanceFromPlaced = 0, placedRivalOffices 
   return tiles.filter((tile) => {
     if (tile.terrain !== TERRAIN.PLAIN) return false;
     if (tile.feature !== FEATURE.NONE) return false;
+    // ライバル本社は道路・線路「沿い」には置けるが、道路上・線路上には置けない。
+    if (tile.rail === true) return false;
     if (tile.building || tile.buildingMainId) return false;
     if (tile.owner !== OWNER.SALE) return false;
     if (requireRoadOrRail && !isTileNearRoadOrRail(tile, tiles)) return false;
@@ -7552,9 +7569,9 @@ function loadSavedGameSafely() {
 export default function App() {
 
   useEffect(() => {
-    document.title = "箱庭不動産経営シミュレーター v139";
+    document.title = "箱庭不動産経営シミュレーター v156";
 
-    const v134StatusStyleId = "v139-status-ui-style";
+    const v134StatusStyleId = "v140-status-ui-style";
     if (typeof document !== "undefined" && !document.getElementById(v134StatusStyleId)) {
       const style = document.createElement("style");
       style.id = v134StatusStyleId;
@@ -7604,7 +7621,7 @@ export default function App() {
           border-radius: 6px !important;
         }
 
-        /* v139: 社員募集画面圧縮・ライバル本社購入制限強化 */
+        /* v140: スマホ表示最適化・社員募集画面レスポンシブ修正 */
         .top-info-popup {
           border-radius: 14px !important;
           padding: 12px 14px !important;
@@ -7794,6 +7811,316 @@ export default function App() {
           padding: 7px 0 !important;
           border-bottom: 1px solid #eef2ea !important;
         }
+
+        /* v143: スマホ縦画面の上部メニュー重なり修正 */
+        @media (max-width: 640px) and (orientation: portrait) {
+          .app {
+            overflow-x: hidden !important;
+          }
+
+          .top-header.compact-top-header {
+            padding: 6px 10px 4px !important;
+            min-height: auto !important;
+          }
+
+          .top-title-wrap {
+            width: 100% !important;
+            min-width: 0 !important;
+          }
+
+          .top-title-wrap .v73-title,
+          .v73-title {
+            font-size: clamp(18px, 5.1vw, 24px) !important;
+            line-height: 1.18 !important;
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            max-width: 100% !important;
+            word-break: keep-all !important;
+          }
+
+          .bottom-menu.compact-command-menu.icon-command-menu.v72-top-command-bar.v73-top-command-bar,
+          .v72-top-command-bar.v73-top-command-bar {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            gap: 6px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            height: auto !important;
+            min-height: 92px !important;
+            overflow: visible !important;
+            padding: 8px 8px 9px !important;
+            box-sizing: border-box !important;
+          }
+
+          .v72-top-command-bar .top-icon-button,
+          .v73-top-command-bar .top-icon-button {
+            width: 44px !important;
+            min-width: 44px !important;
+            max-width: 44px !important;
+            height: 44px !important;
+            min-height: 44px !important;
+            flex: 0 0 44px !important;
+            padding: 0 !important;
+          }
+
+          .v72-top-command-bar .top-icon-symbol,
+          .v73-top-command-bar .top-icon-symbol {
+            font-size: 22px !important;
+            line-height: 1 !important;
+          }
+
+          .v73-main-menu-wrap {
+            order: 4 !important;
+            margin-left: auto !important;
+            flex: 0 0 44px !important;
+            width: 44px !important;
+            min-width: 44px !important;
+          }
+
+          .top-status-inline.v73-top-status-inline,
+          .v73-top-status-inline {
+            order: 5 !important;
+            flex: 0 0 100% !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            justify-content: flex-start !important;
+            align-items: center !important;
+            gap: 5px !important;
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+            padding: 2px 0 0 !important;
+            scrollbar-width: none !important;
+          }
+
+          .top-status-inline.v73-top-status-inline::-webkit-scrollbar,
+          .v73-top-status-inline::-webkit-scrollbar {
+            display: none !important;
+          }
+
+          .top-status-chip-wrap {
+            flex: 0 0 auto !important;
+            min-width: 0 !important;
+          }
+
+          .top-compact-stat {
+            height: 34px !important;
+            min-height: 34px !important;
+            max-height: 34px !important;
+            padding: 0 10px !important;
+            font-size: 15px !important;
+            line-height: 1 !important;
+            white-space: nowrap !important;
+            flex: 0 0 auto !important;
+          }
+
+          .demo-money-add-button {
+            width: 38px !important;
+            min-width: 38px !important;
+            max-width: 38px !important;
+            height: 32px !important;
+            min-height: 32px !important;
+            font-size: 10px !important;
+          }
+
+          .top-info-popup {
+            position: fixed !important;
+            left: 10px !important;
+            right: 10px !important;
+            top: 132px !important;
+            width: auto !important;
+            max-width: none !important;
+            max-height: calc(100vh - 150px) !important;
+            overflow-y: auto !important;
+            z-index: 2000 !important;
+          }
+
+          .main-menu-popup.icon-main-menu-popup {
+            position: fixed !important;
+            top: 132px !important;
+            right: 10px !important;
+            width: min(280px, calc(100vw - 20px)) !important;
+            max-height: calc(100vh - 150px) !important;
+            overflow-y: auto !important;
+            z-index: 2000 !important;
+          }
+
+
+        /* v144: スマホ横・縦共通 ヘッダー超圧縮。PC表示は変更しない */
+        @media (max-width: 900px) {
+          .top-header.compact-top-header {
+            display: none !important;
+            height: 0 !important;
+            min-height: 0 !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: 0 !important;
+            overflow: hidden !important;
+          }
+
+          .bottom-menu.compact-command-menu.icon-command-menu.v72-top-command-bar.v73-top-command-bar,
+          .v72-top-command-bar.v73-top-command-bar {
+            display: flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+            min-height: 42px !important;
+            height: auto !important;
+            padding: 4px 6px !important;
+            box-sizing: border-box !important;
+            overflow: visible !important;
+          }
+
+          .v72-top-command-bar .top-icon-button,
+          .v73-top-command-bar .top-icon-button,
+          .app .top-icon-button {
+            width: 34px !important;
+            min-width: 34px !important;
+            max-width: 34px !important;
+            height: 34px !important;
+            min-height: 34px !important;
+            max-height: 34px !important;
+            flex: 0 0 34px !important;
+            padding: 0 !important;
+            border-radius: 16px !important;
+          }
+
+          .v72-top-command-bar .top-icon-symbol,
+          .v73-top-command-bar .top-icon-symbol,
+          .app .top-icon-button .top-icon-symbol,
+          .app .top-icon-button .top-icon-emoji,
+          .app .top-icon-button .top-icon {
+            font-size: 17px !important;
+            line-height: 1 !important;
+          }
+
+          .v73-main-menu-wrap {
+            flex: 0 0 34px !important;
+            width: 34px !important;
+            min-width: 34px !important;
+          }
+
+          .top-status-inline.v73-top-status-inline,
+          .v73-top-status-inline {
+            min-width: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            overflow-x: auto !important;
+            overflow-y: visible !important;
+            scrollbar-width: none !important;
+          }
+
+          .top-status-inline.v73-top-status-inline::-webkit-scrollbar,
+          .v73-top-status-inline::-webkit-scrollbar {
+            display: none !important;
+          }
+
+          .top-compact-stat {
+            height: 28px !important;
+            min-height: 28px !important;
+            max-height: 28px !important;
+            padding: 0 8px !important;
+            font-size: 13px !important;
+            line-height: 1 !important;
+            white-space: nowrap !important;
+            border-radius: 14px !important;
+          }
+
+          .demo-money-add-button {
+            width: 34px !important;
+            min-width: 34px !important;
+            max-width: 34px !important;
+            height: 28px !important;
+            min-height: 28px !important;
+            font-size: 9px !important;
+          }
+
+          .menu-alert-dot {
+            width: 13px !important;
+            height: 13px !important;
+            min-width: 13px !important;
+            font-size: 9px !important;
+            line-height: 13px !important;
+            top: -2px !important;
+            right: -2px !important;
+          }
+        }
+
+        /* v144: スマホ横画面は1段に収めてマップ高さを確保 */
+        @media (max-width: 900px) and (orientation: landscape) {
+          .bottom-menu.compact-command-menu.icon-command-menu.v72-top-command-bar.v73-top-command-bar,
+          .v72-top-command-bar.v73-top-command-bar {
+            flex-wrap: nowrap !important;
+            justify-content: flex-start !important;
+            min-height: 42px !important;
+          }
+
+          .top-status-inline.v73-top-status-inline,
+          .v73-top-status-inline {
+            flex: 1 1 auto !important;
+            width: auto !important;
+            max-width: none !important;
+            padding: 0 !important;
+          }
+
+          .v73-main-menu-wrap {
+            margin-left: auto !important;
+          }
+
+          .top-info-popup {
+            top: 48px !important;
+            max-height: calc(100vh - 58px) !important;
+          }
+
+          .main-menu-popup.icon-main-menu-popup {
+            top: 48px !important;
+            max-height: calc(100vh - 58px) !important;
+          }
+        }
+
+        /* v144: スマホ縦画面は小型2段。タイトル行は出さない */
+        @media (max-width: 640px) and (orientation: portrait) {
+          .bottom-menu.compact-command-menu.icon-command-menu.v72-top-command-bar.v73-top-command-bar,
+          .v72-top-command-bar.v73-top-command-bar {
+            flex-wrap: wrap !important;
+            min-height: 76px !important;
+            padding: 4px 6px 5px !important;
+          }
+
+          .top-status-inline.v73-top-status-inline,
+          .v73-top-status-inline {
+            order: 5 !important;
+            flex: 0 0 100% !important;
+            width: 100% !important;
+            padding: 1px 0 0 !important;
+          }
+
+          .v73-main-menu-wrap {
+            order: 4 !important;
+            margin-left: auto !important;
+          }
+
+          .top-info-popup {
+            top: 86px !important;
+            max-height: calc(100vh - 100px) !important;
+          }
+
+          .main-menu-popup.icon-main-menu-popup {
+            top: 86px !important;
+            max-height: calc(100vh - 100px) !important;
+          }
+        }
+        }
+
       `;
       document.head.appendChild(style);
     }
@@ -8165,8 +8492,10 @@ const [saveLoadModal, setSaveLoadModal] = useState(null);
 const [selectedBuildCategory, setSelectedBuildCategory] = useState(null);
 const [selectedHousingType, setSelectedHousingType] = useState(null);
 const [mapViewMode, setMapViewMode] = useState("normal");
+const [isMapViewMenuOpen, setIsMapViewMenuOpen] = useState(false);
 const [pendingBuildKey, setPendingBuildKey] = useState(null);
 const [pendingBranchPlacement, setPendingBranchPlacement] = useState(false);
+const [buildEntrySource, setBuildEntrySource] = useState("menu");
 const detailRef = useRef(null);
 
 function isFloatingPanelMode() {
@@ -8176,28 +8505,78 @@ function isFloatingPanelMode() {
 function getDefaultFloatingPanel(panelName = activePanel) {
   const viewportWidth = typeof window === "undefined" ? 1200 : window.innerWidth;
   const viewportHeight = typeof window === "undefined" ? 800 : window.innerHeight;
-  const isSmallScreen = viewportWidth <= 600;
+  const isPhone = viewportWidth <= 900;
+  const isPortrait = viewportHeight >= viewportWidth;
+  const isPhonePortrait = isPhone && isPortrait;
+  const isPhoneLandscape = isPhone && !isPortrait;
 
-  const baseSize = panelName === "build"
+  const desktopSize = panelName === "build"
     ? { width: 520, height: 420 }
     : panelName === "hq"
       ? { width: 420, height: 280 }
       : { width: 420, height: 300 };
 
-  const width = isSmallScreen
-    ? Math.max(280, Math.min(viewportWidth - 16, baseSize.width))
+  const phoneLandscapeSize = panelName === "build"
+    ? { width: 360, height: 220 }
+    : panelName === "hq"
+      ? { width: 310, height: 190 }
+      : { width: 320, height: 200 };
+
+  const phonePortraitSize = panelName === "build"
+    ? { width: 320, height: 300 }
+    : panelName === "hq"
+      ? { width: 300, height: 220 }
+      : { width: 300, height: 230 };
+
+  const baseSize = isPhoneLandscape
+    ? phoneLandscapeSize
+    : isPhonePortrait
+      ? phonePortraitSize
+      : desktopSize;
+
+  const sideGap = isPhone ? 6 : 18;
+  const topGap = isPhoneLandscape ? 36 : isPhonePortrait ? 66 : 118;
+  const width = isPhone
+    ? Math.max(260, Math.min(viewportWidth - sideGap * 2, baseSize.width))
     : Math.max(300, Math.min(viewportWidth - 32, baseSize.width));
-  const height = isSmallScreen
-    ? Math.max(220, Math.min(Math.round(viewportHeight * 0.58), baseSize.height))
-    : Math.max(220, Math.min(viewportHeight - 140, baseSize.height));
+  const height = isPhoneLandscape
+    ? Math.max(160, Math.min(viewportHeight - topGap - 8, baseSize.height))
+    : isPhonePortrait
+      ? Math.max(190, Math.min(Math.round(viewportHeight * 0.42), baseSize.height))
+      : Math.max(220, Math.min(viewportHeight - 140, baseSize.height));
 
   return {
-    x: isSmallScreen ? 8 : 18,
-    y: isSmallScreen ? 96 : 118,
+    x: isPhone ? sideGap : 18,
+    y: topGap,
     width,
     height,
   };
 }
+
+useEffect(() => {
+  if (!isFloatingPanelMode()) return;
+
+  setFloatingPanel(getDefaultFloatingPanel(activePanel));
+  setFloatingPanelResetKey((current) => current + 1);
+}, [activePanel]);
+
+useEffect(() => {
+  if (typeof window === "undefined") return undefined;
+
+  function handleFloatingPanelViewportChange() {
+    if (!isFloatingPanelMode()) return;
+    setFloatingPanel(getDefaultFloatingPanel(activePanel));
+    setFloatingPanelResetKey((current) => current + 1);
+  }
+
+  window.addEventListener("resize", handleFloatingPanelViewportChange);
+  window.addEventListener("orientationchange", handleFloatingPanelViewportChange);
+
+  return () => {
+    window.removeEventListener("resize", handleFloatingPanelViewportChange);
+    window.removeEventListener("orientationchange", handleFloatingPanelViewportChange);
+  };
+}, [activePanel]);
 
 function resetFloatingPanel() {
   setFloatingPanel(getDefaultFloatingPanel(activePanel));
@@ -10660,7 +11039,7 @@ function startEmployeeRecruitmentByTicket(ticketType) {
     selectedEnvelopeId: null,
   });
 
-  setLog(`${isPremium ? "社員プレミアムチケット" : "社員チケット"}1枚を使い、履歴書が${applicants.length}枚届きました。封筒を開封して1人を採用してください。`);
+  setLog(`${isPremium ? "社員プレミアムチケット" : "社員チケット"}1枚を使い、履歴書が${applicants.length}通届きました。封筒を開封して1人を採用してください。`);
 }
 
 function openRecruitEnvelope(envelopeId) {
@@ -10802,7 +11181,7 @@ function confirmRecruitApplicant(applicant) {
       `管理: ${applicant.management}\n` +
       `月給: ${applicant.salary}万円\n` +
       `特殊能力: ${getEmployeeSpecialText(applicant)}\n\n` +
-      `残りの履歴書4枚とは縁がなかったことになります。`
+      `残りの履歴書${Math.max(0, (employeeRecruitmentOffer?.applicants?.length ?? 1) - 1)}通とは縁がなかったことになります。`
   );
 
   if (!ok) return;
@@ -11020,7 +11399,7 @@ function dismissEmployee(employee) {
   unassignEmployee(employee);
 }
 
-function startBuildPlacement(buildingKey) {
+async function startBuildPlacement(buildingKey) {
   const building = BUILDINGS[buildingKey];
 
   if (!building) {
@@ -11033,12 +11412,23 @@ function startBuildPlacement(buildingKey) {
     return;
   }
 
+  if (buildEntrySource === "tile" && selectedTile && canUseAsBuildTarget(selectedTile, buildingKey)) {
+    setPendingBuildKey(null);
+    setPendingBranchPlacement(false);
+    await build(buildingKey, selectedTile);
+    return;
+  }
+
   setPendingBuildKey(buildingKey);
   setPendingBranchPlacement(false);
+  setBuildEntrySource("menu");
   setSelectedId(null);
   setActivePanel("build");
   setLog(`${building.name}を建設する土地を選択中です。マップ上の緑色の自分の空き土地をクリックしてください。`);
-  alert(`${building.name}を建設する土地を選んでください。\n\n建設可能な土地は緑枠で表示されます。\n建てたい土地をマップ上でクリックすると建設確認に進みます。`);
+  alert(`${building.name}を建設する土地を選んでください。
+
+建設可能な土地は緑枠で表示されます。
+建てたい土地をマップ上でクリックすると建設確認に進みます。`);
 }
 
 function startBranchPlacement() {
@@ -11554,6 +11944,7 @@ leaseCycleStartMonth: month,
     );
 
     setPendingBuildKey(null);
+    setBuildEntrySource("menu");
     markEmployeesBusy(actionEmployees.map((employee) => employee.id), buildMonths, "建設");
     setLog(`${building.name}の建設を開始しました。標準${standardBuildMonths}ヶ月 → 予定${buildMonths}ヶ月 / 標準${building.cost}万円 → 予定${actualBuildCost}万円 / 担当:${actionEmployees.map((employee) => employee.name).join("・")}`);
     return true;
@@ -11944,8 +12335,7 @@ landPrice: tile.landPrice + Math.max(0, 2500 - distance * 400),
 }
 if (Math.random() < 0.02) {
   const candidateTiles = workingTiles.filter((t) => {
-    if (t.rail !== true) return false;
-    if (!isBuildableTile(t)) return false;
+    if (!isRailTileForStationPlacement(t)) return false;
     if (t.terrain === TERRAIN.SEA || t.terrain === TERRAIN.RIVER || t.terrain === TERRAIN.MOUNTAIN) return false;
     if (t.owner === OWNER.PUBLIC || t.owner === OWNER.PLAYER || t.owner === OWNER.RIVAL) return false;
     if (t.building || t.buildingMainId) return false;
@@ -14927,11 +15317,11 @@ function getTileLabel(tile) {
     if (tile.building) {
       return BUILDINGS[tile.building].short;
     }
-    return "土";
+    return "";
   }
 
   if (tile.owner === OWNER.OTHER && !tile.building) {
-    return "空";
+    return "";
   }
 
   if (tile.building && !tile.buildingMainId) {
@@ -15738,6 +16128,144 @@ return (
           grid-template-columns: repeat(5, minmax(52px, 1fr));
           overflow-x: auto;
           padding-bottom: 3px;
+        }
+      }
+
+
+
+      /* v143: スマホ縦向け 建設メニュー圧縮・重複ボタン削除 */
+      @media (max-width: 720px) {
+        .app .top-icon-button {
+          width: 44px !important;
+          height: 44px !important;
+          min-width: 44px !important;
+          min-height: 44px !important;
+          padding: 0 !important;
+          font-size: 20px !important;
+          border-radius: 999px !important;
+        }
+
+        .app .top-icon-button .top-icon-emoji,
+        .app .top-icon-button .top-icon {
+          font-size: 20px !important;
+          line-height: 1 !important;
+        }
+
+        .app .floating-panel-header {
+          min-height: 36px !important;
+          padding: 5px 8px !important;
+          gap: 8px !important;
+        }
+
+        .app .floating-panel-header strong {
+          font-size: 15px !important;
+          line-height: 1.2 !important;
+        }
+
+        .app .floating-panel-actions {
+          gap: 6px !important;
+        }
+
+        .app .floating-panel-actions button {
+          min-height: 30px !important;
+          height: 30px !important;
+          padding: 0 12px !important;
+          font-size: 13px !important;
+          line-height: 1 !important;
+        }
+
+        .app .build-pop-card {
+          padding: 8px !important;
+        }
+
+        .app .build-icon-menu {
+          grid-template-columns: repeat(5, minmax(56px, 1fr)) !important;
+          gap: 5px !important;
+          margin-bottom: 6px !important;
+          padding-bottom: 2px !important;
+        }
+
+        .app .build-icon-button {
+          min-height: 36px !important;
+          height: 36px !important;
+          padding: 3px 5px !important;
+          border-radius: 11px !important;
+          gap: 3px !important;
+          font-size: 11px !important;
+          line-height: 1.1 !important;
+        }
+
+        .app .build-icon-button .build-icon,
+        .app .build-icon {
+          font-size: 15px !important;
+          line-height: 1 !important;
+        }
+
+        .app .build-detail-popup {
+          margin-top: 6px !important;
+          padding: 7px !important;
+          border-radius: 12px !important;
+        }
+
+        .app .build-detail-header,
+        .app .compact-build-detail-header {
+          display: block !important;
+          margin-bottom: 6px !important;
+          padding: 0 2px !important;
+          min-height: 0 !important;
+        }
+
+        .app .build-detail-header strong,
+        .app .compact-build-detail-header strong {
+          display: block !important;
+          width: 100% !important;
+          font-size: 13px !important;
+          line-height: 1.25 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        .app .build-detail-popup .build-detail-buttons {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 6px !important;
+        }
+
+        .app .build-detail-popup .build-detail-button {
+          padding: 7px 8px !important;
+          border-radius: 10px !important;
+          gap: 2px !important;
+          line-height: 1.22 !important;
+        }
+
+        .app .build-detail-popup .build-detail-button strong {
+          font-size: 13px !important;
+          line-height: 1.2 !important;
+          margin: 0 0 1px !important;
+        }
+
+        .app .build-detail-popup .build-detail-button span {
+          font-size: 10.5px !important;
+          line-height: 1.22 !important;
+        }
+
+        .app .build-placement-guide {
+          padding: 7px !important;
+          margin-bottom: 6px !important;
+          border-radius: 10px !important;
+        }
+
+        .app .build-placement-guide p {
+          margin: 0 0 5px !important;
+          font-size: 11px !important;
+          line-height: 1.35 !important;
+        }
+
+        .app .build-placement-guide button {
+          min-height: 30px !important;
+          height: 30px !important;
+          padding: 0 10px !important;
+          font-size: 12px !important;
         }
       }
 
@@ -17762,6 +18290,482 @@ return (
         }
       }
 
+
+
+      /* v147: 本社設置パネルと建物選択カードをスマホ専用でさらに圧縮 */
+      @media (max-width: 900px) {
+        .app .hq-setup-card {
+          padding: 4px !important;
+          gap: 3px !important;
+          border-radius: 8px !important;
+        }
+
+        .app .hq-setup-card .smart-panel-head {
+          display: grid !important;
+          grid-template-columns: auto 1fr !important;
+          align-items: center !important;
+          gap: 4px !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        .app .hq-setup-card .smart-panel-head h2 {
+          margin: 0 !important;
+          padding: 0 !important;
+          font-size: 11px !important;
+          line-height: 1.05 !important;
+          white-space: nowrap !important;
+          background: transparent !important;
+          border: 0 !important;
+          box-shadow: none !important;
+        }
+
+        .app .hq-setup-card .smart-panel-sub {
+          font-size: 9.5px !important;
+          line-height: 1.05 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        .app .hq-setup-card .office-empty-note {
+          margin: 0 !important;
+          padding: 3px 5px !important;
+          min-height: 0 !important;
+          border-radius: 6px !important;
+          font-size: 9.5px !important;
+          line-height: 1.1 !important;
+          text-align: center !important;
+        }
+
+        .app .hq-setup-card .smart-info-grid {
+          grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+          gap: 2px !important;
+        }
+
+        .app .hq-setup-card .smart-info-item {
+          padding: 2px 3px !important;
+          border-radius: 6px !important;
+          gap: 0 !important;
+        }
+
+        .app .hq-setup-card .smart-info-item span {
+          font-size: 8.5px !important;
+          line-height: 1 !important;
+        }
+
+        .app .hq-setup-card .smart-info-item strong {
+          font-size: 9.5px !important;
+          line-height: 1.05 !important;
+        }
+
+        .app .hq-setup-card .smart-chip-row {
+          display: grid !important;
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          gap: 2px !important;
+          margin: 0 !important;
+        }
+
+        .app .hq-setup-card .smart-chip {
+          min-height: 0 !important;
+          height: 18px !important;
+          padding: 0 3px !important;
+          border-radius: 5px !important;
+          font-size: 8.5px !important;
+          line-height: 1 !important;
+          justify-content: center !important;
+          white-space: nowrap !important;
+        }
+
+        .app .hq-setup-card .hq-choice-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 3px !important;
+          margin: 0 !important;
+        }
+
+        .app .hq-setup-card .hq-choice-grid button {
+          min-height: 30px !important;
+          height: auto !important;
+          padding: 3px 5px !important;
+          border-radius: 7px !important;
+          gap: 1px !important;
+          line-height: 1.05 !important;
+        }
+
+        .app .hq-setup-card .hq-choice-grid button strong {
+          font-size: 10.5px !important;
+          line-height: 1.05 !important;
+        }
+
+        .app .hq-setup-card .hq-choice-grid button span {
+          font-size: 9px !important;
+          line-height: 1.05 !important;
+        }
+
+        .app .build-detail-popup {
+          margin-top: 4px !important;
+          padding: 4px !important;
+          border-radius: 8px !important;
+        }
+
+        .app .build-detail-header.compact-build-detail-header,
+        .app .build-detail-header {
+          min-height: 0 !important;
+          margin: 0 0 3px !important;
+          padding: 0 !important;
+        }
+
+        .app .build-detail-header strong {
+          font-size: 10.5px !important;
+          line-height: 1.05 !important;
+        }
+
+        .app .build-detail-popup .build-detail-buttons {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 3px !important;
+        }
+
+        .app .build-detail-popup .build-detail-button {
+          min-height: 0 !important;
+          padding: 4px 5px !important;
+          border-radius: 7px !important;
+          gap: 1px !important;
+          line-height: 1.08 !important;
+        }
+
+        .app .build-detail-popup .build-detail-button strong {
+          font-size: 10.5px !important;
+          line-height: 1.08 !important;
+          margin: 0 !important;
+        }
+
+        .app .build-detail-popup .build-detail-button span {
+          font-size: 8.8px !important;
+          line-height: 1.08 !important;
+          margin: 0 !important;
+        }
+
+        .app .build-detail-popup .locked-build-label,
+        .app .build-detail-popup .unlocked-build-label {
+          display: inline-flex !important;
+          width: fit-content !important;
+          padding: 1px 3px !important;
+          border-radius: 999px !important;
+          font-size: 8px !important;
+          line-height: 1 !important;
+        }
+
+        .app .build-help-text {
+          margin: 2px 0 !important;
+          padding: 2px 4px !important;
+          font-size: 9.5px !important;
+          line-height: 1.1 !important;
+        }
+      }
+
+      @media (max-width: 900px) and (orientation: landscape) {
+        .app .hq-setup-card {
+          gap: 2px !important;
+        }
+
+        .app .hq-setup-card .office-empty-note {
+          padding: 2px 4px !important;
+          font-size: 9px !important;
+        }
+
+        .app .hq-setup-card .smart-chip {
+          height: 16px !important;
+          font-size: 8px !important;
+        }
+
+        .app .hq-setup-card .hq-choice-grid button {
+          min-height: 26px !important;
+          padding: 2px 4px !important;
+        }
+
+        .app .build-detail-popup .build-detail-buttons {
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+
+        .app .build-detail-popup .build-detail-button {
+          padding: 3px 4px !important;
+        }
+
+        .app .build-detail-popup .build-detail-button strong {
+          font-size: 10px !important;
+        }
+
+        .app .build-detail-popup .build-detail-button span {
+          font-size: 8.3px !important;
+        }
+      }
+
+      @media (max-width: 640px) and (orientation: portrait) {
+        .app .hq-setup-card .smart-info-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+
+        .app .hq-setup-card .smart-chip-row {
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+
+        .app .build-detail-popup .build-detail-buttons {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+      }
+
+
+      /* v151: スマホの本社設置・建設初期パネルは中身の高さに合わせる。巨大な空白を完全に消す */
+      @media (max-width: 900px) {
+        html body .app section.side-section.floating-panel.floating-panel-hq,
+        html body .app .side-section.floating-panel.floating-panel-hq,
+        html body .app .floating-panel.floating-panel-hq {
+          height: fit-content !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          padding: 0 !important;
+          overflow: visible !important;
+        }
+
+        html body .app section.side-section.floating-panel.floating-panel-hq > .floating-panel-header,
+        html body .app .floating-panel.floating-panel-hq > .floating-panel-header {
+          height: 24px !important;
+          min-height: 24px !important;
+          padding: 1px 4px !important;
+          box-sizing: border-box !important;
+        }
+
+        html body .app .floating-panel.floating-panel-hq .floating-panel-actions button {
+          height: 20px !important;
+          min-height: 20px !important;
+          padding: 0 8px !important;
+          font-size: 10px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app section.side-section.floating-panel.floating-panel-hq > .detail-card.hq-setup-card,
+        html body .app section.side-section.floating-panel.floating-panel-hq > .smart-detail-card.hq-setup-card,
+        html body .app .floating-panel.floating-panel-hq > .detail-card.hq-setup-card,
+        html body .app .floating-panel.floating-panel-hq > .smart-detail-card.hq-setup-card,
+        html body .app .floating-panel-hq .hq-setup-card {
+          height: fit-content !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          overflow: visible !important;
+          padding: 2px 4px 3px !important;
+          margin: 0 !important;
+          gap: 1px !important;
+          border-radius: 6px !important;
+          box-sizing: border-box !important;
+        }
+
+        html body .app .floating-panel-hq .smart-panel-head {
+          display: grid !important;
+          grid-template-columns: auto 1fr !important;
+          align-items: baseline !important;
+          column-gap: 5px !important;
+          row-gap: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          min-height: 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-panel-head h2 {
+          font-size: 12px !important;
+          line-height: 1 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          background: transparent !important;
+          border: 0 !important;
+          border-radius: 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-panel-sub {
+          font-size: 8.5px !important;
+          line-height: 1 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        html body .app .floating-panel-hq .office-empty-note {
+          min-height: 0 !important;
+          height: 13px !important;
+          margin: 1px 0 !important;
+          padding: 0 !important;
+          font-size: 8.5px !important;
+          line-height: 13px !important;
+          text-align: center !important;
+        }
+
+        html body .app .floating-panel-hq .smart-info-grid {
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 1px 4px !important;
+          margin: 1px 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-info-item {
+          min-height: 13px !important;
+          height: 13px !important;
+          padding: 0 3px !important;
+          border-radius: 3px !important;
+          box-shadow: none !important;
+        }
+
+        html body .app .floating-panel-hq .smart-info-item span,
+        html body .app .floating-panel-hq .smart-info-item strong {
+          font-size: 7.8px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-chip-row {
+          display: grid !important;
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          gap: 2px !important;
+          margin: 1px 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-chip {
+          height: 14px !important;
+          min-height: 14px !important;
+          padding: 0 2px !important;
+          font-size: 7.5px !important;
+          line-height: 14px !important;
+          border-radius: 4px !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid {
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 3px !important;
+          margin: 2px 0 0 !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid button {
+          height: 20px !important;
+          min-height: 20px !important;
+          padding: 0 3px !important;
+          border-radius: 5px !important;
+          gap: 0 !important;
+          line-height: 1 !important;
+          display: grid !important;
+          place-content: center !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid button strong {
+          font-size: 8.5px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid button span {
+          font-size: 7.2px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app section.side-section.floating-panel.floating-panel-build,
+        html body .app .side-section.floating-panel.floating-panel-build,
+        html body .app .floating-panel.floating-panel-build {
+          min-height: 0 !important;
+          padding: 0 !important;
+          overflow: hidden !important;
+        }
+
+        html body .app .floating-panel-build > .build-pop-card,
+        html body .app .floating-panel-build .build-pop-card {
+          min-height: 0 !important;
+          padding: 3px !important;
+          gap: 2px !important;
+        }
+
+        html body .app .floating-panel-build .build-icon-menu {
+          gap: 2px !important;
+          margin: 0 !important;
+        }
+
+        html body .app .floating-panel-build .build-icon-button {
+          height: 20px !important;
+          min-height: 20px !important;
+          padding: 0 3px !important;
+          font-size: 8px !important;
+          border-radius: 5px !important;
+          line-height: 1 !important;
+        }
+      }
+
+      @media (max-width: 640px) and (orientation: portrait) {
+        html body .app section.side-section.floating-panel.floating-panel-hq,
+        html body .app .side-section.floating-panel.floating-panel-hq,
+        html body .app .floating-panel.floating-panel-hq {
+          height: fit-content !important;
+          max-height: none !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-profile-header,
+        html body .app .recruit-profile-header {
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          grid-template-rows: auto auto !important;
+          gap: 3px !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-profile-header h3,
+        html body .app .recruit-profile-header h3 {
+          width: 100% !important;
+          max-width: none !important;
+          white-space: normal !important;
+          overflow: visible !important;
+          text-overflow: clip !important;
+          word-break: keep-all !important;
+          overflow-wrap: anywhere !important;
+          line-height: 1.12 !important;
+          font-size: 15.5px !important;
+          margin: 0 !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-job-and-stars,
+        html body .app .recruit-job-and-stars {
+          display: flex !important;
+          justify-content: flex-start !important;
+          align-items: center !important;
+          gap: 5px !important;
+          width: 100% !important;
+          margin: 0 !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-job-badge,
+        html body .app .recruit-job-badge {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          min-height: 18px !important;
+          padding: 2px 8px !important;
+          border-radius: 7px !important;
+          font-size: 11px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .employee-rarity-label,
+        html body .app .recruit-profile-header .employee-rarity-label {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          min-height: 18px !important;
+          padding: 2px 8px !important;
+          border-radius: 999px !important;
+          font-size: 13px !important;
+          line-height: 1 !important;
+        }
+      }
+
+
     `}</style>
 
     <style>{`
@@ -17855,7 +18859,2837 @@ return (
       .recruit-envelope-card.envelope-brown .resume-envelope-flap {
         border-color: rgba(255, 197, 92, 0.58) !important;
       }
+
+      /* v151: スマホの本社設置・建設初期パネルは中身の高さに合わせる。巨大な空白を完全に消す */
+      @media (max-width: 900px) {
+        html body .app section.side-section.floating-panel.floating-panel-hq,
+        html body .app .side-section.floating-panel.floating-panel-hq,
+        html body .app .floating-panel.floating-panel-hq {
+          height: fit-content !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          padding: 0 !important;
+          overflow: visible !important;
+        }
+
+        html body .app section.side-section.floating-panel.floating-panel-hq > .floating-panel-header,
+        html body .app .floating-panel.floating-panel-hq > .floating-panel-header {
+          height: 24px !important;
+          min-height: 24px !important;
+          padding: 1px 4px !important;
+          box-sizing: border-box !important;
+        }
+
+        html body .app .floating-panel.floating-panel-hq .floating-panel-actions button {
+          height: 20px !important;
+          min-height: 20px !important;
+          padding: 0 8px !important;
+          font-size: 10px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app section.side-section.floating-panel.floating-panel-hq > .detail-card.hq-setup-card,
+        html body .app section.side-section.floating-panel.floating-panel-hq > .smart-detail-card.hq-setup-card,
+        html body .app .floating-panel.floating-panel-hq > .detail-card.hq-setup-card,
+        html body .app .floating-panel.floating-panel-hq > .smart-detail-card.hq-setup-card,
+        html body .app .floating-panel-hq .hq-setup-card {
+          height: fit-content !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          overflow: visible !important;
+          padding: 2px 4px 3px !important;
+          margin: 0 !important;
+          gap: 1px !important;
+          border-radius: 6px !important;
+          box-sizing: border-box !important;
+        }
+
+        html body .app .floating-panel-hq .smart-panel-head {
+          display: grid !important;
+          grid-template-columns: auto 1fr !important;
+          align-items: baseline !important;
+          column-gap: 5px !important;
+          row-gap: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          min-height: 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-panel-head h2 {
+          font-size: 12px !important;
+          line-height: 1 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          background: transparent !important;
+          border: 0 !important;
+          border-radius: 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-panel-sub {
+          font-size: 8.5px !important;
+          line-height: 1 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        html body .app .floating-panel-hq .office-empty-note {
+          min-height: 0 !important;
+          height: 13px !important;
+          margin: 1px 0 !important;
+          padding: 0 !important;
+          font-size: 8.5px !important;
+          line-height: 13px !important;
+          text-align: center !important;
+        }
+
+        html body .app .floating-panel-hq .smart-info-grid {
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 1px 4px !important;
+          margin: 1px 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-info-item {
+          min-height: 13px !important;
+          height: 13px !important;
+          padding: 0 3px !important;
+          border-radius: 3px !important;
+          box-shadow: none !important;
+        }
+
+        html body .app .floating-panel-hq .smart-info-item span,
+        html body .app .floating-panel-hq .smart-info-item strong {
+          font-size: 7.8px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-chip-row {
+          display: grid !important;
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          gap: 2px !important;
+          margin: 1px 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-chip {
+          height: 14px !important;
+          min-height: 14px !important;
+          padding: 0 2px !important;
+          font-size: 7.5px !important;
+          line-height: 14px !important;
+          border-radius: 4px !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid {
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 3px !important;
+          margin: 2px 0 0 !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid button {
+          height: 20px !important;
+          min-height: 20px !important;
+          padding: 0 3px !important;
+          border-radius: 5px !important;
+          gap: 0 !important;
+          line-height: 1 !important;
+          display: grid !important;
+          place-content: center !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid button strong {
+          font-size: 8.5px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid button span {
+          font-size: 7.2px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app section.side-section.floating-panel.floating-panel-build,
+        html body .app .side-section.floating-panel.floating-panel-build,
+        html body .app .floating-panel.floating-panel-build {
+          min-height: 0 !important;
+          padding: 0 !important;
+          overflow: hidden !important;
+        }
+
+        html body .app .floating-panel-build > .build-pop-card,
+        html body .app .floating-panel-build .build-pop-card {
+          min-height: 0 !important;
+          padding: 3px !important;
+          gap: 2px !important;
+        }
+
+        html body .app .floating-panel-build .build-icon-menu {
+          gap: 2px !important;
+          margin: 0 !important;
+        }
+
+        html body .app .floating-panel-build .build-icon-button {
+          height: 20px !important;
+          min-height: 20px !important;
+          padding: 0 3px !important;
+          font-size: 8px !important;
+          border-radius: 5px !important;
+          line-height: 1 !important;
+        }
+      }
+
+      @media (max-width: 640px) and (orientation: portrait) {
+        html body .app section.side-section.floating-panel.floating-panel-hq,
+        html body .app .side-section.floating-panel.floating-panel-hq,
+        html body .app .floating-panel.floating-panel-hq {
+          height: fit-content !important;
+          max-height: none !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-profile-header,
+        html body .app .recruit-profile-header {
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          grid-template-rows: auto auto !important;
+          gap: 3px !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-profile-header h3,
+        html body .app .recruit-profile-header h3 {
+          width: 100% !important;
+          max-width: none !important;
+          white-space: normal !important;
+          overflow: visible !important;
+          text-overflow: clip !important;
+          word-break: keep-all !important;
+          overflow-wrap: anywhere !important;
+          line-height: 1.12 !important;
+          font-size: 15.5px !important;
+          margin: 0 !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-job-and-stars,
+        html body .app .recruit-job-and-stars {
+          display: flex !important;
+          justify-content: flex-start !important;
+          align-items: center !important;
+          gap: 5px !important;
+          width: 100% !important;
+          margin: 0 !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-job-badge,
+        html body .app .recruit-job-badge {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          min-height: 18px !important;
+          padding: 2px 8px !important;
+          border-radius: 7px !important;
+          font-size: 11px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .employee-rarity-label,
+        html body .app .recruit-profile-header .employee-rarity-label {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          min-height: 18px !important;
+          padding: 2px 8px !important;
+          border-radius: 999px !important;
+          font-size: 13px !important;
+          line-height: 1 !important;
+        }
+      }
+
+
     `}</style>
+
+
+    <style>{`
+      /* v140 スマホ表示最適化：画面外にはみ出す情報パネル・メニュー・社員募集を修正 */
+      html,
+      body,
+      #root {
+        width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+      }
+
+      .app {
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+      }
+
+      .top-header.compact-top-header {
+        position: sticky;
+        top: 0;
+        z-index: 80;
+        min-height: 46px !important;
+        padding: 4px max(8px, env(safe-area-inset-left)) 4px max(8px, env(safe-area-inset-right)) !important;
+        box-sizing: border-box !important;
+      }
+
+      .top-title-wrap {
+        min-width: 0 !important;
+      }
+
+      .v73-title {
+        margin: 0 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+        font-size: clamp(17px, 4.7vw, 32px) !important;
+        line-height: 1.18 !important;
+      }
+
+      .bottom-menu.compact-command-menu {
+        position: sticky !important;
+        top: 48px !important;
+        z-index: 70 !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+      }
+
+      .top-status-inline,
+      .v73-top-status-inline {
+        min-width: 0 !important;
+      }
+
+      .top-status-chip-wrap {
+        position: relative !important;
+      }
+
+      .top-info-popup {
+        position: fixed !important;
+        left: 50% !important;
+        right: auto !important;
+        top: calc(96px + env(safe-area-inset-top)) !important;
+        transform: translateX(-50%) !important;
+        width: min(92vw, 360px) !important;
+        max-width: 92vw !important;
+        max-height: min(70vh, 520px) !important;
+        overflow-y: auto !important;
+        box-sizing: border-box !important;
+        z-index: 300 !important;
+      }
+
+      .main-menu-popup {
+        position: fixed !important;
+        top: calc(96px + env(safe-area-inset-top)) !important;
+        right: max(8px, env(safe-area-inset-right)) !important;
+        left: auto !important;
+        width: min(84vw, 300px) !important;
+        max-height: calc(100vh - 116px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+        overflow-y: auto !important;
+        box-sizing: border-box !important;
+        z-index: 280 !important;
+      }
+
+      .floating-panel,
+      .side-section,
+      .property-section,
+      .log-section,
+      .company-detail-box,
+      .land-detail-box,
+      .building-detail-box,
+      .employee-detail-card,
+      .employee-action-select-card,
+      .popup-log-card {
+        max-width: calc(100vw - 16px) !important;
+        box-sizing: border-box !important;
+      }
+
+      .popup-log {
+        position: fixed !important;
+        inset: 0 !important;
+        padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)) !important;
+        box-sizing: border-box !important;
+        overflow: auto !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      .popup-log-card {
+        max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+        overflow-y: auto !important;
+      }
+
+      .popup-log.recruit-popup-stage {
+        align-items: stretch !important;
+        justify-content: center !important;
+      }
+
+      .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card {
+        width: min(100%, 1080px) !important;
+        max-width: calc(100vw - 16px) !important;
+        max-height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+        padding: clamp(8px, 1.5vw, 14px) !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-title-area h2 {
+        font-size: clamp(24px, 4.8vw, 38px) !important;
+        letter-spacing: 0.08em !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-title-area p {
+        font-size: clamp(12px, 2.4vw, 14px) !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-envelope-desk-row {
+        justify-content: flex-start !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        scroll-snap-type: x proximity !important;
+        padding-bottom: 8px !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-envelope-card {
+        scroll-snap-align: center !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-profile-wrap {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+        width: 100% !important;
+        min-width: 0 !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-hire-side {
+        width: 100% !important;
+        display: grid !important;
+        justify-items: center !important;
+      }
+
+      .popup-log.recruit-popup-stage .recruit-hire-button {
+        width: min(100%, 360px) !important;
+        min-width: 0 !important;
+      }
+
+      @media (max-width: 760px) {
+        .top-header.compact-top-header {
+          min-height: 38px !important;
+        }
+
+        .v73-title {
+          font-size: clamp(16px, 4.4vw, 20px) !important;
+        }
+
+        .bottom-menu.compact-command-menu {
+          top: 40px !important;
+          padding: 6px !important;
+          gap: 6px !important;
+        }
+
+        .top-icon-button {
+          width: 42px !important;
+          min-width: 42px !important;
+          height: 42px !important;
+          min-height: 42px !important;
+          padding: 0 !important;
+        }
+
+        .top-status-inline,
+        .v73-top-status-inline {
+          gap: 5px !important;
+          flex: 1 1 auto !important;
+          justify-content: flex-end !important;
+        }
+
+        .top-compact-stat-button {
+          min-width: 0 !important;
+          max-width: 118px !important;
+          height: 36px !important;
+          min-height: 36px !important;
+          padding: 0 8px !important;
+          font-size: 13px !important;
+          white-space: nowrap !important;
+        }
+
+        .top-info-popup {
+          top: calc(86px + env(safe-area-inset-top)) !important;
+          width: min(94vw, 340px) !important;
+          max-height: calc(100dvh - 104px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+        }
+
+        .main-menu-popup {
+          top: calc(86px + env(safe-area-inset-top)) !important;
+          width: min(88vw, 300px) !important;
+          max-height: calc(100dvh - 104px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+        }
+
+        .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card {
+          max-width: calc(100vw - 10px) !important;
+          max-height: calc(100dvh - 10px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+          padding: 8px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-title-area {
+          grid-template-columns: 20px 1fr 20px !important;
+          gap: 4px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-title-area h2 {
+          font-size: clamp(23px, 7vw, 30px) !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-envelope-card {
+          flex: 0 0 96px !important;
+          width: 96px !important;
+          min-height: 122px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-envelope-card .resume-envelope-visual {
+          height: 118px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-panel {
+          grid-template-columns: 82px minmax(0, 1fr) !important;
+          width: 100% !important;
+          min-width: 0 !important;
+          gap: 7px !important;
+          padding: 7px !important;
+          overflow: hidden !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-photo {
+          width: 82px !important;
+          max-width: 82px !important;
+          min-height: 92px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-avatar {
+          width: 74px !important;
+          height: 84px !important;
+          min-width: 74px !important;
+          min-height: 84px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-avatar span {
+          width: 48px !important;
+          height: 48px !important;
+          font-size: 32px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-main {
+          min-width: 0 !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-header {
+          grid-template-columns: minmax(0, 1fr) auto !important;
+          gap: 6px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-header h3 {
+          font-size: clamp(18px, 5.4vw, 22px) !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        .popup-log.recruit-popup-stage .employee-rarity-label {
+          min-width: 38px !important;
+          font-size: 22px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-subrow {
+          gap: 4px 8px !important;
+          margin: 4px 0 !important;
+          font-size: 11px !important;
+          white-space: normal !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-stat-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 4px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-stat-grid div {
+          padding: 5px 6px !important;
+          font-size: 12px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-stat-grid strong {
+          font-size: 15px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-special-box {
+          margin-top: 5px !important;
+          padding: 5px 6px !important;
+          font-size: 11px !important;
+          line-height: 1.25 !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-hire-button {
+          min-height: 44px !important;
+          font-size: 14px !important;
+        }
+      }
+
+      /* v141 社員募集：PC・横長画面では封筒列を中央寄せに戻す */
+      .popup-log.recruit-popup-stage .recruit-envelope-desk-row {
+        justify-content: center !important;
+      }
+
+      @media (max-width: 760px) {
+        .popup-log.recruit-popup-stage .recruit-envelope-desk-row {
+          justify-content: flex-start !important;
+        }
+      }
+
+      @media (orientation: landscape) and (max-height: 520px) {
+        .top-header.compact-top-header {
+          min-height: 34px !important;
+          padding-top: 2px !important;
+          padding-bottom: 2px !important;
+        }
+
+        .v73-title {
+          font-size: 20px !important;
+        }
+
+        .bottom-menu.compact-command-menu {
+          top: 36px !important;
+          padding-top: 4px !important;
+          padding-bottom: 4px !important;
+        }
+
+        .top-info-popup,
+        .main-menu-popup {
+          top: calc(82px + env(safe-area-inset-top)) !important;
+          max-height: calc(100dvh - 94px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+        }
+
+        .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card {
+          max-width: calc(100vw - 12px) !important;
+          max-height: calc(100dvh - 12px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+          padding: 8px 12px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-title-area h2 {
+          font-size: 28px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-title-area p,
+        .popup-log.recruit-popup-stage .recruit-tap-guide {
+          font-size: 11px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-envelope-desk-row {
+          flex-wrap: nowrap !important;
+          margin: 2px 0 !important;
+          padding: 4px 6px 2px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-envelope-card {
+          flex: 0 0 90px !important;
+          width: 90px !important;
+          min-height: 104px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-envelope-card .resume-envelope-visual {
+          height: 102px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-wrap {
+          grid-template-columns: minmax(0, 1fr) 170px !important;
+          gap: 8px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-panel {
+          grid-template-columns: 82px minmax(0, 1fr) !important;
+          min-height: 104px !important;
+          padding: 6px 8px !important;
+          gap: 8px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-photo {
+          width: 82px !important;
+          max-width: 82px !important;
+          min-height: 86px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-avatar {
+          width: 72px !important;
+          height: 82px !important;
+          min-width: 72px !important;
+          min-height: 82px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-header h3 {
+          font-size: 18px !important;
+        }
+
+        .popup-log.recruit-popup-stage .employee-rarity-label {
+          min-width: 34px !important;
+          font-size: 22px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-profile-subrow,
+        .popup-log.recruit-popup-stage .recruit-special-box {
+          display: none !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-stat-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 4px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-stat-grid div {
+          padding: 4px 6px !important;
+          font-size: 11px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-stat-grid strong {
+          font-size: 14px !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-hire-side {
+          width: 170px !important;
+          align-self: center !important;
+        }
+
+        .popup-log.recruit-popup-stage .recruit-hire-button {
+          width: 164px !important;
+          min-height: 44px !important;
+          font-size: 14px !important;
+        }
+      }
+
+      /* v151: スマホの本社設置・建設初期パネルは中身の高さに合わせる。巨大な空白を完全に消す */
+      @media (max-width: 900px) {
+        html body .app section.side-section.floating-panel.floating-panel-hq,
+        html body .app .side-section.floating-panel.floating-panel-hq,
+        html body .app .floating-panel.floating-panel-hq {
+          height: fit-content !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          padding: 0 !important;
+          overflow: visible !important;
+        }
+
+        html body .app section.side-section.floating-panel.floating-panel-hq > .floating-panel-header,
+        html body .app .floating-panel.floating-panel-hq > .floating-panel-header {
+          height: 24px !important;
+          min-height: 24px !important;
+          padding: 1px 4px !important;
+          box-sizing: border-box !important;
+        }
+
+        html body .app .floating-panel.floating-panel-hq .floating-panel-actions button {
+          height: 20px !important;
+          min-height: 20px !important;
+          padding: 0 8px !important;
+          font-size: 10px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app section.side-section.floating-panel.floating-panel-hq > .detail-card.hq-setup-card,
+        html body .app section.side-section.floating-panel.floating-panel-hq > .smart-detail-card.hq-setup-card,
+        html body .app .floating-panel.floating-panel-hq > .detail-card.hq-setup-card,
+        html body .app .floating-panel.floating-panel-hq > .smart-detail-card.hq-setup-card,
+        html body .app .floating-panel-hq .hq-setup-card {
+          height: fit-content !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          overflow: visible !important;
+          padding: 2px 4px 3px !important;
+          margin: 0 !important;
+          gap: 1px !important;
+          border-radius: 6px !important;
+          box-sizing: border-box !important;
+        }
+
+        html body .app .floating-panel-hq .smart-panel-head {
+          display: grid !important;
+          grid-template-columns: auto 1fr !important;
+          align-items: baseline !important;
+          column-gap: 5px !important;
+          row-gap: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          min-height: 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-panel-head h2 {
+          font-size: 12px !important;
+          line-height: 1 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          background: transparent !important;
+          border: 0 !important;
+          border-radius: 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-panel-sub {
+          font-size: 8.5px !important;
+          line-height: 1 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        html body .app .floating-panel-hq .office-empty-note {
+          min-height: 0 !important;
+          height: 13px !important;
+          margin: 1px 0 !important;
+          padding: 0 !important;
+          font-size: 8.5px !important;
+          line-height: 13px !important;
+          text-align: center !important;
+        }
+
+        html body .app .floating-panel-hq .smart-info-grid {
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 1px 4px !important;
+          margin: 1px 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-info-item {
+          min-height: 13px !important;
+          height: 13px !important;
+          padding: 0 3px !important;
+          border-radius: 3px !important;
+          box-shadow: none !important;
+        }
+
+        html body .app .floating-panel-hq .smart-info-item span,
+        html body .app .floating-panel-hq .smart-info-item strong {
+          font-size: 7.8px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-chip-row {
+          display: grid !important;
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          gap: 2px !important;
+          margin: 1px 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-chip {
+          height: 14px !important;
+          min-height: 14px !important;
+          padding: 0 2px !important;
+          font-size: 7.5px !important;
+          line-height: 14px !important;
+          border-radius: 4px !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid {
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 3px !important;
+          margin: 2px 0 0 !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid button {
+          height: 20px !important;
+          min-height: 20px !important;
+          padding: 0 3px !important;
+          border-radius: 5px !important;
+          gap: 0 !important;
+          line-height: 1 !important;
+          display: grid !important;
+          place-content: center !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid button strong {
+          font-size: 8.5px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid button span {
+          font-size: 7.2px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app section.side-section.floating-panel.floating-panel-build,
+        html body .app .side-section.floating-panel.floating-panel-build,
+        html body .app .floating-panel.floating-panel-build {
+          min-height: 0 !important;
+          padding: 0 !important;
+          overflow: hidden !important;
+        }
+
+        html body .app .floating-panel-build > .build-pop-card,
+        html body .app .floating-panel-build .build-pop-card {
+          min-height: 0 !important;
+          padding: 3px !important;
+          gap: 2px !important;
+        }
+
+        html body .app .floating-panel-build .build-icon-menu {
+          gap: 2px !important;
+          margin: 0 !important;
+        }
+
+        html body .app .floating-panel-build .build-icon-button {
+          height: 20px !important;
+          min-height: 20px !important;
+          padding: 0 3px !important;
+          font-size: 8px !important;
+          border-radius: 5px !important;
+          line-height: 1 !important;
+        }
+      }
+
+      @media (max-width: 640px) and (orientation: portrait) {
+        html body .app section.side-section.floating-panel.floating-panel-hq,
+        html body .app .side-section.floating-panel.floating-panel-hq,
+        html body .app .floating-panel.floating-panel-hq {
+          height: fit-content !important;
+          max-height: none !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-profile-header,
+        html body .app .recruit-profile-header {
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          grid-template-rows: auto auto !important;
+          gap: 3px !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-profile-header h3,
+        html body .app .recruit-profile-header h3 {
+          width: 100% !important;
+          max-width: none !important;
+          white-space: normal !important;
+          overflow: visible !important;
+          text-overflow: clip !important;
+          word-break: keep-all !important;
+          overflow-wrap: anywhere !important;
+          line-height: 1.12 !important;
+          font-size: 15.5px !important;
+          margin: 0 !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-job-and-stars,
+        html body .app .recruit-job-and-stars {
+          display: flex !important;
+          justify-content: flex-start !important;
+          align-items: center !important;
+          gap: 5px !important;
+          width: 100% !important;
+          margin: 0 !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-job-badge,
+        html body .app .recruit-job-badge {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          min-height: 18px !important;
+          padding: 2px 8px !important;
+          border-radius: 7px !important;
+          font-size: 11px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .employee-rarity-label,
+        html body .app .recruit-profile-header .employee-rarity-label {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          min-height: 18px !important;
+          padding: 2px 8px !important;
+          border-radius: 999px !important;
+          font-size: 13px !important;
+          line-height: 1 !important;
+        }
+      }
+
+
+    `}</style>
+
+    <style>{`
+      /* v145 最終上書き：スマホ横・縦のタイトル行を完全削除し、消えた分の余白も詰める */
+      @media (max-width: 900px) {
+        .top-header.compact-top-header,
+        header.top-header.compact-top-header,
+        .top-title-wrap,
+        .v73-title {
+          display: none !important;
+          visibility: hidden !important;
+          height: 0 !important;
+          min-height: 0 !important;
+          max-height: 0 !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          border: 0 !important;
+          box-shadow: none !important;
+          overflow: hidden !important;
+        }
+
+        .bottom-menu.compact-command-menu,
+        .bottom-menu.compact-command-menu.icon-command-menu,
+        .bottom-menu.compact-command-menu.icon-command-menu.v72-top-command-bar.v73-top-command-bar,
+        nav.bottom-menu.compact-command-menu.icon-command-menu.v72-top-command-bar.v73-top-command-bar,
+        .v72-top-command-bar.v73-top-command-bar {
+          position: sticky !important;
+          top: 0 !important;
+          z-index: 90 !important;
+          display: flex !important;
+          align-items: center !important;
+          width: 100% !important;
+          max-width: 100vw !important;
+          min-width: 0 !important;
+          height: auto !important;
+          min-height: 32px !important;
+          padding: 2px 4px !important;
+          margin: 0 !important;
+          gap: 3px !important;
+          box-sizing: border-box !important;
+          overflow: visible !important;
+          border-radius: 0 !important;
+        }
+
+        .top-icon-button,
+        .v72-top-command-bar .top-icon-button,
+        .v73-top-command-bar .top-icon-button,
+        .bottom-menu .top-icon-button,
+        .app .top-icon-button {
+          width: 28px !important;
+          min-width: 28px !important;
+          max-width: 28px !important;
+          height: 28px !important;
+          min-height: 28px !important;
+          max-height: 28px !important;
+          flex: 0 0 28px !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          border-radius: 9px !important;
+          line-height: 1 !important;
+          box-sizing: border-box !important;
+        }
+
+        .top-icon-symbol,
+        .v72-top-command-bar .top-icon-symbol,
+        .v73-top-command-bar .top-icon-symbol,
+        .bottom-menu .top-icon-symbol,
+        .app .top-icon-button .top-icon-symbol,
+        .app .top-icon-button .top-icon-emoji,
+        .app .top-icon-button .top-icon {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          width: 100% !important;
+          height: 100% !important;
+          font-size: 14px !important;
+          line-height: 1 !important;
+        }
+
+        .main-menu-wrap.v73-main-menu-wrap,
+        .v73-main-menu-wrap {
+          flex: 0 0 28px !important;
+          width: 28px !important;
+          min-width: 28px !important;
+          max-width: 28px !important;
+          margin-left: 0 !important;
+        }
+
+        .top-status-inline.v73-top-status-inline,
+        .top-status-inline,
+        .v73-top-status-inline {
+          display: flex !important;
+          align-items: center !important;
+          gap: 3px !important;
+          min-width: 0 !important;
+          overflow-x: auto !important;
+          overflow-y: visible !important;
+          scrollbar-width: none !important;
+        }
+
+        .top-status-inline.v73-top-status-inline::-webkit-scrollbar,
+        .top-status-inline::-webkit-scrollbar,
+        .v73-top-status-inline::-webkit-scrollbar {
+          display: none !important;
+        }
+
+        .top-compact-stat,
+        .top-compact-stat-button {
+          height: 26px !important;
+          min-height: 26px !important;
+          max-height: 26px !important;
+          padding: 0 6px !important;
+          font-size: 11px !important;
+          line-height: 1 !important;
+          white-space: nowrap !important;
+          border-radius: 9px !important;
+        }
+
+        .demo-money-add-button {
+          width: 30px !important;
+          min-width: 30px !important;
+          max-width: 30px !important;
+          height: 24px !important;
+          min-height: 24px !important;
+          max-height: 24px !important;
+          padding: 0 !important;
+          font-size: 8px !important;
+          flex: 0 0 30px !important;
+        }
+
+        .menu-alert-dot {
+          width: 11px !important;
+          height: 11px !important;
+          min-width: 11px !important;
+          font-size: 8px !important;
+          line-height: 11px !important;
+          top: -3px !important;
+          right: -3px !important;
+        }
+      }
+
+      /* v145 スマホ横：横プレイ前提。上部を1段・最小高さにする */
+      @media (max-width: 900px) and (orientation: landscape) {
+        .bottom-menu.compact-command-menu,
+        .bottom-menu.compact-command-menu.icon-command-menu.v72-top-command-bar.v73-top-command-bar,
+        nav.bottom-menu.compact-command-menu.icon-command-menu.v72-top-command-bar.v73-top-command-bar,
+        .v72-top-command-bar.v73-top-command-bar {
+          flex-wrap: nowrap !important;
+          min-height: 30px !important;
+          padding: 1px 4px !important;
+          gap: 3px !important;
+        }
+
+        .top-icon-button,
+        .v72-top-command-bar .top-icon-button,
+        .v73-top-command-bar .top-icon-button,
+        .bottom-menu .top-icon-button,
+        .app .top-icon-button {
+          width: 26px !important;
+          min-width: 26px !important;
+          max-width: 26px !important;
+          height: 26px !important;
+          min-height: 26px !important;
+          max-height: 26px !important;
+          flex-basis: 26px !important;
+          border-radius: 8px !important;
+        }
+
+        .top-icon-symbol,
+        .v72-top-command-bar .top-icon-symbol,
+        .v73-top-command-bar .top-icon-symbol,
+        .bottom-menu .top-icon-symbol,
+        .app .top-icon-button .top-icon-symbol {
+          font-size: 13px !important;
+        }
+
+        .main-menu-wrap.v73-main-menu-wrap,
+        .v73-main-menu-wrap {
+          flex-basis: 26px !important;
+          width: 26px !important;
+          min-width: 26px !important;
+          max-width: 26px !important;
+          margin-left: auto !important;
+        }
+
+        .top-status-inline.v73-top-status-inline,
+        .top-status-inline,
+        .v73-top-status-inline {
+          flex: 1 1 auto !important;
+          width: auto !important;
+          padding: 0 !important;
+        }
+
+        .top-info-popup,
+        .main-menu-popup.icon-main-menu-popup,
+        .main-menu-popup {
+          top: calc(34px + env(safe-area-inset-top)) !important;
+          max-height: calc(100dvh - 44px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+        }
+      }
+
+      /* v145 スマホ縦：小型2段。ボタン4つは完全同サイズ */
+      @media (max-width: 640px) and (orientation: portrait) {
+        .bottom-menu.compact-command-menu,
+        .bottom-menu.compact-command-menu.icon-command-menu.v72-top-command-bar.v73-top-command-bar,
+        nav.bottom-menu.compact-command-menu.icon-command-menu.v72-top-command-bar.v73-top-command-bar,
+        .v72-top-command-bar.v73-top-command-bar {
+          flex-wrap: wrap !important;
+          min-height: 58px !important;
+          padding: 2px 4px 3px !important;
+          gap: 3px !important;
+        }
+
+        .top-status-inline.v73-top-status-inline,
+        .top-status-inline,
+        .v73-top-status-inline {
+          order: 5 !important;
+          flex: 0 0 100% !important;
+          width: 100% !important;
+          padding: 0 !important;
+        }
+
+        .main-menu-wrap.v73-main-menu-wrap,
+        .v73-main-menu-wrap {
+          order: 4 !important;
+          margin-left: auto !important;
+        }
+
+        .top-info-popup,
+        .main-menu-popup.icon-main-menu-popup,
+        .main-menu-popup {
+          top: calc(64px + env(safe-area-inset-top)) !important;
+          max-height: calc(100dvh - 76px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+        }
+      }
+
+
+      /* v146: スマホ版のタブ・パネル全体圧縮。PC表示は変更しない */
+      @media (max-width: 900px) {
+        .app .floating-panel,
+        .app .side-section,
+        .app .property-section,
+        .app .log-section,
+        .app .company-detail-box,
+        .app .land-detail-box,
+        .app .building-detail-box,
+        .app .employee-detail-card,
+        .app .employee-action-select-card,
+        .app .popup-log-card,
+        .app .main-menu-popup,
+        .app .top-info-popup {
+          border-radius: 10px !important;
+          box-shadow: 0 6px 16px rgba(19, 32, 24, 0.12) !important;
+        }
+
+        .app .floating-panel {
+          position: fixed !important;
+          left: var(--floating-panel-left) !important;
+          top: var(--floating-panel-top) !important;
+          width: var(--floating-panel-width) !important;
+          height: var(--floating-panel-height) !important;
+          max-width: calc(100vw - 12px) !important;
+          max-height: calc(100dvh - var(--floating-panel-top) - 8px) !important;
+          padding: 0 !important;
+          overflow: hidden !important;
+          z-index: 260 !important;
+        }
+
+        .app .floating-panel > .detail-card,
+        .app .floating-panel > .smart-detail-card,
+        .app .side-section > .detail-card,
+        .app .side-section > .smart-detail-card {
+          height: calc(100% - 30px) !important;
+          overflow-y: auto !important;
+          padding: 6px !important;
+          gap: 5px !important;
+          box-sizing: border-box !important;
+        }
+
+        .app .floating-panel-header {
+          min-height: 28px !important;
+          height: 28px !important;
+          padding: 3px 6px !important;
+          gap: 5px !important;
+        }
+
+        .app .floating-panel-header strong {
+          font-size: 12px !important;
+          line-height: 1.1 !important;
+        }
+
+        .app .floating-panel-actions {
+          gap: 4px !important;
+        }
+
+        .app .floating-panel-actions button,
+        .app .smart-panel-head button,
+        .app .side-section button,
+        .app .property-section button,
+        .app .log-section button,
+        .app .main-menu-popup button,
+        .app .popup-log-card button,
+        .app .employee-action-select-button,
+        .app .build-detail-button,
+        .app .table-sort-button {
+          min-height: 24px !important;
+          height: auto !important;
+          padding: 3px 7px !important;
+          font-size: 11px !important;
+          line-height: 1.15 !important;
+          border-radius: 8px !important;
+        }
+
+        .app .side-section h2,
+        .app .side-section h3,
+        .app .log-section h2,
+        .app .property-section h2,
+        .app .popup-log-card h2,
+        .app .popup-log-card h3,
+        .app .smart-panel-head h2,
+        .app .smart-panel-head h3 {
+          font-size: 13px !important;
+          padding: 3px 7px !important;
+          margin: 2px 0 4px !important;
+          line-height: 1.15 !important;
+          gap: 4px !important;
+        }
+
+        .app .smart-panel-head {
+          gap: 5px !important;
+          margin-bottom: 2px !important;
+        }
+
+        .app .smart-panel-sub,
+        .app .office-empty-note,
+        .app .office-role-note,
+        .app .side-section p,
+        .app .property-section p,
+        .app .log-section p,
+        .app .popup-log-card p,
+        .app .main-menu-popup,
+        .app .top-info-popup {
+          font-size: 11px !important;
+          line-height: 1.25 !important;
+        }
+
+        .app .smart-detail-card,
+        .app .build-pop-card,
+        .app .land-detail-box,
+        .app .building-detail-box,
+        .app .employee-detail-card,
+        .app .employee-action-select-card,
+        .app .company-detail-box {
+          padding: 6px !important;
+          gap: 5px !important;
+        }
+
+        .app .smart-info-grid,
+        .app .smart-action-row,
+        .app .hq-choice-grid,
+        .app .build-detail-buttons,
+        .app .office-role-grid,
+        .app .office-skill-list {
+          gap: 4px !important;
+        }
+
+        .app .smart-info-item,
+        .app .office-role-card,
+        .app .office-skill-card,
+        .app .employee-action-select-card,
+        .app .build-detail-button {
+          padding: 4px 5px !important;
+          border-radius: 8px !important;
+        }
+
+        .app .smart-info-item span,
+        .app .smart-info-item strong,
+        .app .office-role-label,
+        .app .office-role-card strong,
+        .app .office-skill-card strong,
+        .app .office-skill-card span,
+        .app .office-role-card small,
+        .app .office-skill-card small,
+        .app .employee-detail-card,
+        .app .employee-action-select-card {
+          font-size: 10.5px !important;
+          line-height: 1.2 !important;
+        }
+
+        .app .smart-chip-row {
+          gap: 3px !important;
+          margin: 2px 0 !important;
+        }
+
+        .app .smart-chip {
+          padding: 2px 5px !important;
+          font-size: 10px !important;
+          line-height: 1.1 !important;
+          border-radius: 999px !important;
+        }
+
+        .app .build-icon-menu {
+          grid-template-columns: repeat(5, minmax(42px, 1fr)) !important;
+          gap: 3px !important;
+          margin-bottom: 4px !important;
+          padding-bottom: 1px !important;
+        }
+
+        .app .build-icon-button {
+          min-height: 28px !important;
+          height: 28px !important;
+          padding: 2px 3px !important;
+          gap: 1px !important;
+          font-size: 9.5px !important;
+          border-radius: 7px !important;
+        }
+
+        .app .build-icon-button .build-icon,
+        .app .build-icon {
+          font-size: 12px !important;
+          line-height: 1 !important;
+        }
+
+        .app .build-category-title,
+        .app .build-selected-title {
+          font-size: 11px !important;
+          margin: 2px 0 4px !important;
+          line-height: 1.15 !important;
+        }
+
+        .app .building-option-button,
+        .app .building-select-button,
+        .app .build-list button,
+        .app .build-menu button {
+          min-height: 30px !important;
+          padding: 3px 5px !important;
+          font-size: 10.5px !important;
+          line-height: 1.15 !important;
+          border-radius: 8px !important;
+        }
+      }
+
+      /* v146: スマホ横は横画面プレイ前提でパネルをさらに薄くする */
+      @media (max-width: 900px) and (orientation: landscape) {
+        .app .floating-panel > .detail-card,
+        .app .floating-panel > .smart-detail-card,
+        .app .side-section > .detail-card,
+        .app .side-section > .smart-detail-card {
+          height: calc(100% - 24px) !important;
+          padding: 4px !important;
+          gap: 3px !important;
+        }
+
+        .app .floating-panel-header {
+          min-height: 24px !important;
+          height: 24px !important;
+          padding: 2px 5px !important;
+        }
+
+        .app .floating-panel-header strong {
+          font-size: 11px !important;
+        }
+
+        .app .floating-panel-actions button,
+        .app .side-section button,
+        .app .property-section button,
+        .app .main-menu-popup button,
+        .app .popup-log-card button,
+        .app .employee-action-select-button,
+        .app .build-detail-button {
+          min-height: 21px !important;
+          padding: 2px 5px !important;
+          font-size: 10px !important;
+        }
+
+        .app .build-icon-button {
+          min-height: 24px !important;
+          height: 24px !important;
+          font-size: 9px !important;
+        }
+
+        .app .smart-info-grid,
+        .app .hq-choice-grid,
+        .app .smart-action-row,
+        .app .build-detail-buttons {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+      }
+
+      /* v146: スマホ縦は画面半分以上を覆わないよう高さを抑える */
+      @media (max-width: 640px) and (orientation: portrait) {
+        .app .floating-panel {
+          max-height: min(42dvh, var(--floating-panel-height)) !important;
+        }
+
+        .app .smart-info-grid,
+        .app .hq-choice-grid,
+        .app .smart-action-row,
+        .app .build-detail-buttons {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+      }
+
+
+      /* v148: 社員募集・建設導線の追加調整 */
+      @media (max-width: 900px) and (orientation: landscape) {
+        .app .recruit-envelope-desk-row,
+        .app .recruit-envelope-grid.recruit-envelope-desk-row {
+          justify-content: center !important;
+          align-items: center !important;
+          margin-left: auto !important;
+          margin-right: auto !important;
+          width: min(92vw, 820px) !important;
+          transform: none !important;
+        }
+      }
+
+      @media (max-width: 640px) and (orientation: portrait) {
+        .app .employee-recruitment-card.recruit-desk-card {
+          padding: 8px !important;
+        }
+
+        .app .recruit-title-area h2 {
+          font-size: 18px !important;
+          line-height: 1.15 !important;
+        }
+
+        .app .recruit-title-area p,
+        .app .recruit-tap-guide,
+        .app .recruit-required-note {
+          font-size: 11px !important;
+          line-height: 1.25 !important;
+        }
+
+        .app .recruit-profile-panel {
+          gap: 7px !important;
+          padding: 7px !important;
+        }
+
+        .app .recruit-profile-header {
+          display: grid !important;
+          grid-template-columns: 1fr auto !important;
+          gap: 4px !important;
+          align-items: start !important;
+        }
+
+        .app .recruit-profile-header h3 {
+          white-space: normal !important;
+          overflow: visible !important;
+          text-overflow: clip !important;
+          font-size: 17px !important;
+          line-height: 1.18 !important;
+          word-break: keep-all !important;
+        }
+
+        .app .recruit-job-and-stars {
+          gap: 3px !important;
+          align-items: center !important;
+          justify-content: flex-end !important;
+        }
+
+        .app .recruit-job-badge {
+          font-size: 10px !important;
+          padding: 2px 6px !important;
+          border-radius: 7px !important;
+        }
+
+        .app .recruit-profile-subrow {
+          display: none !important;
+        }
+
+        .app .recruit-stat-grid {
+          gap: 5px !important;
+        }
+
+        .app .recruit-stat-grid div {
+          min-height: 26px !important;
+          padding: 3px 6px !important;
+          font-size: 11px !important;
+        }
+
+        .app .recruit-special-box {
+          min-height: 28px !important;
+          padding: 4px 6px !important;
+          font-size: 11px !important;
+        }
+
+        .app .recruit-hire-button {
+          min-height: 34px !important;
+          font-size: 13px !important;
+          padding: 5px 8px !important;
+        }
+      }
+
+
+      /* v150: 本社設置パネルを実際の高さごと圧縮・社員募集の長い名前対応 */
+      @media (max-width: 900px) {
+        .app .floating-panel.floating-panel-hq {
+          height: auto !important;
+          min-height: 0 !important;
+          max-height: min(32dvh, 300px) !important;
+          overflow: hidden !important;
+        }
+
+        .app .floating-panel.floating-panel-hq > .hq-setup-card,
+        .app .floating-panel.floating-panel-hq > .smart-detail-card.hq-setup-card,
+        .app .floating-panel-hq .hq-setup-card {
+          height: auto !important;
+          min-height: 0 !important;
+          max-height: calc(min(32dvh, 300px) - 26px) !important;
+          overflow-y: auto !important;
+          padding: 4px 5px !important;
+          gap: 3px !important;
+          display: grid !important;
+          grid-template-rows: auto auto auto auto !important;
+          align-content: start !important;
+        }
+
+        .app .floating-panel-hq .smart-panel-head {
+          min-height: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        .app .floating-panel-hq .smart-panel-head h2 {
+          font-size: 11px !important;
+          line-height: 1 !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+
+        .app .floating-panel-hq .smart-panel-sub {
+          font-size: 9px !important;
+          line-height: 1 !important;
+        }
+
+        .app .floating-panel-hq .office-empty-note {
+          margin: 0 !important;
+          padding: 2px 4px !important;
+          min-height: 16px !important;
+          height: auto !important;
+          font-size: 9px !important;
+          line-height: 1.1 !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
+        .app .floating-panel-hq .smart-info-grid {
+          margin: 0 !important;
+          gap: 2px !important;
+        }
+
+        .app .floating-panel-hq .smart-info-item {
+          min-height: 17px !important;
+          padding: 1px 3px !important;
+        }
+
+        .app .floating-panel-hq .smart-info-item span,
+        .app .floating-panel-hq .smart-info-item strong {
+          font-size: 8.5px !important;
+          line-height: 1 !important;
+        }
+
+        .app .floating-panel-hq .smart-chip-row {
+          margin: 0 !important;
+          gap: 2px !important;
+        }
+
+        .app .floating-panel-hq .smart-chip {
+          height: 15px !important;
+          min-height: 15px !important;
+          padding: 0 3px !important;
+          font-size: 8px !important;
+          line-height: 1 !important;
+          border-radius: 4px !important;
+        }
+
+        .app .floating-panel-hq .hq-choice-grid {
+          margin: 1px 0 0 !important;
+          gap: 3px !important;
+        }
+
+        .app .floating-panel-hq .hq-choice-grid button {
+          min-height: 24px !important;
+          height: 24px !important;
+          padding: 1px 4px !important;
+          border-radius: 6px !important;
+          gap: 0 !important;
+          line-height: 1 !important;
+        }
+
+        .app .floating-panel-hq .hq-choice-grid button strong {
+          font-size: 9.5px !important;
+          line-height: 1 !important;
+        }
+
+        .app .floating-panel-hq .hq-choice-grid button span {
+          font-size: 8px !important;
+          line-height: 1 !important;
+        }
+      }
+
+      @media (max-width: 640px) and (orientation: portrait) {
+        .app .floating-panel.floating-panel-hq {
+          max-height: min(30dvh, 270px) !important;
+        }
+
+        .app .floating-panel.floating-panel-hq > .hq-setup-card,
+        .app .floating-panel-hq .hq-setup-card {
+          max-height: calc(min(30dvh, 270px) - 26px) !important;
+        }
+
+        .app .floating-panel-hq .smart-panel-head {
+          grid-template-columns: auto 1fr !important;
+        }
+
+        .app .floating-panel-hq .smart-info-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+
+        .app .floating-panel-hq .hq-choice-grid button {
+          min-height: 28px !important;
+          height: 28px !important;
+        }
+
+        .app .popup-log.recruit-popup-stage .recruit-profile-header,
+        .app .recruit-profile-header {
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          grid-template-rows: auto auto !important;
+          gap: 2px !important;
+          align-items: start !important;
+        }
+
+        .app .popup-log.recruit-popup-stage .recruit-profile-header h3,
+        .app .recruit-profile-header h3 {
+          display: block !important;
+          width: 100% !important;
+          max-width: none !important;
+          min-width: 0 !important;
+          white-space: normal !important;
+          overflow: visible !important;
+          text-overflow: clip !important;
+          font-size: 15.5px !important;
+          line-height: 1.12 !important;
+          word-break: break-word !important;
+          overflow-wrap: anywhere !important;
+          margin: 0 !important;
+        }
+
+        .app .popup-log.recruit-popup-stage .recruit-job-and-stars,
+        .app .recruit-job-and-stars {
+          display: flex !important;
+          justify-content: flex-start !important;
+          align-items: center !important;
+          gap: 4px !important;
+          width: 100% !important;
+        }
+
+        .app .popup-log.recruit-popup-stage .recruit-job-badge,
+        .app .recruit-job-badge {
+          display: none !important;
+        }
+
+        .app .popup-log.recruit-popup-stage .employee-rarity-label,
+        .app .recruit-profile-header .employee-rarity-label {
+          font-size: 13px !important;
+          line-height: 1 !important;
+          padding: 2px 8px !important;
+          min-height: 18px !important;
+          border-radius: 999px !important;
+        }
+
+        .app .popup-log.recruit-popup-stage .recruit-profile-panel {
+          grid-template-columns: 88px minmax(0, 1fr) !important;
+          gap: 6px !important;
+          padding: 6px !important;
+        }
+
+        .app .popup-log.recruit-popup-stage .recruit-profile-photo {
+          width: 88px !important;
+          max-width: 88px !important;
+          min-height: 96px !important;
+        }
+
+        .app .popup-log.recruit-popup-stage .recruit-avatar {
+          width: 78px !important;
+          height: 88px !important;
+          min-width: 78px !important;
+          min-height: 88px !important;
+        }
+      }
+
+
+      /* v150: スマホの本社設置・建設パネルの実サイズ圧縮、社員募集レア度表記復旧 */
+      @media (max-width: 900px) {
+        .app .floating-panel.floating-panel-hq {
+          height: auto !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          padding: 0 !important;
+        }
+
+        .app .floating-panel.floating-panel-hq > .hq-setup-card,
+        .app .floating-panel-hq .hq-setup-card {
+          height: auto !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          overflow: visible !important;
+          padding: 3px 4px !important;
+          margin: 0 !important;
+          gap: 2px !important;
+          border-radius: 7px !important;
+        }
+
+        .app .floating-panel-hq .smart-panel-head {
+          display: flex !important;
+          align-items: baseline !important;
+          gap: 5px !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          min-height: 0 !important;
+        }
+
+        .app .floating-panel-hq .smart-panel-head h2 {
+          font-size: 12px !important;
+          line-height: 1.05 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        .app .floating-panel-hq .smart-panel-sub {
+          font-size: 9px !important;
+          line-height: 1.05 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        .app .floating-panel-hq .office-empty-note {
+          min-height: 0 !important;
+          height: auto !important;
+          margin: 1px 0 !important;
+          padding: 1px 2px !important;
+          font-size: 9px !important;
+          line-height: 1.05 !important;
+        }
+
+        .app .floating-panel-hq .smart-info-grid {
+          margin: 1px 0 !important;
+          gap: 2px !important;
+        }
+
+        .app .floating-panel-hq .smart-info-item {
+          min-height: 14px !important;
+          height: 14px !important;
+          padding: 0 3px !important;
+          border-radius: 4px !important;
+        }
+
+        .app .floating-panel-hq .smart-info-item span,
+        .app .floating-panel-hq .smart-info-item strong {
+          font-size: 8px !important;
+          line-height: 1 !important;
+        }
+
+        .app .floating-panel-hq .smart-chip-row {
+          margin: 1px 0 !important;
+          gap: 2px !important;
+        }
+
+        .app .floating-panel-hq .smart-chip {
+          height: 14px !important;
+          min-height: 14px !important;
+          padding: 0 3px !important;
+          font-size: 7.8px !important;
+          line-height: 1 !important;
+          border-radius: 4px !important;
+        }
+
+        .app .floating-panel-hq .hq-choice-grid {
+          margin: 2px 0 0 !important;
+          gap: 3px !important;
+        }
+
+        .app .floating-panel-hq .hq-choice-grid button {
+          min-height: 22px !important;
+          height: 22px !important;
+          padding: 1px 3px !important;
+          border-radius: 5px !important;
+          gap: 0 !important;
+        }
+
+        .app .floating-panel-hq .hq-choice-grid button strong {
+          font-size: 9px !important;
+          line-height: 1 !important;
+        }
+
+        .app .floating-panel-hq .hq-choice-grid button span {
+          font-size: 7.8px !important;
+          line-height: 1 !important;
+        }
+
+        .app .floating-panel.floating-panel-build {
+          height: auto !important;
+          min-height: 0 !important;
+          max-height: min(45dvh, 360px) !important;
+          overflow: hidden !important;
+        }
+
+        .app .floating-panel-build > .build-pop-card,
+        .app .floating-panel-build .build-pop-card {
+          height: auto !important;
+          min-height: 0 !important;
+          max-height: calc(min(45dvh, 360px) - 28px) !important;
+          overflow-y: auto !important;
+          padding: 4px !important;
+          gap: 3px !important;
+          border-radius: 7px !important;
+        }
+
+        .app .floating-panel-build .build-icon-menu {
+          margin: 0 0 2px !important;
+          gap: 2px !important;
+        }
+
+        .app .floating-panel-build .build-icon-button {
+          min-height: 22px !important;
+          height: 22px !important;
+          padding: 1px 2px !important;
+          border-radius: 5px !important;
+          font-size: 8.5px !important;
+          line-height: 1 !important;
+        }
+
+        .app .floating-panel-build .build-detail-popup {
+          margin: 1px 0 0 !important;
+          padding: 2px !important;
+          gap: 2px !important;
+          border-radius: 6px !important;
+        }
+
+        .app .floating-panel-build .build-detail-header,
+        .app .floating-panel-build .compact-build-detail-header {
+          min-height: 16px !important;
+          padding: 1px 3px !important;
+          margin: 0 !important;
+          font-size: 9px !important;
+          line-height: 1 !important;
+        }
+
+        .app .floating-panel-build .build-detail-buttons {
+          gap: 3px !important;
+          margin: 1px 0 0 !important;
+        }
+
+        .app .floating-panel-build .build-detail-button {
+          min-height: 24px !important;
+          padding: 2px 4px !important;
+          gap: 1px !important;
+          border-radius: 6px !important;
+        }
+
+        .app .floating-panel-build .build-detail-button strong {
+          font-size: 9.5px !important;
+          line-height: 1.05 !important;
+        }
+
+        .app .floating-panel-build .build-detail-button span {
+          font-size: 8px !important;
+          line-height: 1.05 !important;
+        }
+      }
+
+      @media (max-width: 640px) and (orientation: portrait) {
+        .app .floating-panel.floating-panel-hq {
+          height: auto !important;
+          max-height: none !important;
+        }
+
+        .app .floating-panel.floating-panel-hq > .hq-setup-card,
+        .app .floating-panel-hq .hq-setup-card {
+          max-height: none !important;
+        }
+
+        .app .floating-panel-hq .hq-choice-grid button {
+          min-height: 21px !important;
+          height: 21px !important;
+        }
+
+        .app .popup-log.recruit-popup-stage .recruit-job-and-stars,
+        .app .recruit-job-and-stars {
+          display: flex !important;
+          justify-content: flex-start !important;
+          align-items: center !important;
+          gap: 4px !important;
+          width: 100% !important;
+          margin-top: 1px !important;
+        }
+
+        .app .popup-log.recruit-popup-stage .recruit-job-badge,
+        .app .recruit-job-badge {
+          display: inline-flex !important;
+          align-items: center !important;
+          min-height: 18px !important;
+          padding: 2px 7px !important;
+          border-radius: 7px !important;
+          font-size: 11px !important;
+          line-height: 1 !important;
+        }
+
+        .app .popup-log.recruit-popup-stage .employee-rarity-label,
+        .app .recruit-profile-header .employee-rarity-label {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          min-height: 18px !important;
+          padding: 2px 8px !important;
+          font-size: 13px !important;
+          line-height: 1 !important;
+          border-radius: 999px !important;
+        }
+      }
+
+
+      /* v151: スマホの本社設置・建設初期パネルは中身の高さに合わせる。巨大な空白を完全に消す */
+      @media (max-width: 900px) {
+        html body .app section.side-section.floating-panel.floating-panel-hq,
+        html body .app .side-section.floating-panel.floating-panel-hq,
+        html body .app .floating-panel.floating-panel-hq {
+          height: fit-content !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          padding: 0 !important;
+          overflow: visible !important;
+        }
+
+        html body .app section.side-section.floating-panel.floating-panel-hq > .floating-panel-header,
+        html body .app .floating-panel.floating-panel-hq > .floating-panel-header {
+          height: 24px !important;
+          min-height: 24px !important;
+          padding: 1px 4px !important;
+          box-sizing: border-box !important;
+        }
+
+        html body .app .floating-panel.floating-panel-hq .floating-panel-actions button {
+          height: 20px !important;
+          min-height: 20px !important;
+          padding: 0 8px !important;
+          font-size: 10px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app section.side-section.floating-panel.floating-panel-hq > .detail-card.hq-setup-card,
+        html body .app section.side-section.floating-panel.floating-panel-hq > .smart-detail-card.hq-setup-card,
+        html body .app .floating-panel.floating-panel-hq > .detail-card.hq-setup-card,
+        html body .app .floating-panel.floating-panel-hq > .smart-detail-card.hq-setup-card,
+        html body .app .floating-panel-hq .hq-setup-card {
+          height: fit-content !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          overflow: visible !important;
+          padding: 2px 4px 3px !important;
+          margin: 0 !important;
+          gap: 1px !important;
+          border-radius: 6px !important;
+          box-sizing: border-box !important;
+        }
+
+        html body .app .floating-panel-hq .smart-panel-head {
+          display: grid !important;
+          grid-template-columns: auto 1fr !important;
+          align-items: baseline !important;
+          column-gap: 5px !important;
+          row-gap: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          min-height: 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-panel-head h2 {
+          font-size: 12px !important;
+          line-height: 1 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          background: transparent !important;
+          border: 0 !important;
+          border-radius: 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-panel-sub {
+          font-size: 8.5px !important;
+          line-height: 1 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        html body .app .floating-panel-hq .office-empty-note {
+          min-height: 0 !important;
+          height: 13px !important;
+          margin: 1px 0 !important;
+          padding: 0 !important;
+          font-size: 8.5px !important;
+          line-height: 13px !important;
+          text-align: center !important;
+        }
+
+        html body .app .floating-panel-hq .smart-info-grid {
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 1px 4px !important;
+          margin: 1px 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-info-item {
+          min-height: 13px !important;
+          height: 13px !important;
+          padding: 0 3px !important;
+          border-radius: 3px !important;
+          box-shadow: none !important;
+        }
+
+        html body .app .floating-panel-hq .smart-info-item span,
+        html body .app .floating-panel-hq .smart-info-item strong {
+          font-size: 7.8px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-chip-row {
+          display: grid !important;
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          gap: 2px !important;
+          margin: 1px 0 !important;
+        }
+
+        html body .app .floating-panel-hq .smart-chip {
+          height: 14px !important;
+          min-height: 14px !important;
+          padding: 0 2px !important;
+          font-size: 7.5px !important;
+          line-height: 14px !important;
+          border-radius: 4px !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid {
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 3px !important;
+          margin: 2px 0 0 !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid button {
+          height: 20px !important;
+          min-height: 20px !important;
+          padding: 0 3px !important;
+          border-radius: 5px !important;
+          gap: 0 !important;
+          line-height: 1 !important;
+          display: grid !important;
+          place-content: center !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid button strong {
+          font-size: 8.5px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .floating-panel-hq .hq-choice-grid button span {
+          font-size: 7.2px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app section.side-section.floating-panel.floating-panel-build,
+        html body .app .side-section.floating-panel.floating-panel-build,
+        html body .app .floating-panel.floating-panel-build {
+          min-height: 0 !important;
+          padding: 0 !important;
+          overflow: hidden !important;
+        }
+
+        html body .app .floating-panel-build > .build-pop-card,
+        html body .app .floating-panel-build .build-pop-card {
+          min-height: 0 !important;
+          padding: 3px !important;
+          gap: 2px !important;
+        }
+
+        html body .app .floating-panel-build .build-icon-menu {
+          gap: 2px !important;
+          margin: 0 !important;
+        }
+
+        html body .app .floating-panel-build .build-icon-button {
+          height: 20px !important;
+          min-height: 20px !important;
+          padding: 0 3px !important;
+          font-size: 8px !important;
+          border-radius: 5px !important;
+          line-height: 1 !important;
+        }
+      }
+
+      @media (max-width: 640px) and (orientation: portrait) {
+        html body .app section.side-section.floating-panel.floating-panel-hq,
+        html body .app .side-section.floating-panel.floating-panel-hq,
+        html body .app .floating-panel.floating-panel-hq {
+          height: fit-content !important;
+          max-height: none !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-profile-header,
+        html body .app .recruit-profile-header {
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          grid-template-rows: auto auto !important;
+          gap: 3px !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-profile-header h3,
+        html body .app .recruit-profile-header h3 {
+          width: 100% !important;
+          max-width: none !important;
+          white-space: normal !important;
+          overflow: visible !important;
+          text-overflow: clip !important;
+          word-break: keep-all !important;
+          overflow-wrap: anywhere !important;
+          line-height: 1.12 !important;
+          font-size: 15.5px !important;
+          margin: 0 !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-job-and-stars,
+        html body .app .recruit-job-and-stars {
+          display: flex !important;
+          justify-content: flex-start !important;
+          align-items: center !important;
+          gap: 5px !important;
+          width: 100% !important;
+          margin: 0 !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .recruit-job-badge,
+        html body .app .recruit-job-badge {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          min-height: 18px !important;
+          padding: 2px 8px !important;
+          border-radius: 7px !important;
+          font-size: 11px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .popup-log.recruit-popup-stage .employee-rarity-label,
+        html body .app .recruit-profile-header .employee-rarity-label {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          min-height: 18px !important;
+          padding: 2px 8px !important;
+          border-radius: 999px !important;
+          font-size: 13px !important;
+          line-height: 1 !important;
+        }
+      }
+
+
+
+
+
+
+
+      /* v154: 年月表示を人口横へ統合。スマホ縦では上部側の年月を隠して重複を解消 */
+      .map-date-info-button {
+        cursor: pointer;
+        border: 1px solid rgba(0,0,0,0.14);
+        background: #fff;
+      }
+
+      .map-date-info-button.active {
+        background: #fff8d9;
+        border-color: rgba(180,120,0,0.45);
+      }
+
+      .map-date-info-popup {
+        left: 120px;
+        top: calc(100% + 4px);
+        z-index: 520;
+      }
+
+      @media (max-width: 640px) and (orientation: portrait) {
+        html body .app .top-date-status-wrap {
+          display: none !important;
+        }
+
+        html body .app .map-date-info-popup {
+          left: 0 !important;
+          right: auto !important;
+          top: calc(100% + 4px) !important;
+          width: min(260px, calc(100vw - 24px)) !important;
+          max-width: min(260px, calc(100vw - 24px)) !important;
+          padding: 8px !important;
+          border-radius: 10px !important;
+        }
+
+        html body .app .map-date-info-popup h3 {
+          font-size: 12px !important;
+          margin: 0 0 5px !important;
+        }
+
+        html body .app .map-date-info-popup .top-info-popup-grid {
+          gap: 3px 6px !important;
+          font-size: 10.5px !important;
+        }
+      }
+
+      /* v153: 空き地文字削除に合わせ、表示切替を人口ボタンへ統合・ズーム小型化 */
+      .v153-map-control-row {
+        position: relative;
+        gap: 6px !important;
+      }
+
+      .v153-map-title-status {
+        position: relative;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        flex-wrap: nowrap !important;
+      }
+
+      .map-view-menu-button {
+        cursor: pointer;
+        border: 1px solid rgba(0,0,0,0.14);
+      }
+
+      .map-view-dropdown {
+        position: absolute;
+        left: 0;
+        top: calc(100% + 4px);
+        z-index: 500;
+        min-width: 118px;
+        padding: 4px;
+        display: grid;
+        gap: 3px;
+        background: rgba(255,255,255,0.98);
+        border: 1px solid rgba(0,0,0,0.18);
+        border-radius: 10px;
+        box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+      }
+
+      .map-view-dropdown button {
+        width: 100%;
+        min-height: 26px;
+        padding: 4px 8px;
+        border-radius: 8px;
+        border: 1px solid rgba(0,0,0,0.12);
+        background: #fff;
+        font-weight: 800;
+        font-size: 12px;
+        text-align: left;
+      }
+
+      .map-view-dropdown button.active {
+        background: #0f6b3f;
+        color: #fff;
+      }
+
+      .v153-zoom-controls button {
+        min-width: 38px !important;
+        width: 38px !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        padding: 0 !important;
+        font-size: 14px !important;
+        line-height: 1 !important;
+      }
+
+      .v153-zoom-controls span {
+        font-size: 13px !important;
+        min-width: 42px !important;
+        text-align: center !important;
+      }
+
+      @media (max-width: 640px) and (orientation: portrait) {
+        html body .app .v153-map-control-row {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          gap: 4px !important;
+          padding: 3px 4px !important;
+          min-height: 30px !important;
+        }
+
+        html body .app .v153-map-title-status {
+          gap: 4px !important;
+          min-width: 0 !important;
+          flex: 1 1 auto !important;
+        }
+
+        html body .app .map-view-menu-button,
+        html body .app .map-date-inline {
+          height: 24px !important;
+          min-height: 24px !important;
+          padding: 0 6px !important;
+          font-size: 11px !important;
+          border-radius: 12px !important;
+          white-space: nowrap !important;
+        }
+
+        html body .app .map-date-inline {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
+        html body .app .v153-zoom-controls {
+          gap: 2px !important;
+          flex: 0 0 auto !important;
+        }
+
+        html body .app .v153-zoom-controls button {
+          width: 26px !important;
+          min-width: 26px !important;
+          height: 22px !important;
+          min-height: 22px !important;
+          font-size: 12px !important;
+          border-radius: 11px !important;
+        }
+
+        html body .app .v153-zoom-controls span {
+          min-width: 31px !important;
+          font-size: 10px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .map-view-dropdown {
+          min-width: 104px !important;
+          padding: 3px !important;
+          border-radius: 8px !important;
+        }
+
+        html body .app .map-view-dropdown button {
+          min-height: 22px !important;
+          padding: 3px 6px !important;
+          font-size: 10.5px !important;
+          border-radius: 6px !important;
+        }
+      }
+
+      /* v152: スマホ横の土地・建物情報タブ復旧。パネル表示を強制し、向き変更時の見失いを防止 */
+      @media (max-width: 900px) {
+        html body .app .floating-panel,
+        html body .app section.side-section.floating-panel {
+          position: fixed !important;
+          left: var(--floating-panel-left, 6px) !important;
+          top: var(--floating-panel-top, 54px) !important;
+          width: var(--floating-panel-width, calc(100vw - 12px)) !important;
+          height: var(--floating-panel-height, auto) !important;
+          max-width: calc(100vw - 12px) !important;
+          max-height: calc(100dvh - var(--floating-panel-top, 54px) - 8px) !important;
+          display: block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          overflow: auto !important;
+          z-index: 260 !important;
+        }
+
+        html body .app .floating-panel-land,
+        html body .app section.side-section.floating-panel.floating-panel-land {
+          min-height: 150px !important;
+          background: rgba(255, 255, 255, 0.96) !important;
+        }
+      }
+
+      @media (max-width: 900px) and (orientation: landscape) {
+        html body .app .floating-panel-land,
+        html body .app section.side-section.floating-panel.floating-panel-land {
+          top: 36px !important;
+          width: min(430px, calc(100vw - 12px)) !important;
+          height: min(240px, calc(100dvh - 44px)) !important;
+        }
+      }
+
+
+
+      /* v155: スマホ縦ヘッダー再配置・年月ポップアップ復旧 */
+      @media (max-width: 900px) {
+        html body .app .top-date-status-wrap {
+          display: none !important;
+        }
+      }
+
+      @media (max-width: 640px) and (orientation: portrait) {
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu {
+          display: grid !important;
+          grid-template-columns: 24px 24px 24px minmax(0, 1fr) 24px !important;
+          align-items: center !important;
+          gap: 3px !important;
+          padding: 2px 3px !important;
+          min-height: 0 !important;
+          height: 28px !important;
+          max-height: 28px !important;
+          overflow: visible !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu > .top-icon-button,
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu > .main-menu-wrap > .top-icon-button {
+          width: 24px !important;
+          min-width: 24px !important;
+          max-width: 24px !important;
+          height: 24px !important;
+          min-height: 24px !important;
+          max-height: 24px !important;
+          padding: 0 !important;
+          border-radius: 7px !important;
+          font-size: 12px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu .top-icon-symbol {
+          font-size: 13px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app .top-status-inline.v73-top-status-inline {
+          display: flex !important;
+          flex-direction: row !important;
+          align-items: center !important;
+          justify-content: flex-start !important;
+          flex-wrap: nowrap !important;
+          gap: 3px !important;
+          min-width: 0 !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          overflow: visible !important;
+        }
+
+        html body .app .top-status-inline.v73-top-status-inline .top-status-chip-wrap {
+          min-width: 0 !important;
+          width: auto !important;
+          max-width: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          flex: 0 1 auto !important;
+          overflow: visible !important;
+        }
+
+        html body .app .top-status-inline.v73-top-status-inline .top-compact-stat {
+          min-width: 0 !important;
+          max-width: none !important;
+          height: 20px !important;
+          min-height: 20px !important;
+          padding: 0 4px !important;
+          border-radius: 6px !important;
+          font-size: 9px !important;
+          line-height: 20px !important;
+          white-space: nowrap !important;
+        }
+
+        html body .app .top-status-inline.v73-top-status-inline .top-status-chip-wrap:nth-of-type(1) .top-compact-stat {
+          max-width: 76px !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        html body .app .top-status-inline.v73-top-status-inline .top-status-chip-wrap:nth-of-type(2) .top-compact-stat {
+          max-width: 58px !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        html body .app .main-menu-wrap.v73-main-menu-wrap {
+          position: relative !important;
+          width: 24px !important;
+          min-width: 24px !important;
+          max-width: 24px !important;
+          height: 24px !important;
+          min-height: 24px !important;
+          max-height: 24px !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: visible !important;
+        }
+
+        html body .app .main-menu-wrap.v73-main-menu-wrap .main-menu-popup {
+          right: 0 !important;
+          top: calc(100% + 4px) !important;
+          z-index: 900 !important;
+        }
+
+        html body .app .panel-title-row.map-title-row.v153-map-control-row {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          gap: 4px !important;
+          padding: 2px 3px !important;
+          margin: 0 !important;
+          min-height: 0 !important;
+          height: 24px !important;
+          max-height: 24px !important;
+          overflow: visible !important;
+          position: relative !important;
+          z-index: 420 !important;
+        }
+
+        html body .app .v153-map-title-status {
+          display: flex !important;
+          align-items: center !important;
+          gap: 3px !important;
+          min-width: 0 !important;
+          overflow: visible !important;
+          position: relative !important;
+          z-index: 430 !important;
+        }
+
+        html body .app .map-compact-stat.map-view-menu-button,
+        html body .app .map-compact-stat.map-date-info-button {
+          height: 19px !important;
+          min-height: 19px !important;
+          padding: 0 5px !important;
+          border-radius: 6px !important;
+          font-size: 9px !important;
+          line-height: 19px !important;
+          white-space: nowrap !important;
+        }
+
+        html body .app .map-title-row .v153-zoom-controls {
+          height: 19px !important;
+          min-height: 19px !important;
+          gap: 1px !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          flex: 0 0 auto !important;
+        }
+
+        html body .app .map-title-row .v153-zoom-controls button {
+          width: 16px !important;
+          min-width: 16px !important;
+          height: 18px !important;
+          min-height: 18px !important;
+          padding: 0 !important;
+          font-size: 10px !important;
+          line-height: 18px !important;
+          border-radius: 5px !important;
+        }
+
+        html body .app .map-title-row .v153-zoom-controls span {
+          min-width: 26px !important;
+          height: 18px !important;
+          padding: 0 2px !important;
+          font-size: 8.5px !important;
+          line-height: 18px !important;
+        }
+
+        html body .app .map-date-info-popup {
+          display: block !important;
+          position: absolute !important;
+          left: 0 !important;
+          top: calc(100% + 5px) !important;
+          z-index: 950 !important;
+          width: min(260px, calc(100vw - 16px)) !important;
+          max-width: min(260px, calc(100vw - 16px)) !important;
+          max-height: calc(100dvh - 78px) !important;
+          overflow: auto !important;
+          pointer-events: auto !important;
+        }
+
+        html body .app .map-section,
+        html body .app .main-layout,
+        html body .app .full-panel {
+          overflow: visible !important;
+        }
+      }
+
+
+
+      /* v156: スマホ縦ヘッダーの配置を強制。メニュー復旧・進行ポップアップ中央固定 */
+      @media (max-width: 640px) and (orientation: portrait) {
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu.v72-top-command-bar.v73-top-command-bar,
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu {
+          display: grid !important;
+          grid-template-columns: 24px 24px 24px minmax(132px, 1fr) 24px !important;
+          grid-template-rows: 26px !important;
+          align-items: center !important;
+          column-gap: 3px !important;
+          row-gap: 0 !important;
+          width: 100% !important;
+          max-width: 100vw !important;
+          height: 30px !important;
+          min-height: 30px !important;
+          max-height: 30px !important;
+          padding: 2px 3px !important;
+          margin: 0 !important;
+          overflow: visible !important;
+          box-sizing: border-box !important;
+          position: relative !important;
+          z-index: 1200 !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu > button.top-icon-button:nth-of-type(1) {
+          grid-column: 1 !important;
+          grid-row: 1 !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu > button.top-icon-button:nth-of-type(2) {
+          grid-column: 2 !important;
+          grid-row: 1 !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu > button.top-icon-button:nth-of-type(3) {
+          grid-column: 3 !important;
+          grid-row: 1 !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu > .top-status-inline.v73-top-status-inline {
+          grid-column: 4 !important;
+          grid-row: 1 !important;
+          order: 0 !important;
+          display: flex !important;
+          flex-direction: row !important;
+          align-items: center !important;
+          justify-content: flex-start !important;
+          flex-wrap: nowrap !important;
+          gap: 3px !important;
+          width: 100% !important;
+          min-width: 0 !important;
+          max-width: 100% !important;
+          height: 24px !important;
+          min-height: 24px !important;
+          max-height: 24px !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          overflow: hidden !important;
+          scrollbar-width: none !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu > .main-menu-wrap.v73-main-menu-wrap {
+          grid-column: 5 !important;
+          grid-row: 1 !important;
+          order: 0 !important;
+          position: static !important;
+          display: block !important;
+          width: 24px !important;
+          min-width: 24px !important;
+          max-width: 24px !important;
+          height: 24px !important;
+          min-height: 24px !important;
+          max-height: 24px !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          overflow: visible !important;
+          z-index: 1300 !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu > button.top-icon-button,
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu > .main-menu-wrap.v73-main-menu-wrap > button.top-icon-button {
+          width: 24px !important;
+          min-width: 24px !important;
+          max-width: 24px !important;
+          height: 24px !important;
+          min-height: 24px !important;
+          max-height: 24px !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          border-radius: 7px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu .top-icon-symbol {
+          font-size: 13px !important;
+          line-height: 1 !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu .top-status-chip-wrap {
+          flex: 0 1 auto !important;
+          min-width: 0 !important;
+          width: auto !important;
+          max-width: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: hidden !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu .top-status-chip-wrap.top-date-status-wrap {
+          display: none !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu .top-compact-stat {
+          height: 20px !important;
+          min-height: 20px !important;
+          max-height: 20px !important;
+          padding: 0 4px !important;
+          border-radius: 6px !important;
+          font-size: 9px !important;
+          line-height: 20px !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu .top-status-chip-wrap:nth-of-type(1) .top-compact-stat {
+          max-width: 76px !important;
+        }
+
+        html body .app nav.bottom-menu.compact-command-menu.icon-command-menu .top-status-chip-wrap:nth-of-type(2) .top-compact-stat {
+          max-width: 58px !important;
+        }
+
+        html body .app .main-menu-wrap.v73-main-menu-wrap .main-menu-popup.icon-main-menu-popup,
+        html body .app .main-menu-popup.icon-main-menu-popup,
+        html body .app .main-menu-popup {
+          display: grid !important;
+          position: fixed !important;
+          top: 34px !important;
+          right: 6px !important;
+          left: auto !important;
+          width: min(220px, calc(100vw - 12px)) !important;
+          max-width: min(220px, calc(100vw - 12px)) !important;
+          max-height: calc(100dvh - 42px) !important;
+          overflow-y: auto !important;
+          z-index: 3000 !important;
+          pointer-events: auto !important;
+        }
+
+        html body .app .map-date-info-popup {
+          display: block !important;
+          position: fixed !important;
+          left: 50% !important;
+          right: auto !important;
+          top: 62px !important;
+          transform: translateX(-50%) !important;
+          width: min(300px, calc(100vw - 20px)) !important;
+          max-width: min(300px, calc(100vw - 20px)) !important;
+          max-height: calc(100dvh - 76px) !important;
+          overflow-y: auto !important;
+          z-index: 3000 !important;
+          padding: 9px 10px !important;
+          border-radius: 12px !important;
+          pointer-events: auto !important;
+        }
+
+        html body .app .top-info-popup-money {
+          position: fixed !important;
+          left: 50% !important;
+          right: auto !important;
+          top: 34px !important;
+          transform: translateX(-50%) !important;
+          width: min(320px, calc(100vw - 20px)) !important;
+          max-width: min(320px, calc(100vw - 20px)) !important;
+          max-height: calc(100dvh - 48px) !important;
+          z-index: 3000 !important;
+        }
+      }
+
+      /* v152: 線路上・道路上の建設禁止を見た目側でも明確化 */
+      .map-tile.pending-build-target.rail-tile,
+      .map-tile.pending-build-target.road-tile {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+    `}</style>
+
 
     {showTitleScreen && (
       <div
@@ -17897,7 +21731,7 @@ return (
           <div style={{ fontSize: 42, lineHeight: 1, marginBottom: 10 }}>🏘️</div>
           <p style={{ margin: "0 0 6px", letterSpacing: 2, fontSize: 12, opacity: 0.82 }}>NOGUCHI CORPORATION PRESENTS</p>
           <h1 style={{ margin: "0 0 8px", fontSize: 28, lineHeight: 1.25 }}>箱庭不動産経営<br />シミュレーション</h1>
-          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>V139</p>
+          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>V68：70×70マップに合わせて、道路を縦横それぞれ4本へ増加。</p>
 
           <div
             style={{
@@ -18152,7 +21986,7 @@ return (
         <div className="recruit-ornament">◇</div>
         <h2>{employeeRecruitmentOffer.ticketType === "premium" ? "プレミアム社員募集" : "社員募集"}</h2>
         <div className="recruit-ornament">◇</div>
-        <p>履歴書が5通届きました</p>
+        <p>履歴書が{employeeRecruitmentOffer.applicants.length}通届きました</p>
       </div>
 
       <div className="recruit-envelope-grid recruit-envelope-desk-row">
@@ -18202,7 +22036,6 @@ return (
         }
 
         const isNewApplicant = !findOwnedEmployeeById(selectedApplicant.id);
-        const awakeningText = isNewApplicant ? "新規採用" : "所持済み：採用すると覚醒";
 
         return (
           <div className="recruit-profile-wrap">
@@ -18231,10 +22064,6 @@ return (
                   </div>
                 </div>
 
-                <div className="recruit-profile-subrow">
-                  <span>Lv.{selectedApplicant.level ?? 1}</span>
-                  <span>{awakeningText}</span>
-                </div>
 
                 <div className="recruit-stat-grid">
                   <div><span>統率</span><strong>{selectedApplicant.leadership ?? 0}</strong></div>
@@ -18262,7 +22091,7 @@ return (
       })()}
 
       <div className="recruit-required-note recruit-required-note-fantasy">
-        採用すると残り4通の履歴書とは縁がなかったことになります。
+        採用すると残り{Math.max(0, employeeRecruitmentOffer.applicants.length - 1)}通の履歴書とは縁がなかったことになります。
       </div>
     </div>
   </div>
@@ -18622,7 +22451,7 @@ return (
       <header className="top-header compact-top-header">
         <div className="top-title-wrap">
           <h1 className="v73-title">箱庭不動産経営シミュレーター
-  v139 {isDemoMode ? "（デモ版）" : ""}</h1>
+  v155 {isDemoMode ? "（デモ版）" : ""}</h1>
         </div>
       </header>
 
@@ -18800,7 +22629,7 @@ return (
       </button>
     </div>
 
-    <div className="top-status-chip-wrap">
+    <div className="top-status-chip-wrap top-date-status-wrap">
       <button
         type="button"
         className={`top-compact-stat top-compact-stat-button ${isDateInfoOpen ? "active" : ""}`}
@@ -18862,6 +22691,8 @@ return (
         <button
           type="button"
           onClick={() => {
+            setBuildEntrySource("menu");
+            setPendingBuildKey(null);
             setActivePanel("build");
             setIsMainMenuOpen(false);
           }}
@@ -18940,48 +22771,68 @@ return (
       <main className={`main-layout ${(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "employeeLibrary" || activePanel === "property" || activePanel === "log" || activePanel === "option" || activePanel === "info" || activePanel === "bank") ? "full-panel" : ""}`}>
         {(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build") && (
         <section className="map-section">
-          <div className="panel-title-row map-title-row">
-            <div className="map-title-status">
-              <h2 className="v73-map-title">マップ</h2>
-              <span className="map-compact-stat" title="人口">👥{totalPopulation.toLocaleString()}</span>
+          <div className="panel-title-row map-title-row v153-map-control-row">
+            <div className="map-title-status v153-map-title-status">
               <button
                 type="button"
-                title="地価表示"
-                aria-label="地価表示"
-                onClick={() => setMapViewMode("landPrice")}
-                className={mapViewMode === "landPrice" ? "active" : ""}
+                className={`map-compact-stat map-view-menu-button ${isMapViewMenuOpen ? "active" : ""}`}
+                title="表示切替"
+                aria-label="表示切替"
+                onClick={() => {
+                  setIsMapViewMenuOpen((current) => !current);
+                  setIsDateInfoOpen(false);
+                }}
               >
-                💴
+                👥{totalPopulation.toLocaleString()} ▾
               </button>
               <button
                 type="button"
-                title="住宅需要マップ"
-                aria-label="住宅需要マップ"
-                onClick={() => setMapViewMode("housingDemand")}
-                className={mapViewMode === "housingDemand" ? "active" : ""}
+                className={`map-compact-stat map-date-inline map-date-info-button ${isDateInfoOpen ? "active" : ""}`}
+                title="経過・プレイヤー情報"
+                aria-label="経過・プレイヤー情報"
+                onClick={() => {
+                  setIsDateInfoOpen((current) => !current);
+                  setIsMapViewMenuOpen(false);
+                  setIsMoneyInfoOpen(false);
+                  setIsMainMenuOpen(false);
+                }}
               >
-                🏘
+                📅{gameDate.label}
               </button>
-              <button
-                type="button"
-                title="商業需要マップ"
-                aria-label="商業需要マップ"
-                onClick={() => setMapViewMode("commercialDemand")}
-                className={mapViewMode === "commercialDemand" ? "active" : ""}
-              >
-                🏪
-              </button>
-              <button
-                type="button"
-                title="工業需要マップ"
-                aria-label="工業需要マップ"
-                onClick={() => setMapViewMode("industrialDemand")}
-                className={mapViewMode === "industrialDemand" ? "active" : ""}
-              >
-                🏭
-              </button>
+              {isMapViewMenuOpen && (
+                <div className="map-view-dropdown">
+                  <button type="button" className={mapViewMode === "normal" ? "active" : ""} onClick={() => { setMapViewMode("normal"); setIsMapViewMenuOpen(false); }}>通常表示</button>
+                  <button type="button" className={mapViewMode === "landPrice" ? "active" : ""} onClick={() => { setMapViewMode("landPrice"); setIsMapViewMenuOpen(false); }}>地価表示</button>
+                  <button type="button" className={mapViewMode === "housingDemand" ? "active" : ""} onClick={() => { setMapViewMode("housingDemand"); setIsMapViewMenuOpen(false); }}>住宅需要</button>
+                  <button type="button" className={mapViewMode === "commercialDemand" ? "active" : ""} onClick={() => { setMapViewMode("commercialDemand"); setIsMapViewMenuOpen(false); }}>商業需要</button>
+                  <button type="button" className={mapViewMode === "industrialDemand" ? "active" : ""} onClick={() => { setMapViewMode("industrialDemand"); setIsMapViewMenuOpen(false); }}>工業需要</button>
+                </div>
+              )}
+              {isDateInfoOpen && (
+                <div className="top-info-popup top-info-popup-date map-date-info-popup">
+                  <h3>📅 進行</h3>
+                  <div className="top-info-popup-grid">
+                    <span>現在</span>
+                    <strong>{gameDate.label}</strong>
+                    <span>経過</span>
+                    <strong>{month}ヶ月</strong>
+                    <span>ランク</span>
+                    <strong>{playerRank}</strong>
+                    <span>EXP</span>
+                    <strong>{playerExp} / {getPlayerRequiredExp(playerRank)}</strong>
+                    <span>人口</span>
+                    <strong>{totalPopulation.toLocaleString()}</strong>
+                    <span>社員</span>
+                    <strong>{employees.length}人</strong>
+                    <span>保管社員</span>
+                    <strong>{employeeStorage.length}人</strong>
+                    <span>支店</span>
+                    <strong>{branchCount}店</strong>
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="zoom-controls">
+            <div className="zoom-controls v153-zoom-controls">
               <button onClick={() => setTileSize(Math.max(18, tileSize - 2))}>－</button>
               <span>{tileSize}px</span>
               <button onClick={() => setTileSize(Math.min(40, tileSize + 2))}>＋</button>
@@ -19133,7 +22984,7 @@ return (
         {(activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "employeeLibrary") && (
   <section
     key={isFloatingPanelMode() ? `floating-panel-${floatingPanelResetKey}` : "normal-side-section"}
-    className={isFloatingPanelMode() ? "side-section floating-panel" : "side-section"}
+    className={isFloatingPanelMode() ? `side-section floating-panel floating-panel-${activePanel}` : "side-section"}
     ref={detailRef}
     style={isFloatingPanelMode() ? {
       "--floating-panel-left": `${floatingPanel.x}px`,
@@ -19412,13 +23263,13 @@ return (
             )}
 
             {selectedTile.owner === OWNER.PLAYER && isBuildableTile(selectedTile) && !selectedTile.building && (
-              <button className={isTileInOfficeRange(selectedTile) ? "action-good" : "action-bad"} onClick={() => setActivePanel("build")} disabled={!isTileInOfficeRange(selectedTile)} title={!isTileInOfficeRange(selectedTile) ? "本社・支店の行動範囲外です" : ""}>
+              <button className={isTileInOfficeRange(selectedTile) ? "action-good" : "action-bad"} onClick={() => { setBuildEntrySource("tile"); setPendingBuildKey(null); setActivePanel("build"); }} disabled={!isTileInOfficeRange(selectedTile)} title={!isTileInOfficeRange(selectedTile) ? "本社・支店の行動範囲外です" : ""}>
                 {isTileInOfficeRange(selectedTile) ? "建設" : "建設不可"}
               </button>
             )}
 
             {selectedMainTile?.owner === OWNER.PLAYER && selectedMainTile?.building && (
-              <button onClick={() => { setSelectedBuildCategory("修繕"); setActivePanel("build"); }}>修繕</button>
+              <button onClick={() => { setBuildEntrySource("tile"); setSelectedBuildCategory("修繕"); setActivePanel("build"); }}>修繕</button>
             )}
 
             {selectedMainTile?.owner === OWNER.PLAYER && selectedMainTile?.feature !== FEATURE.HQ && (
@@ -19828,29 +23679,8 @@ return (
 
 {selectedBuildCategory && (
   <div className="build-detail-popup">
-    <div className="build-detail-header">
-      <strong>{selectedHousingType ? selectedHousingType : selectedBuildCategory}を選択中</strong>
-
-      <div className="button-row" style={{ gap: 6 }}>
-        {selectedBuildCategory === "住宅" && selectedHousingType && (
-          <button
-            className="build-close-button"
-            onClick={() => setSelectedHousingType(null)}
-          >
-            戻る
-          </button>
-        )}
-
-        <button
-          className="build-close-button"
-          onClick={() => {
-            setSelectedBuildCategory(null);
-            setSelectedHousingType(null);
-          }}
-        >
-          閉じる
-        </button>
-      </div>
+    <div className="build-detail-header compact-build-detail-header">
+      <strong>選択中：{selectedHousingType ? selectedHousingType : selectedBuildCategory}</strong>
     </div>
 
     <div className="build-detail-buttons">
