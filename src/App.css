@@ -1,4 +1,4 @@
-/* ===== App_v166 CSS整理版（v165ベース・社員募集封筒スマホ全表示） ===== */
+/* ===== App_v167 CSS整理版（v165ベース・社員募集封筒スマホ全表示） ===== */
 /* 元ファイルの重複指定を整理し、同一セレクタ内の後勝ち指定に統合しています。 */
 * {
   box-sizing: border-box;
@@ -9214,5 +9214,166 @@ th, td {
 
   html body .app .popup-log.recruit-popup-stage .recruit-applicant-summary {
     display: none !important;
+  }
+}
+
+
+/* ===== v167: プロローグ演出 ===== */
+.prologue-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+}
+
+.prologue-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.prologue-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.48), rgba(0, 0, 0, 0.12) 45%, rgba(0, 0, 0, 0.42)),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.72));
+  pointer-events: none;
+}
+
+.prologue-character {
+  position: absolute;
+  right: clamp(10px, 8vw, 110px);
+  bottom: 118px;
+  height: min(76vh, 680px);
+  max-width: 52vw;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.42));
+}
+
+.prologue-top-actions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+}
+
+.prologue-top-actions button,
+.prologue-actions button {
+  border: 1px solid rgba(255, 255, 255, 0.56);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+}
+
+.prologue-dialog-box {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  width: min(920px, calc(100vw - 28px));
+  transform: translateX(-50%);
+  z-index: 2;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 18px;
+  padding: 16px 18px;
+  background: rgba(12, 22, 18, 0.84);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(6px);
+}
+
+.prologue-speaker {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  margin-bottom: 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #123524;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.prologue-text {
+  min-height: 62px;
+  font-size: clamp(18px, 2.1vw, 25px);
+  font-weight: 800;
+  line-height: 1.65;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  white-space: pre-wrap;
+}
+
+.prologue-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.prologue-actions button {
+  min-width: 130px;
+  min-height: 42px;
+  border-radius: 999px;
+}
+
+@media (max-width: 700px) {
+  .prologue-character {
+    right: -22px;
+    bottom: 152px;
+    height: min(58vh, 430px);
+    max-width: 78vw;
+  }
+
+  .prologue-dialog-box {
+    bottom: 12px;
+    padding: 13px 14px;
+    border-radius: 16px;
+  }
+
+  .prologue-text {
+    min-height: 78px;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+
+  .prologue-actions button {
+    min-width: 112px;
+  }
+}
+
+@media (max-width: 480px) {
+  .prologue-character {
+    right: -34px;
+    bottom: 168px;
+    height: min(52vh, 360px);
+  }
+
+  .prologue-top-actions {
+    top: 10px;
+    right: 10px;
+  }
+
+  .prologue-top-actions button {
+    min-height: 36px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .prologue-speaker {
+    margin-bottom: 7px;
+    font-size: 13px;
+  }
+
+  .prologue-text {
+    font-size: 15px;
   }
 }

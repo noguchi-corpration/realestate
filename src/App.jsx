@@ -3,7 +3,7 @@ import "./App.css";
 
 /*
   箱庭不動産経営シミュレーター
-  v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
+  v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
   PC・スマホ両対応版 / v133 配属上限撤廃・役職補正強化・拠点表示整理
   v131：特殊能力効果拡張（入居・家賃・融資・採用対応）
 
@@ -19,7 +19,7 @@ const MAP_SIZE = 70;
 const SAVE_SLOT_COUNT = 3;
 const DEFAULT_COMPANY_NAME = "";
 const DEFAULT_SAVE_SLOT = 1;
-const GAME_VERSION = "v166";
+const GAME_VERSION = "v167";
 const BASE_EMPLOYEE_SALARY = 15;
 const EMPLOYEE_SALARY_GROWTH_RATE = 1.05;
 
@@ -27,6 +27,173 @@ function calculateEmployeeSalaryByLevel(level) {
   const safeLevel = Math.max(1, Math.round(Number(level) || 1));
   return Math.max(1, Math.round(BASE_EMPLOYEE_SALARY * Math.pow(EMPLOYEE_SALARY_GROWTH_RATE, safeLevel - 1)));
 }
+
+
+const AKARI_PORTRAIT_PATHS = {
+  normal: "/characters/nanase_akari/nanase_akari_normal.png",
+  trouble: "/characters/nanase_akari/nanase_akari_trouble.png",
+  surprise: "/characters/nanase_akari/nanase_akari_surprise.png",
+  happy: "/characters/nanase_akari/nanase_akari_happy.png",
+  serious: "/characters/nanase_akari/nanase_akari_serious.png",
+  cry: "/characters/nanase_akari/nanase_akari_cry.png",
+  angry: "/characters/nanase_akari/nanase_akari_angry.png",
+  formal: "/characters/nanase_akari/nanase_akari_formal.png",
+};
+
+const PROLOGUE_SCENES = [
+    {
+    background: "/backgrounds/city_rural_evening.png",
+    speaker: "ナレーション",
+    text: "気が付けば、街には空き家が溢れていた。",
+    portrait: null,
+  },
+      {
+    background: "/backgrounds/city_rural_evening.png",
+    speaker: "ナレーション",
+    text: "住む人を失った家。",
+    portrait: null,
+  },
+        {
+    background: "/backgrounds/city_rural_evening.png",
+    speaker: "ナレーション",
+    text: "手入れされなくなった土地。",
+    portrait: null,
+  },
+          {
+    background: "/backgrounds/city_rural_evening.png",
+    speaker: "ナレーション",
+    text: "閉店した商店。",
+    portrait: null,
+  },
+  {
+    background: "/backgrounds/city_rural_evening.png",
+    speaker: "ナレーション",
+    text: "日本では2008年の約1億2,800万人をピークに人口減少時代へと突入した。",
+    portrait: null,
+  },
+  {
+    background: "/backgrounds/city_rural_evening.png",
+    speaker: "ナレーション",
+    text: "人々は地方を離れ、活気の無くなった街では不動産の価値は下落していった。",
+    portrait: null,
+  },
+  {
+    background: "/backgrounds/office_startup.png",
+    speaker: "ナレーション",
+    text: "・・・岐阜県のとある不動産会社",
+    portrait: null,
+  },
+  {
+    background: "/backgrounds/office_startup.png",
+    speaker: "七瀬 灯里",
+    text: "本日からお世話になります。七瀬灯里と申します。",
+    portrait: "normal",
+  },
+      {
+    background: "/backgrounds/office_startup.png",
+    speaker: "社長",
+    text: "よく来てくれたね。今日からよろしく頼むよ。",
+    portrait: null,
+  },
+  {
+    background: "/backgrounds/office_startup.png",
+    speaker: "七瀬 灯里",
+    text: "社員は……私と社長だけなんですか？",
+    portrait: "surprise",
+  },
+    {
+    background: "/backgrounds/office_startup.png",
+    speaker: "社長",
+    text: "そうなんだ。まだ駆け出しの事務所でね。これから大きくしていこうと思っているんだ。",
+    portrait: null,
+  },
+    {
+    background: "/backgrounds/office_startup.png",
+    speaker: "七瀬 灯里",
+    text: "そうなんですね。わ、分かりました。",
+    portrait: "trouble",
+  },
+  {
+    background: "/backgrounds/property_old_house.png",
+    speaker: "社長",
+    text: "早速だが、最初の仕事だ。あの空き家を買おうと思う。",
+    portrait: null,
+  },
+  {
+    background: "/backgrounds/property_old_house.png",
+    speaker: "七瀬 灯里",
+    text: "あれをですか！？",
+    portrait: "surprise",
+  },
+  {
+    background: "/backgrounds/property_old_house.png",
+    speaker: "社長",
+    text: "そうだ。傷んだところを修繕して、もう一度住める状態にする。",
+    portrait: null,
+  },
+  {
+    background: "/backgrounds/property_old_house.png",
+    speaker: "社長",
+    text: "そして、住みたい人に貸す。",
+    portrait: null,
+  },
+  {
+    background: "/backgrounds/property_old_house.png",
+    speaker: "社長",
+    text: "たったそれだけだ。",
+    portrait: null,
+  },
+    {
+    background: "/backgrounds/property_old_house.png",
+    speaker: "社長",
+    text: "――だが。",
+    portrait: null,
+  },
+  {
+    background: "/backgrounds/property_old_house.png",
+    speaker: "社長",
+    text: "その中には物件の購入、修繕、入居者募集、会社経営――不動産の仕事の面白さが全部詰まっている。",
+    portrait: null,
+  },
+  {
+    background: "/backgrounds/property_old_house.png",
+    speaker: "七瀬 灯里",
+    text: "空き家を直して貸すだけじゃないんですね……。",
+    portrait: "normal",
+  },
+  {
+    background: "/backgrounds/property_old_house.png",
+    speaker: "社長",
+    text: "そうだ。住みたいと思える場所を提供し続けてこそ、街を活性化させていくと思っているんだ。",
+    portrait: null,
+  },
+    {
+    background: "/backgrounds/property_old_house.png",
+    speaker: "七瀬 灯里",
+    text: "なるほど……この辺りも少し活気が無いと思っていましたが、ただ家を貸すだけじゃなくて、街の発展にも繋がっていくんですね。",
+    portrait: "normal",
+  },
+  {
+    background: "/backgrounds/property_old_house.png",
+    speaker: "七瀬 灯里",
+    text: "分かりました！私、頑張ります！",
+    portrait: "normal",
+  },
+   {
+    background: "/backgrounds/office_startup.png",
+    speaker: "ナレーション",
+    text: "こうして、小さな不動産会社の挑戦が始まった。",
+    portrait: null,
+  },
+     {
+    background: "/backgrounds/office_startup.png",
+    speaker: "ナレーション",
+    text: "廃れゆく時代に抗い、街に再び活気を取り戻すために――。",
+    portrait: null,
+  },
+
+  
+];
 
 
 function getSaveSlotKey(slot) {
@@ -1150,7 +1317,7 @@ const SPECIAL_SKILLS = {
   },
 };
 
-const EMPLOYEE_POOL = [
+export const employeeMaster = [
   {
     id: 1,
     name: "青井アリス",
@@ -1167,8 +1334,17 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1187,7 +1363,10 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 3,
@@ -1205,7 +1384,10 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 4,
@@ -1223,8 +1405,17 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -1243,7 +1434,10 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 6,
@@ -1261,7 +1455,10 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 7,
@@ -1279,8 +1476,17 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1299,7 +1505,10 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 9,
@@ -1317,7 +1526,10 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 10,
@@ -1335,8 +1547,17 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -1355,7 +1576,10 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 12,
@@ -1373,7 +1597,10 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 13,
@@ -1391,8 +1618,17 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1411,7 +1647,10 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 15,
@@ -1429,7 +1668,10 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 16,
@@ -1447,8 +1689,17 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -1467,7 +1718,10 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 18,
@@ -1485,7 +1739,10 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 19,
@@ -1503,8 +1760,17 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1523,7 +1789,10 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 21,
@@ -1541,7 +1810,10 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 22,
@@ -1559,8 +1831,17 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -1579,7 +1860,10 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 24,
@@ -1597,7 +1881,10 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 25,
@@ -1615,8 +1902,17 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1635,7 +1931,10 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 27,
@@ -1653,7 +1952,10 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 28,
@@ -1671,8 +1973,17 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -1691,7 +2002,10 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 30,
@@ -1709,7 +2023,10 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 31,
@@ -1727,8 +2044,17 @@ const EMPLOYEE_POOL = [
     salary: 23,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1747,7 +2073,10 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 33,
@@ -1765,7 +2094,10 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 34,
@@ -1783,8 +2115,17 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -1803,7 +2144,10 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 36,
@@ -1821,7 +2165,10 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 37,
@@ -1839,13 +2186,22 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
     id: 38,
-    name: "アステリア・レイン",
+    name: "月城レイン",
     gender: "female",
     rarity: "N",
     level: 1,
@@ -1859,7 +2215,10 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 39,
@@ -1877,7 +2236,10 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 40,
@@ -1895,13 +2257,22 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
     id: 41,
-    name: "アステリア・アクア",
+    name: "白銀 アクア",
     gender: "male",
     rarity: "N",
     level: 1,
@@ -1915,11 +2286,14 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 42,
-    name: "アステリア・ミスティ",
+    name: "九条 ミスティ",
     gender: "female",
     rarity: "N",
     level: 1,
@@ -1933,7 +2307,10 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 43,
@@ -1951,8 +2328,17 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -1971,7 +2357,10 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 45,
@@ -1989,7 +2378,10 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 46,
@@ -2007,8 +2399,17 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -2027,7 +2428,10 @@ const EMPLOYEE_POOL = [
     salary: 17,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 48,
@@ -2045,7 +2449,10 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 49,
@@ -2063,8 +2470,17 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2083,7 +2499,10 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 51,
@@ -2101,7 +2520,10 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 52,
@@ -2119,13 +2541,22 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
     id: 53,
-    name: "アステリア・レクレス",
+    name: "天城 レクレス",
     gender: "female",
     rarity: "N",
     level: 1,
@@ -2139,7 +2570,10 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 54,
@@ -2157,7 +2591,10 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 55,
@@ -2175,8 +2612,17 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2195,7 +2641,10 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 57,
@@ -2213,7 +2662,10 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 58,
@@ -2231,8 +2683,17 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -2251,7 +2712,10 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 60,
@@ -2269,11 +2733,14 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 61,
-    name: "アステリア・オリヴィア",
+    name: "黒崎 オリヴィア",
     gender: "male",
     rarity: "N",
     level: 1,
@@ -2287,8 +2754,17 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2307,7 +2783,10 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 63,
@@ -2325,11 +2804,14 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 64,
-    name: "アステリア・イリア",
+    name: "星乃 イリア",
     gender: "female",
     rarity: "N",
     level: 1,
@@ -2343,8 +2825,17 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -2363,7 +2854,10 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 66,
@@ -2381,7 +2875,10 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 67,
@@ -2399,8 +2896,17 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2419,7 +2925,10 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 69,
@@ -2437,11 +2946,14 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 70,
-    name: "アステリア・ノヴァ",
+    name: "久遠 ノヴァ",
     gender: "female",
     rarity: "N",
     level: 1,
@@ -2455,8 +2967,17 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -2475,7 +2996,10 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 72,
@@ -2493,7 +3017,10 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 73,
@@ -2511,8 +3038,17 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2531,7 +3067,10 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 75,
@@ -2549,7 +3088,10 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 76,
@@ -2567,8 +3109,17 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -2587,7 +3138,10 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 78,
@@ -2605,7 +3159,10 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 79,
@@ -2623,8 +3180,17 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2643,7 +3209,10 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 81,
@@ -2661,11 +3230,14 @@ const EMPLOYEE_POOL = [
     salary: 23,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 82,
-    name: "アステリア・ルーン",
+    name: "桜庭 ルーン",
     gender: "female",
     rarity: "N",
     level: 1,
@@ -2679,13 +3251,22 @@ const EMPLOYEE_POOL = [
     salary: 17,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
     id: 83,
-    name: "アステリア・セレス",
+    name: "神楽 セレス",
     gender: "male",
     rarity: "N",
     level: 1,
@@ -2699,7 +3280,10 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 84,
@@ -2717,7 +3301,10 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 85,
@@ -2735,8 +3322,17 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2755,7 +3351,10 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 87,
@@ -2773,11 +3372,14 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 88,
-    name: "アステリア・フィリア",
+    name: "如月 フィリア",
     gender: "male",
     rarity: "N",
     level: 1,
@@ -2791,8 +3393,17 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -2811,7 +3422,10 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 90,
@@ -2829,7 +3443,10 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 91,
@@ -2847,8 +3464,17 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2867,7 +3493,10 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 93,
@@ -2885,7 +3514,10 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 94,
@@ -2903,8 +3535,17 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -2923,7 +3564,10 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 96,
@@ -2941,7 +3585,10 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 97,
@@ -2959,8 +3606,17 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -2979,7 +3635,10 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 99,
@@ -2997,7 +3656,10 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 100,
@@ -3015,8 +3677,17 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -3035,7 +3706,10 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 102,
@@ -3053,7 +3727,10 @@ const EMPLOYEE_POOL = [
     salary: 18,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 103,
@@ -3071,8 +3748,17 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -3091,7 +3777,10 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 105,
@@ -3109,11 +3798,14 @@ const EMPLOYEE_POOL = [
     salary: 22,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 106,
-    name: "アステリア・レグナ",
+    name: "立花 レグナ",
     gender: "female",
     rarity: "N",
     level: 1,
@@ -3127,8 +3819,17 @@ const EMPLOYEE_POOL = [
     salary: 15,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -3147,7 +3848,10 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 108,
@@ -3165,7 +3869,10 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 109,
@@ -3183,8 +3890,17 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -3203,7 +3919,10 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 111,
@@ -3221,7 +3940,10 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 112,
@@ -3239,8 +3961,17 @@ const EMPLOYEE_POOL = [
     salary: 23,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -3259,7 +3990,10 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 114,
@@ -3277,7 +4011,10 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 115,
@@ -3295,8 +4032,17 @@ const EMPLOYEE_POOL = [
     salary: 21,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "遅刻魔",
+    ],
     skillIds: [
       "LATE_COMER",
+    ],
+    specialCodes: [
+      "LATE_COMER",
+    ],
+    specialDescriptions: [
+      "行動成功率を5％下げる。",
     ],
   },
   {
@@ -3315,7 +4061,10 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 117,
@@ -3333,7 +4082,10 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 118,
@@ -3351,8 +4103,17 @@ const EMPLOYEE_POOL = [
     salary: 19,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -3371,7 +4132,10 @@ const EMPLOYEE_POOL = [
     salary: 16,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 120,
@@ -3389,7 +4153,10 @@ const EMPLOYEE_POOL = [
     salary: 17,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [],
     skillIds: [],
+    specialCodes: [],
+    specialDescriptions: [],
   },
   {
     id: 121,
@@ -3407,28 +4174,37 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "交渉上手",
+    ],
     skillIds: [
       "NEGOTIATION_GOOD",
     ],
+    specialCodes: [
+      "NEGOTIATION_GOOD",
+    ],
+    specialDescriptions: [
+      "土地購入価格を3％下げる。",
+    ],
   },
   {
-    id: 122,
-    name: "佐伯 仁",
-    gender: "male",
+       id: 122,
+    name: "七瀬 灯里",
+    gender: "female",
     rarity: "R",
     level: 1,
     exp: 0,
     awakening: 0,
     awakeningMax: 0,
-    leadership: 58,
-    sales: 48,
-    construction: 52,
-    management: 33,
+    leadership: 40,
+    sales: 45,
+    construction: 27,
+    management: 58,
     salary: 36,
     officeId: "storage",
-    graphicCode: null,
+    graphicCode: "R001",
     skillIds: [
-      "CLUMSY",
+      "地方創生",
     ],
   },
   {
@@ -3447,8 +4223,17 @@ const EMPLOYEE_POOL = [
     salary: 29,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "買い叩き",
+    ],
     skillIds: [
       "BARGAIN_BUYER",
+    ],
+    specialCodes: [
+      "BARGAIN_BUYER",
+    ],
+    specialDescriptions: [
+      "土地購入価格を8％下げる。",
     ],
   },
   {
@@ -3467,8 +4252,17 @@ const EMPLOYEE_POOL = [
     salary: 36,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -3487,8 +4281,17 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "カリスマ営業",
+    ],
     skillIds: [
       "CHARISMA_SALES",
+    ],
+    specialCodes: [
+      "CHARISMA_SALES",
+    ],
+    specialDescriptions: [
+      "営業能力を10上げる。",
     ],
   },
   {
@@ -3507,8 +4310,17 @@ const EMPLOYEE_POOL = [
     salary: 32,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
     skillIds: [
       "SPENDER",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
     ],
   },
   {
@@ -3527,8 +4339,17 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "ヘッドハンター",
+    ],
     skillIds: [
       "HEADHUNTER",
+    ],
+    specialCodes: [
+      "HEADHUNTER",
+    ],
+    specialDescriptions: [
+      "社員募集時の募集人数を1人増やす。",
     ],
   },
   {
@@ -3547,8 +4368,17 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
     skillIds: [
       "CLUMSY",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
     ],
   },
   {
@@ -3567,8 +4397,17 @@ const EMPLOYEE_POOL = [
     salary: 23,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "ベテラン大工",
+    ],
     skillIds: [
       "VETERAN_CARPENTER",
+    ],
+    specialCodes: [
+      "VETERAN_CARPENTER",
+    ],
+    specialDescriptions: [
+      "工期を15％短縮する。",
     ],
   },
   {
@@ -3587,8 +4426,17 @@ const EMPLOYEE_POOL = [
     salary: 27,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -3607,8 +4455,17 @@ const EMPLOYEE_POOL = [
     salary: 31,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "品質第一",
+    ],
     skillIds: [
       "QUALITY_FIRST",
+    ],
+    specialCodes: [
+      "QUALITY_FIRST",
+    ],
+    specialDescriptions: [
+      "建物状態を10上げる。",
     ],
   },
   {
@@ -3627,13 +4484,22 @@ const EMPLOYEE_POOL = [
     salary: 37,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
     skillIds: [
       "SPENDER",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
     ],
   },
   {
     id: 133,
-    name: "アステリア・クロノ",
+    name: "御影 クロノ",
     gender: "female",
     rarity: "R",
     level: 1,
@@ -3647,8 +4513,17 @@ const EMPLOYEE_POOL = [
     salary: 33,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "DIY職人",
+    ],
     skillIds: [
       "DIY_CRAFTSMAN",
+    ],
+    specialCodes: [
+      "DIY_CRAFTSMAN",
+    ],
+    specialDescriptions: [
+      "軽修繕費を50％下げる。",
     ],
   },
   {
@@ -3667,8 +4542,17 @@ const EMPLOYEE_POOL = [
     salary: 23,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
     skillIds: [
       "CLUMSY",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
     ],
   },
   {
@@ -3687,13 +4571,22 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "管理の達人",
+    ],
     skillIds: [
       "MANAGEMENT_MASTER",
+    ],
+    specialCodes: [
+      "MANAGEMENT_MASTER",
+    ],
+    specialDescriptions: [
+      "空室率を5％改善する。",
     ],
   },
   {
     id: 136,
-    name: "アステリア・アルカ",
+    name: "雨宮 アルカ",
     gender: "male",
     rarity: "R",
     level: 1,
@@ -3707,8 +4600,17 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -3727,8 +4629,17 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "お客様第一",
+    ],
     skillIds: [
       "CUSTOMER_FIRST",
+    ],
+    specialCodes: [
+      "CUSTOMER_FIRST",
+    ],
+    specialDescriptions: [
+      "退去率を10％下げる。",
     ],
   },
   {
@@ -3747,8 +4658,17 @@ const EMPLOYEE_POOL = [
     salary: 36,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
     skillIds: [
       "SPENDER",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
     ],
   },
   {
@@ -3767,8 +4687,17 @@ const EMPLOYEE_POOL = [
     salary: 32,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "クレーム対応力",
+    ],
     skillIds: [
       "CLAIM_HANDLER",
+    ],
+    specialCodes: [
+      "CLAIM_HANDLER",
+    ],
+    specialDescriptions: [
+      "入居者満足度を10上げる。",
     ],
   },
   {
@@ -3787,8 +4716,17 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
     skillIds: [
       "CLUMSY",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
     ],
   },
   {
@@ -3807,8 +4745,17 @@ const EMPLOYEE_POOL = [
     salary: 37,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "リーダー",
+    ],
     skillIds: [
       "LEADER",
+    ],
+    specialCodes: [
+      "LEADER",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を3％上げる。",
     ],
   },
   {
@@ -3827,8 +4774,17 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -3847,8 +4803,17 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "カリスマ所長",
+    ],
     skillIds: [
       "CHARISMA_MANAGER",
+    ],
+    specialCodes: [
+      "CHARISMA_MANAGER",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を10％上げる。",
     ],
   },
   {
@@ -3867,8 +4832,17 @@ const EMPLOYEE_POOL = [
     salary: 33,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
     skillIds: [
       "SPENDER",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
     ],
   },
   {
@@ -3887,8 +4861,17 @@ const EMPLOYEE_POOL = [
     salary: 26,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "熱血上司",
+    ],
     skillIds: [
       "PASSIONATE_BOSS",
+    ],
+    specialCodes: [
+      "PASSIONATE_BOSS",
+    ],
+    specialDescriptions: [
+      "獲得経験値を20％上げる。",
     ],
   },
   {
@@ -3907,8 +4890,17 @@ const EMPLOYEE_POOL = [
     salary: 36,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
     skillIds: [
       "CLUMSY",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
     ],
   },
   {
@@ -3927,8 +4919,17 @@ const EMPLOYEE_POOL = [
     salary: 31,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "交渉上手",
+    ],
     skillIds: [
       "NEGOTIATION_GOOD",
+    ],
+    specialCodes: [
+      "NEGOTIATION_GOOD",
+    ],
+    specialDescriptions: [
+      "土地購入価格を3％下げる。",
     ],
   },
   {
@@ -3947,8 +4948,17 @@ const EMPLOYEE_POOL = [
     salary: 27,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -3967,8 +4977,17 @@ const EMPLOYEE_POOL = [
     salary: 33,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "買い叩き",
+    ],
     skillIds: [
       "BARGAIN_BUYER",
+    ],
+    specialCodes: [
+      "BARGAIN_BUYER",
+    ],
+    specialDescriptions: [
+      "土地購入価格を8％下げる。",
     ],
   },
   {
@@ -3987,8 +5006,17 @@ const EMPLOYEE_POOL = [
     salary: 40,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
     skillIds: [
       "SPENDER",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
     ],
   },
   {
@@ -4007,8 +5035,17 @@ const EMPLOYEE_POOL = [
     salary: 39,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "カリスマ営業",
+    ],
     skillIds: [
       "CHARISMA_SALES",
+    ],
+    specialCodes: [
+      "CHARISMA_SALES",
+    ],
+    specialDescriptions: [
+      "営業能力を10上げる。",
     ],
   },
   {
@@ -4027,8 +5064,17 @@ const EMPLOYEE_POOL = [
     salary: 38,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
     skillIds: [
       "CLUMSY",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
     ],
   },
   {
@@ -4047,8 +5093,17 @@ const EMPLOYEE_POOL = [
     salary: 28,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "ヘッドハンター",
+    ],
     skillIds: [
       "HEADHUNTER",
+    ],
+    specialCodes: [
+      "HEADHUNTER",
+    ],
+    specialDescriptions: [
+      "社員募集時の募集人数を1人増やす。",
     ],
   },
   {
@@ -4067,8 +5122,17 @@ const EMPLOYEE_POOL = [
     salary: 37,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -4087,8 +5151,17 @@ const EMPLOYEE_POOL = [
     salary: 33,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "ベテラン大工",
+    ],
     skillIds: [
       "VETERAN_CARPENTER",
+    ],
+    specialCodes: [
+      "VETERAN_CARPENTER",
+    ],
+    specialDescriptions: [
+      "工期を15％短縮する。",
     ],
   },
   {
@@ -4107,8 +5180,17 @@ const EMPLOYEE_POOL = [
     salary: 29,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
     skillIds: [
       "SPENDER",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
     ],
   },
   {
@@ -4127,8 +5209,17 @@ const EMPLOYEE_POOL = [
     salary: 29,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "品質第一",
+    ],
     skillIds: [
       "QUALITY_FIRST",
+    ],
+    specialCodes: [
+      "QUALITY_FIRST",
+    ],
+    specialDescriptions: [
+      "建物状態を10上げる。",
     ],
   },
   {
@@ -4147,8 +5238,17 @@ const EMPLOYEE_POOL = [
     salary: 29,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
     skillIds: [
       "CLUMSY",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
     ],
   },
   {
@@ -4167,8 +5267,17 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "DIY職人",
+    ],
     skillIds: [
       "DIY_CRAFTSMAN",
+    ],
+    specialCodes: [
+      "DIY_CRAFTSMAN",
+    ],
+    specialDescriptions: [
+      "軽修繕費を50％下げる。",
     ],
   },
   {
@@ -4187,8 +5296,17 @@ const EMPLOYEE_POOL = [
     salary: 37,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -4207,8 +5325,17 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "管理の達人",
+    ],
     skillIds: [
       "MANAGEMENT_MASTER",
+    ],
+    specialCodes: [
+      "MANAGEMENT_MASTER",
+    ],
+    specialDescriptions: [
+      "空室率を5％改善する。",
     ],
   },
   {
@@ -4227,8 +5354,17 @@ const EMPLOYEE_POOL = [
     salary: 34,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
     skillIds: [
       "SPENDER",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
     ],
   },
   {
@@ -4247,13 +5383,22 @@ const EMPLOYEE_POOL = [
     salary: 26,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "お客様第一",
+    ],
     skillIds: [
       "CUSTOMER_FIRST",
+    ],
+    specialCodes: [
+      "CUSTOMER_FIRST",
+    ],
+    specialDescriptions: [
+      "退去率を10％下げる。",
     ],
   },
   {
     id: 164,
-    name: "アステリア・ルーチェ",
+    name: "白石 ルーチェ",
     gender: "male",
     rarity: "R",
     level: 1,
@@ -4267,8 +5412,17 @@ const EMPLOYEE_POOL = [
     salary: 40,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
     skillIds: [
       "CLUMSY",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
     ],
   },
   {
@@ -4287,13 +5441,22 @@ const EMPLOYEE_POOL = [
     salary: 33,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "クレーム対応力",
+    ],
     skillIds: [
       "CLAIM_HANDLER",
+    ],
+    specialCodes: [
+      "CLAIM_HANDLER",
+    ],
+    specialDescriptions: [
+      "入居者満足度を10上げる。",
     ],
   },
   {
     id: 166,
-    name: "アステリア・ベル",
+    name: "一ノ瀬 ベル",
     gender: "male",
     rarity: "R",
     level: 1,
@@ -4307,8 +5470,17 @@ const EMPLOYEE_POOL = [
     salary: 29,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -4327,8 +5499,17 @@ const EMPLOYEE_POOL = [
     salary: 35,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "リーダー",
+    ],
     skillIds: [
       "LEADER",
+    ],
+    specialCodes: [
+      "LEADER",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を3％上げる。",
     ],
   },
   {
@@ -4347,8 +5528,17 @@ const EMPLOYEE_POOL = [
     salary: 40,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
     skillIds: [
       "SPENDER",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
     ],
   },
   {
@@ -4367,8 +5557,17 @@ const EMPLOYEE_POOL = [
     salary: 27,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "カリスマ所長",
+    ],
     skillIds: [
       "CHARISMA_MANAGER",
+    ],
+    specialCodes: [
+      "CHARISMA_MANAGER",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を10％上げる。",
     ],
   },
   {
@@ -4387,8 +5586,17 @@ const EMPLOYEE_POOL = [
     salary: 38,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
     skillIds: [
       "CLUMSY",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
     ],
   },
   {
@@ -4407,8 +5615,17 @@ const EMPLOYEE_POOL = [
     salary: 35,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "熱血上司",
+    ],
     skillIds: [
       "PASSIONATE_BOSS",
+    ],
+    specialCodes: [
+      "PASSIONATE_BOSS",
+    ],
+    specialDescriptions: [
+      "獲得経験値を20％上げる。",
     ],
   },
   {
@@ -4427,8 +5644,17 @@ const EMPLOYEE_POOL = [
     salary: 24,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
@@ -4447,13 +5673,22 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "交渉上手",
+    ],
     skillIds: [
       "NEGOTIATION_GOOD",
+    ],
+    specialCodes: [
+      "NEGOTIATION_GOOD",
+    ],
+    specialDescriptions: [
+      "土地購入価格を3％下げる。",
     ],
   },
   {
     id: 174,
-    name: "アステリア・クラウン",
+    name: "秋沢 クラウン",
     gender: "female",
     rarity: "R",
     level: 1,
@@ -4467,8 +5702,17 @@ const EMPLOYEE_POOL = [
     salary: 40,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "浪費家",
+    ],
     skillIds: [
       "SPENDER",
+    ],
+    specialCodes: [
+      "SPENDER",
+    ],
+    specialDescriptions: [
+      "給与が20％上がる。",
     ],
   },
   {
@@ -4487,8 +5731,17 @@ const EMPLOYEE_POOL = [
     salary: 40,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "買い叩き",
+    ],
     skillIds: [
       "BARGAIN_BUYER",
+    ],
+    specialCodes: [
+      "BARGAIN_BUYER",
+    ],
+    specialDescriptions: [
+      "土地購入価格を8％下げる。",
     ],
   },
   {
@@ -4507,8 +5760,17 @@ const EMPLOYEE_POOL = [
     salary: 20,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "不器用",
+    ],
     skillIds: [
       "CLUMSY",
+    ],
+    specialCodes: [
+      "CLUMSY",
+    ],
+    specialDescriptions: [
+      "建築能力が10下がる。",
     ],
   },
   {
@@ -4527,8 +5789,17 @@ const EMPLOYEE_POOL = [
     salary: 34,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "カリスマ営業",
+    ],
     skillIds: [
       "CHARISMA_SALES",
+    ],
+    specialCodes: [
+      "CHARISMA_SALES",
+    ],
+    specialDescriptions: [
+      "営業能力を10上げる。",
     ],
   },
   {
@@ -4547,13 +5818,22 @@ const EMPLOYEE_POOL = [
     salary: 25,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "面倒くさがり",
+    ],
     skillIds: [
       "LAZY",
+    ],
+    specialCodes: [
+      "LAZY",
+    ],
+    specialDescriptions: [
+      "管理能力が10下がる。",
     ],
   },
   {
     id: 179,
-    name: "アステリア・ヴェール",
+    name: "東雲 ヴェール",
     gender: "male",
     rarity: "R",
     level: 1,
@@ -4567,8 +5847,17 @@ const EMPLOYEE_POOL = [
     salary: 38,
     officeId: "storage",
     graphicCode: null,
+    specialNames: [
+      "ヘッドハンター",
+    ],
     skillIds: [
       "HEADHUNTER",
+    ],
+    specialCodes: [
+      "HEADHUNTER",
+    ],
+    specialDescriptions: [
+      "社員募集時の募集人数を1人増やす。",
     ],
   },
   {
@@ -4587,8 +5876,17 @@ const EMPLOYEE_POOL = [
     salary: 44,
     officeId: "storage",
     graphicCode: "HR001",
+    specialNames: [
+      "お客様第一",
+    ],
     skillIds: [
       "CUSTOMER_FIRST",
+    ],
+    specialCodes: [
+      "CUSTOMER_FIRST",
+    ],
+    specialDescriptions: [
+      "退去率を10％下げる。",
     ],
   },
   {
@@ -4607,8 +5905,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR002",
+    specialNames: [
+      "不動産鑑定士",
+    ],
     skillIds: [
       "REAL_ESTATE_APPRAISER",
+    ],
+    specialCodes: [
+      "REAL_ESTATE_APPRAISER",
+    ],
+    specialDescriptions: [
+      "物件調査・査定精度が上がり、購入判断成功率を8％上げる。",
     ],
   },
   {
@@ -4627,8 +5934,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR003",
+    specialNames: [
+      "名将",
+    ],
     skillIds: [
       "GREAT_COMMANDER",
+    ],
+    specialCodes: [
+      "GREAT_COMMANDER",
+    ],
+    specialDescriptions: [
+      "同じ事務所の社員能力を8％上げる。",
     ],
   },
   {
@@ -4647,8 +5963,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR004",
+    specialNames: [
+      "巡回名人",
+    ],
     skillIds: [
       "INSPECTION_MASTER",
+    ],
+    specialCodes: [
+      "INSPECTION_MASTER",
+    ],
+    specialDescriptions: [
+      "管理能力を15上げ、退去率を5％下げる。",
     ],
   },
   {
@@ -4667,8 +5992,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR005",
+    specialNames: [
+      "交渉上手",
+    ],
     skillIds: [
       "NEGOTIATION_GOOD",
+    ],
+    specialCodes: [
+      "NEGOTIATION_GOOD",
+    ],
+    specialDescriptions: [
+      "土地購入価格を3％下げる。",
     ],
   },
   {
@@ -4687,8 +6021,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR006",
+    specialNames: [
+      "ヘッドハンター",
+    ],
     skillIds: [
       "HEADHUNTER",
+    ],
+    specialCodes: [
+      "HEADHUNTER",
+    ],
+    specialDescriptions: [
+      "社員募集時の募集人数を1人増やす。",
     ],
   },
   {
@@ -4707,8 +6050,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR007",
+    specialNames: [
+      "修繕の匠",
+    ],
     skillIds: [
       "REPAIR_MASTER",
+    ],
+    specialCodes: [
+      "REPAIR_MASTER",
+    ],
+    specialDescriptions: [
+      "修繕費を15％下げ、建物状態の回復量を10上げる。",
     ],
   },
   {
@@ -4727,13 +6079,22 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR008",
+    specialNames: [
+      "買い叩き",
+    ],
     skillIds: [
       "BARGAIN_BUYER",
+    ],
+    specialCodes: [
+      "BARGAIN_BUYER",
+    ],
+    specialDescriptions: [
+      "土地購入価格を8％下げる。",
     ],
   },
   {
     id: 509,
-    name: "七瀬 灯里",
+    name: "相沢 美月",
     gender: "female",
     rarity: "HR",
     level: 1,
@@ -4747,8 +6108,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR009",
+    specialNames: [
+      "管理の達人",
+    ],
     skillIds: [
       "MANAGEMENT_MASTER",
+    ],
+    specialCodes: [
+      "MANAGEMENT_MASTER",
+    ],
+    specialDescriptions: [
+      "空室率を5％改善する。",
     ],
   },
   {
@@ -4767,8 +6137,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR010",
+    specialNames: [
+      "ヘッドハンター",
+    ],
     skillIds: [
       "HEADHUNTER",
+    ],
+    specialCodes: [
+      "HEADHUNTER",
+    ],
+    specialDescriptions: [
+      "社員募集時の募集人数を1人増やす。",
     ],
   },
   {
@@ -4787,8 +6166,17 @@ const EMPLOYEE_POOL = [
     salary: 42,
     officeId: "storage",
     graphicCode: "HR011",
+    specialNames: [
+      "品質第一",
+    ],
     skillIds: [
       "QUALITY_FIRST",
+    ],
+    specialCodes: [
+      "QUALITY_FIRST",
+    ],
+    specialDescriptions: [
+      "建物状態を10上げる。",
     ],
   },
   {
@@ -4807,8 +6195,17 @@ const EMPLOYEE_POOL = [
     salary: 40,
     officeId: "storage",
     graphicCode: "HR012",
+    specialNames: [
+      "お客様第一",
+    ],
     skillIds: [
       "CUSTOMER_FIRST",
+    ],
+    specialCodes: [
+      "CUSTOMER_FIRST",
+    ],
+    specialDescriptions: [
+      "退去率を10％下げる。",
     ],
   },
   {
@@ -4827,8 +6224,17 @@ const EMPLOYEE_POOL = [
     salary: 46,
     officeId: "storage",
     graphicCode: "HR013",
+    specialNames: [
+      "ベテラン大工",
+    ],
     skillIds: [
       "VETERAN_CARPENTER",
+    ],
+    specialCodes: [
+      "VETERAN_CARPENTER",
+    ],
+    specialDescriptions: [
+      "工期を15％短縮する。",
     ],
   },
   {
@@ -4847,8 +6253,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR014",
+    specialNames: [
+      "お客様第一",
+    ],
     skillIds: [
       "CUSTOMER_FIRST",
+    ],
+    specialCodes: [
+      "CUSTOMER_FIRST",
+    ],
+    specialDescriptions: [
+      "退去率を10％下げる。",
     ],
   },
   {
@@ -4867,8 +6282,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR015",
+    specialNames: [
+      "お客様第一",
+    ],
     skillIds: [
       "CUSTOMER_FIRST",
+    ],
+    specialCodes: [
+      "CUSTOMER_FIRST",
+    ],
+    specialDescriptions: [
+      "退去率を10％下げる。",
     ],
   },
   {
@@ -4887,8 +6311,17 @@ const EMPLOYEE_POOL = [
     salary: 44,
     officeId: "storage",
     graphicCode: "HR016",
+    specialNames: [
+      "カリスマ所長",
+    ],
     skillIds: [
       "CHARISMA_MANAGER",
+    ],
+    specialCodes: [
+      "CHARISMA_MANAGER",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を10％上げる。",
     ],
   },
   {
@@ -4907,8 +6340,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR017",
+    specialNames: [
+      "節約家",
+    ],
     skillIds: [
       "SAVER",
+    ],
+    specialCodes: [
+      "SAVER",
+    ],
+    specialDescriptions: [
+      "維持費を10％下げる。",
     ],
   },
   {
@@ -4927,8 +6369,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR018",
+    specialNames: [
+      "不動産鑑定士",
+    ],
     skillIds: [
       "REAL_ESTATE_APPRAISER",
+    ],
+    specialCodes: [
+      "REAL_ESTATE_APPRAISER",
+    ],
+    specialDescriptions: [
+      "物件調査・査定精度が上がり、購入判断成功率を8％上げる。",
     ],
   },
   {
@@ -4947,8 +6398,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR019",
+    specialNames: [
+      "一級建築士",
+    ],
     skillIds: [
       "FIRST_CLASS_ARCHITECT",
+    ],
+    specialCodes: [
+      "FIRST_CLASS_ARCHITECT",
+    ],
+    specialDescriptions: [
+      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
     ],
   },
   {
@@ -4967,8 +6427,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR020",
+    specialNames: [
+      "買い叩き",
+    ],
     skillIds: [
       "BARGAIN_BUYER",
+    ],
+    specialCodes: [
+      "BARGAIN_BUYER",
+    ],
+    specialDescriptions: [
+      "土地購入価格を8％下げる。",
     ],
   },
   {
@@ -4987,8 +6456,17 @@ const EMPLOYEE_POOL = [
     salary: 51,
     officeId: "storage",
     graphicCode: "HR021",
+    specialNames: [
+      "クレーム対応力",
+    ],
     skillIds: [
       "CLAIM_HANDLER",
+    ],
+    specialCodes: [
+      "CLAIM_HANDLER",
+    ],
+    specialDescriptions: [
+      "入居者満足度を10上げる。",
     ],
   },
   {
@@ -5007,8 +6485,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR022",
+    specialNames: [
+      "ヘッドハンター",
+    ],
     skillIds: [
       "HEADHUNTER",
+    ],
+    specialCodes: [
+      "HEADHUNTER",
+    ],
+    specialDescriptions: [
+      "社員募集時の募集人数を1人増やす。",
     ],
   },
   {
@@ -5027,8 +6514,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR023",
+    specialNames: [
+      "凄腕交渉人",
+    ],
     skillIds: [
       "ACE_NEGOTIATOR",
+    ],
+    specialCodes: [
+      "ACE_NEGOTIATOR",
+    ],
+    specialDescriptions: [
+      "土地購入価格を10％下げる。",
     ],
   },
   {
@@ -5047,8 +6543,17 @@ const EMPLOYEE_POOL = [
     salary: 46,
     officeId: "storage",
     graphicCode: "HR024",
+    specialNames: [
+      "交渉上手",
+    ],
     skillIds: [
       "NEGOTIATION_GOOD",
+    ],
+    specialCodes: [
+      "NEGOTIATION_GOOD",
+    ],
+    specialDescriptions: [
+      "土地購入価格を3％下げる。",
     ],
   },
   {
@@ -5067,8 +6572,17 @@ const EMPLOYEE_POOL = [
     salary: 46,
     officeId: "storage",
     graphicCode: "HR025",
+    specialNames: [
+      "ベテラン大工",
+    ],
     skillIds: [
       "VETERAN_CARPENTER",
+    ],
+    specialCodes: [
+      "VETERAN_CARPENTER",
+    ],
+    specialDescriptions: [
+      "工期を15％短縮する。",
     ],
   },
   {
@@ -5087,8 +6601,17 @@ const EMPLOYEE_POOL = [
     salary: 47,
     officeId: "storage",
     graphicCode: "HR026",
+    specialNames: [
+      "管理の達人",
+    ],
     skillIds: [
       "MANAGEMENT_MASTER",
+    ],
+    specialCodes: [
+      "MANAGEMENT_MASTER",
+    ],
+    specialDescriptions: [
+      "空室率を5％改善する。",
     ],
   },
   {
@@ -5107,8 +6630,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR027",
+    specialNames: [
+      "交渉上手",
+    ],
     skillIds: [
       "NEGOTIATION_GOOD",
+    ],
+    specialCodes: [
+      "NEGOTIATION_GOOD",
+    ],
+    specialDescriptions: [
+      "土地購入価格を3％下げる。",
     ],
   },
   {
@@ -5127,8 +6659,17 @@ const EMPLOYEE_POOL = [
     salary: 43,
     officeId: "storage",
     graphicCode: "HR028",
+    specialNames: [
+      "カリスマ所長",
+    ],
     skillIds: [
       "CHARISMA_MANAGER",
+    ],
+    specialCodes: [
+      "CHARISMA_MANAGER",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を10％上げる。",
     ],
   },
   {
@@ -5147,8 +6688,17 @@ const EMPLOYEE_POOL = [
     salary: 49,
     officeId: "storage",
     graphicCode: "HR029",
+    specialNames: [
+      "お客様第一",
+    ],
     skillIds: [
       "CUSTOMER_FIRST",
+    ],
+    specialCodes: [
+      "CUSTOMER_FIRST",
+    ],
+    specialDescriptions: [
+      "退去率を10％下げる。",
     ],
   },
   {
@@ -5167,8 +6717,17 @@ const EMPLOYEE_POOL = [
     salary: 44,
     officeId: "storage",
     graphicCode: "HR030",
+    specialNames: [
+      "教育係",
+    ],
     skillIds: [
       "MENTOR",
+    ],
+    specialCodes: [
+      "MENTOR",
+    ],
+    specialDescriptions: [
+      "同じ事務所の社員の獲得経験値を10％上げる。",
     ],
   },
   {
@@ -5187,8 +6746,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR031",
+    specialNames: [
+      "クレーム対応力",
+    ],
     skillIds: [
       "CLAIM_HANDLER",
+    ],
+    specialCodes: [
+      "CLAIM_HANDLER",
+    ],
+    specialDescriptions: [
+      "入居者満足度を10上げる。",
     ],
   },
   {
@@ -5207,8 +6775,17 @@ const EMPLOYEE_POOL = [
     salary: 53,
     officeId: "storage",
     graphicCode: "HR032",
+    specialNames: [
+      "巡回名人",
+    ],
     skillIds: [
       "INSPECTION_MASTER",
+    ],
+    specialCodes: [
+      "INSPECTION_MASTER",
+    ],
+    specialDescriptions: [
+      "管理能力を15上げ、退去率を5％下げる。",
     ],
   },
   {
@@ -5227,8 +6804,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR033",
+    specialNames: [
+      "熱血上司",
+    ],
     skillIds: [
       "PASSIONATE_BOSS",
+    ],
+    specialCodes: [
+      "PASSIONATE_BOSS",
+    ],
+    specialDescriptions: [
+      "獲得経験値を20％上げる。",
     ],
   },
   {
@@ -5247,8 +6833,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR034",
+    specialNames: [
+      "巡回名人",
+    ],
     skillIds: [
       "INSPECTION_MASTER",
+    ],
+    specialCodes: [
+      "INSPECTION_MASTER",
+    ],
+    specialDescriptions: [
+      "管理能力を15上げ、退去率を5％下げる。",
     ],
   },
   {
@@ -5267,8 +6862,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR035",
+    specialNames: [
+      "人脈王",
+    ],
     skillIds: [
       "NETWORK_KING",
+    ],
+    specialCodes: [
+      "NETWORK_KING",
+    ],
+    specialDescriptions: [
+      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
     ],
   },
   {
@@ -5287,8 +6891,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR036",
+    specialNames: [
+      "お客様第一",
+    ],
     skillIds: [
       "CUSTOMER_FIRST",
+    ],
+    specialCodes: [
+      "CUSTOMER_FIRST",
+    ],
+    specialDescriptions: [
+      "退去率を10％下げる。",
     ],
   },
   {
@@ -5307,8 +6920,17 @@ const EMPLOYEE_POOL = [
     salary: 52,
     officeId: "storage",
     graphicCode: "HR037",
+    specialNames: [
+      "管理の達人",
+    ],
     skillIds: [
       "MANAGEMENT_MASTER",
+    ],
+    specialCodes: [
+      "MANAGEMENT_MASTER",
+    ],
+    specialDescriptions: [
+      "空室率を5％改善する。",
     ],
   },
   {
@@ -5327,8 +6949,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR038",
+    specialNames: [
+      "カリスマ所長",
+    ],
     skillIds: [
       "CHARISMA_MANAGER",
+    ],
+    specialCodes: [
+      "CHARISMA_MANAGER",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を10％上げる。",
     ],
   },
   {
@@ -5347,8 +6978,17 @@ const EMPLOYEE_POOL = [
     salary: 53,
     officeId: "storage",
     graphicCode: "HR039",
+    specialNames: [
+      "教育係",
+    ],
     skillIds: [
       "MENTOR",
+    ],
+    specialCodes: [
+      "MENTOR",
+    ],
+    specialDescriptions: [
+      "同じ事務所の社員の獲得経験値を10％上げる。",
     ],
   },
   {
@@ -5367,8 +7007,17 @@ const EMPLOYEE_POOL = [
     salary: 51,
     officeId: "storage",
     graphicCode: "HR040",
+    specialNames: [
+      "一級建築士",
+    ],
     skillIds: [
       "FIRST_CLASS_ARCHITECT",
+    ],
+    specialCodes: [
+      "FIRST_CLASS_ARCHITECT",
+    ],
+    specialDescriptions: [
+      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
     ],
   },
   {
@@ -5387,8 +7036,17 @@ const EMPLOYEE_POOL = [
     salary: 45,
     officeId: "storage",
     graphicCode: "HR041",
+    specialNames: [
+      "ベテラン大工",
+    ],
     skillIds: [
       "VETERAN_CARPENTER",
+    ],
+    specialCodes: [
+      "VETERAN_CARPENTER",
+    ],
+    specialDescriptions: [
+      "工期を15％短縮する。",
     ],
   },
   {
@@ -5407,8 +7065,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR042",
+    specialNames: [
+      "管理の達人",
+    ],
     skillIds: [
       "MANAGEMENT_MASTER",
+    ],
+    specialCodes: [
+      "MANAGEMENT_MASTER",
+    ],
+    specialDescriptions: [
+      "空室率を5％改善する。",
     ],
   },
   {
@@ -5427,8 +7094,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR043",
+    specialNames: [
+      "DIY職人",
+    ],
     skillIds: [
       "DIY_CRAFTSMAN",
+    ],
+    specialCodes: [
+      "DIY_CRAFTSMAN",
+    ],
+    specialDescriptions: [
+      "軽修繕費を50％下げる。",
     ],
   },
   {
@@ -5447,8 +7123,17 @@ const EMPLOYEE_POOL = [
     salary: 54,
     officeId: "storage",
     graphicCode: "HR044",
+    specialNames: [
+      "ヘッドハンター",
+    ],
     skillIds: [
       "HEADHUNTER",
+    ],
+    specialCodes: [
+      "HEADHUNTER",
+    ],
+    specialDescriptions: [
+      "社員募集時の募集人数を1人増やす。",
     ],
   },
   {
@@ -5467,8 +7152,17 @@ const EMPLOYEE_POOL = [
     salary: 51,
     officeId: "storage",
     graphicCode: "HR045",
+    specialNames: [
+      "不動産鑑定士",
+    ],
     skillIds: [
       "REAL_ESTATE_APPRAISER",
+    ],
+    specialCodes: [
+      "REAL_ESTATE_APPRAISER",
+    ],
+    specialDescriptions: [
+      "物件調査・査定精度が上がり、購入判断成功率を8％上げる。",
     ],
   },
   {
@@ -5487,8 +7181,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR046",
+    specialNames: [
+      "カリスマ所長",
+    ],
     skillIds: [
       "CHARISMA_MANAGER",
+    ],
+    specialCodes: [
+      "CHARISMA_MANAGER",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を10％上げる。",
     ],
   },
   {
@@ -5507,8 +7210,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR047",
+    specialNames: [
+      "凄腕交渉人",
+    ],
     skillIds: [
       "ACE_NEGOTIATOR",
+    ],
+    specialCodes: [
+      "ACE_NEGOTIATOR",
+    ],
+    specialDescriptions: [
+      "土地購入価格を10％下げる。",
     ],
   },
   {
@@ -5527,8 +7239,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR048",
+    specialNames: [
+      "管理の達人",
+    ],
     skillIds: [
       "MANAGEMENT_MASTER",
+    ],
+    specialCodes: [
+      "MANAGEMENT_MASTER",
+    ],
+    specialDescriptions: [
+      "空室率を5％改善する。",
     ],
   },
   {
@@ -5547,8 +7268,17 @@ const EMPLOYEE_POOL = [
     salary: 50,
     officeId: "storage",
     graphicCode: "HR049",
+    specialNames: [
+      "人脈王",
+    ],
     skillIds: [
       "NETWORK_KING",
+    ],
+    specialCodes: [
+      "NETWORK_KING",
+    ],
+    specialDescriptions: [
+      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
     ],
   },
   {
@@ -5567,8 +7297,17 @@ const EMPLOYEE_POOL = [
     salary: 55,
     officeId: "storage",
     graphicCode: "HR050",
+    specialNames: [
+      "家賃回収人",
+    ],
     skillIds: [
       "RENT_COLLECTOR",
+    ],
+    specialCodes: [
+      "RENT_COLLECTOR",
+    ],
+    specialDescriptions: [
+      "家賃回収率を5％上げ、滞納発生率を10％下げる。",
     ],
   },
   {
@@ -5587,9 +7326,21 @@ const EMPLOYEE_POOL = [
     salary: 66,
     officeId: "storage",
     graphicCode: "SR001",
+    specialNames: [
+      "リーダー",
+      "伝説の営業マン",
+    ],
     skillIds: [
       "LEADER",
       "LEGENDARY_SALESPERSON",
+    ],
+    specialCodes: [
+      "LEADER",
+      "LEGENDARY_SALESPERSON",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を3％上げる。",
+      "営業能力を20上げ、入居率を5％上げる。",
     ],
   },
   {
@@ -5608,9 +7359,21 @@ const EMPLOYEE_POOL = [
     salary: 89,
     officeId: "storage",
     graphicCode: "SR002",
+    specialNames: [
+      "現場監督",
+      "修繕の匠",
+    ],
     skillIds: [
       "SITE_SUPERVISOR",
       "REPAIR_MASTER",
+    ],
+    specialCodes: [
+      "SITE_SUPERVISOR",
+      "REPAIR_MASTER",
+    ],
+    specialDescriptions: [
+      "建築能力を10上げ、建築費を5％下げる。",
+      "修繕費を15％下げ、建物状態の回復量を10上げる。",
     ],
   },
   {
@@ -5629,9 +7392,21 @@ const EMPLOYEE_POOL = [
     salary: 70,
     officeId: "storage",
     graphicCode: "SR003",
+    specialNames: [
+      "名将",
+      "交渉上手",
+    ],
     skillIds: [
       "GREAT_COMMANDER",
       "NEGOTIATION_GOOD",
+    ],
+    specialCodes: [
+      "GREAT_COMMANDER",
+      "NEGOTIATION_GOOD",
+    ],
+    specialDescriptions: [
+      "同じ事務所の社員能力を8％上げる。",
+      "土地購入価格を3％下げる。",
     ],
   },
   {
@@ -5650,9 +7425,21 @@ const EMPLOYEE_POOL = [
     salary: 74,
     officeId: "storage",
     graphicCode: "SR004",
+    specialNames: [
+      "熱血上司",
+      "解体屋",
+    ],
     skillIds: [
       "PASSIONATE_BOSS",
       "DEMOLITION_EXPERT",
+    ],
+    specialCodes: [
+      "PASSIONATE_BOSS",
+      "DEMOLITION_EXPERT",
+    ],
+    specialDescriptions: [
+      "獲得経験値を20％上げる。",
+      "解体費を20％下げる。",
     ],
   },
   {
@@ -5671,9 +7458,21 @@ const EMPLOYEE_POOL = [
     salary: 68,
     officeId: "storage",
     graphicCode: "SR005",
+    specialNames: [
+      "クレーム対応力",
+      "巡回名人",
+    ],
     skillIds: [
       "CLAIM_HANDLER",
       "INSPECTION_MASTER",
+    ],
+    specialCodes: [
+      "CLAIM_HANDLER",
+      "INSPECTION_MASTER",
+    ],
+    specialDescriptions: [
+      "入居者満足度を10上げる。",
+      "管理能力を15上げ、退去率を5％下げる。",
     ],
   },
   {
@@ -5692,9 +7491,21 @@ const EMPLOYEE_POOL = [
     salary: 96,
     officeId: "storage",
     graphicCode: "SR006",
+    specialNames: [
+      "クレーム対応力",
+      "買い叩き",
+    ],
     skillIds: [
       "CLAIM_HANDLER",
       "BARGAIN_BUYER",
+    ],
+    specialCodes: [
+      "CLAIM_HANDLER",
+      "BARGAIN_BUYER",
+    ],
+    specialDescriptions: [
+      "入居者満足度を10上げる。",
+      "土地購入価格を8％下げる。",
     ],
   },
   {
@@ -5713,9 +7524,21 @@ const EMPLOYEE_POOL = [
     salary: 91,
     officeId: "storage",
     graphicCode: "SR007",
+    specialNames: [
+      "修繕の匠",
+      "リーダー",
+    ],
     skillIds: [
       "REPAIR_MASTER",
       "LEADER",
+    ],
+    specialCodes: [
+      "REPAIR_MASTER",
+      "LEADER",
+    ],
+    specialDescriptions: [
+      "修繕費を15％下げ、建物状態の回復量を10上げる。",
+      "同じ支店の社員能力を3％上げる。",
     ],
   },
   {
@@ -5734,9 +7557,21 @@ const EMPLOYEE_POOL = [
     salary: 74,
     officeId: "storage",
     graphicCode: "SR008",
+    specialNames: [
+      "人脈王",
+      "一級建築士",
+    ],
     skillIds: [
       "NETWORK_KING",
       "FIRST_CLASS_ARCHITECT",
+    ],
+    specialCodes: [
+      "NETWORK_KING",
+      "FIRST_CLASS_ARCHITECT",
+    ],
+    specialDescriptions: [
+      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
+      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
     ],
   },
   {
@@ -5755,9 +7590,21 @@ const EMPLOYEE_POOL = [
     salary: 75,
     officeId: "storage",
     graphicCode: "SR009",
+    specialNames: [
+      "再生屋",
+      "熱血上司",
+    ],
     skillIds: [
       "RENOVATOR",
       "PASSIONATE_BOSS",
+    ],
+    specialCodes: [
+      "RENOVATOR",
+      "PASSIONATE_BOSS",
+    ],
+    specialDescriptions: [
+      "築古物件の修繕費を10％下げ、建物状態の回復量を15上げる。",
+      "獲得経験値を20％上げる。",
     ],
   },
   {
@@ -5776,9 +7623,21 @@ const EMPLOYEE_POOL = [
     salary: 60,
     officeId: "storage",
     graphicCode: "SR010",
+    specialNames: [
+      "賃貸王",
+      "不動産投資家",
+    ],
     skillIds: [
       "RENTAL_KING",
       "REAL_ESTATE_INVESTOR",
+    ],
+    specialCodes: [
+      "RENTAL_KING",
+      "REAL_ESTATE_INVESTOR",
+    ],
+    specialDescriptions: [
+      "入居率を10％上げ、家賃収入を3％上げる。",
+      "購入判断成功率を8％上げ、家賃収入を2％上げる。",
     ],
   },
   {
@@ -5797,9 +7656,21 @@ const EMPLOYEE_POOL = [
     salary: 97,
     officeId: "storage",
     graphicCode: "SR011",
+    specialNames: [
+      "熱血上司",
+      "不動産鑑定士",
+    ],
     skillIds: [
       "PASSIONATE_BOSS",
       "REAL_ESTATE_APPRAISER",
+    ],
+    specialCodes: [
+      "PASSIONATE_BOSS",
+      "REAL_ESTATE_APPRAISER",
+    ],
+    specialDescriptions: [
+      "獲得経験値を20％上げる。",
+      "物件調査・査定精度が上がり、購入判断成功率を8％上げる。",
     ],
   },
   {
@@ -5818,9 +7689,21 @@ const EMPLOYEE_POOL = [
     salary: 97,
     officeId: "storage",
     graphicCode: "SR012",
+    specialNames: [
+      "ヘッドハンター",
+      "カリスマ所長",
+    ],
     skillIds: [
       "HEADHUNTER",
       "CHARISMA_MANAGER",
+    ],
+    specialCodes: [
+      "HEADHUNTER",
+      "CHARISMA_MANAGER",
+    ],
+    specialDescriptions: [
+      "社員募集時の募集人数を1人増やす。",
+      "同じ支店の社員能力を10％上げる。",
     ],
   },
   {
@@ -5839,9 +7722,21 @@ const EMPLOYEE_POOL = [
     salary: 83,
     officeId: "storage",
     graphicCode: "SR013",
+    specialNames: [
+      "クレーム対応力",
+      "ベテラン大工",
+    ],
     skillIds: [
       "CLAIM_HANDLER",
       "VETERAN_CARPENTER",
+    ],
+    specialCodes: [
+      "CLAIM_HANDLER",
+      "VETERAN_CARPENTER",
+    ],
+    specialDescriptions: [
+      "入居者満足度を10上げる。",
+      "工期を15％短縮する。",
     ],
   },
   {
@@ -5860,9 +7755,21 @@ const EMPLOYEE_POOL = [
     salary: 87,
     officeId: "storage",
     graphicCode: "SR014",
+    specialNames: [
+      "賃貸王",
+      "お客様第一",
+    ],
     skillIds: [
       "RENTAL_KING",
       "CUSTOMER_FIRST",
+    ],
+    specialCodes: [
+      "RENTAL_KING",
+      "CUSTOMER_FIRST",
+    ],
+    specialDescriptions: [
+      "入居率を10％上げ、家賃収入を3％上げる。",
+      "退去率を10％下げる。",
     ],
   },
   {
@@ -5881,9 +7788,21 @@ const EMPLOYEE_POOL = [
     salary: 60,
     officeId: "storage",
     graphicCode: "SR015",
+    specialNames: [
+      "リーダー",
+      "交渉上手",
+    ],
     skillIds: [
       "LEADER",
       "NEGOTIATION_GOOD",
+    ],
+    specialCodes: [
+      "LEADER",
+      "NEGOTIATION_GOOD",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を3％上げる。",
+      "土地購入価格を3％下げる。",
     ],
   },
   {
@@ -5902,9 +7821,21 @@ const EMPLOYEE_POOL = [
     salary: 93,
     officeId: "storage",
     graphicCode: "SR016",
+    specialNames: [
+      "カリスマ営業",
+      "お客様第一",
+    ],
     skillIds: [
       "CHARISMA_SALES",
       "CUSTOMER_FIRST",
+    ],
+    specialCodes: [
+      "CHARISMA_SALES",
+      "CUSTOMER_FIRST",
+    ],
+    specialDescriptions: [
+      "営業能力を10上げる。",
+      "退去率を10％下げる。",
     ],
   },
   {
@@ -5923,9 +7854,21 @@ const EMPLOYEE_POOL = [
     salary: 69,
     officeId: "storage",
     graphicCode: "SR017",
+    specialNames: [
+      "一級建築士",
+      "名将",
+    ],
     skillIds: [
       "FIRST_CLASS_ARCHITECT",
       "GREAT_COMMANDER",
+    ],
+    specialCodes: [
+      "FIRST_CLASS_ARCHITECT",
+      "GREAT_COMMANDER",
+    ],
+    specialDescriptions: [
+      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
+      "同じ事務所の社員能力を8％上げる。",
     ],
   },
   {
@@ -5944,9 +7887,21 @@ const EMPLOYEE_POOL = [
     salary: 60,
     officeId: "storage",
     graphicCode: "SR018",
+    specialNames: [
+      "凄腕交渉人",
+      "ベテラン大工",
+    ],
     skillIds: [
       "ACE_NEGOTIATOR",
       "VETERAN_CARPENTER",
+    ],
+    specialCodes: [
+      "ACE_NEGOTIATOR",
+      "VETERAN_CARPENTER",
+    ],
+    specialDescriptions: [
+      "土地購入価格を10％下げる。",
+      "工期を15％短縮する。",
     ],
   },
   {
@@ -5965,9 +7920,21 @@ const EMPLOYEE_POOL = [
     salary: 76,
     officeId: "storage",
     graphicCode: "SR019",
+    specialNames: [
+      "交渉上手",
+      "賃貸王",
+    ],
     skillIds: [
       "NEGOTIATION_GOOD",
       "RENTAL_KING",
+    ],
+    specialCodes: [
+      "NEGOTIATION_GOOD",
+      "RENTAL_KING",
+    ],
+    specialDescriptions: [
+      "土地購入価格を3％下げる。",
+      "入居率を10％上げ、家賃収入を3％上げる。",
     ],
   },
   {
@@ -5986,9 +7953,21 @@ const EMPLOYEE_POOL = [
     salary: 64,
     officeId: "storage",
     graphicCode: "SR020",
+    specialNames: [
+      "人脈王",
+      "カリスマ営業",
+    ],
     skillIds: [
       "NETWORK_KING",
       "CHARISMA_SALES",
+    ],
+    specialCodes: [
+      "NETWORK_KING",
+      "CHARISMA_SALES",
+    ],
+    specialDescriptions: [
+      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
+      "営業能力を10上げる。",
     ],
   },
   {
@@ -6007,9 +7986,21 @@ const EMPLOYEE_POOL = [
     salary: 69,
     officeId: "storage",
     graphicCode: "SR021",
+    specialNames: [
+      "人脈王",
+      "賃貸王",
+    ],
     skillIds: [
       "NETWORK_KING",
       "RENTAL_KING",
+    ],
+    specialCodes: [
+      "NETWORK_KING",
+      "RENTAL_KING",
+    ],
+    specialDescriptions: [
+      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
+      "入居率を10％上げ、家賃収入を3％上げる。",
     ],
   },
   {
@@ -6028,9 +8019,21 @@ const EMPLOYEE_POOL = [
     salary: 82,
     officeId: "storage",
     graphicCode: "SR022",
+    specialNames: [
+      "名将",
+      "カリスマ所長",
+    ],
     skillIds: [
       "GREAT_COMMANDER",
       "CHARISMA_MANAGER",
+    ],
+    specialCodes: [
+      "GREAT_COMMANDER",
+      "CHARISMA_MANAGER",
+    ],
+    specialDescriptions: [
+      "同じ事務所の社員能力を8％上げる。",
+      "同じ支店の社員能力を10％上げる。",
     ],
   },
   {
@@ -6049,9 +8052,21 @@ const EMPLOYEE_POOL = [
     salary: 85,
     officeId: "storage",
     graphicCode: "SR023",
+    specialNames: [
+      "伝説の営業マン",
+      "再生屋",
+    ],
     skillIds: [
       "LEGENDARY_SALESPERSON",
       "RENOVATOR",
+    ],
+    specialCodes: [
+      "LEGENDARY_SALESPERSON",
+      "RENOVATOR",
+    ],
+    specialDescriptions: [
+      "営業能力を20上げ、入居率を5％上げる。",
+      "築古物件の修繕費を10％下げ、建物状態の回復量を15上げる。",
     ],
   },
   {
@@ -6070,9 +8085,21 @@ const EMPLOYEE_POOL = [
     salary: 75,
     officeId: "storage",
     graphicCode: "SR024",
+    specialNames: [
+      "ヘッドハンター",
+      "買い叩き",
+    ],
     skillIds: [
       "HEADHUNTER",
       "BARGAIN_BUYER",
+    ],
+    specialCodes: [
+      "HEADHUNTER",
+      "BARGAIN_BUYER",
+    ],
+    specialDescriptions: [
+      "社員募集時の募集人数を1人増やす。",
+      "土地購入価格を8％下げる。",
     ],
   },
   {
@@ -6091,9 +8118,21 @@ const EMPLOYEE_POOL = [
     salary: 87,
     officeId: "storage",
     graphicCode: "SR025",
+    specialNames: [
+      "人脈王",
+      "節約家",
+    ],
     skillIds: [
       "NETWORK_KING",
       "SAVER",
+    ],
+    specialCodes: [
+      "NETWORK_KING",
+      "SAVER",
+    ],
+    specialDescriptions: [
+      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
+      "維持費を10％下げる。",
     ],
   },
   {
@@ -6112,9 +8151,21 @@ const EMPLOYEE_POOL = [
     salary: 73,
     officeId: "storage",
     graphicCode: "SR026",
+    specialNames: [
+      "クレーム対応力",
+      "人脈王",
+    ],
     skillIds: [
       "CLAIM_HANDLER",
       "NETWORK_KING",
+    ],
+    specialCodes: [
+      "CLAIM_HANDLER",
+      "NETWORK_KING",
+    ],
+    specialDescriptions: [
+      "入居者満足度を10上げる。",
+      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
     ],
   },
   {
@@ -6133,9 +8184,21 @@ const EMPLOYEE_POOL = [
     salary: 77,
     officeId: "storage",
     graphicCode: "SR027",
+    specialNames: [
+      "管理の達人",
+      "カリスマ営業",
+    ],
     skillIds: [
       "MANAGEMENT_MASTER",
       "CHARISMA_SALES",
+    ],
+    specialCodes: [
+      "MANAGEMENT_MASTER",
+      "CHARISMA_SALES",
+    ],
+    specialDescriptions: [
+      "空室率を5％改善する。",
+      "営業能力を10上げる。",
     ],
   },
   {
@@ -6154,9 +8217,21 @@ const EMPLOYEE_POOL = [
     salary: 61,
     officeId: "storage",
     graphicCode: "SR028",
+    specialNames: [
+      "買い叩き",
+      "軍師",
+    ],
     skillIds: [
       "BARGAIN_BUYER",
       "STRATEGIST",
+    ],
+    specialCodes: [
+      "BARGAIN_BUYER",
+      "STRATEGIST",
+    ],
+    specialDescriptions: [
+      "土地購入価格を8％下げる。",
+      "同じ事務所の社員能力を5％上げ、行動成功率を5％上げる。",
     ],
   },
   {
@@ -6175,9 +8250,21 @@ const EMPLOYEE_POOL = [
     salary: 96,
     officeId: "storage",
     graphicCode: "SR029",
+    specialNames: [
+      "巡回名人",
+      "軍師",
+    ],
     skillIds: [
       "INSPECTION_MASTER",
       "STRATEGIST",
+    ],
+    specialCodes: [
+      "INSPECTION_MASTER",
+      "STRATEGIST",
+    ],
+    specialDescriptions: [
+      "管理能力を15上げ、退去率を5％下げる。",
+      "同じ事務所の社員能力を5％上げ、行動成功率を5％上げる。",
     ],
   },
   {
@@ -6196,9 +8283,21 @@ const EMPLOYEE_POOL = [
     salary: 72,
     officeId: "storage",
     graphicCode: "SR030",
+    specialNames: [
+      "管理の達人",
+      "買い叩き",
+    ],
     skillIds: [
       "MANAGEMENT_MASTER",
       "BARGAIN_BUYER",
+    ],
+    specialCodes: [
+      "MANAGEMENT_MASTER",
+      "BARGAIN_BUYER",
+    ],
+    specialDescriptions: [
+      "空室率を5％改善する。",
+      "土地購入価格を8％下げる。",
     ],
   },
   {
@@ -6217,10 +8316,25 @@ const EMPLOYEE_POOL = [
     salary: 104,
     officeId: "storage",
     graphicCode: "SSR001",
+    specialNames: [
+      "管理の達人",
+      "人脈王",
+      "野口メソッド",
+    ],
     skillIds: [
       "MANAGEMENT_MASTER",
       "NETWORK_KING",
       "NOGUCHI_METHOD",
+    ],
+    specialCodes: [
+      "MANAGEMENT_MASTER",
+      "NETWORK_KING",
+      "NOGUCHI_METHOD",
+    ],
+    specialDescriptions: [
+      "空室率を5％改善する。",
+      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
+      "築古再生の成功率を15％上げ、修繕費を10％下げる。",
     ],
   },
   {
@@ -6239,10 +8353,25 @@ const EMPLOYEE_POOL = [
     salary: 103,
     officeId: "storage",
     graphicCode: "SSR002",
+    specialNames: [
+      "軍師",
+      "お客様第一",
+      "地方創生",
+    ],
     skillIds: [
       "STRATEGIST",
       "CUSTOMER_FIRST",
       "REGIONAL_REVITALIZER",
+    ],
+    specialCodes: [
+      "STRATEGIST",
+      "CUSTOMER_FIRST",
+      "REGIONAL_REVITALIZER",
+    ],
+    specialDescriptions: [
+      "同じ事務所の社員能力を5％上げ、行動成功率を5％上げる。",
+      "退去率を10％下げる。",
+      "郊外・地方エリアの入居率を5％上げる。",
     ],
   },
   {
@@ -6261,10 +8390,25 @@ const EMPLOYEE_POOL = [
     salary: 97,
     officeId: "storage",
     graphicCode: "SSR003",
+    specialNames: [
+      "不動産鑑定士",
+      "交渉上手",
+      "百戦錬磨",
+    ],
     skillIds: [
       "REAL_ESTATE_APPRAISER",
       "NEGOTIATION_GOOD",
       "VETERAN_STRATEGIST",
+    ],
+    specialCodes: [
+      "REAL_ESTATE_APPRAISER",
+      "NEGOTIATION_GOOD",
+      "VETERAN_STRATEGIST",
+    ],
+    specialDescriptions: [
+      "物件調査・査定精度が上がり、購入判断成功率を8％上げる。",
+      "土地購入価格を3％下げる。",
+      "行動成功率を10％上げる。",
     ],
   },
   {
@@ -6283,10 +8427,25 @@ const EMPLOYEE_POOL = [
     salary: 134,
     officeId: "storage",
     graphicCode: "SSR004",
+    specialNames: [
+      "教育係",
+      "買い叩き",
+      "不動産神",
+    ],
     skillIds: [
       "MENTOR",
       "BARGAIN_BUYER",
       "REAL_ESTATE_GOD",
+    ],
+    specialCodes: [
+      "MENTOR",
+      "BARGAIN_BUYER",
+      "REAL_ESTATE_GOD",
+    ],
+    specialDescriptions: [
+      "同じ事務所の社員の獲得経験値を10％上げる。",
+      "土地購入価格を8％下げる。",
+      "全能力を10％上げ、家賃収入を5％上げる。",
     ],
   },
   {
@@ -6305,10 +8464,25 @@ const EMPLOYEE_POOL = [
     salary: 103,
     officeId: "storage",
     graphicCode: "SSR005",
+    specialNames: [
+      "一級建築士",
+      "現場監督",
+      "百戦錬磨",
+    ],
     skillIds: [
       "FIRST_CLASS_ARCHITECT",
       "SITE_SUPERVISOR",
       "VETERAN_STRATEGIST",
+    ],
+    specialCodes: [
+      "FIRST_CLASS_ARCHITECT",
+      "SITE_SUPERVISOR",
+      "VETERAN_STRATEGIST",
+    ],
+    specialDescriptions: [
+      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
+      "建築能力を10上げ、建築費を5％下げる。",
+      "行動成功率を10％上げる。",
     ],
   },
   {
@@ -6327,10 +8501,25 @@ const EMPLOYEE_POOL = [
     salary: 113,
     officeId: "storage",
     graphicCode: "SSR006",
+    specialNames: [
+      "巡回名人",
+      "伝説の営業マン",
+      "百戦錬磨",
+    ],
     skillIds: [
       "INSPECTION_MASTER",
       "LEGENDARY_SALESPERSON",
       "VETERAN_STRATEGIST",
+    ],
+    specialCodes: [
+      "INSPECTION_MASTER",
+      "LEGENDARY_SALESPERSON",
+      "VETERAN_STRATEGIST",
+    ],
+    specialDescriptions: [
+      "管理能力を15上げ、退去率を5％下げる。",
+      "営業能力を20上げ、入居率を5％上げる。",
+      "行動成功率を10％上げる。",
     ],
   },
   {
@@ -6349,10 +8538,25 @@ const EMPLOYEE_POOL = [
     salary: 133,
     officeId: "storage",
     graphicCode: "SSR007",
+    specialNames: [
+      "交渉上手",
+      "不動産鑑定士",
+      "地方創生",
+    ],
     skillIds: [
       "NEGOTIATION_GOOD",
       "REAL_ESTATE_APPRAISER",
       "REGIONAL_REVITALIZER",
+    ],
+    specialCodes: [
+      "NEGOTIATION_GOOD",
+      "REAL_ESTATE_APPRAISER",
+      "REGIONAL_REVITALIZER",
+    ],
+    specialDescriptions: [
+      "土地購入価格を3％下げる。",
+      "物件調査・査定精度が上がり、購入判断成功率を8％上げる。",
+      "郊外・地方エリアの入居率を5％上げる。",
     ],
   },
   {
@@ -6371,10 +8575,25 @@ const EMPLOYEE_POOL = [
     salary: 80,
     officeId: "storage",
     graphicCode: "SSR008",
+    specialNames: [
+      "お客様第一",
+      "カリスマ営業",
+      "野口メソッド",
+    ],
     skillIds: [
       "CUSTOMER_FIRST",
       "CHARISMA_SALES",
       "NOGUCHI_METHOD",
+    ],
+    specialCodes: [
+      "CUSTOMER_FIRST",
+      "CHARISMA_SALES",
+      "NOGUCHI_METHOD",
+    ],
+    specialDescriptions: [
+      "退去率を10％下げる。",
+      "営業能力を10上げる。",
+      "築古再生の成功率を15％上げ、修繕費を10％下げる。",
     ],
   },
   {
@@ -6393,10 +8612,25 @@ const EMPLOYEE_POOL = [
     salary: 112,
     officeId: "storage",
     graphicCode: "SSR009",
+    specialNames: [
+      "一級建築士",
+      "カリスマ営業",
+      "不動産神",
+    ],
     skillIds: [
       "FIRST_CLASS_ARCHITECT",
       "CHARISMA_SALES",
       "REAL_ESTATE_GOD",
+    ],
+    specialCodes: [
+      "FIRST_CLASS_ARCHITECT",
+      "CHARISMA_SALES",
+      "REAL_ESTATE_GOD",
+    ],
+    specialDescriptions: [
+      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
+      "営業能力を10上げる。",
+      "全能力を10％上げ、家賃収入を5％上げる。",
     ],
   },
   {
@@ -6415,10 +8649,25 @@ const EMPLOYEE_POOL = [
     salary: 98,
     officeId: "storage",
     graphicCode: "SSR010",
+    specialNames: [
+      "ヘッドハンター",
+      "名将",
+      "不動産神",
+    ],
     skillIds: [
       "HEADHUNTER",
       "GREAT_COMMANDER",
       "REAL_ESTATE_GOD",
+    ],
+    specialCodes: [
+      "HEADHUNTER",
+      "GREAT_COMMANDER",
+      "REAL_ESTATE_GOD",
+    ],
+    specialDescriptions: [
+      "社員募集時の募集人数を1人増やす。",
+      "同じ事務所の社員能力を8％上げる。",
+      "全能力を10％上げ、家賃収入を5％上げる。",
     ],
   },
   {
@@ -6437,10 +8686,25 @@ const EMPLOYEE_POOL = [
     salary: 106,
     officeId: "storage",
     graphicCode: "SSR011",
+    specialNames: [
+      "買い叩き",
+      "名将",
+      "不動産神",
+    ],
     skillIds: [
       "BARGAIN_BUYER",
       "GREAT_COMMANDER",
       "REAL_ESTATE_GOD",
+    ],
+    specialCodes: [
+      "BARGAIN_BUYER",
+      "GREAT_COMMANDER",
+      "REAL_ESTATE_GOD",
+    ],
+    specialDescriptions: [
+      "土地購入価格を8％下げる。",
+      "同じ事務所の社員能力を8％上げる。",
+      "全能力を10％上げ、家賃収入を5％上げる。",
     ],
   },
   {
@@ -6459,10 +8723,25 @@ const EMPLOYEE_POOL = [
     salary: 80,
     officeId: "storage",
     graphicCode: "SSR012",
+    specialNames: [
+      "お客様第一",
+      "名将",
+      "不動産神",
+    ],
     skillIds: [
       "CUSTOMER_FIRST",
       "GREAT_COMMANDER",
       "REAL_ESTATE_GOD",
+    ],
+    specialCodes: [
+      "CUSTOMER_FIRST",
+      "GREAT_COMMANDER",
+      "REAL_ESTATE_GOD",
+    ],
+    specialDescriptions: [
+      "退去率を10％下げる。",
+      "同じ事務所の社員能力を8％上げる。",
+      "全能力を10％上げ、家賃収入を5％上げる。",
     ],
   },
   {
@@ -6481,10 +8760,25 @@ const EMPLOYEE_POOL = [
     salary: 80,
     officeId: "storage",
     graphicCode: "SSR013",
+    specialNames: [
+      "名将",
+      "お客様第一",
+      "不動産神",
+    ],
     skillIds: [
       "GREAT_COMMANDER",
       "CUSTOMER_FIRST",
       "REAL_ESTATE_GOD",
+    ],
+    specialCodes: [
+      "GREAT_COMMANDER",
+      "CUSTOMER_FIRST",
+      "REAL_ESTATE_GOD",
+    ],
+    specialDescriptions: [
+      "同じ事務所の社員能力を8％上げる。",
+      "退去率を10％下げる。",
+      "全能力を10％上げ、家賃収入を5％上げる。",
     ],
   },
   {
@@ -6503,10 +8797,25 @@ const EMPLOYEE_POOL = [
     salary: 132,
     officeId: "storage",
     graphicCode: "SSR014",
+    specialNames: [
+      "熱血上司",
+      "伝説の営業マン",
+      "不動産神",
+    ],
     skillIds: [
       "PASSIONATE_BOSS",
       "LEGENDARY_SALESPERSON",
       "REAL_ESTATE_GOD",
+    ],
+    specialCodes: [
+      "PASSIONATE_BOSS",
+      "LEGENDARY_SALESPERSON",
+      "REAL_ESTATE_GOD",
+    ],
+    specialDescriptions: [
+      "獲得経験値を20％上げる。",
+      "営業能力を20上げ、入居率を5％上げる。",
+      "全能力を10％上げ、家賃収入を5％上げる。",
     ],
   },
   {
@@ -6525,10 +8834,25 @@ const EMPLOYEE_POOL = [
     salary: 86,
     officeId: "storage",
     graphicCode: "SSR015",
+    specialNames: [
+      "管理の達人",
+      "家賃回収人",
+      "地方創生",
+    ],
     skillIds: [
       "MANAGEMENT_MASTER",
       "RENT_COLLECTOR",
       "REGIONAL_REVITALIZER",
+    ],
+    specialCodes: [
+      "MANAGEMENT_MASTER",
+      "RENT_COLLECTOR",
+      "REGIONAL_REVITALIZER",
+    ],
+    specialDescriptions: [
+      "空室率を5％改善する。",
+      "家賃回収率を5％上げ、滞納発生率を10％下げる。",
+      "郊外・地方エリアの入居率を5％上げる。",
     ],
   },
   {
@@ -6547,11 +8871,29 @@ const EMPLOYEE_POOL = [
     salary: 110,
     officeId: "storage",
     graphicCode: "UR001",
+    specialNames: [
+      "巡回名人",
+      "リーダー",
+      "修繕の匠",
+      "地価予言者",
+    ],
     skillIds: [
       "INSPECTION_MASTER",
       "LEADER",
       "REPAIR_MASTER",
       "LAND_PRICE_PROPHET",
+    ],
+    specialCodes: [
+      "INSPECTION_MASTER",
+      "LEADER",
+      "REPAIR_MASTER",
+      "LAND_PRICE_PROPHET",
+    ],
+    specialDescriptions: [
+      "管理能力を15上げ、退去率を5％下げる。",
+      "同じ支店の社員能力を3％上げる。",
+      "修繕費を15％下げ、建物状態の回復量を10上げる。",
+      "地価上昇イベントの察知率を上げ、購入判断成功率を10％上げる。",
     ],
   },
   {
@@ -6570,11 +8912,29 @@ const EMPLOYEE_POOL = [
     salary: 110,
     officeId: "storage",
     graphicCode: "UR002",
+    specialNames: [
+      "家賃回収人",
+      "お客様第一",
+      "品質第一",
+      "野口コーポレーション創業者",
+    ],
     skillIds: [
       "RENT_COLLECTOR",
       "CUSTOMER_FIRST",
       "QUALITY_FIRST",
       "NOGUCHI_CORP_FOUNDER",
+    ],
+    specialCodes: [
+      "RENT_COLLECTOR",
+      "CUSTOMER_FIRST",
+      "QUALITY_FIRST",
+      "NOGUCHI_CORP_FOUNDER",
+    ],
+    specialDescriptions: [
+      "家賃回収率を5％上げ、滞納発生率を10％下げる。",
+      "退去率を10％下げる。",
+      "建物状態を10上げる。",
+      "全能力を15％上げ、同じ事務所の社員能力を5％上げる。",
     ],
   },
   {
@@ -6593,11 +8953,29 @@ const EMPLOYEE_POOL = [
     salary: 115,
     officeId: "storage",
     graphicCode: "UR003",
+    specialNames: [
+      "品質第一",
+      "カリスマ営業",
+      "一級建築士",
+      "伝説の再生王",
+    ],
     skillIds: [
       "QUALITY_FIRST",
       "CHARISMA_SALES",
       "FIRST_CLASS_ARCHITECT",
       "LEGENDARY_RENOVATION_KING",
+    ],
+    specialCodes: [
+      "QUALITY_FIRST",
+      "CHARISMA_SALES",
+      "FIRST_CLASS_ARCHITECT",
+      "LEGENDARY_RENOVATION_KING",
+    ],
+    specialDescriptions: [
+      "建物状態を10上げる。",
+      "営業能力を10上げる。",
+      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
+      "修繕費を20％下げ、築古物件の入居率を8％上げる。",
     ],
   },
   {
@@ -6616,11 +8994,29 @@ const EMPLOYEE_POOL = [
     salary: 135,
     officeId: "storage",
     graphicCode: "UR004",
+    specialNames: [
+      "熱血上司",
+      "品質第一",
+      "カリスマ所長",
+      "伝説の再生王",
+    ],
     skillIds: [
       "PASSIONATE_BOSS",
       "QUALITY_FIRST",
       "CHARISMA_MANAGER",
       "LEGENDARY_RENOVATION_KING",
+    ],
+    specialCodes: [
+      "PASSIONATE_BOSS",
+      "QUALITY_FIRST",
+      "CHARISMA_MANAGER",
+      "LEGENDARY_RENOVATION_KING",
+    ],
+    specialDescriptions: [
+      "獲得経験値を20％上げる。",
+      "建物状態を10上げる。",
+      "同じ支店の社員能力を10％上げる。",
+      "修繕費を20％下げ、築古物件の入居率を8％上げる。",
     ],
   },
   {
@@ -6639,15 +9035,34 @@ const EMPLOYEE_POOL = [
     salary: 139,
     officeId: "storage",
     graphicCode: "UR005",
+    specialNames: [
+      "リーダー",
+      "巡回名人",
+      "賃貸王",
+      "野口コーポレーション創業者",
+    ],
     skillIds: [
       "LEADER",
       "INSPECTION_MASTER",
       "RENTAL_KING",
       "NOGUCHI_CORP_FOUNDER",
     ],
+    specialCodes: [
+      "LEADER",
+      "INSPECTION_MASTER",
+      "RENTAL_KING",
+      "NOGUCHI_CORP_FOUNDER",
+    ],
+    specialDescriptions: [
+      "同じ支店の社員能力を3％上げる。",
+      "管理能力を15上げ、退去率を5％下げる。",
+      "入居率を10％上げ、家賃収入を3％上げる。",
+      "全能力を15％上げ、同じ事務所の社員能力を5％上げる。",
+
+    ],
   }
 ];
-
+const EMPLOYEE_POOL = employeeMaster;
 
 const MAX_EMPLOYEES_PER_OFFICE = 10;
 const EMPLOYEE_RECRUITMENT_ENVELOPE_COUNT = 4;
@@ -8495,6 +10910,9 @@ const floatingPanelDragRef = useRef(null);
 const floatingPanelResizeRef = useRef(null);
 const [showOptions, setShowOptions] = useState(false);
 const [showTitleScreen, setShowTitleScreen] = useState(true);
+const [showPrologue, setShowPrologue] = useState(false);
+const [prologueIndex, setPrologueIndex] = useState(0);
+const [pendingNewGame, setPendingNewGame] = useState(null);
 const [titleModal, setTitleModal] = useState(null);
 const [saveLoadModal, setSaveLoadModal] = useState(null);
 const [selectedBuildCategory, setSelectedBuildCategory] = useState(null);
@@ -15622,12 +18040,8 @@ function loadSaveSlotFromTitle(slot) {
   }
 }
 
-function startNewGameFromTitle(slot = activeSaveSlot) {
-  const companyName = (newCompanyNameInput || DEFAULT_COMPANY_NAME).trim() || DEFAULT_COMPANY_NAME;
-  const ok = window.confirm(`スロット${slot}で「${companyName}」として最初から始めますか？
-
-このスロットの既存データは上書きされます。`);
-  if (!ok) return;
+function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null) {
+  const companyName = (fixedCompanyName || newCompanyNameInput || DEFAULT_COMPANY_NAME).trim() || DEFAULT_COMPANY_NAME;
 
   localStorage.setItem("realEstateGameCurrentSlot", String(slot));
   setActiveSaveSlot(slot);
@@ -15669,11 +18083,39 @@ function startNewGameFromTitle(slot = activeSaveSlot) {
   setIsDemoMode(false);
   setUsedSecretCommands({});
   setShowTitleScreen(false);
+  setShowPrologue(false);
+  setPendingNewGame(null);
+  setPrologueIndex(0);
   setTitleModal(null);
   setSaveLoadModal(null);
   setIsMainMenuOpen(false);
   setLog(`${companyName}として最初から開始しました。最初に本社を設置してください。`);
 }
+
+function finishPrologue() {
+  const pending = pendingNewGame ?? {
+    slot: activeSaveSlot,
+    companyName: (newCompanyNameInput || DEFAULT_COMPANY_NAME).trim() || DEFAULT_COMPANY_NAME,
+  };
+
+  resetGameFromTitle(pending.slot, pending.companyName);
+}
+
+function startNewGameFromTitle(slot = activeSaveSlot) {
+  const companyName = (newCompanyNameInput || DEFAULT_COMPANY_NAME).trim() || DEFAULT_COMPANY_NAME;
+  const ok = window.confirm(`スロット${slot}で「${companyName}」として最初から始めますか？
+
+このスロットの既存データは上書きされます。`);
+  if (!ok) return;
+
+  setPendingNewGame({ slot, companyName });
+  setPrologueIndex(0);
+  setShowPrologue(true);
+  setTitleModal(null);
+  setSaveLoadModal(null);
+}
+
+
 
 const hasSaveData = Boolean(savedGame) || hasAnySaveSlot;
 const ownedBuildingCountForTitle = tiles.filter((tile) => {
@@ -15748,9 +18190,54 @@ return (
       loop
     />
 
+    {showPrologue && (
+      <div className="prologue-screen">
+        <img
+          src={PROLOGUE_SCENES[prologueIndex]?.background}
+          alt=""
+          className="prologue-bg"
+        />
+        <div className="prologue-vignette" />
 
+        {PROLOGUE_SCENES[prologueIndex]?.portrait && (
+          <img
+            src={AKARI_PORTRAIT_PATHS[PROLOGUE_SCENES[prologueIndex].portrait]}
+            alt="七瀬灯里"
+            className="prologue-character"
+          />
+        )}
 
+        <div className="prologue-top-actions">
+          <button type="button" onClick={finishPrologue}>
+            スキップ
+          </button>
+        </div>
 
+        <div className="prologue-dialog-box">
+          <div className="prologue-speaker">
+            {PROLOGUE_SCENES[prologueIndex]?.speaker}
+          </div>
+          <div className="prologue-text">
+            {PROLOGUE_SCENES[prologueIndex]?.text}
+          </div>
+          <div className="prologue-actions">
+            <span>{prologueIndex + 1} / {PROLOGUE_SCENES.length}</span>
+            <button
+              type="button"
+              onClick={() => {
+                if (prologueIndex < PROLOGUE_SCENES.length - 1) {
+                  setPrologueIndex((currentIndex) => currentIndex + 1);
+                } else {
+                  finishPrologue();
+                }
+              }}
+            >
+              {prologueIndex < PROLOGUE_SCENES.length - 1 ? "次へ" : "ゲーム開始"}
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
 
     {showTitleScreen && (
       <div
@@ -15792,7 +18279,7 @@ return (
           <div style={{ fontSize: 42, lineHeight: 1, marginBottom: 10 }}>🏘️</div>
           <p style={{ margin: "0 0 6px", letterSpacing: 2, fontSize: 12, opacity: 0.82 }}>NOGUCHI CORPORATION PRESENTS</p>
           <h1 style={{ margin: "0 0 8px", fontSize: 28, lineHeight: 1.25 }}>箱庭不動産経営<br />シミュレーション</h1>
-          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>V166</p>
+          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>V167</p>
 
           <div
             style={{
