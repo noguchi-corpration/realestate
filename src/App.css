@@ -1,4 +1,4 @@
-/* ===== App_v167 CSS整理版（v165ベース・社員募集封筒スマホ全表示） ===== */
+/* ===== App_v176 CSS整理版（七瀬ガイド圧縮・岐阜編目標追加） ===== */
 /* 元ファイルの重複指定を整理し、同一セレクタ内の後勝ち指定に統合しています。 */
 * {
   box-sizing: border-box;
@@ -9375,5 +9375,327 @@ th, td {
 
   .prologue-text {
     font-size: 15px;
+  }
+}
+
+
+/* ===== v174 tutorial guidance ===== */
+.map-tile.story-tutorial-target-tile {
+  position: relative !important;
+  z-index: 80 !important;
+  border: 3px solid #ff1744 !important;
+  outline: 0 !important;
+  animation: storyTutorialTargetPulseV174 0.75s ease-in-out infinite !important;
+  overflow: visible !important;
+}
+
+.map-tile.story-tutorial-target-tile::before {
+  content: "▼";
+  position: absolute;
+  left: 50%;
+  top: -18px;
+  transform: translateX(-50%);
+  color: #ff1744;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 0 4px #ffffff, 0 0 8px rgba(255, 23, 68, 0.95);
+  pointer-events: none;
+}
+
+.map-tile.story-tutorial-target-tile::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border: 3px solid rgba(255, 23, 68, 0.95);
+  border-radius: 8px;
+  animation: storyTutorialTargetRingV174 0.75s ease-in-out infinite !important;
+  pointer-events: none;
+}
+
+@keyframes storyTutorialTargetPulseV174 {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 23, 68, 0.95), 0 0 6px rgba(255, 23, 68, 0.8) !important;
+    filter: brightness(1);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(255, 23, 68, 0.2), 0 0 20px rgba(255, 23, 68, 1) !important;
+    filter: brightness(1.35);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 23, 68, 0.95), 0 0 6px rgba(255, 23, 68, 0.8) !important;
+    filter: brightness(1);
+  }
+}
+
+@keyframes storyTutorialTargetRingV174 {
+  0% {
+    opacity: 1;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(1.25);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(0.95);
+  }
+}
+
+.tutorial-locked-build-button,
+.tutorial-locked-build-button:disabled {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+  background: #eeeeee !important;
+  border-style: dashed !important;
+}
+
+
+/* ===== v175 七瀬ページガイド・岐阜編導入 ===== */
+.akari-page-guide {
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: #fff8d6;
+  border: 2px solid #f0b429;
+  color: #3c2d00;
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.akari-page-guide-inner {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.akari-page-guide-portrait {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #e0b100;
+  flex: 0 0 38px;
+}
+
+.akari-page-guide-body {
+  min-width: 0;
+}
+
+.akari-page-guide-name {
+  font-size: 12px;
+}
+
+.akari-page-guide-title {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.akari-page-guide-text {
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.akari-page-guide-subtext {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #7a3700;
+}
+
+.story-next-chapter-panel {
+  margin: 8px 0 12px;
+  padding: 14px;
+  border: 3px solid #ff9800;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fffaf0, #fff1cc);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 6px 16px rgba(255, 152, 0, 0.22);
+}
+
+.story-next-chapter-panel div {
+  display: grid;
+  gap: 4px;
+}
+
+.story-next-chapter-panel strong {
+  font-size: 16px;
+}
+
+.story-next-chapter-panel span {
+  font-size: 13px;
+  font-weight: 700;
+  color: #5a3a00;
+}
+
+.story-next-chapter-panel button {
+  min-width: 160px;
+  min-height: 46px;
+  font-weight: 900;
+  border: 2px solid #d35400;
+  background: #ff9800;
+  color: #111;
+  box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.6);
+  animation: gifuChapterButtonPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes gifuChapterButtonPulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.65); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
+}
+
+.akari-inline-hint {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 12px;
+  background: #fff8d6;
+  border: 2px solid #f0b429;
+  display: grid;
+  gap: 4px;
+  color: #3c2d00;
+}
+
+.akari-inline-hint strong {
+  font-size: 13px;
+}
+
+.akari-inline-hint span {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .akari-page-guide {
+    padding: 7px 8px;
+    font-size: 12px;
+  }
+
+  .akari-page-guide-portrait {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+  }
+
+  .story-next-chapter-panel {
+    display: grid;
+  }
+
+  .story-next-chapter-panel button {
+    width: 100%;
+  }
+}
+
+
+/* ===== v176 七瀬ガイド圧縮・岐阜編目標 ===== */
+.gifu-goal-panel {
+  margin: 8px 0 12px;
+  padding: 10px 12px;
+  border: 2px solid #4a90e2;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #f0f7ff, #ffffff);
+  color: #0d3158;
+  font-weight: 800;
+}
+
+.gifu-goal-panel div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.gifu-goal-panel strong {
+  font-size: 15px;
+}
+
+.gifu-goal-panel span {
+  font-size: 13px;
+}
+
+.gifu-goal-panel.cleared {
+  border-color: #ff9800;
+  background: linear-gradient(180deg, #fff8df, #ffffff);
+  color: #5a3a00;
+}
+
+@media (max-width: 600px) {
+  .akari-page-guide {
+    margin: 0 0 5px;
+    padding: 5px 7px;
+    border-radius: 9px;
+    font-size: 11px;
+    line-height: 1.25;
+  }
+
+  .akari-page-guide-inner {
+    gap: 6px;
+    align-items: flex-start;
+  }
+
+  .akari-page-guide-portrait {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+  }
+
+  .akari-page-guide-name {
+    display: none;
+  }
+
+  .akari-page-guide-title {
+    display: inline;
+    gap: 0;
+  }
+
+  .akari-page-guide-main-title {
+    font-weight: 900;
+    white-space: nowrap;
+  }
+
+  .akari-page-guide-main-title::after {
+    content: "：";
+  }
+
+  .akari-page-guide-goal {
+    display: block;
+    margin-top: 2px;
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .akari-page-guide-text {
+    display: inline;
+    margin-top: 0;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .akari-page-guide-subtext {
+    margin-top: 2px;
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .gifu-goal-panel {
+    margin: 5px 0 8px;
+    padding: 7px 8px;
+    border-radius: 10px;
+  }
+
+  .gifu-goal-panel div {
+    gap: 4px 8px;
+  }
+
+  .gifu-goal-panel strong,
+  .gifu-goal-panel span {
+    font-size: 11px;
   }
 }

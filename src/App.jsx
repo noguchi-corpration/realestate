@@ -3,7 +3,7 @@ import "./App.css";
 
 /*
   箱庭不動産経営シミュレーター
-  v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
+  v176: 岐阜編クリア条件・七瀬ガイド圧縮版 / v175: 岐阜編開始・七瀬ページガイド追加版 / v174: チュートリアル発光パルス・建築ロック・チケット抑制版 / v173: 建設完了判定修正版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル強調赤枠・行動制限強化版 / v170: チュートリアル行動制限・七瀬ナビ追加版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル指定マス赤枠強化版 / v170: チュートリアル会話追加版 / v169: ストーリー第0章チュートリアル固定マップ追加版 / v168: モード選択追加版 / v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
   PC・スマホ両対応版 / v133 配属上限撤廃・役職補正強化・拠点表示整理
   v131：特殊能力効果拡張（入居・家賃・融資・採用対応）
 
@@ -19,9 +19,12 @@ const MAP_SIZE = 70;
 const SAVE_SLOT_COUNT = 3;
 const DEFAULT_COMPANY_NAME = "";
 const DEFAULT_SAVE_SLOT = 1;
-const GAME_VERSION = "v167";
+const GAME_VERSION = "v176";
 const BASE_EMPLOYEE_SALARY = 15;
 const EMPLOYEE_SALARY_GROWTH_RATE = 1.05;
+const GIFU_CLEAR_POPULATION = 5000;
+const GIFU_CLEAR_TOTAL_ASSETS = 100000;
+
 
 function calculateEmployeeSalaryByLevel(level) {
   const safeLevel = Math.max(1, Math.round(Number(level) || 1));
@@ -152,7 +155,7 @@ const PROLOGUE_SCENES = [
   {
     background: "/backgrounds/property_old_house.png",
     speaker: "社長",
-    text: "その中には物件の購入、修繕、入居者募集、会社経営――不動産の仕事の面白さが全部詰まっている。",
+    text: "その中には物件の購入、修繕、入居者募集、管理、会社経営――不動産の仕事の面白さが全部詰まっている。",
     portrait: null,
   },
   {
@@ -170,7 +173,7 @@ const PROLOGUE_SCENES = [
     {
     background: "/backgrounds/property_old_house.png",
     speaker: "七瀬 灯里",
-    text: "なるほど……この辺りも少し活気が無いと思っていましたが、ただ家を貸すだけじゃなくて、街の発展にも繋がっていくんですね。",
+    text: "なるほど……この辺りも少し活気が無いと思っていましたが、ただ家を貸すだけじゃなくて、いずれは街の発展にも繋がっていくんですね。",
     portrait: "normal",
   },
   {
@@ -194,6 +197,459 @@ const PROLOGUE_SCENES = [
 
   
 ];
+
+const STORY_TUTORIAL_MAP_SIZE = 10;
+
+function createStoryAkari() {
+  const base = EMPLOYEE_POOL.find((employee) => employee.id === 122);
+
+  if (!base) {
+    throw new Error("七瀬灯里(id:122)が見つかりません");
+  }
+
+  return {
+    ...structuredClone(base),
+    officeId: "hq",
+  };
+}
+
+const STORY_TUTORIAL_STEPS = {
+  BUY_OLD_HOUSE: "buy_old_house",
+  REPAIR_OLD_HOUSE: "repair_old_house",
+  BUY_APARTMENT_LAND: "buy_apartment_land",
+  BUILD_APARTMENT: "build_apartment",
+  COMPLETE: "complete",
+};
+
+const STORY_TUTORIAL_EVENTS = {
+  START: {
+    portrait: "normal",
+    title: "第0章 創業編",
+    text: "社長、まずは赤く点滅している古い戸建を購入してみましょう。売り物件を選択して、購入ボタンを押してください。",
+  },
+  PURCHASED_OLD_HOUSE: {
+    portrait: "surprise",
+    title: "中古戸建を購入しました",
+    text: "購入できました！ 思ったより状態が悪いですね……。でも、こういう物件こそ私たちの出番です。次は修繕して、住める状態まで回復させましょう。",
+  },
+  REPAIRED_OLD_HOUSE: {
+    portrait: "happy",
+    title: "修繕完了",
+    text: "すごいです！ 見違えるほど綺麗になりました。これなら借りてくれる方も見つかりそうですね。次は赤く光っている空き地を購入しましょう。ここが新築に挑戦するための土地になります。",
+  },
+  PURCHASED_APARTMENT_LAND: {
+    portrait: "serious",
+    title: "空き地を購入しました",
+    text: "今度は新築に挑戦ですね。中古再生だけでなく、土地を買って建物を建てることも不動産会社の大切な仕事なんですね。",
+  },
+  BUILT_APARTMENT: {
+    portrait: "happy",
+    title: "平屋戸建 建築完了",
+    text: "完成しました！ これで中古再生と新築賃貸、両方を経験できましたね。不動産会社経営の基本が一通り見えてきました！",
+  },
+  PURCHASE_OLD_HOUSE_STARTED: {
+    portrait: "serious",
+    title: "購入交渉を開始しました",
+    text: "購入交渉が始まりました。結果が出るまで月を進める必要があります。上の『翌月へ』ボタンを押して、交渉の結果を待ちましょう。",
+  },
+  REPAIR_OLD_HOUSE_STARTED: {
+    portrait: "serious",
+    title: "修繕を開始しました",
+    text: "修繕工事が始まりました。工事が終わるまで月を進めましょう。上の『翌月へ』ボタンで時間を進められます。",
+  },
+  PURCHASE_APARTMENT_LAND_STARTED: {
+    portrait: "serious",
+    title: "土地購入交渉を開始しました",
+    text: "空き地の購入交渉が始まりました。結果が出るまで『翌月へ』で時間を進めましょう。",
+  },
+  BUILD_HOUSE_STARTED: {
+    portrait: "happy",
+    title: "平屋戸建の建築を開始しました",
+    text: "建築工事が始まりました！ 完成するまで『翌月へ』で月を進めましょう。完成したら、また一歩会社が成長しますね。",
+  },
+  BLOCKED: {
+    portrait: "trouble",
+    title: "今はチュートリアル中です",
+    text: "社長、今は赤く点滅している目標だけ進めましょう。まずは表示されている目標を達成するのが良さそうです。",
+  },
+};
+
+const STORY_GIFU_EVENTS = {
+  INTRO: {
+    portrait: "formal",
+    title: "第1章 岐阜編",
+    text: "社長、いよいよ本格的な経営の始まりですね。\n第0章で学んだ『買う』『直す』『建てる』を、ここ岐阜の街で実践していきましょう。\nまずは本社を設置する土地を選びましょう。普通の本社とアパート付き本社、それぞれの違いも確認しながら選んでいきましょう。",
+  },
+  HQ_PLACED: {
+    portrait: "happy",
+    title: "岐阜支社の第一歩",
+    text: "本社の設置が完了しました！\nここからは通常の経営プレイに入ります。社員チケットも使えるようになりました。\n社員を採用したり、物件を購入したりしながら会社を大きくしていきましょう！\n岐阜編の目標は、人口5,000人以上、総資産10億円以上です。",
+  },
+  CLEAR: {
+    portrait: "formal",
+    title: "岐阜編クリア",
+    text: "社長！岐阜での経営目標を達成しました！\n人口5,000人以上、総資産10億円以上。小さな不動産会社だった私たちも、ここまで成長できたんですね。\n次の舞台へ進む準備が整いました！",
+  },
+};
+
+const AKARI_PAGE_GUIDES = {
+  home: {
+    portrait: "normal",
+    title: "ホーム",
+    text: "ここでは会社の状況を確認できます。所持金、利益、人口、所有物件の増え方を見ながら次の一手を考えましょう。",
+  },
+  hq: {
+    portrait: "serious",
+    title: "本社設置",
+    text: "本社は会社の活動拠点です。通常の本社は初期費用を抑えられます。アパート付き本社は費用が高い代わりに、最初から賃貸収入を狙えます。",
+  },
+  land: {
+    portrait: "normal",
+    title: "土地・建物情報",
+    text: "選択中の土地や建物の情報を確認できます。売り物件は購入でき、自社物件は修繕や建築などの行動につながります。",
+  },
+  build: {
+    portrait: "serious",
+    title: "建設・修繕",
+    text: "建設では所有している空き地に建物を建てられます。修繕では建物状態を回復できます。工事は月の経過で進みます。",
+  },
+  employee: {
+    portrait: "happy",
+    title: "社員",
+    text: "社員は会社の力そのものです。社員チケットがあれば採用できます。営業・建築・管理・統率の能力を見ながら役割を考えましょう。",
+  },
+  employeeLibrary: {
+    portrait: "normal",
+    title: "社員図鑑",
+    text: "これまで獲得した社員を確認できます。レアリティや能力、特殊能力を見ながら会社の主力メンバーを育てていきましょう。",
+  },
+  property: {
+    portrait: "normal",
+    title: "物件一覧",
+    text: "所有物件の収益や状態を一覧で確認できます。空室や状態の悪い建物があれば、修繕や新しい投資の判断材料になります。",
+  },
+  bank: {
+    portrait: "serious",
+    title: "銀行",
+    text: "銀行では融資相談や融資申請ができます。相談で目安を確認してから申請すると安全です。借入が増えるほど審査は厳しくなります。",
+  },
+  info: {
+    portrait: "normal",
+    title: "情報",
+    text: "会社全体の経営状況を確認できます。人口、収益、資産、負債を見ながら、次に拡大するか守りを固めるか判断しましょう。",
+  },
+  log: {
+    portrait: "normal",
+    title: "ログ",
+    text: "これまでの出来事を確認できます。購入、修繕、入居、融資などの結果を振り返る時に使いましょう。",
+  },
+  option: {
+    portrait: "normal",
+    title: "オプション",
+    text: "セーブや設定確認を行えます。大きな投資や月送りの前には、こまめに保存しておくと安心です。",
+  },
+};
+
+function getStoryTutorialGoalText(step) {
+  if (step === STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE) {
+    return "売り物件の2階建戸建を選択して購入しましょう。";
+  }
+
+  if (step === STORY_TUTORIAL_STEPS.REPAIR_OLD_HOUSE) {
+    return "購入した戸建を修繕して、建物状態を70以上にしましょう。";
+  }
+
+  if (step === STORY_TUTORIAL_STEPS.BUY_APARTMENT_LAND) {
+    return "次は指定された空き地を購入しましょう。";
+  }
+
+  if (step === STORY_TUTORIAL_STEPS.BUILD_APARTMENT) {
+    return "購入した土地に平屋戸建を建築しましょう。";
+  }
+
+  if (step === STORY_TUTORIAL_STEPS.COMPLETE) {
+    return "第0章の基本操作は完了です。次は岐阜編へ進みましょう。";
+  }
+
+  return "";
+}
+
+function getStoryTutorialAkariAdviceText(step) {
+  if (step === STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE) {
+    return "社長、まずは赤く点滅している古い戸建を選択して、購入ボタンを押してみましょう。チュートリアル中は指定マスだけ操作できます。";
+  }
+
+  if (step === STORY_TUTORIAL_STEPS.REPAIR_OLD_HOUSE) {
+    return "購入した戸建を選択して、修繕を行いましょう。状態が70以上になれば、次の手順へ進めます。";
+  }
+
+  if (step === STORY_TUTORIAL_STEPS.BUY_APARTMENT_LAND) {
+    return "次は赤く点滅している空き地を購入しましょう。ここが新築に挑戦するための土地になります。";
+  }
+
+  if (step === STORY_TUTORIAL_STEPS.BUILD_APARTMENT) {
+    return "購入した空き地に平屋戸建を建てましょう。建設メニューでは平屋戸建だけ選べば大丈夫です。";
+  }
+
+  if (step === STORY_TUTORIAL_STEPS.COMPLETE) {
+    return "第0章の基本操作は完了です。中古を買って直す流れと、土地を買って建てる流れを体験できました！";
+  }
+
+  return "赤く点滅しているマスを選んで、表示されている目標を進めましょう。";
+}
+
+function createStoryTutorialMap() {
+  const size = STORY_TUTORIAL_MAP_SIZE;
+  const stationX = 5;
+  const stationY = 8;
+  const stationPositions = [{ x: stationX, y: stationY }];
+  const schoolX = 8;
+  const schoolY = 1;
+  const schoolPositions = [{ x: schoolX, y: schoolY }];
+  const factoryX = 8;
+  const factoryY = 7;
+  const tiles = [];
+
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const rail = y === 8;
+      let feature = FEATURE.NONE;
+      let owner = OWNER.OTHER;
+      let building = null;
+      let rooms = [];
+      let age = 0;
+      let condition = 100;
+      let tutorialTag = null;
+      let landPrice = 80 + x * 8 + y * 5;
+
+      if (rail) {
+        owner = OWNER.PUBLIC;
+      }
+
+      if (x === stationX && y === stationY) {
+        feature = FEATURE.STATION;
+        owner = OWNER.PUBLIC;
+        landPrice += 120;
+      } else if ((x === 2 && y >= 1 && y <= 7) || (y === 5 && x >= 1 && x <= 8)) {
+        feature = FEATURE.ROAD;
+        owner = OWNER.PUBLIC;
+        landPrice += 40;
+      }
+
+      if (x === 1 && y === 1) {
+        feature = FEATURE.HQ;
+        owner = OWNER.PLAYER;
+        landPrice = 120;
+      }
+
+      if (x === 4 && y === 3) {
+        owner = OWNER.SALE;
+        building = "house_2f";
+        rooms = createRooms("house_2f", 0, 0);
+        age = 38;
+        condition = 10;
+        tutorialTag = "old_house";
+        landPrice = 180;
+      }
+
+      if (x === 6 && y === 3) {
+        owner = OWNER.SALE;
+        building = null;
+        tutorialTag = "apartment_land";
+        landPrice = 150;
+      }
+
+      if (x === 7 && y === 2) {
+        owner = OWNER.OTHER;
+        building = "house_1f";
+        rooms = createRooms("house_1f", 90, 0);
+        age = 12;
+        condition = 72;
+        landPrice = 160;
+      }
+
+      if (x === 3 && y === 6) {
+        owner = OWNER.OTHER;
+        building = "convenience";
+        rooms = createRooms("convenience", 100, 0);
+        age = 5;
+        condition = 86;
+        landPrice = 220;
+      }
+
+      if (x === 8 && y === 6) {
+        owner = OWNER.OTHER;
+        building = "small_factory";
+        rooms = createRooms("small_factory", 100, 0);
+        age = 18;
+        condition = 68;
+        landPrice = 210;
+      }
+
+      if (feature !== FEATURE.NONE && feature !== FEATURE.HQ) {
+        building = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
+        tutorialTag = null;
+      }
+
+      tiles.push({
+        id: y * size + x,
+        x,
+        y,
+        terrain: TERRAIN.PLAIN,
+        feature,
+        rail,
+        zone: y >= 7 ? ZONE.INDUSTRIAL : x >= 6 ? ZONE.COMMERCIAL : ZONE.RESIDENTIAL,
+        owner,
+        building,
+        buildingMainId: null,
+        rooms,
+        age,
+        condition,
+        vacancyMonths: 0,
+        recoveryMode: false,
+        landPrice,
+        tutorialTag,
+      });
+    }
+  }
+
+  return {
+    tiles,
+    stationX,
+    stationY,
+    stationPositions,
+    schoolX,
+    schoolY,
+    schoolPositions,
+    factoryX,
+    factoryY,
+    tutorialOldHouseId: 3 * size + 4,
+    tutorialApartmentLandId: 3 * size + 6,
+  };
+}
+
+function createGifuStoryMap() {
+  const size = 30;
+  const stationX = 14;
+  const stationY = 24;
+  const stationPositions = [{ x: stationX, y: stationY }];
+  const schoolX = 6;
+  const schoolY = 6;
+  const schoolPositions = [{ x: schoolX, y: schoolY }];
+  const factoryX = 24;
+  const factoryY = 8;
+  const factoryYard = [{ x: factoryX, y: factoryY }];
+  const roadXs = [5, 14, 22];
+  const roadYs = [7, 16, 24];
+  const tiles = [];
+
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const rail = y === 24 || (x === 14 && y >= 12 && y <= 24);
+      let feature = FEATURE.NONE;
+      let owner = OWNER.SALE;
+      let building = null;
+      let rooms = [];
+      let age = randomInt(0, 30);
+      let condition = randomInt(55, 100);
+      let landPrice = 220 + Math.round((28 - Math.min(28, getDistance(x, y, stationX, stationY))) * 18) + randomInt(-40, 60);
+
+      if (roadXs.includes(x) || roadYs.includes(y)) {
+        feature = FEATURE.ROAD;
+        owner = OWNER.PUBLIC;
+      }
+
+      if (rail) {
+        owner = OWNER.PUBLIC;
+      }
+
+      if (x === stationX && y === stationY) {
+        feature = FEATURE.STATION;
+        owner = OWNER.PUBLIC;
+        landPrice += 250;
+      }
+
+      if (x === schoolX && y === schoolY) {
+        feature = FEATURE.SCHOOL;
+        owner = OWNER.PUBLIC;
+        landPrice += 120;
+      }
+
+      if (x === factoryX && y === factoryY) {
+        feature = FEATURE.FACTORY;
+        owner = OWNER.PUBLIC;
+        landPrice += 90;
+      }
+
+      const reserved = feature !== FEATURE.NONE || rail;
+      if (!reserved) {
+        const roll = Math.random();
+        if (roll < 0.09) {
+          owner = OWNER.OTHER;
+          building = "house_1f";
+          rooms = createRooms("house_1f", 75, 0);
+          condition = randomInt(60, 95);
+        } else if (roll < 0.14) {
+          owner = OWNER.OTHER;
+          building = "house_2f";
+          rooms = createRooms("house_2f", 70, 0);
+          condition = randomInt(55, 90);
+        } else if (roll < 0.18 && x > 18) {
+          owner = OWNER.OTHER;
+          building = "convenience";
+          rooms = createRooms("convenience", 80, 0);
+          condition = randomInt(65, 95);
+        } else {
+          owner = Math.random() < 0.72 ? OWNER.SALE : OWNER.OTHER;
+          age = 0;
+          condition = 100;
+        }
+      } else {
+        building = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
+      }
+
+      tiles.push({
+        id: y * size + x,
+        x,
+        y,
+        terrain: TERRAIN.PLAIN,
+        feature,
+        rail,
+        zone: y >= 20 ? ZONE.INDUSTRIAL : x >= 18 ? ZONE.COMMERCIAL : ZONE.RESIDENTIAL,
+        owner,
+        building,
+        buildingMainId: null,
+        rooms,
+        age,
+        condition,
+        vacancyMonths: 0,
+        recoveryMode: false,
+        landPrice: Math.max(80, landPrice),
+      });
+    }
+  }
+
+  return {
+    tiles,
+    stationX,
+    stationY,
+    stationPositions,
+    schoolX,
+    schoolY,
+    schoolPositions,
+    factoryX,
+    factoryY,
+    factoryPositions: factoryYard,
+  };
+}
+
+
 
 
 function getSaveSlotKey(slot) {
@@ -4188,25 +4644,34 @@ export const employeeMaster = [
     ],
   },
   {
-       id: 122,
-    name: "七瀬 灯里",
-    gender: "female",
-    rarity: "R",
-    level: 1,
-    exp: 0,
-    awakening: 0,
-    awakeningMax: 0,
-    leadership: 40,
-    sales: 45,
-    construction: 27,
-    management: 58,
-    salary: 36,
-    officeId: "storage",
-    graphicCode: "R001",
-    skillIds: [
-      "地方創生",
-    ],
-  },
+  id: 122,
+  name: "七瀬 灯里",
+  gender: "female",
+  rarity: "R",
+  level: 1,
+  exp: 0,
+  awakening: 0,
+  awakeningMax: 0,
+  leadership: 40,
+  sales: 45,
+  construction: 27,
+  management: 58,
+  salary: calculateEmployeeSalaryByLevel(1),
+  officeId: "storage",
+  graphicCode: "R001",
+  skillIds: [
+    "REGIONAL_REVITALIZER",
+  ],
+  specialNames: [
+    "地方創生",
+  ],
+  specialCodes: [
+    "REGIONAL_REVITALIZER",
+  ],
+  specialDescriptions: [
+    "郊外・地方エリアの入居率を5％上げる。",
+  ],
+},
   {
     id: 123,
     name: "佐久間 奈々",
@@ -10597,8 +11062,18 @@ const [consultationApplicationAmounts, setConsultationApplicationAmounts] = useS
 const [selectedBankId, setSelectedBankId] = useState("regional");
 const [month, setMonth] = useState(savedGame?.month ?? 1);
 const [hqPlaced, setHqPlaced] = useState(loadedHqPlaced);
+const [currentGameMode, setCurrentGameMode] = useState(savedGame?.currentGameMode ?? "free");
+const [tutorialStep, setTutorialStep] = useState(savedGame?.tutorialStep ?? null);
+const [storyEvent, setStoryEvent] = useState(null);
+const [hasShownGifuHqCompleteGuide, setHasShownGifuHqCompleteGuide] = useState(savedGame?.hasShownGifuHqCompleteGuide ?? false);
+const [hasClearedGifuChapter, setHasClearedGifuChapter] = useState(savedGame?.hasClearedGifuChapter ?? false);
 
 const [tiles, setTiles] = useState(initialMap.tiles);
+const currentMapSize = useMemo(() => {
+  if (!Array.isArray(tiles) || tiles.length === 0) return MAP_SIZE;
+  const maxCoordinate = tiles.reduce((maxValue, tile) => Math.max(maxValue, tile.x ?? 0, tile.y ?? 0), 0);
+  return Math.max(1, maxCoordinate + 1);
+}, [tiles]);
 const [employees, setEmployees] = useState(() => {
   const savedEmployees = savedGame?.employees ?? [];
 
@@ -10683,6 +11158,69 @@ useEffect(() => {
     setActivePanel((currentPanel) => currentPanel === "hq" ? "home" : currentPanel);
   }
 }, [tiles, hqPlaced]);
+
+useEffect(() => {
+  if (currentGameMode !== "story" || !tutorialStep) return;
+
+  const oldHouseTile = tiles.find((tile) => tile.tutorialTag === "old_house");
+  const apartmentLandTile = tiles.find((tile) => tile.tutorialTag === "apartment_land");
+
+  if (
+    tutorialStep === STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE &&
+    oldHouseTile?.owner === OWNER.PLAYER
+  ) {
+    setTutorialStep(STORY_TUTORIAL_STEPS.REPAIR_OLD_HOUSE);
+    setSelectedId(oldHouseTile.id);
+    setActivePanel("land");
+    setStoryEvent(STORY_TUTORIAL_EVENTS.PURCHASED_OLD_HOUSE);
+    setLog("戸建を購入できました。次は修繕で建物状態を70以上まで回復させましょう。");
+    return;
+  }
+
+  if (
+    tutorialStep === STORY_TUTORIAL_STEPS.REPAIR_OLD_HOUSE &&
+    oldHouseTile?.owner === OWNER.PLAYER &&
+    Number(oldHouseTile?.condition ?? 0) >= 70
+  ) {
+    setTutorialStep(STORY_TUTORIAL_STEPS.BUY_APARTMENT_LAND);
+    if (apartmentLandTile) setSelectedId(apartmentLandTile.id);
+    setActivePanel("land");
+    setStoryEvent(STORY_TUTORIAL_EVENTS.REPAIRED_OLD_HOUSE);
+    setLog("見違えるほど綺麗になりました。これなら借りたい人も見つかりそうです。次は指定された空き地を購入しましょう。");
+    return;
+  }
+
+  if (
+    tutorialStep === STORY_TUTORIAL_STEPS.BUY_APARTMENT_LAND &&
+    apartmentLandTile?.owner === OWNER.PLAYER
+  ) {
+    setTutorialStep(STORY_TUTORIAL_STEPS.BUILD_APARTMENT);
+    setSelectedId(apartmentLandTile.id);
+    setActivePanel("build");
+    setStoryEvent(STORY_TUTORIAL_EVENTS.PURCHASED_APARTMENT_LAND);
+    setLog("空き地を購入できました。次はこの土地に平屋戸建を建ててみましょう。");
+    return;
+  }
+
+  const hasTutorialApartment = tiles.some((tile) => {
+    return tile.owner === OWNER.PLAYER &&
+      tile.building === "house_1f" &&
+      tile.tutorialTag === "apartment_land" &&
+      tile.buildingStatus === "active";
+  });
+
+  if (
+    tutorialStep === STORY_TUTORIAL_STEPS.BUILD_APARTMENT &&
+    hasTutorialApartment
+  ) {
+    setTutorialStep(STORY_TUTORIAL_STEPS.COMPLETE);
+    setActivePanel("home");
+    setStoryEvent(STORY_TUTORIAL_EVENTS.BUILT_APARTMENT);
+    setLog("建物って自分で建てられるんですね。第0章の基本操作は完了です。");
+  }
+}, [currentGameMode, tutorialStep, tiles]);
+
+
 
 const [actionPoints, setActionPoints] = useState(
   savedGame?.actionPoints ?? (loadedHqPlaced ? 1 : 0)
@@ -10822,6 +11360,10 @@ useEffect(() => {
     const saveData = {
       playerCompanyName,
       activeSaveSlot,
+      currentGameMode,
+      tutorialStep,
+      hasShownGifuHqCompleteGuide,
+      hasClearedGifuChapter,
       savedAt: new Date().toISOString(),
       money,
       loans,
@@ -10863,6 +11405,8 @@ useEffect(() => {
 }, [
   playerCompanyName,
   activeSaveSlot,
+  currentGameMode,
+  tutorialStep,
   money,
   loans,
   pendingLoanApplications,
@@ -10889,6 +11433,7 @@ useEffect(() => {
   annualReportHistory,
   isDemoMode,
   usedSecretCommands,
+  hasClearedGifuChapter,
 ]);
 
 const [tileSize, setTileSize] = useState(24);
@@ -12360,6 +12905,13 @@ function canPlaceNPCRebuild(startTile, buildingKey, tileList) {
   };
 }
 function selectBuildingFromList(tileId) {
+    const targetTile = tiles.find((tile) => tile.id === tileId);
+
+    if (isStoryTutorialActive() && targetTile && !isStoryTutorialTargetTile(targetTile)) {
+      showStoryTutorialBlockedMessage();
+      return;
+    }
+
     setSelectedId(tileId);
 
     setTimeout(() => {
@@ -13390,14 +13942,25 @@ function grantEmployeesExp(employeeIds, gainedExp, reason) {
 
     if (playerResult.rankUpCount > 0) {
       const unlockMessages = getPlayerRankUnlockSummary(beforePlayerRank, playerResult.rank);
-      setEmployeeTickets((current) => current + playerResult.rankUpCount);
+      const isTutorialNoTicketReward = isStoryTutorialActive();
+
+      if (!isTutorialNoTicketReward) {
+        setEmployeeTickets((current) => current + playerResult.rankUpCount);
+      }
+
       setPlayerRankUpResult({
         beforeRank: beforePlayerRank,
         rank: playerResult.rank,
-        ticketCount: playerResult.rankUpCount,
+        ticketCount: isTutorialNoTicketReward ? 0 : playerResult.rankUpCount,
+        tutorialNoTicketReward: isTutorialNoTicketReward,
         unlockMessages,
       });
-      resultMessages.push(`プレイヤーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。社員チケット+${playerResult.rankUpCount}枚。${unlockMessages.join(" / ")}`);
+
+      resultMessages.push(
+        isTutorialNoTicketReward
+          ? `プレイヤーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。${unlockMessages.join(" / ")}`
+          : `プレイヤーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。社員チケット+${playerResult.rankUpCount}枚。${unlockMessages.join(" / ")}`
+      );
     }
   }
 
@@ -13415,10 +13978,22 @@ function grantEmployeeExp(employeeId, gainedExp, reason) {
 }
 
 function recruitEmployees() {
+  if (isStoryTutorialActive()) {
+    showStoryTutorialBlockedMessage();
+    alert("チュートリアル中は社員採用はできません。まずは表示されている目標を進めましょう。");
+    return;
+  }
+
   startEmployeeRecruitmentByTicket("normal");
 }
 
 function recruitPremiumEmployees() {
+  if (isStoryTutorialActive()) {
+    showStoryTutorialBlockedMessage();
+    alert("チュートリアル中は社員採用はできません。まずは表示されている目標を進めましょう。");
+    return;
+  }
+
   startEmployeeRecruitmentByTicket("premium");
 }
 
@@ -13692,6 +14267,10 @@ function addDemoMoney100m() {
 function grantTicketReward(ticketType, count, reason, showPopup = true) {
   const amount = Math.max(1, count ?? 1);
 
+  if (isStoryTutorialActive()) {
+    return;
+  }
+
   if (ticketType === "premium") {
     setPremiumEmployeeTickets((current) => current + amount);
   } else {
@@ -13873,6 +14452,20 @@ async function startBuildPlacement(buildingKey) {
     return;
   }
 
+  if (isStoryTutorialActive()) {
+    if (tutorialStep !== STORY_TUTORIAL_STEPS.BUILD_APARTMENT) {
+      showStoryTutorialBlockedMessage();
+      alert("今は建設の前に、表示されている目標を進めましょう。");
+      return;
+    }
+
+    if (buildingKey !== "house_1f") {
+      showStoryTutorialBlockedMessage();
+      alert("チュートリアルでは、平屋戸建だけ建築できます。");
+      return;
+    }
+  }
+
   if (!hqPlaced) {
     alert("先に本社を設置してください");
     return;
@@ -13898,6 +14491,12 @@ async function startBuildPlacement(buildingKey) {
 }
 
 function startBranchPlacement() {
+  if (isStoryTutorialActive()) {
+    showStoryTutorialBlockedMessage();
+    alert("チュートリアル中は支店開設はできません。まずは表示されている目標を進めましょう。");
+    return;
+  }
+
   if (!hqPlaced) {
     alert("先に本社を設置してください");
     return;
@@ -13928,6 +14527,20 @@ async function buyLand() {
   }
 
   const targetTile = mainTile || selectedTile;
+
+  if (isStoryTutorialActive()) {
+    const expectedTag = tutorialStep === STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE
+      ? "old_house"
+      : tutorialStep === STORY_TUTORIAL_STEPS.BUY_APARTMENT_LAND
+        ? "apartment_land"
+        : null;
+
+    if (!expectedTag || targetTile.tutorialTag !== expectedTag) {
+      showStoryTutorialBlockedMessage();
+      alert("今はチュートリアルの目標だけ購入できます。赤く点滅しているマスを選んでください。");
+      return;
+    }
+  }
 
   const relatedTiles = tiles.filter(
     (tile) => tile.id === targetTile.id || tile.buildingMainId === targetTile.id
@@ -14010,6 +14623,14 @@ async function buyLand() {
       `標準2ヶ月 → 予定${plannedMonths}ヶ月 / 標準${purchasePrice}万円 → 予定${finalPurchasePrice}万円 / ` +
       `担当:${actionEmployees.map((employee) => employee.name).join("・")}`
   );
+
+  if (isStoryTutorialActive()) {
+    if (targetTile.tutorialTag === "old_house") {
+      setStoryEvent(STORY_TUTORIAL_EVENTS.PURCHASE_OLD_HOUSE_STARTED);
+    } else if (targetTile.tutorialTag === "apartment_land") {
+      setStoryEvent(STORY_TUTORIAL_EVENTS.PURCHASE_APARTMENT_LAND_STARTED);
+    }
+  }
 }
 function placeHQ(hqTypeKey) {
   const alreadyHasHQ = tiles.some((tile) => {
@@ -14121,11 +14742,24 @@ function placeHQ(hqTypeKey) {
   setSelectedId(null);
   setActivePanel("employee");
 
+  if (currentGameMode === "story_gifu" && !hasShownGifuHqCompleteGuide) {
+    setEmployeeTickets((current) => Math.max(current, 1));
+    setHasShownGifuHqCompleteGuide(true);
+    setStoryEvent(STORY_GIFU_EVENTS.HQ_PLACED);
+    setHasEmployeeRecruitNotice(true);
+  }
+
   setLog(
-    `${hqType.name}を設置しました。土地代${tile.landPrice}万円、本社建設費${hqType.cost}万円を支払いました。`
+    `${hqType.name}を設置しました。土地代${tile.landPrice}万円、本社建設費${hqType.cost}万円を支払いました。${currentGameMode === "story_gifu" ? " 社員チケットを1枚獲得しました。" : ""}`
   );
 }
 async function placeBranch(targetTile = selectedTile) {
+  if (isStoryTutorialActive()) {
+    showStoryTutorialBlockedMessage();
+    alert("チュートリアル中は支店開設はできません。まずは表示されている目標を進めましょう。");
+    return false;
+  }
+
   if (!hqPlaced) {
     alert("先に本社を設置してください");
     return false;
@@ -14260,6 +14894,18 @@ async function placeBranch(targetTile = selectedTile) {
     const building = BUILDINGS[buildingKey];
 
     const buildTargetTile = getResolvedBuildStartTile(clickedBuildTargetTile, buildingKey) ?? clickedBuildTargetTile;
+
+    if (isStoryTutorialActive()) {
+      if (
+        tutorialStep !== STORY_TUTORIAL_STEPS.BUILD_APARTMENT ||
+        buildingKey !== "house_1f" ||
+        buildTargetTile.tutorialTag !== "apartment_land"
+      ) {
+        showStoryTutorialBlockedMessage();
+        alert("チュートリアルでは、赤く点滅している空き地に平屋戸建を建ててください。");
+        return false;
+      }
+    }
 
     if (!isBuildingUnlockedForRank(buildingKey, playerRank)) {
       alert(`${building.name}はプレイヤーランク${getRequiredRankForBuilding(buildingKey)}で解放されます。`);
@@ -14413,10 +15059,21 @@ leaseCycleStartMonth: month,
     setBuildEntrySource("menu");
     markEmployeesBusy(actionEmployees.map((employee) => employee.id), buildMonths, "建設");
     setLog(`${building.name}の建設を開始しました。標準${standardBuildMonths}ヶ月 → 予定${buildMonths}ヶ月 / 標準${building.cost}万円 → 予定${actualBuildCost}万円 / 担当:${actionEmployees.map((employee) => employee.name).join("・")}`);
+
+    if (isStoryTutorialActive() && buildTargetTile.tutorialTag === "apartment_land" && buildingKey === "house_1f") {
+      setStoryEvent(STORY_TUTORIAL_EVENTS.BUILD_HOUSE_STARTED);
+    }
+
     return true;
   }
 
 async function demolish() {
+  if (isStoryTutorialActive()) {
+    showStoryTutorialBlockedMessage();
+    alert("チュートリアル中は解体できません。表示されている目標だけ進めましょう。");
+    return;
+  }
+
   if (!selectedTile) return;
 
   const mainTile = getMainTile(selectedTile);
@@ -14478,6 +15135,12 @@ async function demolish() {
   setLog(`${building.name}を取り壊しました。担当:${actionEmployee.name}`);
 }
 async function sellProperty() {
+  if (isStoryTutorialActive()) {
+    showStoryTutorialBlockedMessage();
+    alert("チュートリアル中は売却できません。表示されている目標だけ進めましょう。");
+    return;
+  }
+
   if (!selectedTile) return;
 
   const mainTile = getMainTile(selectedTile);
@@ -14630,6 +15293,17 @@ async function repairBuilding(type) {
     return;
   }
 
+  if (isStoryTutorialActive()) {
+    if (
+      tutorialStep !== STORY_TUTORIAL_STEPS.REPAIR_OLD_HOUSE ||
+      mainTile.tutorialTag !== "old_house"
+    ) {
+      showStoryTutorialBlockedMessage();
+      alert("チュートリアルでは、購入した古い戸建だけ修繕できます。");
+      return;
+    }
+  }
+
   const building = BUILDINGS[mainTile.building];
 
   let standardRepairCost = Math.max(
@@ -14703,16 +15377,15 @@ async function repairBuilding(type) {
     })
   );
 
-  grantEmployeesExp(
-    actionEmployees.map((employee) => employee.id),
-    calculateMonthActionExp(actualRepairMonths),
-    "修繕"
-  );
   markEmployeesBusy(actionEmployees.map((employee) => employee.id), actualRepairMonths, "修繕");
 
   setLog(
     `${building.name}の${option.name}を開始しました。標準${option.months}ヶ月 → 予定${actualRepairMonths}ヶ月 / 標準${standardRepairCost}万円 → 予定${actualRepairCost}万円 / 担当:${actionEmployees.map((employee) => employee.name).join("・")}`
   );
+
+  if (isStoryTutorialActive() && mainTile.tutorialTag === "old_house") {
+    setStoryEvent(STORY_TUTORIAL_EVENTS.REPAIR_OLD_HOUSE_STARTED);
+  }
 }
 
 function nextMonth() {
@@ -15134,6 +15807,12 @@ workingTiles = workingTiles.map((tile) => {
       `${building.name}の${tile.repairName}が完了しました。建物状態:${Math.round(
         tile.condition ?? 100
       )}% → ${nextCondition}%`
+    );
+
+    grantEmployeesExp(
+      Array.isArray(tile.repairEmployeeIds) ? tile.repairEmployeeIds : [],
+      calculateMonthActionExp(tile.repairActualMonths ?? tile.repairStandardMonths ?? 1),
+      "修繕完了"
     );
 
     return {
@@ -16986,6 +17665,12 @@ function calculateLoanConsultationReport(consultation) {
 }
 
 async function startLoanConsultation(bankId) {
+  if (isStoryTutorialActive()) {
+    showStoryTutorialBlockedMessage();
+    alert("チュートリアル中は融資相談はできません。まずは表示されている目標を進めましょう。");
+    return;
+  }
+
   const bank = BANKS[bankId];
   if (!bank) return;
 
@@ -17041,6 +17726,12 @@ async function startLoanConsultation(bankId) {
 }
 
 async function borrowFromBank(bankId, overrideAmount = null, consultationReport = null) {
+  if (isStoryTutorialActive()) {
+    showStoryTutorialBlockedMessage();
+    alert("チュートリアル中は借入申請はできません。まずは表示されている目標を進めましょう。");
+    return;
+  }
+
   const bank = BANKS[bankId];
   if (!bank) return;
 
@@ -17960,6 +18651,10 @@ function applySaveDataToCurrentGame(data, slot) {
   setConsultationApplicationAmounts({});
   setMonth(data.month ?? 1);
   setHqPlaced(Boolean(data.hqPlaced || data.tiles.some((tile) => tile.owner === OWNER.PLAYER && tile.feature === FEATURE.HQ)));
+  setCurrentGameMode(data.currentGameMode ?? "free");
+  setTutorialStep(data.tutorialStep ?? null);
+  setHasShownGifuHqCompleteGuide(data.hasShownGifuHqCompleteGuide ?? false);
+  setHasClearedGifuChapter(data.hasClearedGifuChapter ?? false);
   setTiles(data.tiles);
   setSelectedId(data.selectedId ?? null);
   setLog(data.log ?? `スロット${slot}をロードしました。`);
@@ -18040,14 +18735,24 @@ function loadSaveSlotFromTitle(slot) {
   }
 }
 
-function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null) {
+function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode = "free") {
   const companyName = (fixedCompanyName || newCompanyNameInput || DEFAULT_COMPANY_NAME).trim() || DEFAULT_COMPANY_NAME;
+  const isStoryTutorial = mode === "story";
+  const newMap = isStoryTutorial ? createStoryTutorialMap() : createMap();
+  const initialEmployees = isStoryTutorial
+  ? [normalizeEmployeeGrowthBase(createStoryAkari())]
+  : [];
 
   localStorage.setItem("realEstateGameCurrentSlot", String(slot));
   setActiveSaveSlot(slot);
+  setCurrentGameMode(mode);
+  setHasShownGifuHqCompleteGuide(false);
+  setHasClearedGifuChapter(false);
+  setTutorialStep(isStoryTutorial ? STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE : null);
+  setStoryEvent(isStoryTutorial ? STORY_TUTORIAL_EVENTS.START : null);
   setPlayerCompanyName(companyName);
   setNewCompanyNameInput(companyName);
-  setMoney(20000);
+  setMoney(isStoryTutorial ? 5000 : 20000);
   setLoans([]);
   setPendingLoanApplications([]);
   setPendingLoanConsultations([]);
@@ -18061,16 +18766,15 @@ function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null) {
   playerExpRef.current = 0;
   setPlayerRankUpResult(null);
 
-  const newMap = createMap();
   setTiles(newMap.tiles);
-  setSelectedId(null);
-  setHqPlaced(false);
-  setActivePanel("hq");
-  setEmployees([]);
+  setSelectedId(isStoryTutorial ? newMap.tutorialOldHouseId : null);
+  setHqPlaced(isStoryTutorial);
+  setActivePanel(isStoryTutorial ? "land" : "hq");
+  setEmployees(initialEmployees);
   setEmployeeCandidates([]);
   setEmployeeStorage([]);
-  setActionPoints(0);
-  setEmployeeTickets(1);
+  setActionPoints(isStoryTutorial ? 5 : 0);
+  setEmployeeTickets(isStoryTutorial ? 0 : 1);
   setPremiumEmployeeTickets(0);
   setEmployeeSortKey("rarity");
   setEmployeeSortDirection("desc");
@@ -18089,7 +18793,9 @@ function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null) {
   setTitleModal(null);
   setSaveLoadModal(null);
   setIsMainMenuOpen(false);
-  setLog(`${companyName}として最初から開始しました。最初に本社を設置してください。`);
+  setLog(isStoryTutorial
+    ? "第0章 創業編を開始しました。赤く光っている売り物件を選択して、2階建戸建を購入しましょう。"
+    : `${companyName}として最初から開始しました。最初に本社を設置してください。`);
 }
 
 function finishPrologue() {
@@ -18098,22 +18804,103 @@ function finishPrologue() {
     companyName: (newCompanyNameInput || DEFAULT_COMPANY_NAME).trim() || DEFAULT_COMPANY_NAME,
   };
 
-  resetGameFromTitle(pending.slot, pending.companyName);
+  resetGameFromTitle(pending.slot, pending.companyName, pending.mode ?? "story");
 }
 
-function startNewGameFromTitle(slot = activeSaveSlot) {
+function startNewGameFromTitle(slot = activeSaveSlot, mode = "story") {
   const companyName = (newCompanyNameInput || DEFAULT_COMPANY_NAME).trim() || DEFAULT_COMPANY_NAME;
   const ok = window.confirm(`スロット${slot}で「${companyName}」として最初から始めますか？
 
 このスロットの既存データは上書きされます。`);
   if (!ok) return;
 
-  setPendingNewGame({ slot, companyName });
+  setPendingNewGame({ slot, companyName, mode });
   setPrologueIndex(0);
-  setShowPrologue(true);
+  if (mode === "story") {
+    setShowPrologue(true);
+  } else {
+    resetGameFromTitle(slot, companyName, "free");
+    return;
+  }
   setTitleModal(null);
   setSaveLoadModal(null);
 }
+
+function startGifuChapter() {
+  const gifuMap = createGifuStoryMap();
+  setCurrentGameMode("story_gifu");
+  setTutorialStep(null);
+  setHasShownGifuHqCompleteGuide(false);
+  setHasClearedGifuChapter(false);
+  setStoryEvent(STORY_GIFU_EVENTS.INTRO);
+  setTiles(gifuMap.tiles);
+  setSelectedId(null);
+  setHqPlaced(false);
+  setActivePanel("hq");
+  setPendingBuildKey(null);
+  setPendingBranchPlacement(false);
+  setSelectedBuildCategory(null);
+  setSelectedHousingType(null);
+  setMoney(20000);
+  setActionPoints(0);
+  setEmployeeTickets(0);
+  setPremiumEmployeeTickets(0);
+  setLoans([]);
+  setPendingLoanApplications([]);
+  setPendingLoanConsultations([]);
+  setLoanConsultationReports([]);
+  setLog("第1章 岐阜編を開始しました。まずは本社を設置しましょう。");
+}
+
+const gifuTotalAssets = Math.max(0, Math.round(money + assetValue));
+const isGifuChapterClearConditionMet =
+  currentGameMode === "story_gifu" &&
+  hqPlaced &&
+  totalPopulation >= GIFU_CLEAR_POPULATION &&
+  gifuTotalAssets >= GIFU_CLEAR_TOTAL_ASSETS;
+
+useEffect(() => {
+  if (!isGifuChapterClearConditionMet || hasClearedGifuChapter) return;
+
+  setHasClearedGifuChapter(true);
+  setStoryEvent(STORY_GIFU_EVENTS.CLEAR);
+  setLog("岐阜編の目標を達成しました。人口5,000人以上、総資産10億円以上を達成です。");
+}, [isGifuChapterClearConditionMet, hasClearedGifuChapter]);
+
+function getCurrentAkariGuide() {
+  if (currentGameMode === "story" && tutorialStep) {
+    return {
+      portrait: "normal",
+      title: "第0章 創業編",
+      goal: getStoryTutorialGoalText(tutorialStep),
+      text: getStoryTutorialAkariAdviceText(tutorialStep),
+      nextMonthGuide: shouldShowStoryTutorialNextMonthGuide(),
+    };
+  }
+
+  if (currentGameMode === "story_gifu" && !hqPlaced) {
+    return {
+      portrait: "formal",
+      title: "第1章 岐阜編：本社設置",
+      goal: "本社を設置する土地を選びましょう。",
+      text: "普通の本社は初期費用を抑えられます。アパート付き本社は費用が高い代わりに、最初から賃貸収入を狙えます。どちらを選んでも大丈夫です。",
+    };
+  }
+
+  const guide = AKARI_PAGE_GUIDES[activePanel] ?? AKARI_PAGE_GUIDES.home;
+  const gifuGoalText = currentGameMode === "story_gifu"
+    ? `岐阜編目標：人口${totalPopulation.toLocaleString()} / ${GIFU_CLEAR_POPULATION.toLocaleString()}人、総資産${gifuTotalAssets.toLocaleString()} / ${GIFU_CLEAR_TOTAL_ASSETS.toLocaleString()}万円`
+    : null;
+
+  return {
+    portrait: guide.portrait ?? "normal",
+    title: guide.title,
+    goal: gifuGoalText,
+    text: guide.text,
+  };
+}
+
+const currentAkariGuide = getCurrentAkariGuide();
 
 
 
@@ -18182,8 +18969,106 @@ const employeeLibraryCompletionRate = EMPLOYEE_POOL.length > 0
   ? Math.round((ownedEmployeeLibrary.length / EMPLOYEE_POOL.length) * 100)
   : 0;
 
+function getStoryTutorialTargetTagForStep(step = tutorialStep) {
+  if (
+    step === STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE ||
+    step === STORY_TUTORIAL_STEPS.REPAIR_OLD_HOUSE
+  ) {
+    return "old_house";
+  }
+
+  if (
+    step === STORY_TUTORIAL_STEPS.BUY_APARTMENT_LAND ||
+    step === STORY_TUTORIAL_STEPS.BUILD_APARTMENT
+  ) {
+    return "apartment_land";
+  }
+
+  return null;
+}
+
+function isStoryTutorialActive() {
+  return currentGameMode === "story" &&
+    tutorialStep &&
+    tutorialStep !== STORY_TUTORIAL_STEPS.COMPLETE;
+}
+
+function shouldShowStoryTutorialNextMonthGuide() {
+  if (currentGameMode !== "story" || !tutorialStep) return false;
+
+  const oldHouseTile = tiles.find((tile) => tile.tutorialTag === "old_house");
+  const apartmentLandTile = tiles.find((tile) => tile.tutorialTag === "apartment_land");
+
+  if (oldHouseTile?.purchaseStatus === "purchasing") return true;
+  if (oldHouseTile?.repairStatus === "repairing") return true;
+  if (apartmentLandTile?.purchaseStatus === "purchasing") return true;
+  if (apartmentLandTile?.buildingStatus === "constructing") return true;
+
+  return false;
+}
+
+function showStoryTutorialBlockedMessage() {
+  setStoryEvent(STORY_TUTORIAL_EVENTS.BLOCKED);
+  setLog("今はチュートリアル中です。赤く点滅している目標だけ進めましょう。");
+}
+
+function isStoryTutorialTargetTile(tile) {
+  if (currentGameMode !== "story" || !tutorialStep) return false;
+
+  if (
+    (tutorialStep === STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE ||
+      tutorialStep === STORY_TUTORIAL_STEPS.REPAIR_OLD_HOUSE) &&
+    tile.tutorialTag === "old_house"
+  ) {
+    return true;
+  }
+
+  if (
+    (tutorialStep === STORY_TUTORIAL_STEPS.BUY_APARTMENT_LAND ||
+      tutorialStep === STORY_TUTORIAL_STEPS.BUILD_APARTMENT) &&
+    tile.tutorialTag === "apartment_land"
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 return (
   <>
+    <style>{`
+      .story-next-month-guide {
+        outline: 3px solid #ff1744 !important;
+        animation: storyNextMonthPulse 0.8s infinite alternate;
+      }
+
+      @keyframes storyNextMonthPulse {
+        from { box-shadow: 0 0 0 2px rgba(255, 23, 68, 0.6); }
+        to { box-shadow: 0 0 0 6px rgba(255, 23, 68, 1), 0 0 16px rgba(255, 23, 68, 0.9); }
+      }
+
+      .story-tutorial-target-tile {
+        border: 3px solid #ff1744 !important;
+        outline: 4px solid #ff1744 !important;
+        position: relative;
+        z-index: 20;
+        animation: storyTutorialTargetPulse 0.8s infinite alternate;
+      }
+
+      @keyframes storyTutorialTargetPulse {
+        from {
+          outline-color: #ff1744;
+          box-shadow: 0 0 0 3px rgba(255, 23, 68, 0.95), 0 0 10px rgba(255, 23, 68, 0.75);
+          transform: scale(1);
+        }
+        to {
+          outline-color: #ffffff;
+          box-shadow: 0 0 0 5px rgba(255, 23, 68, 1), 0 0 22px rgba(255, 23, 68, 1);
+          transform: scale(1.08);
+        }
+      }
+    `}</style>
+
     <audio
       ref={bgmRef}
       src="/bgm/city.mp3"
@@ -18239,7 +19124,91 @@ return (
       </div>
     )}
 
-    {showTitleScreen && (
+    
+    {storyEvent && !showPrologue && (
+      <div
+        className="story-event-overlay"
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 9999,
+          background: "rgba(0, 0, 0, 0.45)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 16,
+        }}
+      >
+        <div
+          className="story-event-card"
+          style={{
+            width: "min(560px, 96vw)",
+            background: "linear-gradient(180deg, #fffdf7, #fff5d6)",
+            border: "3px solid #f0b429",
+            borderRadius: 18,
+            boxShadow: "0 18px 40px rgba(0,0,0,0.35)",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: 14,
+              alignItems: "stretch",
+              padding: 14,
+            }}
+          >
+            <div
+              style={{
+                flex: "0 0 132px",
+                minHeight: 160,
+                borderRadius: 14,
+                background: "rgba(255,255,255,0.8)",
+                border: "1px solid rgba(0,0,0,0.08)",
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "center",
+                overflow: "hidden",
+              }}
+            >
+              <img
+                src={AKARI_PORTRAIT_PATHS[storyEvent.portrait ?? "normal"]}
+                alt="七瀬 灯里"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            </div>
+
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontWeight: 900, fontSize: 15, color: "#7a4a00", marginBottom: 4 }}>
+                七瀬 灯里
+              </div>
+              <div style={{ fontWeight: 900, fontSize: 18, marginBottom: 10 }}>
+                {storyEvent.title}
+              </div>
+              <div style={{ whiteSpace: "pre-line", lineHeight: 1.7, fontWeight: 700 }}>
+                {storyEvent.text}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ padding: "0 14px 14px", textAlign: "right" }}>
+            <button
+              type="button"
+              onClick={() => setStoryEvent(null)}
+              style={{ minWidth: 120, fontWeight: 900 }}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+{showTitleScreen && (
       <div
         style={{
           position: "fixed",
@@ -18330,7 +19299,7 @@ return (
                     <strong>Slot {slotInfo.slot}</strong>：{slotInfo.hasData ? `${slotInfo.companyName} / ${getGameDate(slotInfo.month).label} / ${Number(slotInfo.money ?? 0).toLocaleString()}万円` : "空き"}
                     {slotInfo.hasData && <div style={{ opacity: 0.72 }}>保存：{slotInfo.savedAtText}</div>}
                   </div>
-                  <button type="button" onClick={() => startNewGameFromTitle(slotInfo.slot)} style={{ padding: "7px 9px", borderRadius: 999, border: "none", fontWeight: 700, cursor: "pointer" }}>
+                  <button type="button" onClick={() => { setPendingNewGame({slot: slotInfo.slot}); setTitleModal("modeSelect"); }} style={{ padding: "7px 9px", borderRadius: 999, border: "none", fontWeight: 700, cursor: "pointer" }}>
                     最初から
                   </button>
                   <button type="button" onClick={() => loadSaveSlotFromTitle(slotInfo.slot)} disabled={!slotInfo.hasData} style={{ padding: "7px 9px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.35)", background: slotInfo.hasData ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.06)", color: "#ffffff", fontWeight: 700, cursor: slotInfo.hasData ? "pointer" : "not-allowed", opacity: slotInfo.hasData ? 1 : 0.55 }}>
@@ -18376,7 +19345,13 @@ return (
                 textAlign: "left",
               }}
             >
-              {titleModal === "settings" ? (
+              {titleModal === "modeSelect" ? (
+                <>
+                  <h2 style={{ marginTop: 0 }}>モード選択</h2>
+                  <button type="button" onClick={() => startNewGameFromTitle((pendingNewGame?.slot ?? activeSaveSlot), "story")} style={{width:"100%",padding:12,marginBottom:8}}>ストーリーモード</button>
+                  <button type="button" onClick={() => startNewGameFromTitle((pendingNewGame?.slot ?? activeSaveSlot), "free")} style={{width:"100%",padding:12}}>フリーモード</button>
+                </>
+              ) : titleModal === "settings" ? (
                 <>
                   <h2 style={{ marginTop: 0 }}>設定</h2>
                   <p>BGMはタイトル画面とゲーム内オプションで共通管理します。</p>
@@ -18704,7 +19679,9 @@ return (
     <div className="popup-log-card player-rankup-card">
       <h2>ランクアップ！</h2>
       <p className="employee-gacha-rarity">Rank{playerRankUpResult.beforeRank} → Rank{playerRankUpResult.rank}</p>
-      <p>社員チケット +{playerRankUpResult.ticketCount}枚</p>
+      {!playerRankUpResult.tutorialNoTicketReward && (
+        <p>社員チケット +{playerRankUpResult.ticketCount}枚</p>
+      )}
       {(playerRankUpResult.unlockMessages ?? []).length > 0 ? (
         <div>
           <h3>解放内容</h3>
@@ -19008,6 +19985,51 @@ return (
         </div>
       </header>
 
+      {currentAkariGuide && (
+        <div className="akari-page-guide">
+          <div className="akari-page-guide-inner">
+            <img
+              src={AKARI_PORTRAIT_PATHS[currentAkariGuide.portrait ?? "normal"]}
+              alt="七瀬 灯里"
+              className="akari-page-guide-portrait"
+            />
+            <div className="akari-page-guide-body">
+              <div className="akari-page-guide-name">七瀬 灯里</div>
+              <div className="akari-page-guide-title">
+                <span className="akari-page-guide-main-title">{currentAkariGuide.title}</span>
+                {currentAkariGuide.goal && <span className="akari-page-guide-goal">【目標】{currentAkariGuide.goal}</span>}
+              </div>
+              <div className="akari-page-guide-text">{currentAkariGuide.text}</div>
+              {currentAkariGuide.nextMonthGuide && (
+                <div className="akari-page-guide-subtext">
+                  交渉・工事が進行中です。上部の⏭️「翌月へ」で時間を進めてください。
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {currentGameMode === "story" && tutorialStep === STORY_TUTORIAL_STEPS.COMPLETE && (
+        <div className="story-next-chapter-panel">
+          <div>
+            <strong>第0章クリア</strong>
+            <span>基本操作を学びました。次は30×30の岐阜編へ進みます。</span>
+          </div>
+          <button type="button" onClick={startGifuChapter}>岐阜編に進む</button>
+        </div>
+      )}
+
+      {currentGameMode === "story_gifu" && hqPlaced && (
+        <div className={`gifu-goal-panel ${hasClearedGifuChapter ? "cleared" : ""}`}>
+          <div>
+            <strong>{hasClearedGifuChapter ? "岐阜編クリア" : "岐阜編目標"}</strong>
+            <span>人口 {totalPopulation.toLocaleString()} / {GIFU_CLEAR_POPULATION.toLocaleString()}人</span>
+            <span>総資産 {gifuTotalAssets.toLocaleString()} / {GIFU_CLEAR_TOTAL_ASSETS.toLocaleString()}万円</span>
+          </div>
+        </div>
+      )}
+
 <nav className="bottom-menu compact-command-menu icon-command-menu v72-top-command-bar v73-top-command-bar" aria-label="メイン操作">
   <button
     type="button"
@@ -19047,7 +20069,7 @@ return (
       setIsMoneyInfoOpen(false);
       setIsDateInfoOpen(false);
     }}
-    className="top-icon-button"
+    className={`top-icon-button ${shouldShowStoryTutorialNextMonthGuide() ? "story-next-month-guide" : ""}`}
   >
     <span className="top-icon-symbol">⏭️</span>
   </button>
@@ -19236,7 +20258,7 @@ return (
       className={`top-icon-button ${isMainMenuOpen ? "active" : ""}`}
     >
       <span className="top-icon-symbol">☰</span>
-      {hasEmployeeRecruitNotice && <span className="menu-alert-dot">!</span>}
+      {!isStoryTutorialActive() && hasEmployeeRecruitNotice && <span className="menu-alert-dot">!</span>}
     </button>
 
     {isMainMenuOpen && (
@@ -19253,18 +20275,20 @@ return (
         >
           🏗 建設
         </button>
-        <button
-          type="button"
-          onClick={() => {
-            setActivePanel("employee");
-            setHasEmployeeRecruitNotice(false);
-            setIsMainMenuOpen(false);
-          }}
-          className={activePanel === "employee" ? "active" : ""}
-        >
-          👤 社員
-          {hasEmployeeRecruitNotice && <span className="menu-alert-dot">!</span>}
-        </button>
+        {!isStoryTutorialActive() && (
+          <button
+            type="button"
+            onClick={() => {
+              setActivePanel("employee");
+              setHasEmployeeRecruitNotice(false);
+              setIsMainMenuOpen(false);
+            }}
+            className={activePanel === "employee" ? "active" : ""}
+          >
+            👤 社員
+            {hasEmployeeRecruitNotice && <span className="menu-alert-dot">!</span>}
+          </button>
+        )}
         <button
           type="button"
           onClick={() => {
@@ -19411,18 +20435,18 @@ return (
             <div
   className="map-grid"
   style={{
-    gridTemplateColumns: `28px repeat(${MAP_SIZE}, ${tileSize}px)`,
+    gridTemplateColumns: `28px repeat(${currentMapSize}, ${tileSize}px)`,
   }}
 >
   <div className="coord-top-left"></div>
 
-  {Array.from({ length: MAP_SIZE }).map((_, x) => (
+  {Array.from({ length: currentMapSize }).map((_, x) => (
     <div key={`x-${x}`} className="coord-header">
       {x}
     </div>
   ))}
 
-  {Array.from({ length: MAP_SIZE }).map((_, y) => (
+  {Array.from({ length: currentMapSize }).map((_, y) => (
     <React.Fragment key={`row-${y}`}>
       <div className="coord-side">
         {y}
@@ -19435,6 +20459,11 @@ return (
             key={tile.id}
             onClick={() => {
               if (shouldIgnoreTileClickAfterDrag()) return;
+
+              if (isStoryTutorialActive() && !isStoryTutorialTargetTile(tile)) {
+                showStoryTutorialBlockedMessage();
+                return;
+              }
 
               setSelectedId(tile.id);
 
@@ -19462,6 +20491,11 @@ return (
               setActivePanel("land");
             }}
             onDoubleClick={() => {
+              if (isStoryTutorialActive() && !isStoryTutorialTargetTile(tile)) {
+                showStoryTutorialBlockedMessage();
+                return;
+              }
+
               setSelectedId(tile.id);
 
               if (!hqPlaced) {
@@ -19510,6 +20544,10 @@ return (
               tile.owner === OWNER.RIVAL
                 ? getRivalCompany(tile.rivalCompanyId).colorClass
                 : ""
+            } ${
+              isStoryTutorialTargetTile(tile)
+                ? "story-tutorial-target-tile"
+                : ""
             }`}
             title={`座標:${tile.x},${tile.y} / ${getTerrainName(
               tile.terrain
@@ -19522,6 +20560,14 @@ return (
               width: `${tileSize}px`,
               height: `${tileSize}px`,
               backgroundColor: getTileColor(tile),
+              border: isStoryTutorialTargetTile(tile)
+                ? "3px solid #ff1744"
+                : undefined,
+              boxShadow: isStoryTutorialTargetTile(tile)
+                ? "0 0 0 5px rgba(255, 23, 68, 1), 0 0 22px rgba(255, 23, 68, 1)"
+                : undefined,
+              position: isStoryTutorialTargetTile(tile) ? "relative" : undefined,
+              zIndex: isStoryTutorialTargetTile(tile) ? 20 : undefined,
             }}
           >
             {getTileLabel(tile)}
@@ -19588,6 +20634,13 @@ return (
       <span className="smart-chip good">維持費50%OFF</span>
       <span className="smart-chip good">入居率50%UP</span>
     </div>
+
+    {currentGameMode === "story_gifu" && !hqPlaced && (
+      <div className="akari-inline-hint">
+        <strong>七瀬メモ</strong>
+        <span>普通の本社は安く始められます。アパート付き本社は高いですが、最初から4戸分の賃貸運営もできます。</span>
+      </div>
+    )}
 
     <div className="hq-choice-grid">
       <button onClick={() => placeHQ("normal")}>
@@ -19799,27 +20852,27 @@ return (
           )}
 
           <div className="smart-action-row">
-            {selectedMainTile?.owner === OWNER.SALE && (
+            {selectedMainTile?.owner === OWNER.SALE && (!isStoryTutorialActive() || isStoryTutorialTargetTile(selectedMainTile)) && (
               <button className={isTileInOfficeRange(selectedMainTile) ? "action-good" : "action-bad"} onClick={buyLand} disabled={!isTileInOfficeRange(selectedMainTile)} title={!isTileInOfficeRange(selectedMainTile) ? "本社・支店の行動範囲外です" : ""}>
                 {isTileInOfficeRange(selectedMainTile) ? "購入" : "範囲外"}
               </button>
             )}
 
-            {selectedTile.owner === OWNER.PLAYER && isBuildableTile(selectedTile) && !selectedTile.building && (
+            {selectedTile.owner === OWNER.PLAYER && isBuildableTile(selectedTile) && !selectedTile.building && (!isStoryTutorialActive() || (tutorialStep === STORY_TUTORIAL_STEPS.BUILD_APARTMENT && isStoryTutorialTargetTile(selectedTile))) && (
               <button className={isTileInOfficeRange(selectedTile) ? "action-good" : "action-bad"} onClick={() => { setBuildEntrySource("tile"); setPendingBuildKey(null); setActivePanel("build"); }} disabled={!isTileInOfficeRange(selectedTile)} title={!isTileInOfficeRange(selectedTile) ? "本社・支店の行動範囲外です" : ""}>
                 {isTileInOfficeRange(selectedTile) ? "建設" : "建設不可"}
               </button>
             )}
 
-            {selectedMainTile?.owner === OWNER.PLAYER && selectedMainTile?.building && (
+            {selectedMainTile?.owner === OWNER.PLAYER && selectedMainTile?.building && (!isStoryTutorialActive() || (tutorialStep === STORY_TUTORIAL_STEPS.REPAIR_OLD_HOUSE && isStoryTutorialTargetTile(selectedMainTile))) && (
               <button onClick={() => { setBuildEntrySource("tile"); setSelectedBuildCategory("修繕"); setActivePanel("build"); }}>修繕</button>
             )}
 
-            {selectedMainTile?.owner === OWNER.PLAYER && selectedMainTile?.feature !== FEATURE.HQ && (
+            {selectedMainTile?.owner === OWNER.PLAYER && selectedMainTile?.feature !== FEATURE.HQ && !isStoryTutorialActive() && (
               <button onClick={sellProperty}>売却</button>
             )}
 
-            {selectedMainTile?.owner === OWNER.PLAYER && selectedMainTile?.building && (
+            {selectedMainTile?.owner === OWNER.PLAYER && selectedMainTile?.building && !isStoryTutorialActive() && (
               <button onClick={demolish}>解体</button>
             )}
           </div>
@@ -19850,52 +20903,59 @@ return (
     </div>
 
     <p>
-      配属社員: {employeeCountText}人 / 保有社員: {ownedEmployeeCount}人 / 待機社員: {employeeStorage.length}人 / 月給合計: {employeeSalaryTotal}万円 / 社員チケット: {employeeTickets}枚 / プレミアム: {premiumEmployeeTickets}枚
+      配属社員: {employeeCountText}人 / 保有社員: {ownedEmployeeCount}人 / 待機社員: {employeeStorage.length}人 / 月給合計: {employeeSalaryTotal}万円
+      {!isStoryTutorialActive() && (
+        <> / 社員チケット: {employeeTickets}枚 / プレミアム: {premiumEmployeeTickets}枚</>
+      )}
     </p>
     <p className="employee-salary-note">※月給が発生するのは本社・支店に配属中の社員だけです。社員保管庫の待機社員は給与なしです。</p>
 
-    <div className="button-row ticket-button-row">
-      <button
-        className="employee-ticket-button normal-ticket-button"
-        disabled={employeeTickets < 1}
-        onClick={recruitEmployees}
-      >
-        {employeeTickets < 1
-          ? "社員採用（チケット不足）"
-          : "社員採用"}
-      </button>
+    {!isStoryTutorialActive() && (
+      <>
+        <div className="button-row ticket-button-row">
+          <button
+            className="employee-ticket-button normal-ticket-button"
+            disabled={employeeTickets < 1}
+            onClick={recruitEmployees}
+          >
+            {employeeTickets < 1
+              ? "社員採用（チケット不足）"
+              : "社員採用"}
+          </button>
 
-      {isDemoMode && (
-        <button onClick={addEmployeeTicketForDemo}>
-          採用券+1
-        </button>
-      )}
+          {isDemoMode && (
+            <button onClick={addEmployeeTicketForDemo}>
+              採用券+1
+            </button>
+          )}
 
-      <button
-        className="employee-ticket-button premium-ticket-button"
-        disabled={premiumEmployeeTickets < 1}
-        onClick={recruitPremiumEmployees}
-      >
-        {premiumEmployeeTickets < 1
-          ? "社員採用（プラチナ不足）"
-          : "社員採用（プラチナ）"}
-      </button>
+          <button
+            className="employee-ticket-button premium-ticket-button"
+            disabled={premiumEmployeeTickets < 1}
+            onClick={recruitPremiumEmployees}
+          >
+            {premiumEmployeeTickets < 1
+              ? "社員採用（プラチナ不足）"
+              : "社員採用（プラチナ）"}
+          </button>
 
-      {isDemoMode && (
-        <button onClick={addPremiumEmployeeTicketForDemo}>
-          プラチナ採用券+1
-        </button>
-      )}
-    </div>
+          {isDemoMode && (
+            <button onClick={addPremiumEmployeeTicketForDemo}>
+              プラチナ採用券+1
+            </button>
+          )}
+        </div>
 
-    <div className="ticket-odds-box">
-      {employeeTickets > 0 && (
-        <p><strong>社員チケット排出率:</strong> {getTicketOddsText("normal")}</p>
-      )}
-      {premiumEmployeeTickets > 0 && (
-        <p><strong>社員プレミアムチケット排出率:</strong> {getTicketOddsText("premium")}</p>
-      )}
-    </div>
+        <div className="ticket-odds-box">
+          {employeeTickets > 0 && (
+            <p><strong>社員チケット排出率:</strong> {getTicketOddsText("normal")}</p>
+          )}
+          {premiumEmployeeTickets > 0 && (
+            <p><strong>社員プレミアムチケット排出率:</strong> {getTicketOddsText("premium")}</p>
+          )}
+        </div>
+      </>
+    )}
 
     <div className="employee-sort-row">
       <span>表の見出しを押すと並び替えできます。もう一度押すと昇順・降順が切り替わります。</span>
@@ -20096,9 +21156,9 @@ return (
           >
             <div className="employee-library-portrait">
               {employee.graphicCode ? (
-                <img
-                  src={`/characters/${employee.graphicCode}.png`}
-                  alt={employee.name}
+               <img
+                src={`/characters/employees/${employee.graphicCode}.png`}
+                 alt={employee.name}
                 />
               ) : (
                 <span>{employee.name.slice(0, 1)}</span>
@@ -20280,12 +21340,22 @@ return (
           .map(([key, building]) => {
             const requiredRank = getRequiredRankForBuilding(key);
             const unlocked = isBuildingUnlockedForRank(key, playerRank);
+            const tutorialBuildLocked = isStoryTutorialActive() &&
+              tutorialStep === STORY_TUTORIAL_STEPS.BUILD_APARTMENT &&
+              key !== "house_1f";
+            const canSelectBuilding = unlocked && !tutorialBuildLocked;
 
             return (
               <button
                 key={key}
-                className={`build-detail-button ${unlocked ? "" : "locked-build-button"}`}
+                disabled={tutorialBuildLocked}
+                className={`build-detail-button ${canSelectBuilding ? "" : "locked-build-button"} ${tutorialBuildLocked ? "tutorial-locked-build-button" : ""}`}
                 onClick={() => {
+                  if (tutorialBuildLocked) {
+                    showStoryTutorialBlockedMessage();
+                    alert("チュートリアルでは、平屋戸建だけ建築できます。");
+                    return;
+                  }
                   if (!unlocked) {
                     alert(`${building.name}はプレイヤーランク${requiredRank}で解放されます。`);
                     return;
@@ -20295,8 +21365,9 @@ return (
                 title={`${building.rooms}室 / ${building.width}×${building.height}マス必要`}
               >
                 <strong>{building.name}</strong>
-                {!unlocked && <span className="locked-build-label">未開放：Rank{requiredRank}で解放</span>}
-                {unlocked && <span className="unlocked-build-label">建築可能</span>}
+                {tutorialBuildLocked && <span className="locked-build-label">チュートリアル未開放</span>}
+                {!tutorialBuildLocked && !unlocked && <span className="locked-build-label">未開放：Rank{requiredRank}で解放</span>}
+                {canSelectBuilding && <span className="unlocked-build-label">建築可能</span>}
                 <span>建築費:{building.cost}万円</span>
                 <span>戸数:{building.rooms}戸</span>
                 <span>1戸賃料:{building.baseRent}万円</span>
