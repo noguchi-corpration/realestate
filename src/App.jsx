@@ -3,7 +3,7 @@ import "./App.css";
 
 /*
   箱庭不動産経営シミュレーター
-  v176: 岐阜編クリア条件・七瀬ガイド圧縮版 / v175: 岐阜編開始・七瀬ページガイド追加版 / v174: チュートリアル発光パルス・建築ロック・チケット抑制版 / v173: 建設完了判定修正版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル強調赤枠・行動制限強化版 / v170: チュートリアル行動制限・七瀬ナビ追加版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル指定マス赤枠強化版 / v170: チュートリアル会話追加版 / v169: ストーリー第0章チュートリアル固定マップ追加版 / v168: モード選択追加版 / v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
+  v183: 岐阜固定本社・名古屋拡張マップ調整・0章修繕短縮版 / v182: 岐阜名古屋固定マップ調整版 / v181: 0章購入ボタン再表示修正版 / v180: 名古屋編ストーリーOKボタン修正版 / v179: 名古屋編チュートリアル誘導赤枠版 / v178: 名古屋編準備・銀行融資と支店建設チュートリアル版 / v177: チュートリアル進行不能対策・固定レベルアップ・岐阜15x15版 / v176: 岐阜編クリア条件・七瀬ガイド圧縮版 / v175: 岐阜編開始・七瀬ページガイド追加版 / v174: チュートリアル発光パルス・建築ロック・チケット抑制版 / v173: 建設完了判定修正版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル強調赤枠・行動制限強化版 / v170: チュートリアル行動制限・七瀬ナビ追加版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル指定マス赤枠強化版 / v170: チュートリアル会話追加版 / v169: ストーリー第0章チュートリアル固定マップ追加版 / v168: モード選択追加版 / v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
   PC・スマホ両対応版 / v133 配属上限撤廃・役職補正強化・拠点表示整理
   v131：特殊能力効果拡張（入居・家賃・融資・採用対応）
 
@@ -19,11 +19,13 @@ const MAP_SIZE = 70;
 const SAVE_SLOT_COUNT = 3;
 const DEFAULT_COMPANY_NAME = "";
 const DEFAULT_SAVE_SLOT = 1;
-const GAME_VERSION = "v176";
+const GAME_VERSION = "v187";
 const BASE_EMPLOYEE_SALARY = 15;
 const EMPLOYEE_SALARY_GROWTH_RATE = 1.05;
-const GIFU_CLEAR_POPULATION = 5000;
-const GIFU_CLEAR_TOTAL_ASSETS = 100000;
+const GIFU_CLEAR_POPULATION = 650;
+const GIFU_CLEAR_TOTAL_ASSETS = 30000;
+const NAGOYA_CLEAR_POPULATION = 1000;
+const NAGOYA_CLEAR_TOTAL_ASSETS = 50000;
 
 
 function calculateEmployeeSalaryByLevel(level) {
@@ -278,19 +280,122 @@ const STORY_GIFU_EVENTS = {
   INTRO: {
     portrait: "formal",
     title: "第1章 岐阜編",
-    text: "社長、いよいよ本格的な経営の始まりですね。\n第0章で学んだ『買う』『直す』『建てる』を、ここ岐阜の街で実践していきましょう。\nまずは本社を設置する土地を選びましょう。普通の本社とアパート付き本社、それぞれの違いも確認しながら選んでいきましょう。",
+    text: "社長、いよいよ本格的な経営の始まりですね。\n第0章で学んだ『買う』『直す』『建てる』を、ここ岐阜の街で実践していきましょう。\n岐阜駅の南側に小さな本社を構えました。第0章で学んだ操作を使って、ここ岐阜で実際に経営を進めていきましょう。",
   },
   HQ_PLACED: {
     portrait: "happy",
     title: "岐阜支社の第一歩",
-    text: "本社の設置が完了しました！\nここからは通常の経営プレイに入ります。社員チケットも使えるようになりました。\n社員を採用したり、物件を購入したりしながら会社を大きくしていきましょう！\n岐阜編の目標は、人口5,000人以上、総資産10億円以上です。",
+    text: "本社の設置が完了しました！\nここからは通常の経営プレイに入ります。社員チケットも使えるようになりました。\n社員を採用したり、物件を購入したりしながら会社を大きくしていきましょう！\n岐阜編の目標は、人口650人以上、総資産3億円以上です。",
   },
   CLEAR: {
     portrait: "formal",
     title: "岐阜編クリア",
-    text: "社長！岐阜での経営目標を達成しました！\n人口5,000人以上、総資産10億円以上。小さな不動産会社だった私たちも、ここまで成長できたんですね。\n次の舞台へ進む準備が整いました！",
+    text: "社長！岐阜での経営目標を達成しました！\n人口650人以上、総資産3億円以上。小さな不動産会社だった私たちも、ここまで成長できたんですね。\n次の舞台へ進む準備が整いました！",
   },
 };
+
+const STORY_NAGOYA_TUTORIAL_STEPS = {
+  LOAN_CONSULT: "loan_consult",
+  WAIT_LOAN_CONSULT: "wait_loan_consult",
+  LOAN_APPLICATION: "loan_application",
+  WAIT_LOAN_APPLICATION: "wait_loan_application",
+  BUILD_BRANCH: "build_branch",
+  WAIT_BRANCH: "wait_branch",
+  COMPLETE: "complete",
+};
+
+const STORY_NAGOYA_EVENTS = {
+  INTRO: {
+    portrait: "formal",
+    title: "第2章 名古屋編・進出準備",
+    text: "社長、岐阜での実績が認められました！ 次はいよいよ名古屋方面への進出です。ですが、大きな都市へ進むには資金も人手も必要です。まずは銀行融資の流れを確認しましょう。",
+  },
+  LOAN_CONSULT_STARTED: {
+    portrait: "serious",
+    title: "融資相談を開始しました",
+    text: "銀行へ融資相談を依頼しました。相談結果が出るまで月を進めましょう。相談結果を見てから申請すると、無理な借入を避けやすくなります。",
+  },
+  LOAN_REPORT_READY: {
+    portrait: "happy",
+    title: "融資相談結果が届きました",
+    text: "相談結果が届きました！ 銀行がどれくらい貸してくれそうか確認できます。次は相談結果を参考にして、融資申請をしてみましょう。",
+  },
+  LOAN_APPLICATION_STARTED: {
+    portrait: "serious",
+    title: "融資申請を開始しました",
+    text: "融資申請を行いました。審査結果が出るまで月を進めましょう。承認されれば資金が増えますが、毎月返済も始まります。",
+  },
+  LOAN_APPROVED: {
+    portrait: "happy",
+    title: "融資実行完了",
+    text: "資金調達ができました！ 借入は返済が必要ですが、会社を大きくするための大切な力になります。次はこの資金を使って、支店建設の流れを確認しましょう。",
+  },
+  BRANCH_STARTED: {
+    portrait: "serious",
+    title: "支店建設を開始しました",
+    text: "支店建設が始まりました。完成するまで月を進めましょう。支店が完成すると、その周辺でも購入・建設・修繕ができるようになります。",
+  },
+  BRANCH_COMPLETE: {
+    portrait: "happy",
+    title: "支店完成",
+    text: "支店が完成しました！ これで本社から離れたエリアにも活動範囲を広げられます。社員画面では、社員を本社や支店へ配属変更できます。名古屋編では、支店に社員を配属して都市部へ進出していきましょう。",
+  },
+};
+
+const NAGOYA_PROLOGUE_SCENES = [
+  {
+    background: null,
+    speaker: "七瀬 灯里",
+    portrait: "happy",
+    text: "社長、岐阜での経営目標を達成できましたね。最初は小さな一歩でしたけど、会社として確かな実績になりました。",
+  },
+  {
+    background: null,
+    speaker: "七瀬 灯里",
+    portrait: "serious",
+    text: "でも、名古屋へ進出するには資金も拠点も必要です。銀行融資で資金を確保して、支店を作る流れを確認しておきましょう。",
+  },
+  {
+    background: null,
+    speaker: "七瀬 灯里",
+    portrait: "surprise",
+    text: "わぁ……岐阜とは街の規模が全然違いますね。名古屋駅の周辺はマンションも商業施設も多くて、すでに大きな市場ができあがっています。",
+  },
+  {
+    background: null,
+    speaker: "七瀬 灯里",
+    portrait: "serious",
+    text: "本社だけでは遠方の管理に限界があります。だからこそ支店を作って、活動範囲を広げる必要があるんですね。",
+  },
+  {
+    background: null,
+    speaker: "七瀬 灯里",
+    portrait: "formal",
+    text: "第2章、名古屋編。銀行融資と支店経営を武器に、中京圏最大の都市へ挑戦しましょう！",
+  },
+];
+
+function getStoryNagoyaGoalText(step) {
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.LOAN_CONSULT) return "銀行で融資相談を行いましょう。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_CONSULT) return "翌月へ進めて、融資相談結果を待ちましょう。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.LOAN_APPLICATION) return "相談結果を参考に、銀行へ融資申請しましょう。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_APPLICATION) return "翌月へ進めて、融資審査結果を待ちましょう。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH) return "資金を使って支店を建設しましょう。自社の空き地が必要です。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_BRANCH) return "翌月へ進めて、支店完成を待ちましょう。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE) return "名古屋編への進出準備が整いました。";
+  return "銀行融資と支店建設の流れを確認しましょう。";
+}
+
+function getStoryNagoyaAdviceText(step) {
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.LOAN_CONSULT) return "まずは銀行タブを開き、地方銀行などで融資相談をしてみましょう。相談は1ヶ月後に結果が出ます。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_CONSULT) return "融資相談中です。上部の『翌月へ』で時間を進めると、相談結果が届きます。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.LOAN_APPLICATION) return "相談結果が届いたら、内容を確認して融資申請に進みましょう。支店建設費を考えると、数千万円規模の資金があると安心です。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_APPLICATION) return "融資審査中です。翌月へ進めて結果を待ちましょう。承認されたら、条件を確認して借入を実行してください。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH) return "次は支店です。名古屋マップ上に用意された自社の空き地を使って、支店建設を体験しましょう。建設メニューの「支店」を選び、赤枠で案内される操作に進んでください。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_BRANCH) return "支店を建設中です。完成すると、その周辺が新しい活動範囲になります。翌月へ進めて完成を待ちましょう。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE) return "銀行融資で資金を作り、支店で活動範囲を広げる流れを確認できました。社員画面で本社・支店の配属変更も確認できます。いよいよ名古屋編の本格スタートです。";
+  return "銀行融資と支店建設を順番に体験しましょう。";
+}
 
 const AKARI_PAGE_GUIDES = {
   home: {
@@ -531,87 +636,184 @@ function createStoryTutorialMap() {
   };
 }
 
+
 function createGifuStoryMap() {
-  const size = 30;
-  const stationX = 14;
-  const stationY = 24;
-  const stationPositions = [{ x: stationX, y: stationY }];
-  const schoolX = 6;
-  const schoolY = 6;
+  const size = 15;
+  const stationX = 7;
+  const stationY = 5;
+  const hqX = 8;
+  const hqY = 10;
+  const stationPositions = [{ x: stationX, y: stationY, name: "岐阜駅" }];
+  const schoolX = 3;
+  const schoolY = 3;
   const schoolPositions = [{ x: schoolX, y: schoolY }];
-  const factoryX = 24;
-  const factoryY = 8;
-  const factoryYard = [{ x: factoryX, y: factoryY }];
-  const roadXs = [5, 14, 22];
-  const roadYs = [7, 16, 24];
+  const roadSet = new Set();
+  const railSet = new Set();
   const tiles = [];
+
+  function addRail(x, y) {
+    if (x >= 0 && x < size && y >= 0 && y < size) railSet.add(`${x},${y}`);
+  }
+
+  function addRailLPath(points) {
+    for (let i = 0; i < points.length - 1; i++) {
+      const [x1, y1] = points[i];
+      const [x2, y2] = points[i + 1];
+      const stepX = x2 >= x1 ? 1 : -1;
+      const stepY = y2 >= y1 ? 1 : -1;
+      for (let x = x1; x !== x2; x += stepX) addRail(x, y1);
+      addRail(x2, y1);
+      for (let y = y1; y !== y2; y += stepY) addRail(x2, y);
+      addRail(x2, y2);
+    }
+  }
+
+  function addRoad(x, y) {
+    if (x >= 0 && x < size && y >= 0 && y < size) roadSet.add(`${x},${y}`);
+  }
+
+  function addRoadLPath(points) {
+    for (let i = 0; i < points.length - 1; i++) {
+      const [x1, y1] = points[i];
+      const [x2, y2] = points[i + 1];
+      const stepX = x2 >= x1 ? 1 : -1;
+      const stepY = y2 >= y1 ? 1 : -1;
+      for (let x = x1; x !== x2; x += stepX) addRoad(x, y1);
+      addRoad(x2, y1);
+      for (let y = y1; y !== y2; y += stepY) addRoad(x2, y);
+      addRoad(x2, y2);
+    }
+  }
+
+  for (let x = 0; x <= stationX; x++) addRail(x, stationY);
+  addRailLPath([
+    [7, 5], [7, 6], [8, 7], [8, 9], [9, 11], [10, 13], [11, 14],
+  ]);
+
+  for (let x = 1; x <= 13; x++) roadSet.add(`${x},4`);
+  for (let y = 1; y <= 13; y++) roadSet.add(`6,${y}`);
+  for (let x = 1; x <= 13; x++) {
+    if (x !== hqX) roadSet.add(`${x},9`);
+  }
+  for (let y = 1; y <= 13; y++) roadSet.add(`12,${y}`);
+
+  const fixedBuildings = {
+    "1,1": { owner: OWNER.OTHER, building: null, landPrice: 150 },
+    "4,2": { owner: OWNER.OTHER, building: "house_1f", rent: 70, age: 8, condition: 78, landPrice: 165 },
+    "9,2": { owner: OWNER.SALE, building: null, landPrice: 175 },
+    "13,2": { owner: OWNER.OTHER, building: "house_2f", rent: 75, age: 18, condition: 70, landPrice: 185 },
+    "2,6": { owner: OWNER.SALE, building: null, landPrice: 170 },
+    "5,6": { owner: OWNER.OTHER, building: "convenience", rent: 82, age: 6, condition: 84, landPrice: 225 },
+    "11,6": { owner: OWNER.OTHER, building: null, landPrice: 190 },
+    "2,8": { owner: OWNER.OTHER, building: "house_1f", rent: 72, age: 11, condition: 76, landPrice: 165 },
+    "4,10": { owner: OWNER.SALE, building: null, landPrice: 155 },
+    "7,10": { owner: OWNER.OTHER, building: "house_1f", rent: 70, age: 12, condition: 72, landPrice: 170 },
+    "11,10": { owner: OWNER.OTHER, building: null, landPrice: 180 },
+    "2,13": { owner: OWNER.OTHER, building: null, landPrice: 145 },
+    "5,13": { owner: OWNER.OTHER, building: "house_2f", rent: 72, age: 22, condition: 67, landPrice: 165 },
+    "13,13": { owner: OWNER.SALE, building: null, landPrice: 160 },
+  };
+
+  function getGifuZone(x, y) {
+    if (getDistance(x, y, stationX, stationY) <= 2) return ZONE.COMMERCIAL;
+    return ZONE.GENERAL;
+  }
 
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
-      const rail = y === 24 || (x === 14 && y >= 12 && y <= 24);
+      const key = `${x},${y}`;
+      const rail = railSet.has(key);
+      const fixed = fixedBuildings[key];
       let feature = FEATURE.NONE;
-      let owner = OWNER.SALE;
+      let owner = OWNER.OTHER;
       let building = null;
       let rooms = [];
-      let age = randomInt(0, 30);
-      let condition = randomInt(55, 100);
-      let landPrice = 220 + Math.round((28 - Math.min(28, getDistance(x, y, stationX, stationY))) * 18) + randomInt(-40, 60);
+      let age = 0;
+      let condition = 100;
+      let landPrice = 130 + Math.max(0, 12 - getDistance(x, y, stationX, stationY)) * 10;
+      let zone = getGifuZone(x, y);
+      let officeId = null;
+      let officeName = null;
+      let officeRange = null;
+      let hqType = null;
+      let hqName = null;
+      let hqCost = null;
 
-      if (roadXs.includes(x) || roadYs.includes(y)) {
+      if (fixed) {
+        owner = fixed.owner;
+        building = fixed.building;
+        age = fixed.age ?? 0;
+        condition = fixed.condition ?? 100;
+        landPrice = fixed.landPrice ?? landPrice;
+        rooms = building ? createRooms(building, fixed.rent ?? 72, 0) : [];
+      }
+
+      if (roadSet.has(key)) {
         feature = FEATURE.ROAD;
         owner = OWNER.PUBLIC;
+        building = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
+        landPrice += 30;
       }
 
       if (rail) {
+        feature = FEATURE.NONE;
         owner = OWNER.PUBLIC;
+        building = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
       }
 
       if (x === stationX && y === stationY) {
         feature = FEATURE.STATION;
         owner = OWNER.PUBLIC;
-        landPrice += 250;
-      }
-
-      if (x === schoolX && y === schoolY) {
-        feature = FEATURE.SCHOOL;
-        owner = OWNER.PUBLIC;
-        landPrice += 120;
-      }
-
-      if (x === factoryX && y === factoryY) {
-        feature = FEATURE.FACTORY;
-        owner = OWNER.PUBLIC;
-        landPrice += 90;
-      }
-
-      const reserved = feature !== FEATURE.NONE || rail;
-      if (!reserved) {
-        const roll = Math.random();
-        if (roll < 0.09) {
-          owner = OWNER.OTHER;
-          building = "house_1f";
-          rooms = createRooms("house_1f", 75, 0);
-          condition = randomInt(60, 95);
-        } else if (roll < 0.14) {
-          owner = OWNER.OTHER;
-          building = "house_2f";
-          rooms = createRooms("house_2f", 70, 0);
-          condition = randomInt(55, 90);
-        } else if (roll < 0.18 && x > 18) {
-          owner = OWNER.OTHER;
-          building = "convenience";
-          rooms = createRooms("convenience", 80, 0);
-          condition = randomInt(65, 95);
-        } else {
-          owner = Math.random() < 0.72 ? OWNER.SALE : OWNER.OTHER;
-          age = 0;
-          condition = 100;
-        }
-      } else {
         building = null;
         rooms = [];
         age = 0;
         condition = 100;
+        landPrice += 220;
+        zone = ZONE.COMMERCIAL;
+      }
+
+      if (schoolPositions.some((school) => school.x === x && school.y === y)) {
+        feature = FEATURE.SCHOOL;
+        owner = OWNER.PUBLIC;
+        building = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
+        landPrice += 80;
+        zone = ZONE.GENERAL;
+      }
+
+      if (x === hqX && y === hqY) {
+        feature = FEATURE.HQ;
+        owner = OWNER.PLAYER;
+        building = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
+        landPrice = 220;
+        zone = ZONE.GENERAL;
+        officeId = "hq";
+        officeName = "本社";
+        officeRange = HQ_ACTION_RANGE;
+        hqType = "normal";
+        hqName = "本社";
+        hqCost = 0;
+      }
+
+      if (
+        owner === OWNER.OTHER &&
+        !building &&
+        feature === FEATURE.NONE &&
+        !rail &&
+        ((x * 17 + y * 31) % 5 === 0)
+      ) {
+        owner = OWNER.SALE;
       }
 
       tiles.push({
@@ -621,7 +823,7 @@ function createGifuStoryMap() {
         terrain: TERRAIN.PLAIN,
         feature,
         rail,
-        zone: y >= 20 ? ZONE.INDUSTRIAL : x >= 18 ? ZONE.COMMERCIAL : ZONE.RESIDENTIAL,
+        zone,
         owner,
         building,
         buildingMainId: null,
@@ -631,6 +833,12 @@ function createGifuStoryMap() {
         vacancyMonths: 0,
         recoveryMode: false,
         landPrice: Math.max(80, landPrice),
+        officeId,
+        officeName,
+        officeRange,
+        hqType,
+        hqName,
+        hqCost,
       });
     }
   }
@@ -643,14 +851,374 @@ function createGifuStoryMap() {
     schoolX,
     schoolY,
     schoolPositions,
-    factoryX,
-    factoryY,
-    factoryPositions: factoryYard,
+    factoryX: null,
+    factoryY: null,
+    factoryPositions: [],
   };
 }
 
 
+function createNagoyaStoryMap(gifuSourceTiles = []) {
+  const size = 30;
+  const gifuStationX = 7;
+  const gifuStationY = 5;
+  const nagoyaStationX = 12;
+  const nagoyaStationY = 20;
+  const stationX = nagoyaStationX;
+  const stationY = nagoyaStationY;
+  const stationPositions = [
+    { x: gifuStationX, y: gifuStationY, name: "岐阜駅" },
+    { x: nagoyaStationX, y: nagoyaStationY, name: "名古屋駅" },
+  ];
+  const schoolPositions = [
+    { x: 3, y: 3, name: "岐阜の学校" },
+    { x: 22, y: 16, name: "名古屋北部の学校" },
+    { x: 25, y: 23, name: "名古屋南部の学校" },
+  ];
+  const schoolX = schoolPositions[0].x;
+  const schoolY = schoolPositions[0].y;
+  const factoryX = 22;
+  const factoryY = 27;
+  const factoryYard = [];
+  const branchTutorialX = 11;
+  const branchTutorialY = 17;
 
+  const fixedGifuMap = createGifuStoryMap();
+  const sourceMap = new Map();
+  const gifuTilesToUse = Array.isArray(gifuSourceTiles) && gifuSourceTiles.length > 0
+    ? gifuSourceTiles
+    : fixedGifuMap.tiles;
+
+  gifuTilesToUse.forEach((tile) => {
+    if ((tile.x ?? 0) >= 0 && (tile.x ?? 0) < 15 && (tile.y ?? 0) >= 0 && (tile.y ?? 0) < 15) {
+      sourceMap.set(`${tile.x},${tile.y}`, tile);
+    }
+  });
+
+  const fixedGifuMapByKey = new Map(fixedGifuMap.tiles.map((tile) => [`${tile.x},${tile.y}`, tile]));
+  const railSet = new Set();
+  const roadSet = new Set();
+  const tiles = [];
+
+  function addRail(x, y) {
+    if (x >= 0 && x < size && y >= 0 && y < size) railSet.add(`${x},${y}`);
+  }
+
+  function addRailLPath(points) {
+    for (let i = 0; i < points.length - 1; i++) {
+      const [x1, y1] = points[i];
+      const [x2, y2] = points[i + 1];
+      const stepX = x2 >= x1 ? 1 : -1;
+      const stepY = y2 >= y1 ? 1 : -1;
+      for (let x = x1; x !== x2; x += stepX) addRail(x, y1);
+      addRail(x2, y1);
+      for (let y = y1; y !== y2; y += stepY) addRail(x2, y);
+      addRail(x2, y2);
+    }
+  }
+
+  function addRoad(x, y) {
+    if (x >= 0 && x < size && y >= 0 && y < size) roadSet.add(`${x},${y}`);
+  }
+
+  function addRoadLPath(points) {
+    for (let i = 0; i < points.length - 1; i++) {
+      const [x1, y1] = points[i];
+      const [x2, y2] = points[i + 1];
+      const stepX = x2 >= x1 ? 1 : -1;
+      const stepY = y2 >= y1 ? 1 : -1;
+      for (let x = x1; x !== x2; x += stepX) addRoad(x, y1);
+      addRoad(x2, y1);
+      for (let y = y1; y !== y2; y += stepY) addRoad(x2, y);
+      addRoad(x2, y2);
+    }
+  }
+
+  for (let x = 0; x <= gifuStationX; x++) addRail(x, gifuStationY);
+  addRailLPath([
+    [7, 5], [7, 6], [8, 7], [8, 9], [9, 11],
+    [10, 13], [11, 16], [12, 20],
+  ]);
+  for (let x = 0; x < size; x++) addRail(x, nagoyaStationY);
+  addRailLPath([
+    [12, 20], [13, 21], [14, 22], [15, 23], [16, 24],
+    [17, 25], [18, 27], [19, 29],
+  ]);
+
+  for (let x = 1; x <= 13; x++) roadSet.add(`${x},4`);
+  for (let y = 1; y <= 13; y++) roadSet.add(`6,${y}`);
+  for (let x = 1; x <= 13; x++) if (x !== 9) roadSet.add(`${x},9`);
+  for (let y = 1; y <= 13; y++) roadSet.add(`12,${y}`);
+  for (let y = 15; y <= 28; y++) roadSet.add(`8,${y}`);
+  for (let y = 15; y <= 28; y++) roadSet.add(`16,${y}`);
+  for (let y = 18; y <= 29; y++) roadSet.add(`23,${y}`);
+  for (let x = 6; x <= 24; x++) roadSet.add(`${x},18`);
+  for (let x = 6; x <= 24; x++) roadSet.add(`${x},22`);
+  for (let x = 10; x <= 27; x++) roadSet.add(`${x},27`);
+  for (let y = 9; y <= 29; y++) roadSet.add(`10,${y}`);
+  for (let y = 9; y <= 29; y++) roadSet.add(`14,${y}`);
+  for (let x = 6; x <= 18; x++) roadSet.add(`${x},16`);
+
+  // 岐阜本社から支店予定地、名古屋市街へつながる幹線道路。
+  // チュートリアルでは道路が途切れて見えないよう、L字で連続させる。
+  addRoadLPath([
+    [8, 10], [8, 14], [11, 14], [11, 17], [12, 17], [12, 20], [24, 20]
+  ]);
+  for (let x = 0; x < size; x++) addRoad(x, 20);
+
+  const fixedNagoyaBuildings = {
+    "8,17": { owner: OWNER.OTHER, building: "drugstore", rent: 90, age: 7, condition: 88 },
+    "16,18": { owner: OWNER.OTHER, building: "supermarket", rent: 88, age: 9, condition: 88 },
+    "20,21": { owner: OWNER.OTHER, building: "convenience", rent: 86, age: 6, condition: 90 },
+    "18,23": { owner: OWNER.SALE, building: "drugstore", rent: 82, age: 12, condition: 78 },
+    "7,25": { owner: OWNER.OTHER, building: "house_2f", rent: 76, age: 12, condition: 82 },
+    "22,25": { owner: OWNER.OTHER, building: "warehouse", rent: 82, age: 9, condition: 84 },
+  };
+
+  const multiNagoyaBuildings = [
+    { x: 7, y: 21, owner: OWNER.OTHER, building: "mansion_5f", rent: 82, age: 10, condition: 86 },
+    { x: 10, y: 22, owner: OWNER.OTHER, building: "commercial_big", rent: 88, age: 8, condition: 90 },
+    { x: 14, y: 21, owner: OWNER.OTHER, building: "mansion_7f", rent: 84, age: 9, condition: 88 },
+    { x: 18, y: 21, owner: OWNER.SALE, building: "mansion_5f", rent: 78, age: 16, condition: 76 },
+    { x: 22, y: 27, owner: OWNER.OTHER, building: "large_factory", rent: 78, age: 18, condition: 74 },
+  ];
+
+  function getBaseZone(x, y) {
+    if (y >= 26 && x >= 18) return ZONE.INDUSTRIAL;
+    if (getDistance(x, y, nagoyaStationX, nagoyaStationY) <= 3) return ZONE.COMMERCIAL;
+    if (getDistance(x, y, gifuStationX, gifuStationY) <= 2) return ZONE.COMMERCIAL;
+    return ZONE.GENERAL;
+  }
+
+  function getBaseLandPrice(x, y) {
+    if (x < 15 && y < 15) return 130 + Math.max(0, 12 - getDistance(x, y, gifuStationX, gifuStationY)) * 10;
+    const nagoyaDistance = getDistance(x, y, nagoyaStationX, nagoyaStationY);
+    const railDistance = Math.min(
+      Math.abs(x - 11),
+      Math.abs(y - nagoyaStationY),
+      Math.abs(x - nagoyaStationX)
+    );
+    return 180 + Math.max(0, 20 - nagoyaDistance) * 32 + Math.max(0, 6 - railDistance) * 18;
+  }
+
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const key = `${x},${y}`;
+      const fromGifu = x < 15 && y < 15 ? (sourceMap.get(key) ?? fixedGifuMapByKey.get(key)) : null;
+      const rail = railSet.has(key);
+      const fixedNagoya = fixedNagoyaBuildings[key];
+      let feature = FEATURE.NONE;
+      let owner = OWNER.SALE;
+      let building = null;
+      let rooms = [];
+      let age = 0;
+      let condition = 100;
+      let landPrice = getBaseLandPrice(x, y);
+      let zone = getBaseZone(x, y);
+      let buildingMainId = null;
+      let vacancyMonths = 0;
+      let recoveryMode = false;
+      let officeId = null;
+      let officeName = null;
+      let officeRange = null;
+      let hqType = null;
+      let hqName = null;
+      let hqCost = null;
+      let tutorialTag = null;
+
+      if (fromGifu) {
+        feature = fromGifu.feature ?? FEATURE.NONE;
+        owner = fromGifu.owner ?? OWNER.SALE;
+        building = fromGifu.building ?? null;
+        rooms = Array.isArray(fromGifu.rooms) ? structuredClone(fromGifu.rooms) : [];
+        age = fromGifu.age ?? 0;
+        condition = fromGifu.condition ?? 100;
+        landPrice = fromGifu.landPrice ?? landPrice;
+        buildingMainId = fromGifu.buildingMainId ?? null;
+        vacancyMonths = fromGifu.vacancyMonths ?? 0;
+        recoveryMode = fromGifu.recoveryMode ?? false;
+        officeId = fromGifu.officeId ?? null;
+        officeName = fromGifu.officeName ?? null;
+        officeRange = fromGifu.officeRange ?? null;
+        hqType = fromGifu.hqType ?? null;
+        hqName = fromGifu.hqName ?? null;
+        hqCost = fromGifu.hqCost ?? null;
+        zone = getBaseZone(x, y);
+      } else {
+        if (roadSet.has(key)) {
+          feature = FEATURE.ROAD;
+          owner = OWNER.PUBLIC;
+          landPrice += 30;
+        }
+
+        if (fixedNagoya && !rail) {
+          owner = fixedNagoya.owner;
+          building = fixedNagoya.building;
+          age = fixedNagoya.age ?? 0;
+          condition = fixedNagoya.condition ?? 100;
+          rooms = building ? createRooms(building, fixedNagoya.rent ?? 82, 0) : [];
+          landPrice += building && (building.includes("mansion") || building === "commercial_big") ? 420 : 260;
+        } else if (!rail && owner !== OWNER.PUBLIC) {
+          const corridor = y >= 10 && y <= 20 && x >= 4 && x <= 14;
+          if (corridor && ((x + y) % 5 === 0)) {
+            owner = OWNER.OTHER;
+            building = (x + y) % 10 === 0 ? "convenience" : "house_2f";
+            rooms = createRooms(building, 76, 0);
+            age = 10 + ((x + y) % 8);
+            condition = 72 + ((x + y) % 18);
+            landPrice += 120;
+          } else {
+            owner = ((x * 7 + y * 11) % 10) < 2 ? OWNER.SALE : OWNER.OTHER;
+          }
+        }
+      }
+
+      if (rail) {
+        feature = FEATURE.NONE;
+        owner = OWNER.PUBLIC;
+        building = null;
+        buildingMainId = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
+      }
+
+      if ((x === gifuStationX && y === gifuStationY) || (x === nagoyaStationX && y === nagoyaStationY)) {
+        feature = FEATURE.STATION;
+        owner = OWNER.PUBLIC;
+        building = null;
+        buildingMainId = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
+        landPrice += x === nagoyaStationX && y === nagoyaStationY ? 520 : 220;
+        zone = ZONE.COMMERCIAL;
+      }
+
+      if (schoolPositions.some((school) => school.x === x && school.y === y)) {
+        feature = FEATURE.SCHOOL;
+        owner = OWNER.PUBLIC;
+        building = null;
+        buildingMainId = null;
+        rooms = [];
+        landPrice += 80;
+        zone = ZONE.GENERAL;
+      }
+
+      if (false && x === factoryX && y === factoryY) {
+        feature = FEATURE.FACTORY;
+        owner = OWNER.PUBLIC;
+        building = null;
+        buildingMainId = null;
+        rooms = [];
+        landPrice += 120;
+        zone = ZONE.INDUSTRIAL;
+      }
+
+      if (x === 8 && y === 10) {
+        feature = FEATURE.HQ;
+        owner = OWNER.PLAYER;
+        building = null;
+        buildingMainId = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
+        landPrice = 220;
+        zone = ZONE.GENERAL;
+        officeId = "hq";
+        officeName = "本社";
+        officeRange = HQ_ACTION_RANGE;
+        hqType = "normal";
+        hqName = "本社";
+        hqCost = 0;
+      }
+
+      if (x === branchTutorialX && y === branchTutorialY) {
+        feature = FEATURE.NONE;
+        owner = OWNER.PLAYER;
+        building = null;
+        buildingMainId = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
+        tutorialTag = "nagoya_branch_land";
+        landPrice = 520;
+        zone = ZONE.GENERAL;
+      }
+
+      tiles.push({
+        id: y * size + x,
+        x,
+        y,
+        terrain: TERRAIN.PLAIN,
+        feature,
+        rail,
+        zone,
+        owner,
+        building,
+        buildingMainId,
+        rooms,
+        age,
+        condition,
+        vacancyMonths,
+        recoveryMode,
+        landPrice: Math.max(80, landPrice),
+        officeId,
+        officeName,
+        officeRange,
+        hqType,
+        hqName,
+        hqCost,
+        tutorialTag,
+      });
+    }
+  }
+
+  function placeCompletedBuilding(startX, startY, buildingKey, owner, rent, ageValue, conditionValue) {
+    const buildingInfo = BUILDINGS[buildingKey];
+    if (!buildingInfo) return;
+    const mainTile = tiles.find((tile) => tile.x === startX && tile.y === startY);
+    if (!mainTile) return;
+    const mainId = mainTile.id;
+
+    for (let dy = 0; dy < buildingInfo.height; dy++) {
+      for (let dx = 0; dx < buildingInfo.width; dx++) {
+        const tile = tiles.find((target) => target.x === startX + dx && target.y === startY + dy);
+        if (!tile) continue;
+        if (tile.feature === FEATURE.STATION || tile.feature === FEATURE.SCHOOL || tile.rail) continue;
+        tile.feature = FEATURE.NONE;
+        tile.owner = owner;
+        tile.building = buildingKey;
+        tile.buildingMainId = dx === 0 && dy === 0 ? null : mainId;
+        tile.rooms = dx === 0 && dy === 0 ? createRooms(buildingKey, rent, 0) : [];
+        tile.age = ageValue;
+        tile.condition = conditionValue;
+        tile.vacancyMonths = 0;
+        tile.recoveryMode = false;
+        tile.zone = buildingInfo.category === "工業" ? ZONE.INDUSTRIAL : getBaseZone(tile.x, tile.y);
+        tile.landPrice = Math.max(tile.landPrice, getBaseLandPrice(tile.x, tile.y) + 300);
+      }
+    }
+  }
+
+  multiNagoyaBuildings.forEach((entry) => {
+    placeCompletedBuilding(entry.x, entry.y, entry.building, entry.owner, entry.rent, entry.age, entry.condition);
+  });
+
+  return {
+    tiles,
+    stationX,
+    stationY,
+    stationPositions,
+    schoolX,
+    schoolY,
+    schoolPositions,
+    factoryX,
+    factoryY,
+    factoryPositions: factoryYard,
+    tutorialBranchLandId: branchTutorialY * size + branchTutorialX,
+  };
+}
 
 function getSaveSlotKey(slot) {
   return `realEstateGameSave_slot${slot}`;
@@ -11065,8 +11633,12 @@ const [hqPlaced, setHqPlaced] = useState(loadedHqPlaced);
 const [currentGameMode, setCurrentGameMode] = useState(savedGame?.currentGameMode ?? "free");
 const [tutorialStep, setTutorialStep] = useState(savedGame?.tutorialStep ?? null);
 const [storyEvent, setStoryEvent] = useState(null);
+const [storySequence, setStorySequence] = useState(null);
+const [storySequenceIndex, setStorySequenceIndex] = useState(0);
 const [hasShownGifuHqCompleteGuide, setHasShownGifuHqCompleteGuide] = useState(savedGame?.hasShownGifuHqCompleteGuide ?? false);
 const [hasClearedGifuChapter, setHasClearedGifuChapter] = useState(savedGame?.hasClearedGifuChapter ?? false);
+const [hasClearedNagoyaChapter, setHasClearedNagoyaChapter] = useState(savedGame?.hasClearedNagoyaChapter ?? false);
+const [nagoyaTutorialStep, setNagoyaTutorialStep] = useState(savedGame?.nagoyaTutorialStep ?? null);
 
 const [tiles, setTiles] = useState(initialMap.tiles);
 const currentMapSize = useMemo(() => {
@@ -11182,6 +11754,7 @@ useEffect(() => {
     oldHouseTile?.owner === OWNER.PLAYER &&
     Number(oldHouseTile?.condition ?? 0) >= 70
   ) {
+    forceStoryAkariLevel(2, "修繕をやり遂げ、物件再生の基本を身につけました。");
     setTutorialStep(STORY_TUTORIAL_STEPS.BUY_APARTMENT_LAND);
     if (apartmentLandTile) setSelectedId(apartmentLandTile.id);
     setActivePanel("land");
@@ -11213,6 +11786,7 @@ useEffect(() => {
     tutorialStep === STORY_TUTORIAL_STEPS.BUILD_APARTMENT &&
     hasTutorialApartment
   ) {
+    forceStoryAkariLevel(3, "新築賃貸の基本を身につけました。");
     setTutorialStep(STORY_TUTORIAL_STEPS.COMPLETE);
     setActivePanel("home");
     setStoryEvent(STORY_TUTORIAL_EVENTS.BUILT_APARTMENT);
@@ -12221,9 +12795,18 @@ function canUseAsBuildTarget(tile, buildingKey) {
 function canUseAsBranchTarget(tile) {
   if (!tile) return false;
   if (officeTiles.some((officeTile) => officeTile.feature === FEATURE.BRANCH && officeTile.branchUnderConstruction)) return false;
+
+  const isNagoyaTutorialBranchTarget =
+    currentGameMode === "story_nagoya_bridge" &&
+    nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH &&
+    tile.tutorialTag === "nagoya_branch_land";
+
   if (tile.owner !== OWNER.PLAYER) return false;
   if (!isBuildableTile(tile)) return false;
   if (tile.building || tile.buildingMainId) return false;
+
+  if (isNagoyaTutorialBranchTarget) return true;
+
   if (!isTileInOfficeRange(tile)) return false;
 
   const nearestOfficeDistance = officeTiles.reduce((minDistance, officeTile) => {
@@ -13831,6 +14414,7 @@ function chooseActionEmployees(actionName, options = {}) {
       employees: availableEmployees,
       maxCount,
       baseMonths: options.baseMonths ?? null,
+      estimatedMonthsCap: options.estimatedMonthsCap ?? null,
       statKey: options.statKey ?? null,
       resolve,
     });
@@ -13863,6 +14447,10 @@ function markEmployeesBusy(employeeIds, months, actionName) {
 
 function grantEmployeesExp(employeeIds, gainedExp, reason) {
   if (!Array.isArray(employeeIds) || employeeIds.length === 0 || !gainedExp) return;
+
+  if (isStoryTutorialActive() || (currentGameMode === "story" && tutorialStep)) {
+    return;
+  }
 
   const uniqueEmployeeIds = [...new Set(employeeIds)];
   const ids = new Set(uniqueEmployeeIds);
@@ -14520,13 +15108,17 @@ async function buyLand() {
   if (!selectedTile) return;
 
   const mainTile = getMainTile(selectedTile);
+  const targetTile = mainTile || selectedTile;
+  const isTutorialPurchaseTarget =
+    isStoryTutorialActive() &&
+    (tutorialStep === STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE ||
+      tutorialStep === STORY_TUTORIAL_STEPS.BUY_APARTMENT_LAND) &&
+    isStoryTutorialTargetTile(targetTile);
 
-  if (selectedTile.owner !== OWNER.SALE && mainTile?.owner !== OWNER.SALE) {
+  if (!isTutorialPurchaseTarget && selectedTile.owner !== OWNER.SALE && mainTile?.owner !== OWNER.SALE) {
     alert("購入できるのは『売り物件』だけです");
     return;
   }
-
-  const targetTile = mainTile || selectedTile;
 
   if (isStoryTutorialActive()) {
     const expectedTag = tutorialStep === STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE
@@ -14793,7 +15385,12 @@ async function placeBranch(targetTile = selectedTile) {
     return false;
   }
 
-  if (!isTileInOfficeRange(branchTargetTile)) {
+  const isNagoyaTutorialBranchTarget =
+    currentGameMode === "story_nagoya_bridge" &&
+    nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH &&
+    branchTargetTile.tutorialTag === "nagoya_branch_land";
+
+  if (!isNagoyaTutorialBranchTarget && !isTileInOfficeRange(branchTargetTile)) {
     alert("本社・支店の行動範囲外のため支店を開設できません");
     return false;
   }
@@ -14810,7 +15407,7 @@ async function placeBranch(targetTile = selectedTile) {
     );
   }, 999);
 
-  if (nearestOfficeDistance < OFFICE_MIN_DISTANCE) {
+  if (!isNagoyaTutorialBranchTarget && nearestOfficeDistance < OFFICE_MIN_DISTANCE) {
     alert("支店は本社・支店の行動範囲内であれば開設できます。近すぎると営業範囲が広がりにくい点に注意してください。");
     return false;
   }
@@ -15325,13 +15922,17 @@ async function repairBuilding(type) {
   const actionEmployees = await chooseActionEmployees("修繕", {
     maxCount: 4,
     baseMonths: option.months,
+    estimatedMonthsCap: isStoryTutorialActive() ? 3 : null,
     statKey: "construction",
     targetTile: mainTile,
   });
 
   if (actionEmployees.length === 0) return;
 
-  const actualRepairMonths = estimateActionMonths(option.months, actionEmployees, "construction");
+  let actualRepairMonths = estimateActionMonths(option.months, actionEmployees, "construction");
+  if (isStoryTutorialActive()) {
+    actualRepairMonths = Math.min(actualRepairMonths, 3);
+  }
   const actualRepairCost = calculateActionCost(standardRepairCost, actionEmployees, "construction", type === "light" ? "lightRepair" : "repair", mainTile);
   const repairSkillEffects = getTeamSkillEffectTotals(actionEmployees);
   const repairConditionUp = option.conditionUp + Math.max(0, Math.round(repairSkillEffects.repairConditionBonusFlat ?? 0));
@@ -15649,12 +16250,12 @@ workingTiles = workingTiles.map((tile) => {
   }
 
   // 毎月、適正地価へ少しだけ近づける
-  const monthlyChange = Math.round(gap * 0.08);
+  const monthlyChange = Math.round(gap * 0.01);
 
   // 1ヶ月の変動幅を制限
   const limitedChange = Math.max(
     -500,
-    Math.min(500, monthlyChange)
+    Math.min(100, monthlyChange)
   );
 
   return {
@@ -18613,6 +19214,11 @@ function saveCurrentGameToSlot(slot = activeSaveSlot) {
     annualReportHistory: annualReportHistory.slice(0, 30),
     isDemoMode,
     usedSecretCommands,
+    currentGameMode,
+    tutorialStep,
+    hasShownGifuHqCompleteGuide,
+    hasClearedGifuChapter,
+    nagoyaTutorialStep,
   };
 
   localStorage.setItem("realEstateGameCurrentSlot", String(slot));
@@ -18655,6 +19261,7 @@ function applySaveDataToCurrentGame(data, slot) {
   setTutorialStep(data.tutorialStep ?? null);
   setHasShownGifuHqCompleteGuide(data.hasShownGifuHqCompleteGuide ?? false);
   setHasClearedGifuChapter(data.hasClearedGifuChapter ?? false);
+  setNagoyaTutorialStep(data.nagoyaTutorialStep ?? null);
   setTiles(data.tiles);
   setSelectedId(data.selectedId ?? null);
   setLog(data.log ?? `スロット${slot}をロードしました。`);
@@ -18748,11 +19355,12 @@ function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode
   setCurrentGameMode(mode);
   setHasShownGifuHqCompleteGuide(false);
   setHasClearedGifuChapter(false);
+  setNagoyaTutorialStep(null);
   setTutorialStep(isStoryTutorial ? STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE : null);
   setStoryEvent(isStoryTutorial ? STORY_TUTORIAL_EVENTS.START : null);
   setPlayerCompanyName(companyName);
   setNewCompanyNameInput(companyName);
-  setMoney(isStoryTutorial ? 5000 : 20000);
+  setMoney(isStoryTutorial ? 20000 : 20000);
   setLoans([]);
   setPendingLoanApplications([]);
   setPendingLoanConsultations([]);
@@ -18830,26 +19438,27 @@ function startGifuChapter() {
   const gifuMap = createGifuStoryMap();
   setCurrentGameMode("story_gifu");
   setTutorialStep(null);
-  setHasShownGifuHqCompleteGuide(false);
+  setHasShownGifuHqCompleteGuide(true);
   setHasClearedGifuChapter(false);
+  setNagoyaTutorialStep(null);
   setStoryEvent(STORY_GIFU_EVENTS.INTRO);
   setTiles(gifuMap.tiles);
   setSelectedId(null);
-  setHqPlaced(false);
-  setActivePanel("hq");
+  setHqPlaced(true);
+  setActivePanel("home");
   setPendingBuildKey(null);
   setPendingBranchPlacement(false);
   setSelectedBuildCategory(null);
   setSelectedHousingType(null);
   setMoney(20000);
-  setActionPoints(0);
-  setEmployeeTickets(0);
+  setActionPoints(1);
+  setEmployeeTickets(1);
   setPremiumEmployeeTickets(0);
   setLoans([]);
   setPendingLoanApplications([]);
   setPendingLoanConsultations([]);
   setLoanConsultationReports([]);
-  setLog("第1章 岐阜編を開始しました。まずは本社を設置しましょう。");
+  setLog("第1章 岐阜編を開始しました。岐阜駅南側の本社から経営を始めましょう。");
 }
 
 const gifuTotalAssets = Math.max(0, Math.round(money + assetValue));
@@ -18864,8 +19473,116 @@ useEffect(() => {
 
   setHasClearedGifuChapter(true);
   setStoryEvent(STORY_GIFU_EVENTS.CLEAR);
-  setLog("岐阜編の目標を達成しました。人口5,000人以上、総資産10億円以上を達成です。");
+  setLog("岐阜編の目標を達成しました。人口650人以上、総資産3億円以上を達成です。");
 }, [isGifuChapterClearConditionMet, hasClearedGifuChapter]);
+
+function startNagoyaBridgeChapter() {
+  const nagoyaMap = createNagoyaStoryMap(tiles);
+
+  setCurrentGameMode("story_nagoya_bridge");
+  setNagoyaTutorialStep(STORY_NAGOYA_TUTORIAL_STEPS.LOAN_CONSULT);
+  setStoryEvent(null);
+  setStorySequence(NAGOYA_PROLOGUE_SCENES);
+  setStorySequenceIndex(0);
+  setTiles(nagoyaMap.tiles);
+  setSelectedId(null);
+  setHqPlaced(true);
+  setActivePanel("bank");
+  setLoanAmountInput("5000");
+  setSelectedBankId("regional");
+  setPendingBranchPlacement(false);
+  setPendingBuildKey(null);
+  setSelectedBuildCategory(null);
+  setSelectedHousingType(null);
+  setLog("第2章 名古屋編の準備を開始しました。岐阜マップを南へ拡張した30×30マップで、まずは銀行融資を確認しましょう。");
+}
+
+function finishNagoyaBridgeChapter() {
+  setCurrentGameMode("story_nagoya");
+  setStoryEvent({
+    portrait: "formal",
+    title: "第2章 名古屋編",
+    text: "社長、銀行融資と支店建設の流れを確認できましたね。ここからは名古屋方面への本格進出です。名古屋編の目標は、人口1,000人以上、総資産5億円以上です。社員を支店へ配属しながら、より広いエリアで経営していきましょう！",
+  });
+  setActivePanel("home");
+  setLog("第2章 名古屋編を開始しました。岐阜から名古屋へ広がる30×30マップで、支店を活用して経営範囲を広げましょう。");
+}
+
+
+const nagoyaTotalAssets = Math.max(0, Math.round(money + assetValue));
+const isNagoyaChapterClearConditionMet =
+  currentGameMode === "story_nagoya" &&
+  totalPopulation >= NAGOYA_CLEAR_POPULATION &&
+  nagoyaTotalAssets >= NAGOYA_CLEAR_TOTAL_ASSETS;
+
+useEffect(() => {
+  if (!isNagoyaChapterClearConditionMet || hasClearedNagoyaChapter) return;
+
+  setHasClearedNagoyaChapter(true);
+  setStoryEvent({
+    portrait: "happy",
+    title: "名古屋編クリア",
+    text: "社長！名古屋編の経営目標を達成しました！\n人口1,000人以上、総資産5億円以上。支店を使った都市部への進出も形になってきましたね。",
+  });
+  setLog("名古屋編の目標を達成しました。人口1,000人以上、総資産5億円以上を達成です。");
+}, [isNagoyaChapterClearConditionMet, hasClearedNagoyaChapter]);
+
+useEffect(() => {
+  if (currentGameMode !== "story_nagoya_bridge" || !nagoyaTutorialStep) return;
+
+  const hasPendingConsultation = pendingLoanConsultations.length > 0;
+  const hasConsultationReport = loanConsultationReports.length > 0;
+  const hasPendingApplication = pendingLoanApplications.length > 0;
+  const hasLoan = loans.some((loan) => (loan.remaining ?? 0) > 0);
+  const hasBranchUnderConstruction = tiles.some((tile) => tile.feature === FEATURE.BRANCH && tile.branchUnderConstruction);
+  const hasActiveBranch = tiles.some((tile) => tile.feature === FEATURE.BRANCH && !tile.branchUnderConstruction && (tile.officeRange ?? 0) > 0);
+
+  if (nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.LOAN_CONSULT && hasPendingConsultation) {
+    setNagoyaTutorialStep(STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_CONSULT);
+    setStoryEvent(STORY_NAGOYA_EVENTS.LOAN_CONSULT_STARTED);
+    setLog("融資相談を開始しました。翌月へ進めて相談結果を待ちましょう。");
+    return;
+  }
+
+  if (nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_CONSULT && hasConsultationReport) {
+    setNagoyaTutorialStep(STORY_NAGOYA_TUTORIAL_STEPS.LOAN_APPLICATION);
+    setStoryEvent(STORY_NAGOYA_EVENTS.LOAN_REPORT_READY);
+    setActivePanel("bank");
+    setLog("融資相談結果が届きました。次は融資申請を行いましょう。");
+    return;
+  }
+
+  if (nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.LOAN_APPLICATION && hasPendingApplication) {
+    setNagoyaTutorialStep(STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_APPLICATION);
+    setStoryEvent(STORY_NAGOYA_EVENTS.LOAN_APPLICATION_STARTED);
+    setLog("融資申請を開始しました。翌月へ進めて審査結果を待ちましょう。");
+    return;
+  }
+
+  if (nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_APPLICATION && hasLoan) {
+    setNagoyaTutorialStep(STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH);
+    setStoryEvent(STORY_NAGOYA_EVENTS.LOAN_APPROVED);
+    setActivePanel("land");
+    setLog("融資が実行されました。次は支店建設です。自社の空き地を用意して支店を建てましょう。");
+    return;
+  }
+
+  if (nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH && hasBranchUnderConstruction) {
+    setNagoyaTutorialStep(STORY_NAGOYA_TUTORIAL_STEPS.WAIT_BRANCH);
+    setStoryEvent(STORY_NAGOYA_EVENTS.BRANCH_STARTED);
+    setLog("支店建設を開始しました。翌月へ進めて完成を待ちましょう。");
+    return;
+  }
+
+  if (nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_BRANCH && hasActiveBranch) {
+    setNagoyaTutorialStep(STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE);
+    setStoryEvent(STORY_NAGOYA_EVENTS.BRANCH_COMPLETE);
+    setStorySequence(null);
+    setStorySequenceIndex(0);
+    setActivePanel("home");
+    setLog("支店が完成しました。名古屋編へ進む準備が整いました。");
+  }
+}, [currentGameMode, nagoyaTutorialStep, pendingLoanConsultations, loanConsultationReports, pendingLoanApplications, loans, tiles]);
 
 function getCurrentAkariGuide() {
   if (currentGameMode === "story" && tutorialStep) {
@@ -18875,6 +19592,28 @@ function getCurrentAkariGuide() {
       goal: getStoryTutorialGoalText(tutorialStep),
       text: getStoryTutorialAkariAdviceText(tutorialStep),
       nextMonthGuide: shouldShowStoryTutorialNextMonthGuide(),
+    };
+  }
+
+  if (currentGameMode === "story_nagoya_bridge" && nagoyaTutorialStep) {
+    return {
+      portrait: "formal",
+      title: "第2章 名古屋編：進出準備",
+      goal: getStoryNagoyaGoalText(nagoyaTutorialStep),
+      text: getStoryNagoyaAdviceText(nagoyaTutorialStep),
+      nextMonthGuide: nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_CONSULT ||
+        nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_APPLICATION ||
+        nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_BRANCH,
+    };
+  }
+
+  if (currentGameMode === "story_nagoya") {
+    return {
+      portrait: "formal",
+      title: "第2章 名古屋編",
+      goal: `人口${NAGOYA_CLEAR_POPULATION.toLocaleString()}人以上、総資産${Math.round(NAGOYA_CLEAR_TOTAL_ASSETS / 10000)}億円以上を目指しましょう。`,
+      text: "名古屋編では、支店を使って活動範囲を広げます。社員画面で社員を本社・支店へ配属変更できるので、支店にも担当社員を置いてから購入・建設・修繕を進めましょう。",
+      nextMonthGuide: false,
     };
   }
 
@@ -18994,6 +19733,12 @@ function isStoryTutorialActive() {
 }
 
 function shouldShowStoryTutorialNextMonthGuide() {
+  if (currentGameMode === "story_nagoya_bridge") {
+    return nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_CONSULT ||
+      nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_APPLICATION ||
+      nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_BRANCH;
+  }
+
   if (currentGameMode !== "story" || !tutorialStep) return false;
 
   const oldHouseTile = tiles.find((tile) => tile.tutorialTag === "old_house");
@@ -19007,9 +19752,101 @@ function shouldShowStoryTutorialNextMonthGuide() {
   return false;
 }
 
+function getNagoyaTutorialGuideClass(guideTarget) {
+  if (currentGameMode !== "story_nagoya_bridge") return "";
+
+  if (guideTarget === "bank-menu" &&
+    nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.LOAN_CONSULT &&
+    activePanel !== "bank"
+  ) {
+    return "story-ui-target-guide";
+  }
+
+  if (guideTarget === "loan-consult" &&
+    nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.LOAN_CONSULT
+  ) {
+    return "story-ui-target-guide";
+  }
+
+  if (guideTarget === "loan-application" &&
+    nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.LOAN_APPLICATION
+  ) {
+    return "story-ui-target-guide";
+  }
+
+  if (guideTarget === "next-month" && shouldShowStoryTutorialNextMonthGuide()) {
+    return "story-ui-target-guide";
+  }
+
+  if (guideTarget === "branch-build" &&
+    nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH
+  ) {
+    return "story-ui-target-guide";
+  }
+
+  return "";
+}
+
 function showStoryTutorialBlockedMessage() {
   setStoryEvent(STORY_TUTORIAL_EVENTS.BLOCKED);
   setLog("今はチュートリアル中です。赤く点滅している目標だけ進めましょう。");
+}
+
+function forceStoryAkariLevel(targetLevel, reasonText) {
+  if (currentGameMode !== "story") return;
+
+  const safeTargetLevel = Math.max(1, Math.round(Number(targetLevel) || 1));
+  const currentEmployees = employeesRef.current.length > 0 ? employeesRef.current : employees;
+  const akari = currentEmployees.find((employee) => employee.id === 122);
+
+  if (!akari || (akari.level ?? 1) >= safeTargetLevel) return;
+
+  const beforeLevel = akari.level ?? 1;
+  const beforeSalary = getEmployeeSalary(akari);
+  const beforeStats = {
+    leadership: akari.leadership ?? 0,
+    sales: akari.sales ?? 0,
+    construction: akari.construction ?? 0,
+    management: akari.management ?? 0,
+  };
+
+  const nextEmployees = currentEmployees.map((employee) => {
+    if (employee.id !== 122) return employee;
+
+    return normalizeEmployeeGrowthBase({
+      ...employee,
+      level: safeTargetLevel,
+      exp: 0,
+    });
+  });
+
+  const after = nextEmployees.find((employee) => employee.id === 122);
+  const salaryDiff = after ? getEmployeeSalary(after) - beforeSalary : 0;
+  const levelUpText = `${akari.name}がLv${beforeLevel}→Lv${safeTargetLevel}になりました。${reasonText}`;
+
+  employeesRef.current = nextEmployees;
+  setEmployees(nextEmployees);
+  setEmployeeLevelUpResult({
+    ...after,
+    beforeLevel,
+    beforeSalary,
+    beforeStats,
+    statMessages: [],
+    salaryDiff,
+    levelUpText,
+  });
+}
+
+function selectStoryTutorialTargetTile() {
+  const targetTag = getStoryTutorialTargetTagForStep();
+  if (!targetTag) return false;
+
+  const targetTile = tiles.find((tile) => tile.tutorialTag === targetTag);
+  if (!targetTile) return false;
+
+  setSelectedId(targetTile.id);
+  setActivePanel(tutorialStep === STORY_TUTORIAL_STEPS.BUILD_APARTMENT ? "build" : "land");
+  return true;
 }
 
 function isStoryTutorialTargetTile(tile) {
@@ -19067,6 +19904,27 @@ return (
           transform: scale(1.08);
         }
       }
+
+      .story-ui-target-guide {
+        border: 3px solid #ff1744 !important;
+        outline: 4px solid #ff1744 !important;
+        outline-offset: 2px;
+        position: relative;
+        z-index: 80;
+        animation: storyUiTargetPulse 0.8s infinite alternate;
+      }
+
+      @keyframes storyUiTargetPulse {
+        from {
+          box-shadow: 0 0 0 3px rgba(255, 23, 68, 0.75), 0 0 10px rgba(255, 23, 68, 0.65);
+          transform: scale(1);
+        }
+        to {
+          box-shadow: 0 0 0 6px rgba(255, 23, 68, 1), 0 0 22px rgba(255, 23, 68, 1);
+          transform: scale(1.04);
+        }
+      }
+
     `}</style>
 
     <audio
@@ -19125,7 +19983,54 @@ return (
     )}
 
     
-    {storyEvent && !showPrologue && (
+    {storySequence && !showPrologue && (
+      <div className="prologue-screen story-sequence-screen">
+        {storySequence[storySequenceIndex]?.background && (
+          <img
+            src={storySequence[storySequenceIndex]?.background}
+            alt=""
+            className="prologue-bg"
+          />
+        )}
+        <div className="prologue-vignette" />
+
+        {storySequence[storySequenceIndex]?.portrait && (
+          <img
+            src={AKARI_PORTRAIT_PATHS[storySequence[storySequenceIndex].portrait]}
+            alt="七瀬灯里"
+            className="prologue-character"
+          />
+        )}
+
+        <div className="prologue-dialog-box">
+          <div className="prologue-speaker">
+            {storySequence[storySequenceIndex]?.speaker}
+          </div>
+          <div className="prologue-text">
+            {storySequence[storySequenceIndex]?.text}
+          </div>
+          <div className="prologue-actions">
+            <span>{storySequenceIndex + 1} / {storySequence.length}</span>
+            <button
+              type="button"
+              onClick={() => {
+                if (storySequenceIndex < storySequence.length - 1) {
+                  setStorySequenceIndex((currentIndex) => currentIndex + 1);
+                } else {
+                  setStorySequence(null);
+                  setStorySequenceIndex(0);
+                }
+              }}
+            >
+              {storySequenceIndex < storySequence.length - 1 ? "次へ" : "融資チュートリアルへ"}
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+
+    {storyEvent && !showPrologue && !storySequence && (
       <div
         className="story-event-overlay"
         style={{
@@ -19143,16 +20048,33 @@ return (
           className="story-event-card"
           style={{
             width: "min(560px, 96vw)",
-            background: "linear-gradient(180deg, #fffdf7, #fff5d6)",
+            background: storyEvent.background ? "rgba(255, 253, 247, 0.95)" : "linear-gradient(180deg, #fffdf7, #fff5d6)",
             border: "3px solid #f0b429",
+            position: "relative",
             borderRadius: 18,
             boxShadow: "0 18px 40px rgba(0,0,0,0.35)",
             overflow: "hidden",
           }}
         >
+          {storyEvent.background && (
+            <img
+              src={storyEvent.background}
+              alt=""
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                opacity: 0.22,
+                pointerEvents: "none",
+              }}
+            />
+          )}
           <div
             style={{
               display: "flex",
+              position: "relative",
               gap: 14,
               alignItems: "stretch",
               padding: 14,
@@ -19195,11 +20117,15 @@ return (
             </div>
           </div>
 
-          <div style={{ padding: "0 14px 14px", textAlign: "right" }}>
+          <div style={{ position: "relative", zIndex: 2, padding: "0 14px 14px", textAlign: "right" }}>
             <button
               type="button"
-              onClick={() => setStoryEvent(null)}
-              style={{ minWidth: 120, fontWeight: 900 }}
+              onMouseDown={(event) => event.stopPropagation()}
+              onClick={(event) => {
+                event.stopPropagation();
+                setStoryEvent(null);
+              }}
+              style={{ minWidth: 120, fontWeight: 900, position: "relative", zIndex: 3 }}
             >
               OK
             </button>
@@ -19679,7 +20605,7 @@ return (
     <div className="popup-log-card player-rankup-card">
       <h2>ランクアップ！</h2>
       <p className="employee-gacha-rarity">Rank{playerRankUpResult.beforeRank} → Rank{playerRankUpResult.rank}</p>
-      {!playerRankUpResult.tutorialNoTicketReward && (
+      {!playerRankUpResult.tutorialNoTicketReward && playerRankUpResult.ticketCount > 0 && (
         <p>社員チケット +{playerRankUpResult.ticketCount}枚</p>
       )}
       {(playerRankUpResult.unlockMessages ?? []).length > 0 ? (
@@ -19905,10 +20831,13 @@ return (
         <p className="employee-action-estimate">
           {formatActionEstimate(
             actionEmployeeRequest.baseMonths,
-            estimateActionMonths(
-              actionEmployeeRequest.baseMonths,
-              actionEmployeeRequest.employees.filter((employee) => actionEmployeeSelectionIds.includes(employee.id)),
-              actionEmployeeRequest.statKey
+            Math.min(
+              estimateActionMonths(
+                actionEmployeeRequest.baseMonths,
+                actionEmployeeRequest.employees.filter((employee) => actionEmployeeSelectionIds.includes(employee.id)),
+                actionEmployeeRequest.statKey
+              ),
+              actionEmployeeRequest.estimatedMonthsCap ?? Infinity
             )
           )}
         </p>
@@ -20010,11 +20939,17 @@ return (
         </div>
       )}
 
+      {isStoryTutorialActive() && (
+        <button className="story-target-return-button" onClick={selectStoryTutorialTargetTile}>
+          赤く点滅している目標マスを選択
+        </button>
+      )}
+
       {currentGameMode === "story" && tutorialStep === STORY_TUTORIAL_STEPS.COMPLETE && (
         <div className="story-next-chapter-panel">
           <div>
             <strong>第0章クリア</strong>
-            <span>基本操作を学びました。次は30×30の岐阜編へ進みます。</span>
+            <span>基本操作を学びました。次は15×15の岐阜編へ進みます。</span>
           </div>
           <button type="button" onClick={startGifuChapter}>岐阜編に進む</button>
         </div>
@@ -20026,6 +20961,38 @@ return (
             <strong>{hasClearedGifuChapter ? "岐阜編クリア" : "岐阜編目標"}</strong>
             <span>人口 {totalPopulation.toLocaleString()} / {GIFU_CLEAR_POPULATION.toLocaleString()}人</span>
             <span>総資産 {gifuTotalAssets.toLocaleString()} / {GIFU_CLEAR_TOTAL_ASSETS.toLocaleString()}万円</span>
+          </div>
+        </div>
+      )}
+
+      {currentGameMode === "story_gifu" && hasClearedGifuChapter && (
+        <div className="story-next-chapter-panel story-nagoya-panel">
+          <div>
+            <strong>名古屋編へ</strong>
+            <span>次は銀行融資と支店建設を確認してから、名古屋方面へ進出します。</span>
+          </div>
+          <button type="button" onClick={startNagoyaBridgeChapter}>名古屋編に進む</button>
+        </div>
+      )}
+
+      {currentGameMode === "story_nagoya_bridge" && (
+        <div className={`gifu-goal-panel nagoya-tutorial-panel ${nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE ? "cleared" : ""}`}>
+          <div>
+            <strong>{nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE ? "名古屋編準備完了" : "名古屋編準備"}</strong>
+            <span>{getStoryNagoyaGoalText(nagoyaTutorialStep)}</span>
+          </div>
+          {nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE && (
+            <button type="button" onClick={finishNagoyaBridgeChapter}>名古屋編を開始</button>
+          )}
+        </div>
+      )}
+
+      {currentGameMode === "story_nagoya" && (
+        <div className={`gifu-goal-panel nagoya-goal-panel ${hasClearedNagoyaChapter ? "cleared" : ""}`}>
+          <div>
+            <strong>{hasClearedNagoyaChapter ? "名古屋編クリア" : "名古屋編目標"}</strong>
+            <span>人口 {totalPopulation.toLocaleString()} / {NAGOYA_CLEAR_POPULATION.toLocaleString()}人</span>
+            <span>総資産 {nagoyaTotalAssets.toLocaleString()} / {NAGOYA_CLEAR_TOTAL_ASSETS.toLocaleString()}万円</span>
           </div>
         </div>
       )}
@@ -20069,7 +21036,7 @@ return (
       setIsMoneyInfoOpen(false);
       setIsDateInfoOpen(false);
     }}
-    className={`top-icon-button ${shouldShowStoryTutorialNextMonthGuide() ? "story-next-month-guide" : ""}`}
+    className={`top-icon-button ${shouldShowStoryTutorialNextMonthGuide() ? "story-next-month-guide" : ""} ${getNagoyaTutorialGuideClass("next-month")}`}
   >
     <span className="top-icon-symbol">⏭️</span>
   </button>
@@ -20305,7 +21272,7 @@ return (
             setActivePanel("bank");
             setIsMainMenuOpen(false);
           }}
-          className={activePanel === "bank" ? "active" : ""}
+          className={`${activePanel === "bank" ? "active" : ""} ${getNagoyaTutorialGuideClass("bank-menu")}`}
         >
           🏦 銀行
         </button>
@@ -20547,6 +21514,12 @@ return (
             } ${
               isStoryTutorialTargetTile(tile)
                 ? "story-tutorial-target-tile"
+                : ""
+            } ${
+              currentGameMode === "story_nagoya_bridge" &&
+              nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH &&
+              tile.tutorialTag === "nagoya_branch_land"
+                ? "story-nagoya-branch-target-tile"
                 : ""
             }`}
             title={`座標:${tile.x},${tile.y} / ${getTerrainName(
@@ -20852,11 +21825,27 @@ return (
           )}
 
           <div className="smart-action-row">
-            {selectedMainTile?.owner === OWNER.SALE && (!isStoryTutorialActive() || isStoryTutorialTargetTile(selectedMainTile)) && (
-              <button className={isTileInOfficeRange(selectedMainTile) ? "action-good" : "action-bad"} onClick={buyLand} disabled={!isTileInOfficeRange(selectedMainTile)} title={!isTileInOfficeRange(selectedMainTile) ? "本社・支店の行動範囲外です" : ""}>
-                {isTileInOfficeRange(selectedMainTile) ? "購入" : "範囲外"}
-              </button>
-            )}
+            {(() => {
+              const isTutorialPurchaseTargetSelected =
+                isStoryTutorialActive() &&
+                (tutorialStep === STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE ||
+                  tutorialStep === STORY_TUTORIAL_STEPS.BUY_APARTMENT_LAND) &&
+                isStoryTutorialTargetTile(selectedMainTile);
+
+              if (!(selectedMainTile?.owner === OWNER.SALE || isTutorialPurchaseTargetSelected)) return null;
+              if (isStoryTutorialActive() && !isStoryTutorialTargetTile(selectedMainTile)) return null;
+
+              return (
+                <button
+                  className={isTileInOfficeRange(selectedMainTile) ? "action-good" : "action-bad"}
+                  onClick={buyLand}
+                  disabled={!isTileInOfficeRange(selectedMainTile)}
+                  title={!isTileInOfficeRange(selectedMainTile) ? "本社・支店の行動範囲外です" : ""}
+                >
+                  {isTileInOfficeRange(selectedMainTile) ? "購入" : "範囲外"}
+                </button>
+              );
+            })()}
 
             {selectedTile.owner === OWNER.PLAYER && isBuildableTile(selectedTile) && !selectedTile.building && (!isStoryTutorialActive() || (tutorialStep === STORY_TUTORIAL_STEPS.BUILD_APARTMENT && isStoryTutorialTargetTile(selectedTile))) && (
               <button className={isTileInOfficeRange(selectedTile) ? "action-good" : "action-bad"} onClick={() => { setBuildEntrySource("tile"); setPendingBuildKey(null); setActivePanel("build"); }} disabled={!isTileInOfficeRange(selectedTile)} title={!isTileInOfficeRange(selectedTile) ? "本社・支店の行動範囲外です" : ""}>
@@ -21256,7 +22245,7 @@ return (
       <button
         className={`build-icon-button ${
           selectedBuildCategory === "支店" ? "active" : ""
-        }`}
+        } ${getNagoyaTutorialGuideClass("branch-build")}`}
         onClick={() => { setSelectedBuildCategory("支店"); setSelectedHousingType(null); }}
       >
         <span className="build-icon">🏢</span>
@@ -21313,7 +22302,7 @@ return (
       {selectedBuildCategory === "支店" && (
         <>
           <button
-            className="build-detail-button"
+            className={`build-detail-button ${getNagoyaTutorialGuideClass("branch-build")}`}
             onClick={startBranchPlacement}
           >
             <strong>支店</strong>
@@ -21494,6 +22483,7 @@ return (
                     <button
                       disabled={alreadyPending}
                       onClick={() => startLoanConsultation(bank.id)}
+                      className={bank.id === "regional" ? getNagoyaTutorialGuideClass("loan-consult") : ""}
                     >
                       {alreadyPending ? "相談中" : "相談する"}
                     </button>
@@ -21597,6 +22587,7 @@ return (
                         <button
                           disabled={reportApplyAmount <= 0}
                           onClick={() => borrowFromBank(report.bankId, reportApplyAmount, report)}
+                          className={getNagoyaTutorialGuideClass("loan-application")}
                         >
                           {reportApplyAmount > 0 ? `${reportApplyAmount.toLocaleString()}万円で申請` : "申請不可"}
                         </button>
@@ -21675,6 +22666,7 @@ return (
                     <button
                       disabled={disabled}
                       onClick={() => borrowFromBank(bank.id)}
+                      className={bank.id === selectedBankId ? getNagoyaTutorialGuideClass("loan-application") : ""}
                     >
                       融資審査を申請
                     </button>

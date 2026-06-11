@@ -1,4 +1,4 @@
-/* ===== App_v176 CSS整理版（七瀬ガイド圧縮・岐阜編目標追加） ===== */
+/* ===== App_v178 CSS整理版（岐阜クリア後・融資支店チュートリアル導入） ===== */
 /* 元ファイルの重複指定を整理し、同一セレクタ内の後勝ち指定に統合しています。 */
 * {
   box-sizing: border-box;
@@ -9698,4 +9698,79 @@ th, td {
   .gifu-goal-panel span {
     font-size: 11px;
   }
+}
+
+
+.story-target-return-button {
+  width: 100%;
+  margin: 8px 0;
+  border: 2px solid #e53935;
+  background: #fff5f5;
+  color: #b71c1c;
+  font-weight: 900;
+}
+
+
+/* ===== v178 名古屋編準備（融資・支店チュートリアル） ===== */
+.story-nagoya-panel {
+  border-color: #7b1fa2;
+  background: linear-gradient(180deg, #fbf0ff, #ffffff);
+}
+
+.story-nagoya-panel button {
+  border-color: #6a1b9a;
+  background: #ce93d8;
+  color: #111;
+}
+
+.nagoya-tutorial-panel {
+  border-color: #7b1fa2;
+  background: linear-gradient(180deg, #fbf0ff, #ffffff);
+  color: #3d0b4f;
+}
+
+.nagoya-tutorial-panel button {
+  margin-left: auto;
+  min-height: 40px;
+  font-weight: 900;
+  border: 2px solid #6a1b9a;
+  background: #ce93d8;
+  color: #111;
+}
+
+@media (max-width: 600px) {
+  .nagoya-tutorial-panel div {
+    display: grid;
+  }
+
+  .nagoya-tutorial-panel button {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 8px;
+  }
+}
+
+
+/* ===== v179 チュートリアル赤枠誘導 ===== */
+.story-ui-target-guide {
+  position: relative !important;
+  z-index: 80 !important;
+  border: 3px solid #ff1744 !important;
+  outline: 3px solid rgba(255, 23, 68, 0.75) !important;
+  box-shadow: 0 0 0 4px rgba(255, 23, 68, 0.4), 0 0 20px rgba(255, 23, 68, 0.95) !important;
+  animation: storyUiTargetPulse 0.85s ease-in-out infinite alternate !important;
+}
+
+.map-tile.story-nagoya-branch-target-tile {
+  border: 3px solid #ff1744 !important;
+  outline: 3px solid rgba(255, 23, 68, 0.9) !important;
+  box-shadow: 0 0 0 5px rgba(255, 23, 68, 0.95), 0 0 24px rgba(255, 23, 68, 1) !important;
+  animation: storyUiTargetPulse 0.85s ease-in-out infinite alternate !important;
+  position: relative !important;
+  z-index: 25 !important;
+}
+
+@keyframes storyUiTargetPulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
 }
