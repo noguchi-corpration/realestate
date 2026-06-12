@@ -3,7 +3,7 @@ import "./App.css";
 
 /*
   箱庭不動産経営シミュレーター
-  v218.14: 余白圧縮・ポップアップ固定・社員管理/座標修正版 / v218.10: 採用封筒四角化・ストーリー/フリー導線修正版 / v218.9: 採用画面5封筒表示・写真位置修正版 / v218.11: 採用特性説明復元・累計EXP表示・名古屋背景/七瀬服装整理版 / v218: 画面分離・不要情報削減・社員管理全画面版 / v218.1: ホーム整理・重複導線削減版 / v218.7: 土地情報ヘッダーアイコン集約版 / v218.6: 名簿均等配置・マップ情報削除・リロード復帰版 / v218.5: 名簿さらに圧縮・採用バグ修正版 / v218.4: 名簿・採用コンパクト化版 / v218.3: ページ遷移化・ホームHUD修正版 / v218.2: ホームロビー化・スマホ縦専用整理版 / v217: ホーム/経営分離・社員名簿統合版 / v216.2: ホーム横はみ出し・フルスクリーン再調整版 / v216: プレイ画面フルスクリーン最適化版 / v215: 配属上限5人・採用時自動配属版 / v214: 街演出・マップ視覚刷新版 / v213: プレイ画面イベント演出強化版 / v212: プレイ画面UI第一世代・スマホゲームHUD刷新版 / v210: ログインボーナス・ミッション・プレゼントBOX本格調整版 / v209: ホームメニュー第三世代UI版 / v208: ホーム背景・七瀬演出強化版 / v207: 社員図鑑・社員保管庫スマホUI整理版 / v206: 社員採用演出・採用名称統一版 / v201: 縦横レスポンシブ・キャラ中心ホームUI版 / v200: スマホゲーム風ホーム画面リニューアル版 / v199: 社員保管庫上書き保護・ライト採用券追加版 / v198: 能力成長表示・給与表示整理版 / v197: 社員詳細・創業メンバー選択UI仕上げ版 / v196: 社員保管庫能力合計ソート修正版 / v195: 社員保管庫カード画像＋詳細表示版 / v194: 社員保管庫・創業メンバー選択UI強化版 / v193: 創業メンバー配属・行動可能判定修正版 / v192: 社員保管庫UI改善・ソート絞り込み版 / v191: アカウント情報・社員保管庫確認強化版 / v190: 創業メンバー選択（七瀬固定＋自由2名）版 / v189: 社員保管庫・プレイヤーランク共通保存基盤版 / v188: 名古屋編クリア演出・第1部完結版 / v183: 岐阜固定本社・名古屋拡張マップ調整・0章修繕短縮版 / v182: 岐阜名古屋固定マップ調整版 / v181: 0章購入ボタン再表示修正版 / v180: 名古屋編ストーリーOKボタン修正版 / v179: 名古屋編チュートリアル誘導赤枠版 / v178: 名古屋編準備・銀行融資と支店建設チュートリアル版 / v177: チュートリアル進行不能対策・固定レベルアップ・岐阜15x15版 / v176: 岐阜編クリア条件・七瀬ガイド圧縮版 / v175: 岐阜編開始・七瀬ページガイド追加版 / v174: チュートリアル発光パルス・建築ロック・チケット抑制版 / v173: 建設完了判定修正版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル強調赤枠・行動制限強化版 / v170: チュートリアル行動制限・七瀬ナビ追加版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル指定マス赤枠強化版 / v170: チュートリアル会話追加版 / v169: ストーリー第0章チュートリアル固定マップ追加版 / v168: モード選択追加版 / v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
+  v219.3: 名古屋背景整理・ポップアップ×修正・七瀬枠固定版 / v219.2: 閉じるUI×統一・ヘッダー圧縮版 / v219.1: 各種ポップアップ閉じる導線追加版 / v219: 新人七瀬・成長会話・チュートリアル成長補正版 / v218.10: 採用封筒四角化・ストーリー/フリー導線修正版 / v218.9: 採用画面5封筒表示・写真位置修正版 / v218.11: 採用特性説明復元・累計EXP表示・名古屋背景/七瀬服装整理版 / v218: 画面分離・不要情報削減・社員管理全画面版 / v218.1: ホーム整理・重複導線削減版 / v218.7: 土地情報ヘッダーアイコン集約版 / v218.6: 名簿均等配置・マップ情報削除・リロード復帰版 / v218.5: 名簿さらに圧縮・採用バグ修正版 / v218.4: 名簿・採用コンパクト化版 / v218.3: ページ遷移化・ホームHUD修正版 / v218.2: ホームロビー化・スマホ縦専用整理版 / v217: ホーム/経営分離・社員名簿統合版 / v216.2: ホーム横はみ出し・フルスクリーン再調整版 / v216: プレイ画面フルスクリーン最適化版 / v215: 配属上限5人・採用時自動配属版 / v214: 街演出・マップ視覚刷新版 / v213: プレイ画面イベント演出強化版 / v212: プレイ画面UI第一世代・スマホゲームHUD刷新版 / v210: ログインボーナス・ミッション・プレゼントBOX本格調整版 / v209: ホームメニュー第三世代UI版 / v208: ホーム背景・七瀬演出強化版 / v207: 社員図鑑・社員保管庫スマホUI整理版 / v206: 社員採用演出・採用名称統一版 / v201: 縦横レスポンシブ・キャラ中心ホームUI版 / v200: スマホゲーム風ホーム画面リニューアル版 / v199: 社員保管庫上書き保護・ライト採用券追加版 / v198: 能力成長表示・給与表示整理版 / v197: 社員詳細・創業メンバー選択UI仕上げ版 / v196: 社員保管庫能力合計ソート修正版 / v195: 社員保管庫カード画像＋詳細表示版 / v194: 社員保管庫・創業メンバー選択UI強化版 / v193: 創業メンバー配属・行動可能判定修正版 / v192: 社員保管庫UI改善・ソート絞り込み版 / v191: アカウント情報・社員保管庫確認強化版 / v190: 創業メンバー選択（七瀬固定＋自由2名）版 / v189: 社員保管庫・プレイヤーランク共通保存基盤版 / v188: 名古屋編クリア演出・第1部完結版 / v183: 岐阜固定本社・名古屋拡張マップ調整・0章修繕短縮版 / v182: 岐阜名古屋固定マップ調整版 / v181: 0章購入ボタン再表示修正版 / v180: 名古屋編ストーリーOKボタン修正版 / v179: 名古屋編チュートリアル誘導赤枠版 / v178: 名古屋編準備・銀行融資と支店建設チュートリアル版 / v177: チュートリアル進行不能対策・固定レベルアップ・岐阜15x15版 / v176: 岐阜編クリア条件・七瀬ガイド圧縮版 / v175: 岐阜編開始・七瀬ページガイド追加版 / v174: チュートリアル発光パルス・建築ロック・チケット抑制版 / v173: 建設完了判定修正版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル強調赤枠・行動制限強化版 / v170: チュートリアル行動制限・七瀬ナビ追加版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル指定マス赤枠強化版 / v170: チュートリアル会話追加版 / v169: ストーリー第0章チュートリアル固定マップ追加版 / v168: モード選択追加版 / v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
   PC・スマホ両対応版 / v133 配属上限撤廃・役職補正強化・拠点表示整理
   v131：特殊能力効果拡張（入居・家賃・融資・採用対応）
 
@@ -19,7 +19,7 @@ const MAP_SIZE = 70;
 const SAVE_SLOT_COUNT = 3;
 const DEFAULT_COMPANY_NAME = "";
 const DEFAULT_SAVE_SLOT = 1;
-const GAME_VERSION = "v218.14";
+const GAME_VERSION = "v219.3";
 const BASE_EMPLOYEE_SALARY = 15;
 const EMPLOYEE_SALARY_GROWTH_RATE = 1.05;
 const GIFU_CLEAR_POPULATION = 500;
@@ -306,7 +306,7 @@ const PROLOGUE_SCENES = [
     {
     background: "/backgrounds/office_startup.png",
     speaker: "七瀬 灯里",
-    text: "そうなんですね。わ、分かりました。",
+    text: "そ、そうなんですね。私、不動産業界は初めてなので……ご迷惑をおかけするかもしれません。でも、精一杯頑張ります。",
     portrait: "trouble",
   },
   {
@@ -372,19 +372,19 @@ const PROLOGUE_SCENES = [
   {
     background: "/backgrounds/property_old_house.png",
     speaker: "七瀬 灯里",
-    text: "分かりました！私、頑張ります！",
+    text: "まだ分からないことばかりですけど……社長と一緒に、少しずつ覚えていきたいです！",
     portrait: "normal",
   },
    {
     background: "/backgrounds/office_startup.png",
     speaker: "ナレーション",
-    text: "こうして、小さな不動産会社の挑戦が始まった。",
+    text: "こうして、社長と新人社員・七瀬灯里の小さな挑戦が始まった。",
     portrait: null,
   },
      {
     background: "/backgrounds/office_startup.png",
     speaker: "ナレーション",
-    text: "廃れゆく時代に抗い、街に再び活気を取り戻すために――。",
+    text: "廃れゆく時代に抗い、二人で街に再び活気を取り戻すために――。",
     portrait: null,
   },
 
@@ -418,27 +418,27 @@ const STORY_TUTORIAL_EVENTS = {
   START: {
     portrait: "normal",
     title: "第0章 創業編",
-    text: "社長、まずは赤く点滅している古い戸建を購入してみましょう。売り物件を選択して、購入ボタンを押してください。",
+    text: "社長、まずは赤く点滅している古い戸建を見てみましょう。私もまだ勉強中ですが、売り物件を選択して購入ボタンを押すところから始めるみたいです。",
   },
   PURCHASED_OLD_HOUSE: {
     portrait: "surprise",
     title: "中古戸建を購入しました",
-    text: "購入できました！ 思ったより状態が悪いですね……。でも、こういう物件こそ私たちの出番です。次は修繕して、住める状態まで回復させましょう。",
+    text: "購入できました！ 思ったより状態が悪いですね……。でも、直せばまた誰かの住まいになるかもしれません。次は修繕してみましょう。",
   },
   REPAIRED_OLD_HOUSE: {
     portrait: "happy",
     title: "修繕完了",
-    text: "すごいです！ 見違えるほど綺麗になりました。これなら借りてくれる方も見つかりそうですね。次は赤く光っている空き地を購入しましょう。ここが新築に挑戦するための土地になります。",
+    text: "すごいです、社長！ 見違えるほど綺麗になりました。空き家再生って、こういうことなんですね。次は赤く光っている空き地を購入して、新築にも挑戦してみましょう。",
   },
   PURCHASED_APARTMENT_LAND: {
     portrait: "serious",
     title: "空き地を購入しました",
-    text: "今度は新築に挑戦ですね。中古再生だけでなく、土地を買って建物を建てることも不動産会社の大切な仕事なんですね。",
+    text: "今度は新築に挑戦ですね。中古を直すだけじゃなくて、土地を買って建物を建てる仕事もあるんですね……勉強になります。",
   },
   BUILT_APARTMENT: {
     portrait: "happy",
     title: "平屋戸建 建築完了",
-    text: "完成しました！ これで中古再生と新築賃貸、両方を経験できましたね。不動産会社経営の基本が一通り見えてきました！",
+    text: "完成しました！ 中古再生と新築賃貸、両方を少しだけ経験できましたね。私も、不動産会社の仕事が少し見えてきた気がします。",
   },
   PURCHASE_OLD_HOUSE_STARTED: {
     portrait: "serious",
@@ -502,12 +502,12 @@ const STORY_NAGOYA_EVENTS = {
     background: NAGOYA_PROLOGUE_BACKGROUND,
     portrait: "serious",
     title: "第2章 名古屋編・進出準備",
-    text: "社長、岐阜での実績が認められました！ 次はいよいよ名古屋方面への進出です。ですが、大きな都市へ進むには資金も人手も必要です。まずは銀行融資の流れを確認しましょう。",
+    text: "社長、岐阜での実績が認められました！ 次はいよいよ名古屋方面への進出です。少し緊張しますが、今度は私も少しはお役に立てると思います。まずは銀行融資の流れを確認しましょう。",
   },
   LOAN_CONSULT_STARTED: {
     portrait: "serious",
     title: "融資相談を開始しました",
-    text: "銀行へ融資相談を依頼しました。相談結果が出るまで月を進めましょう。相談結果を見てから申請すると、無理な借入を避けやすくなります。",
+    text: "銀行へ融資相談を依頼しました。相談結果が出るまで月を進めましょう。相談結果を見てから申請すれば、無理な借入を避けやすそうです。",
   },
   LOAN_REPORT_READY: {
     portrait: "happy",
@@ -522,7 +522,7 @@ const STORY_NAGOYA_EVENTS = {
   LOAN_APPROVED: {
     portrait: "happy",
     title: "融資実行完了",
-    text: "資金調達ができました！ 借入は返済が必要ですが、会社を大きくするための大切な力になります。次はこの資金を使って、支店建設の流れを確認しましょう。",
+    text: "資金調達ができました！ 借入は返済が必要ですが、会社を大きくするための大切な力になりますね。次はこの資金を使って、支店建設の流れを確認しましょう。",
   },
   BRANCH_STARTED: {
     portrait: "serious",
@@ -532,22 +532,22 @@ const STORY_NAGOYA_EVENTS = {
   BRANCH_COMPLETE: {
     portrait: "happy",
     title: "支店完成",
-    text: "支店が完成しました！ これで本社から離れたエリアにも活動範囲を広げられます。社員画面では、社員を本社や支店へ配属変更できます。名古屋編では、支店に社員を配属して都市部へ進出していきましょう。",
+    text: "支店が完成しました！ これで本社から離れたエリアにも活動範囲を広げられます。岐阜の頃より、できることがずいぶん増えましたね。名古屋編では、支店に社員を配属して都市部へ進出していきましょう。",
   },
 };
 
 const NAGOYA_PROLOGUE_SCENES = [
   {
-    background: NAGOYA_PROLOGUE_BACKGROUND,
+    background: "/backgrounds/city_rural_evening.png",
     speaker: "七瀬 灯里",
     portrait: "happy",
-    text: "社長、岐阜での経営目標を達成できましたね。最初は小さな一歩でしたけど、会社として確かな実績になりました。",
+    text: "社長、岐阜での経営目標を達成できましたね。最初は私も何も分からなかったのに、会社として確かな実績になりました。",
   },
   {
-    background: NAGOYA_PROLOGUE_BACKGROUND,
+    background: "/backgrounds/city_rural_evening.png",
     speaker: "七瀬 灯里",
     portrait: "serious",
-    text: "でも、名古屋へ進出するには資金も拠点も必要です。銀行融資で資金を確保して、支店を作る流れを確認しておきましょう。",
+    text: "でも、名古屋へ進出するには資金も拠点も必要です。今度は私も少しはお役に立てると思います。銀行融資で資金を確保して、支店を作る流れを確認しておきましょう。",
   },
   {
     background: NAGOYA_PROLOGUE_BACKGROUND,
@@ -565,7 +565,7 @@ const NAGOYA_PROLOGUE_SCENES = [
     background: NAGOYA_PROLOGUE_BACKGROUND,
     speaker: "七瀬 灯里",
     portrait: "happy",
-    text: "第2章、名古屋編。銀行融資と支店経営を武器に、中京圏最大の都市へ挑戦しましょう！",
+    text: "第2章、名古屋編。少し緊張しますけど、社長と一緒なら大丈夫です。銀行融資と支店経営を武器に、中京圏最大の都市へ挑戦しましょう！",
   },
 ];
 
@@ -675,23 +675,23 @@ function getStoryTutorialGoalText(step) {
 
 function getStoryTutorialAkariAdviceText(step) {
   if (step === STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE) {
-    return "社長、まずは赤く点滅している古い戸建を選択して、購入ボタンを押してみましょう。チュートリアル中は指定マスだけ操作できます。";
+    return "社長、まずは赤く点滅している古い戸建を選択してみましょう。私も確認しながらになりますが、購入ボタンから進めるみたいです。";
   }
 
   if (step === STORY_TUTORIAL_STEPS.REPAIR_OLD_HOUSE) {
-    return "購入した戸建を選択して、修繕を行いましょう。状態が70以上になれば、次の手順へ進めます。";
+    return "購入した戸建を選択して、修繕してみましょう。状態が良くなれば、次に進めるはずです。";
   }
 
   if (step === STORY_TUTORIAL_STEPS.BUY_APARTMENT_LAND) {
-    return "次は赤く点滅している空き地を購入しましょう。ここが新築に挑戦するための土地になります。";
+    return "次は赤く点滅している空き地を購入してみましょう。ここで新築に挑戦する流れを覚えられそうです。";
   }
 
   if (step === STORY_TUTORIAL_STEPS.BUILD_APARTMENT) {
-    return "購入した空き地に平屋戸建を建てましょう。建設メニューでは平屋戸建だけ選べば大丈夫です。";
+    return "購入した空き地に平屋戸建を建ててみましょう。建設メニューでは、今回は平屋戸建を選べば大丈夫そうです。";
   }
 
   if (step === STORY_TUTORIAL_STEPS.COMPLETE) {
-    return "第0章の基本操作は完了です。中古を買って直す流れと、土地を買って建てる流れを体験できました！";
+    return "第0章の基本操作は完了です。中古を買って直す流れと、土地を買って建てる流れを、私も一緒に学べました！";
   }
 
   return "赤く点滅しているマスを選んで、表示されている目標を進めましょう。";
@@ -12197,6 +12197,105 @@ export default function App() {
           border-bottom: 1px solid #d7ddd5 !important;
         }
 
+        .top-info-popup-title-row {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          gap: 8px !important;
+          margin-bottom: 8px !important;
+          padding-bottom: 7px !important;
+          border-bottom: 1px solid #d7ddd5 !important;
+          font-size: 15px !important;
+          font-weight: 900 !important;
+          color: #1f2937 !important;
+        }
+
+        .top-info-popup-title-row h3 {
+          margin: 0 !important;
+          padding: 0 !important;
+          border: 0 !important;
+          font-size: inherit !important;
+          min-width: 0 !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          white-space: nowrap !important;
+        }
+
+        .top-info-popup-title-row {
+          min-height: 30px !important;
+        }
+
+        .popup-close-button,
+        .main-menu-close-button,
+        .floating-panel-close-button {
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          border: 1px solid rgba(15, 23, 42, 0.14) !important;
+          background: rgba(255, 255, 255, 0.92) !important;
+          color: #334155 !important;
+          border-radius: 999px !important;
+          min-width: 28px !important;
+          width: 28px !important;
+          height: 26px !important;
+          min-height: 26px !important;
+          padding: 0 !important;
+          font-size: 17px !important;
+          font-weight: 900 !important;
+          line-height: 1 !important;
+          cursor: pointer !important;
+          flex: 0 0 auto !important;
+        }
+
+        .popup-close-button:active,
+        .main-menu-close-button:active {
+          transform: translateY(1px) !important;
+        }
+
+        .main-menu-popup .main-menu-close-button {
+          width: 100% !important;
+          margin-top: 4px !important;
+          border-radius: 10px !important;
+          height: 30px !important;
+          min-height: 30px !important;
+          justify-content: center !important;
+        }
+
+
+        /* v219.3: 資産/進行ヘッダーは「タイトル + 右上小型×」で固定。
+           下の2列グリッド指定に巻き込まれて、×だけが全幅化しないようにする。 */
+        .top-info-popup > .top-info-popup-title-row {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          width: 100% !important;
+          min-height: 30px !important;
+          max-height: 34px !important;
+          grid-template-columns: none !important;
+        }
+
+        .top-info-popup > .top-info-popup-title-row h3 {
+          display: block !important;
+          flex: 1 1 auto !important;
+          min-width: 0 !important;
+          margin: 0 !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          white-space: nowrap !important;
+        }
+
+        .top-info-popup > .top-info-popup-title-row .popup-close-button {
+          flex: 0 0 28px !important;
+          width: 28px !important;
+          min-width: 28px !important;
+          max-width: 28px !important;
+          height: 26px !important;
+          min-height: 26px !important;
+          max-height: 26px !important;
+          padding: 0 !important;
+          margin-left: 8px !important;
+        }
+
         .top-info-popup .top-info-popup-grid {
           background: transparent !important;
           border: 0 !important;
@@ -15510,6 +15609,43 @@ function getEmployeeSalary(employee) {
   return calculateEmployeeSalaryByLevel(employee?.level ?? 1);
 }
 
+function getAkariSpecialGrowthTotal(employee) {
+  if (Number(employee?.id) !== 122) return null;
+  if (!(String(currentGameMode ?? "").startsWith("story")) || hasClearedNagoyaChapter) return null;
+  return Math.random() < 0.55 ? 2 : 3;
+}
+
+function applyRandomStatGrowth(employee, totalGrowth) {
+  const statKeys = [
+    { key: "leadership", baseKey: "baseLeadership", label: "統率" },
+    { key: "sales", baseKey: "baseSales", label: "営業" },
+    { key: "construction", baseKey: "baseConstruction", label: "建築" },
+    { key: "management", baseKey: "baseManagement", label: "管理" },
+  ];
+  let updatedEmployee = employee;
+  const growthMessages = [];
+
+  for (let i = 0; i < Math.max(0, totalGrowth); i++) {
+    const growthLimit = getEmployeeGrowthLimit(updatedEmployee);
+    const growableStats = statKeys.filter((stat) => {
+      const baseValue = updatedEmployee[stat.baseKey] ?? updatedEmployee[stat.key] ?? 0;
+      const currentValue = updatedEmployee[stat.key] ?? 0;
+      return currentValue - baseValue < growthLimit;
+    });
+
+    if (growableStats.length === 0) break;
+
+    const targetStat = growableStats[randomInt(0, growableStats.length - 1)];
+    updatedEmployee = {
+      ...updatedEmployee,
+      [targetStat.key]: (updatedEmployee[targetStat.key] ?? 0) + 1,
+    };
+    growthMessages.push(`${targetStat.label}+1`);
+  }
+
+  return { updatedEmployee, growthMessages };
+}
+
 function renderEmployeeSalaryValue(employee) {
   const currentSalary = getEmployeeSalary(employee);
   return `${currentSalary}万円`;
@@ -15525,33 +15661,11 @@ function applyEmployeeLevelUps(employee, gainedExp) {
     exp -= getEmployeeRequiredExp(level);
     level += 1;
 
-    const growthCount = Math.random() < 0.3 ? 2 : 1;
-    const growthMessages = [];
-
-    for (let i = 0; i < growthCount; i++) {
-      const statKeys = [
-        { key: "leadership", baseKey: "baseLeadership", label: "統率" },
-        { key: "sales", baseKey: "baseSales", label: "営業" },
-        { key: "construction", baseKey: "baseConstruction", label: "建築" },
-        { key: "management", baseKey: "baseManagement", label: "管理" },
-      ];
-
-      const growthLimit = getEmployeeGrowthLimit(updatedEmployee);
-      const growableStats = statKeys.filter((stat) => {
-        const baseValue = updatedEmployee[stat.baseKey] ?? updatedEmployee[stat.key] ?? 0;
-        const currentValue = updatedEmployee[stat.key] ?? 0;
-        return currentValue - baseValue < growthLimit;
-      });
-
-      if (growableStats.length === 0) break;
-
-      const targetStat = growableStats[randomInt(0, growableStats.length - 1)];
-      updatedEmployee = {
-        ...updatedEmployee,
-        [targetStat.key]: (updatedEmployee[targetStat.key] ?? 0) + 1,
-      };
-      growthMessages.push(`${targetStat.label}+1`);
-    }
+    const specialGrowthTotal = getAkariSpecialGrowthTotal(updatedEmployee);
+    const growthCount = specialGrowthTotal ?? (Math.random() < 0.3 ? 2 : 1);
+    const growthResult = applyRandomStatGrowth(updatedEmployee, growthCount);
+    updatedEmployee = growthResult.updatedEmployee;
+    const growthMessages = growthResult.growthMessages;
 
     const previousSalary = getEmployeeSalary(updatedEmployee);
     const nextSalary = calculateEmployeeSalaryByLevel(level);
@@ -16853,7 +16967,7 @@ async function placeBranch(targetTile = selectedTile) {
 
   if (actionEmployees.length === 0) return false;
 
-  const branchBuildMonths = estimateActionMonths(BRANCH_OFFICE_BASE_MONTHS, actionEmployees, "construction");
+  const branchBuildMonths = isNagoyaTutorialBranchTarget ? 3 : estimateActionMonths(BRANCH_OFFICE_BASE_MONTHS, actionEmployees, "construction");
   const actualBranchCost = calculateActionCost(BRANCH_OFFICE_COST, actionEmployees, "construction", "branch", branchTargetTile);
 
   const ok = window.confirm(
@@ -21043,7 +21157,7 @@ function startNagoyaBridgeChapter() {
 function finishNagoyaBridgeChapter() {
   setCurrentGameMode("story_nagoya");
   setStoryEvent({
-    background: NAGOYA_PROLOGUE_BACKGROUND,
+    background: null,
     portrait: "happy",
     title: "第2章 名古屋編",
     text: "社長、銀行融資と支店建設の流れを確認できましたね。ここからは名古屋方面への本格進出です。名古屋編の目標は、人口1,000人以上、総資産5億円以上です。社員を支店へ配属しながら、より広いエリアで経営していきましょう！",
@@ -21689,24 +21803,75 @@ function getHomeTimeGreeting() {
   return "社長、そろそろ休んだ方が……。でも、少しだけなら私もお付き合いします。";
 }
 
+function getAkariStoryPhase() {
+  if (!titleStoryAkari) return "notJoined";
+  if (hasClearedNagoyaChapter || currentGameMode === "story_cleared") return "afterNagoya";
+  if (currentGameMode === "story_nagoya" || currentGameMode === "story_nagoya_bridge") return "nagoya";
+  if (currentGameMode === "story_gifu" || hasClearedGifuChapter) return "gifu";
+  return "rookie";
+}
+
+function getAkariPhaseGreeting() {
+  const phase = getAkariStoryPhase();
+  const hour = new Date().getHours();
+  if (phase === "notJoined") return "まだ誰もいない小さな事務所です。まずはストーリーを始めて、会社の第一歩を踏み出しましょう。";
+  if (phase === "rookie") return hour < 12 ? "お、おはようございます、社長。今日も一つずつ覚えていきます！" : "社長、私もまだ勉強中ですが、今日もよろしくお願いします！";
+  if (phase === "gifu") return "社長、岐阜での仕事にも少しずつ慣れてきました。街が変わっていくのを見ると嬉しいですね。";
+  if (phase === "nagoya") return "社長、名古屋は岐阜より競争が激しそうです。慎重に、でも前向きに進めましょう。";
+  return "社長、今日もお疲れ様です。仕事の話も、少しだけ雑談も、いつでも聞きますよ。";
+}
+
 function getHomeAkariTalkMessages() {
+  const phase = getAkariStoryPhase();
   const ticketTotal = (titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0);
   const vaultCount = titleAccountEmployeeVault.length;
   const rank = titleAccountData.playerRank ?? 1;
 
+  if (phase === "notJoined") {
+    return [
+      "まだ誰もいない事務所です。まずはストーリーを始めましょう。",
+      "小さな不動産会社の第一歩は、ここから始まります。",
+      "ストーリーを開始すると、新しい社員との出会いが待っています。",
+    ];
+  }
+
+  if (phase === "rookie") {
+    return [
+      getAkariPhaseGreeting(),
+      "社長、私まだ分からないことばかりですが……一つずつ覚えていきます。",
+      "空き家を直して、また人が住めるようにする。不動産の仕事って奥が深いですね。",
+      "まずは目の前の物件からですね。私も確認しながらお手伝いします。",
+      ticketTotal > 0 ? "採用パスがありますね。新しい仲間が増えたら、私も心強いです。" : "今は少人数ですが、できることから始めましょう。",
+    ];
+  }
+
+  if (phase === "gifu") {
+    return [
+      getAkariPhaseGreeting(),
+      "社長、最近少しだけ不動産のことが分かってきた気がします。",
+      "空き家が再生されると、街の雰囲気も変わっていくんですね。",
+      vaultCount > 0 ? `社員名簿には${vaultCount}名います。仲間が増えると会社らしくなってきますね。` : "まだまだこれからです。岐阜で実績を作っていきましょう。",
+      `現在のランクは${rank}です。社長の実績、ちゃんと積み上がっています。`,
+    ];
+  }
+
+  if (phase === "nagoya") {
+    return [
+      getAkariPhaseGreeting(),
+      "名古屋は市場も大きいですが、その分ライバルも手強そうです。",
+      "支店があると、会社が一段階大きくなった感じがしますね。",
+      "岐阜で学んだことは、名古屋でもきっと役に立ちます。焦らず進めましょう。",
+      ticketTotal > 0 ? "採用パスがあります。都市部の展開に向けて、人材も厚くしたいですね。" : "資金と人員、どちらも大事ですね。バランスを見ながら進めましょう。",
+    ];
+  }
+
   return [
-    getHomeTimeGreeting(),
-    "社長、お疲れ様です！今日も一緒に会社を大きくしていきましょう。",
-    ticketTotal > 0
-      ? "社員採用チケットがあります。新しい仲間を迎えるチャンスですね！"
-      : "採用チケットが手に入ったら、社員採用も確認してみましょう。",
-    vaultCount > 0
-      ? `社員保管庫には${vaultCount}名の社員がいます。次の創業メンバー選びも楽しみですね。`
-      : "まだ社員保管庫は空です。ここから少しずつ仲間を増やしていきましょう。",
-    `現在のプレイヤーランクは${rank}です。社長の実績、ちゃんと積み上がっていますよ。`,
-    "岐阜で学んだことは、名古屋でもきっと役に立ちます。焦らず進めましょう。",
+    getAkariPhaseGreeting(),
+    "社長、最初は右も左も分からなかったのに……ここまで来ましたね。",
+    "今日も頑張りましょう。無理しすぎない範囲で、ですけどね。",
+    "そういえば社長、休日はどんなふうに過ごしているんですか？",
+    "最近、仕事の合間に飲むコーヒーが少し楽しみなんです。",
     "街にもう一度、灯りを増やしていく。不動産会社の仕事って素敵ですね。",
-    "本日のおすすめは、社員確認とセーブです。大きな投資の前は忘れずにお願いします。",
   ];
 }
 
@@ -21781,6 +21946,7 @@ function getHomeAkariPortraitKey() {
 }
 
 function handleHomeAkariTap() {
+  if (!titleStoryAkari) return;
   const expressions = ["normal", "happy", "serious", "surprise", "trouble"];
 
   setTitleHomeAkariTalkIndex((currentIndex) => currentIndex + 1);
@@ -22341,19 +22507,30 @@ function forceStoryAkariLevel(targetLevel, reasonText) {
     management: akari.management ?? 0,
   };
 
+  let forcedStatMessages = [];
   const nextEmployees = currentEmployees.map((employee) => {
     if (employee.id !== 122) return employee;
 
-    return normalizeEmployeeGrowthBase({
+    let updatedAkari = normalizeEmployeeGrowthBase({
       ...employee,
       level: safeTargetLevel,
       exp: 0,
     });
+
+    const levelDiff = Math.max(1, safeTargetLevel - beforeLevel);
+    for (let i = 0; i < levelDiff; i++) {
+      const growthTotal = getAkariSpecialGrowthTotal(updatedAkari) ?? 2;
+      const growthResult = applyRandomStatGrowth(updatedAkari, growthTotal);
+      updatedAkari = growthResult.updatedEmployee;
+      forcedStatMessages = forcedStatMessages.concat(growthResult.growthMessages);
+    }
+
+    return updatedAkari;
   });
 
   const after = nextEmployees.find((employee) => employee.id === 122);
   const salaryDiff = after ? getEmployeeSalary(after) - beforeSalary : 0;
-  const levelUpText = `${akari.name}がLv${beforeLevel}→Lv${safeTargetLevel}になりました。${reasonText}`;
+  const levelUpText = `${akari.name}がLv${beforeLevel}→Lv${safeTargetLevel}になりました。${forcedStatMessages.join(" / ") || "能力上昇なし"}。${reasonText}`;
 
   employeesRef.current = nextEmployees;
   setEmployees(nextEmployees);
@@ -22362,7 +22539,7 @@ function forceStoryAkariLevel(targetLevel, reasonText) {
     beforeLevel,
     beforeSalary,
     beforeStats,
-    statMessages: [],
+    statMessages: forcedStatMessages,
     salaryDiff,
     levelUpText,
   });
@@ -23363,161 +23540,6 @@ return (
         }
       }
 
-
-
-      /* ===== v218.14：スマホ縦の余白圧縮・ポップアップ固定・座標修正 ===== */
-      .story-event-card { max-height: calc(100dvh - 24px) !important; }
-      .story-event-card img[alt="七瀬 灯里"] { object-fit: contain !important; }
-      .story-event-overlay { padding: 8px !important; }
-      @media (max-width: 760px) {
-        .story-event-card { width: calc(100vw - 16px) !important; border-radius: 14px !important; }
-        .story-event-card > div:nth-of-type(1) { gap: 8px !important; padding: 10px !important; }
-        .story-event-card > div:nth-of-type(1) > div:first-child { flex-basis: 104px !important; width: 104px !important; height: 134px !important; min-height: 134px !important; max-height: 134px !important; }
-        .story-event-card > div:nth-of-type(1) > div:nth-child(2) { max-height: calc(100dvh - 118px) !important; }
-        .story-event-card button { min-height: 36px !important; }
-      }
-
-      .detail-card, .property-section, .bank-section, .info-section {
-        overscroll-behavior: contain !important;
-        -webkit-overflow-scrolling: touch !important;
-      }
-      .detail-card:has(.employee-role-guide-v207),
-      .detail-card.employee-library-panel,
-      .property-section.bank-section,
-      .property-section.info-section {
-        min-height: calc(100dvh - 118px) !important;
-        max-height: calc(100dvh - 118px) !important;
-        overflow-y: auto !important;
-        padding-bottom: 14px !important;
-        background: linear-gradient(180deg, rgba(255,253,247,0.98), rgba(255,248,226,0.98)) !important;
-      }
-      .detail-card:has(.employee-role-guide-v207) h2,
-      .employee-library-panel h2,
-      .bank-section h2,
-      .info-section h2 { margin: 0 0 6px !important; font-size: 17px !important; }
-      .detail-card:has(.employee-role-guide-v207) .employee-role-guide-v207 {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 6px !important;
-        margin: 4px 0 6px !important;
-      }
-      .detail-card:has(.employee-role-guide-v207) .employee-role-card-v207 {
-        padding: 7px 8px !important;
-        border-radius: 12px !important;
-        min-height: 0 !important;
-      }
-      .detail-card:has(.employee-role-guide-v207) .employee-role-card-v207 strong { font-size: 12px !important; margin-bottom: 1px !important; }
-      .detail-card:has(.employee-role-guide-v207) .employee-role-card-v207 span { font-size: 10px !important; line-height: 1.25 !important; }
-      .detail-card:has(.employee-role-guide-v207) .employee-subnav-row { margin: 4px 0 !important; gap: 6px !important; }
-      .detail-card:has(.employee-role-guide-v207) .employee-subnav-row button { min-height: 30px !important; padding: 4px 8px !important; font-size: 12px !important; }
-      .detail-card:has(.employee-role-guide-v207) p { margin: 4px 0 !important; font-size: 11px !important; line-height: 1.35 !important; }
-      .detail-card:has(.employee-role-guide-v207) .employee-salary-note { display: none !important; }
-      .detail-card:has(.employee-role-guide-v207) .ticket-button-row,
-      .detail-card:has(.employee-role-guide-v207) .ticket-odds-box,
-      .detail-card:has(.employee-role-guide-v207) .employee-sort-row { display: none !important; }
-      .detail-card:has(.employee-role-guide-v207) h3 { margin: 8px 0 4px !important; font-size: 13px !important; }
-      .employee-table-scroll { max-height: 34dvh !important; overflow: auto !important; }
-      .employee-storage-grid-v207 { grid-template-columns: repeat(auto-fill, minmax(172px, 1fr)) !important; gap: 6px !important; margin-top: 4px !important; }
-      .employee-storage-card-v207 { grid-template-columns: 50px 1fr !important; gap: 6px !important; padding: 6px !important; border-radius: 13px !important; }
-      .employee-storage-portrait-v207 { width: 50px !important; height: 62px !important; border-radius: 10px !important; }
-      .employee-storage-body-v207 { gap: 3px !important; }
-      .employee-storage-title-v207 strong { font-size: 12px !important; }
-      .employee-storage-rarity-v207 { font-size: 9px !important; padding: 1px 5px !important; }
-      .employee-storage-stat-grid-v207 { gap: 2px !important; font-size: 9px !important; }
-      .employee-storage-stat-grid-v207 span { padding: 2px 4px !important; }
-      .employee-storage-action-row-v207 button { min-height: 24px !important; padding: 2px 5px !important; font-size: 9px !important; }
-
-      .player-info-grid,
-      .loan-status-grid,
-      .bank-summary-grid,
-      .finance-summary-grid,
-      .info-summary-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 4px 6px !important;
-      }
-      .player-info-grid > div,
-      .loan-status-grid > div,
-      .bank-summary-grid > div,
-      .finance-summary-grid > div,
-      .info-summary-grid > div {
-        min-height: 0 !important;
-        padding: 4px 6px !important;
-        border-radius: 8px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        gap: 6px !important;
-      }
-      .player-info-grid span,
-      .loan-status-grid span,
-      .bank-summary-grid span,
-      .finance-summary-grid span,
-      .info-summary-grid span { font-size: 10px !important; white-space: nowrap !important; }
-      .player-info-grid strong,
-      .loan-status-grid strong,
-      .bank-summary-grid strong,
-      .finance-summary-grid strong,
-      .info-summary-grid strong { font-size: 11px !important; text-align: right !important; white-space: nowrap !important; }
-      .player-info-box, .loan-status-box, .bank-status-box, .finance-status-box {
-        padding: 7px 8px !important;
-        border-radius: 12px !important;
-        margin-bottom: 8px !important;
-      }
-      .player-info-box h3, .loan-status-box h3, .bank-status-box h3, .finance-status-box h3 {
-        margin: 0 0 5px !important;
-        font-size: 13px !important;
-      }
-      .finance-detail-box { margin-top: 6px !important; padding: 6px 7px !important; border-radius: 10px !important; }
-      .finance-detail-row { padding: 3px 0 !important; font-size: 10.5px !important; }
-
-      .map-coordinate-header,
-      .map-x-axis,
-      .map-y-axis,
-      .map-axis-cell,
-      .coordinate-label,
-      .x-axis-cell,
-      .y-axis-cell {
-        color: #26364d !important;
-        background: rgba(255,255,255,0.92) !important;
-        border-color: rgba(38,54,77,0.18) !important;
-        text-shadow: none !important;
-        font-weight: 900 !important;
-        opacity: 1 !important;
-      }
-      .map-x-axis .map-axis-cell,
-      .x-axis-cell,
-      .map-coordinate-header > div {
-        min-width: var(--tile-size, 28px) !important;
-        width: var(--tile-size, 28px) !important;
-        height: 18px !important;
-        min-height: 18px !important;
-        line-height: 18px !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-        text-align: center !important;
-        font-size: 10px !important;
-        flex: 0 0 var(--tile-size, 28px) !important;
-      }
-      .map-y-axis .map-axis-cell,
-      .y-axis-cell {
-        width: 22px !important;
-        min-width: 22px !important;
-        height: var(--tile-size, 28px) !important;
-        min-height: var(--tile-size, 28px) !important;
-        line-height: var(--tile-size, 28px) !important;
-        padding: 0 !important;
-        box-sizing: border-box !important;
-        text-align: center !important;
-        font-size: 10px !important;
-      }
-      @media (max-width: 760px) {
-        .detail-card:has(.employee-role-guide-v207),
-        .detail-card.employee-library-panel,
-        .property-section.bank-section,
-        .property-section.info-section {
-          min-height: calc(100dvh - 96px) !important;
-          max-height: calc(100dvh - 96px) !important;
-        }
-      }
     `}</style>
 
     <audio
@@ -23647,6 +23669,7 @@ return (
             borderRadius: 18,
             boxShadow: "0 18px 40px rgba(0,0,0,0.35)",
             overflow: "hidden",
+            maxHeight: "calc(100dvh - 32px)",
           }}
         >
           {storyEvent.background && (
@@ -23677,9 +23700,9 @@ return (
               style={{
                 flex: "0 0 132px",
                 width: 132,
-                height: 160,
-                minHeight: 160,
-                maxHeight: 160,
+                height: 172,
+                minHeight: 172,
+                maxHeight: 172,
                 borderRadius: 14,
                 background: "rgba(255,255,255,0.8)",
                 border: "1px solid rgba(0,0,0,0.08)",
@@ -23700,20 +23723,20 @@ return (
               />
             </div>
 
-            <div style={{ flex: 1, minWidth: 0, display: "grid", gridTemplateRows: "auto auto minmax(0, 1fr)", maxHeight: "calc(100dvh - 150px)" }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontWeight: 900, fontSize: 15, color: "#7a4a00", marginBottom: 4 }}>
                 七瀬 灯里
               </div>
               <div style={{ fontWeight: 900, fontSize: 18, marginBottom: 10 }}>
                 {storyEvent.title}
               </div>
-              <div style={{ whiteSpace: "pre-line", lineHeight: 1.65, fontWeight: 700, overflowY: "auto", WebkitOverflowScrolling: "touch", paddingRight: 4 }}>
+              <div style={{ whiteSpace: "pre-line", lineHeight: 1.7, fontWeight: 700, maxHeight: "42dvh", overflowY: "auto", WebkitOverflowScrolling: "touch" }}>
                 {storyEvent.text}
               </div>
             </div>
           </div>
 
-          <div style={{ position: "sticky", bottom: 0, zIndex: 2, padding: "8px 14px 14px", textAlign: "right", background: "linear-gradient(180deg, rgba(255,253,247,0), rgba(255,253,247,0.96) 35%)" }}>
+          <div style={{ position: "relative", zIndex: 2, padding: "0 14px 14px", textAlign: "right" }}>
             <button
               type="button"
               onMouseDown={(event) => event.stopPropagation()}
@@ -23994,12 +24017,18 @@ return (
             >
               <div style={{ position: "absolute", inset: 0, background: getHomeTimeBackgroundStyle().aura }} />
               <div className="home-akari-spotlight-v208" />
-              <img
-                src={AKARI_PORTRAIT_PATHS[getHomeAkariPortraitKey()]}
-                alt="七瀬 灯里"
-                className="home-akari-portrait-v201 home-akari-portrait-v202"
-                style={{ position: "relative", width: "92%", maxHeight: "min(58dvh, 560px)", objectFit: "contain", justifySelf: "center", alignSelf: "end", filter: "drop-shadow(0 12px 18px rgba(0,0,0,0.35))" }}
-              />
+              {titleStoryAkari ? (
+                <img
+                  src={AKARI_PORTRAIT_PATHS[getHomeAkariPortraitKey()]}
+                  alt="七瀬 灯里"
+                  className="home-akari-portrait-v201 home-akari-portrait-v202"
+                  style={{ position: "relative", width: "92%", maxHeight: "min(58dvh, 560px)", objectFit: "contain", justifySelf: "center", alignSelf: "end", filter: "drop-shadow(0 12px 18px rgba(0,0,0,0.35))" }}
+                />
+              ) : (
+                <div style={{ position: "relative", alignSelf: "center", justifySelf: "center", width: "88%", minHeight: "min(42dvh, 420px)", display: "grid", placeItems: "center", borderRadius: 24, border: "1px dashed rgba(255,255,255,0.35)", background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.88)", fontWeight: 900, textAlign: "center", lineHeight: 1.7 }}>
+                  <span>社長ひとりの小さな事務所<br />物語はこれから始まります</span>
+                </div>
+              )}
               <div
                 className="home-akari-message-v201 home-akari-message-v208"
                 style={{
@@ -24015,7 +24044,7 @@ return (
                   textAlign: "left",
                 }}
               >
-                <strong style={{ color: "#7a4a00", fontSize: 12 }}>七瀬 灯里</strong>
+                <strong style={{ color: "#7a4a00", fontSize: 12 }}>{titleStoryAkari ? "七瀬 灯里" : "社長室"}</strong>
                 <div style={{ fontWeight: 800, fontSize: 13, lineHeight: 1.55, marginTop: 2 }}>{getHomeAkariMessage()}</div>
               </div>
             </div>
@@ -24423,8 +24452,8 @@ return (
                   </div>
                 </>
               )}
-              <button type="button" onClick={() => { setTitleModal(null); setTitleVaultDetailEmployee(null); }} style={{ marginTop: 12, marginBottom: 4, width: "100%", padding: "10px 14px", borderRadius: 999, border: "none", background: "#1d5c3a", color: "#ffffff", fontWeight: 700, cursor: "pointer" }}>
-                閉じる
+              <button type="button" onClick={() => { setTitleModal(null); setTitleVaultDetailEmployee(null); }} aria-label="閉じる" title="閉じる" style={{ marginTop: 12, marginBottom: 4, width: "100%", padding: "8px 14px", borderRadius: 999, border: "none", background: "#1d5c3a", color: "#ffffff", fontWeight: 900, cursor: "pointer", fontSize: 18, lineHeight: 1 }}>
+                ×
               </button>
             </div>
           </div>
@@ -24872,7 +24901,7 @@ return (
           </table>
         </div>
       )}
-      <button onClick={() => setCompanyEmployeeListModal(null)}>閉じる</button>
+      <button onClick={() => setCompanyEmployeeListModal(null)}>×</button>
     </div>
   </div>
 )}
@@ -24946,7 +24975,7 @@ return (
           </table>
         </div>
       )}
-      <button onClick={() => setCompanyBuildingListModal(null)}>閉じる</button>
+      <button onClick={() => setCompanyBuildingListModal(null)}>×</button>
     </div>
   </div>
 )}
@@ -25005,7 +25034,7 @@ return (
         <p>特殊能力なし</p>
       )}
 
-      <button className="employee-detail-close-button" onClick={() => setSelectedEmployeeDetail(null)}>閉じる</button>
+      <button className="employee-detail-close-button" onClick={() => setSelectedEmployeeDetail(null)}>×</button>
     </div>
   </div>
 )}
@@ -25283,7 +25312,10 @@ return (
       </button>
       {isMoneyInfoOpen && (
         <div className="top-info-popup top-info-popup-money">
-          <h3>💰 資産</h3>
+          <div className="top-info-popup-title-row">
+            <h3>💰 資産</h3>
+            <button type="button" className="popup-close-button" onClick={() => setIsMoneyInfoOpen(false)} aria-label="資産情報を閉じる" title="閉じる">×</button>
+          </div>
           <div className="top-info-popup-grid">
             <div className="finance-popup-section">
               <p className="finance-popup-title">資産</p>
@@ -25389,7 +25421,10 @@ return (
       </button>
       {isDateInfoOpen && (
         <div className="top-info-popup top-info-popup-date">
-          <h3>📅 進行</h3>
+          <div className="top-info-popup-title-row">
+            <h3>📅 進行</h3>
+            <button type="button" className="popup-close-button" onClick={() => setIsDateInfoOpen(false)} aria-label="進行情報を閉じる" title="閉じる">×</button>
+          </div>
           <div className="top-info-popup-grid">
             <span>現在</span>
             <strong>{gameDate.label}</strong>
@@ -25508,6 +25543,15 @@ return (
         >
           ⚙️ オプション
         </button>
+        <button
+          type="button"
+          className="main-menu-close-button"
+          onClick={() => setIsMainMenuOpen(false)}
+          aria-label="メニューを閉じる"
+          title="閉じる"
+        >
+          ×
+        </button>
       </div>
     )}
   </div>
@@ -25556,7 +25600,10 @@ return (
               )}
               {isDateInfoOpen && (
                 <div className="top-info-popup top-info-popup-date map-date-info-popup">
-                  <h3>📅 進行</h3>
+                  <div className="top-info-popup-title-row">
+                    <h3>📅 進行</h3>
+                    <button type="button" className="popup-close-button" onClick={() => setIsDateInfoOpen(false)} aria-label="進行情報を閉じる" title="閉じる">×</button>
+                  </div>
                   <div className="top-info-popup-grid">
                     <span>現在</span>
                     <strong>{gameDate.label}</strong>
@@ -25819,7 +25866,7 @@ return (
       >
         <strong>{getFloatingPanelTitle()}</strong>
         <div className="floating-panel-actions">
-          <button type="button" onClick={(event) => { event.stopPropagation(); closeFloatingPanel(); }}>閉じる</button>
+          <button type="button" className="floating-panel-close-button" onClick={(event) => { event.stopPropagation(); closeFloatingPanel(); }} aria-label="閉じる" title="閉じる">×</button>
         </div>
       </div>
     )}
@@ -26587,7 +26634,7 @@ return (
             <span>建築費: 1億円</span>
             <span>営業範囲: 10マス</span>
             <span>条件: 本社・支店の行動範囲内の自分の空き土地</span>
-            <span>工期: 6ヶ月</span>
+            <span>{currentGameMode === "story_nagoya_bridge" && nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH ? "工期: 3ヶ月（チュートリアル）" : "工期: 6ヶ月"}</span>
           </button>
         </>
       )}
@@ -27247,7 +27294,7 @@ return (
     {selectedCompanyDetail && (
       <div className="company-detail-box">
         <h3>{selectedCompanyDetail === "player" ? "自社詳細" : `${getRivalCompanyNameFromTiles(tiles, selectedCompanyDetail)} 詳細`}</h3>
-        <button onClick={() => setSelectedCompanyDetail(null)}>詳細を閉じる</button>
+        <button onClick={() => setSelectedCompanyDetail(null)}>×</button>
         <h4>月次推移</h4>
         <div className="line-chart-box">
           {(() => {
@@ -27545,8 +27592,8 @@ const rent = occupiedRooms.reduce(
           </div>
         ))}
       </div>
-      <button type="button" onClick={() => setSaveLoadModal(null)} style={{ marginTop: 14, width: "100%" }}>
-        閉じる
+      <button type="button" onClick={() => setSaveLoadModal(null)} aria-label="閉じる" title="閉じる" style={{ marginTop: 14, width: "100%", fontSize: 18, fontWeight: 900, lineHeight: 1 }}>
+        ×
       </button>
     </div>
   </div>
