@@ -3,7 +3,7 @@ import "./App.css";
 
 /*
   箱庭不動産経営シミュレーター
-  v183: 岐阜固定本社・名古屋拡張マップ調整・0章修繕短縮版 / v182: 岐阜名古屋固定マップ調整版 / v181: 0章購入ボタン再表示修正版 / v180: 名古屋編ストーリーOKボタン修正版 / v179: 名古屋編チュートリアル誘導赤枠版 / v178: 名古屋編準備・銀行融資と支店建設チュートリアル版 / v177: チュートリアル進行不能対策・固定レベルアップ・岐阜15x15版 / v176: 岐阜編クリア条件・七瀬ガイド圧縮版 / v175: 岐阜編開始・七瀬ページガイド追加版 / v174: チュートリアル発光パルス・建築ロック・チケット抑制版 / v173: 建設完了判定修正版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル強調赤枠・行動制限強化版 / v170: チュートリアル行動制限・七瀬ナビ追加版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル指定マス赤枠強化版 / v170: チュートリアル会話追加版 / v169: ストーリー第0章チュートリアル固定マップ追加版 / v168: モード選択追加版 / v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
+  v218.14: 余白圧縮・ポップアップ固定・社員管理/座標修正版 / v218.10: 採用封筒四角化・ストーリー/フリー導線修正版 / v218.9: 採用画面5封筒表示・写真位置修正版 / v218.11: 採用特性説明復元・累計EXP表示・名古屋背景/七瀬服装整理版 / v218: 画面分離・不要情報削減・社員管理全画面版 / v218.1: ホーム整理・重複導線削減版 / v218.7: 土地情報ヘッダーアイコン集約版 / v218.6: 名簿均等配置・マップ情報削除・リロード復帰版 / v218.5: 名簿さらに圧縮・採用バグ修正版 / v218.4: 名簿・採用コンパクト化版 / v218.3: ページ遷移化・ホームHUD修正版 / v218.2: ホームロビー化・スマホ縦専用整理版 / v217: ホーム/経営分離・社員名簿統合版 / v216.2: ホーム横はみ出し・フルスクリーン再調整版 / v216: プレイ画面フルスクリーン最適化版 / v215: 配属上限5人・採用時自動配属版 / v214: 街演出・マップ視覚刷新版 / v213: プレイ画面イベント演出強化版 / v212: プレイ画面UI第一世代・スマホゲームHUD刷新版 / v210: ログインボーナス・ミッション・プレゼントBOX本格調整版 / v209: ホームメニュー第三世代UI版 / v208: ホーム背景・七瀬演出強化版 / v207: 社員図鑑・社員保管庫スマホUI整理版 / v206: 社員採用演出・採用名称統一版 / v201: 縦横レスポンシブ・キャラ中心ホームUI版 / v200: スマホゲーム風ホーム画面リニューアル版 / v199: 社員保管庫上書き保護・ライト採用券追加版 / v198: 能力成長表示・給与表示整理版 / v197: 社員詳細・創業メンバー選択UI仕上げ版 / v196: 社員保管庫能力合計ソート修正版 / v195: 社員保管庫カード画像＋詳細表示版 / v194: 社員保管庫・創業メンバー選択UI強化版 / v193: 創業メンバー配属・行動可能判定修正版 / v192: 社員保管庫UI改善・ソート絞り込み版 / v191: アカウント情報・社員保管庫確認強化版 / v190: 創業メンバー選択（七瀬固定＋自由2名）版 / v189: 社員保管庫・プレイヤーランク共通保存基盤版 / v188: 名古屋編クリア演出・第1部完結版 / v183: 岐阜固定本社・名古屋拡張マップ調整・0章修繕短縮版 / v182: 岐阜名古屋固定マップ調整版 / v181: 0章購入ボタン再表示修正版 / v180: 名古屋編ストーリーOKボタン修正版 / v179: 名古屋編チュートリアル誘導赤枠版 / v178: 名古屋編準備・銀行融資と支店建設チュートリアル版 / v177: チュートリアル進行不能対策・固定レベルアップ・岐阜15x15版 / v176: 岐阜編クリア条件・七瀬ガイド圧縮版 / v175: 岐阜編開始・七瀬ページガイド追加版 / v174: チュートリアル発光パルス・建築ロック・チケット抑制版 / v173: 建設完了判定修正版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル強調赤枠・行動制限強化版 / v170: チュートリアル行動制限・七瀬ナビ追加版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル指定マス赤枠強化版 / v170: チュートリアル会話追加版 / v169: ストーリー第0章チュートリアル固定マップ追加版 / v168: モード選択追加版 / v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
   PC・スマホ両対応版 / v133 配属上限撤廃・役職補正強化・拠点表示整理
   v131：特殊能力効果拡張（入居・家賃・融資・採用対応）
 
@@ -19,13 +19,204 @@ const MAP_SIZE = 70;
 const SAVE_SLOT_COUNT = 3;
 const DEFAULT_COMPANY_NAME = "";
 const DEFAULT_SAVE_SLOT = 1;
-const GAME_VERSION = "v187";
+const GAME_VERSION = "v218.14";
 const BASE_EMPLOYEE_SALARY = 15;
 const EMPLOYEE_SALARY_GROWTH_RATE = 1.05;
-const GIFU_CLEAR_POPULATION = 650;
+const GIFU_CLEAR_POPULATION = 500;
 const GIFU_CLEAR_TOTAL_ASSETS = 30000;
 const NAGOYA_CLEAR_POPULATION = 1000;
 const NAGOYA_CLEAR_TOTAL_ASSETS = 50000;
+const ACCOUNT_DATA_KEY = "realEstateGameAccountData_v1";
+const OFFICE_EMPLOYEE_ASSIGN_LIMIT = 5;
+
+const DAILY_LOGIN_BONUS_KEY = "realEstateGameDailyLoginBonus_v1";
+const HOME_MISSION_DATA_KEY = "realEstateGameHomeMissions_v1";
+const PRESENT_BOX_HISTORY_KEY = "realEstateGamePresentBoxHistory_v1";
+const LAST_NAVIGATION_STATE_KEY = "realEstateGameLastNavigationState_v1";
+
+function readLastNavigationState() {
+  if (typeof window === "undefined") {
+    return { screen: "home", activePanel: "home", titleModal: null };
+  }
+
+  try {
+    const rawState = window.localStorage.getItem(LAST_NAVIGATION_STATE_KEY);
+    if (!rawState) return { screen: "home", activePanel: "home", titleModal: null };
+    const parsedState = JSON.parse(rawState);
+    if (!parsedState || typeof parsedState !== "object") {
+      return { screen: "home", activePanel: "home", titleModal: null };
+    }
+    return {
+      screen: parsedState.screen === "game" ? "game" : "home",
+      activePanel: typeof parsedState.activePanel === "string" ? parsedState.activePanel : "home",
+      titleModal: typeof parsedState.titleModal === "string" ? parsedState.titleModal : null,
+    };
+  } catch (error) {
+    console.warn("Navigation state could not be loaded.", error);
+    return { screen: "home", activePanel: "home", titleModal: null };
+  }
+}
+
+function writeLastNavigationState(navigationState) {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.setItem(LAST_NAVIGATION_STATE_KEY, JSON.stringify(navigationState));
+  } catch (error) {
+    console.warn("Navigation state could not be saved.", error);
+  }
+}
+
+const LOGIN_BONUS_REWARDS = [
+  { day: 1, type: "rookieTicket", name: "ライト採用パス", count: 1, icon: "✉", text: "ライト採用パス ×1" },
+  { day: 2, type: "money", name: "運転資金", count: 100, icon: "💰", text: "運転資金 100万円" },
+  { day: 3, type: "rookieTicket", name: "ライト採用パス", count: 1, icon: "✉", text: "ライト採用パス ×1" },
+  { day: 4, type: "employeeTicket", name: "社員採用パス", count: 1, icon: "📨", text: "社員採用パス ×1" },
+  { day: 5, type: "money", name: "成長支援金", count: 200, icon: "💎", text: "成長支援金 200万円" },
+  { day: 6, type: "rookieTicket", name: "ライト採用パス", count: 2, icon: "✉", text: "ライト採用パス ×2" },
+  { day: 7, type: "premiumTicket", name: "プレミアム採用パス", count: 1, icon: "黒", text: "プレミアム採用パス ×1" },
+];
+
+function getLoginBonusRewardByCount(claimCount = 0) {
+  const safeClaimCount = Math.max(0, Math.round(Number(claimCount) || 0));
+  return LOGIN_BONUS_REWARDS[safeClaimCount % LOGIN_BONUS_REWARDS.length] ?? LOGIN_BONUS_REWARDS[0];
+}
+
+function readPresentBoxHistory() {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const rawHistory = window.localStorage.getItem(PRESENT_BOX_HISTORY_KEY);
+    if (!rawHistory) return [];
+    const parsedHistory = JSON.parse(rawHistory);
+    return Array.isArray(parsedHistory) ? parsedHistory.slice(0, 20) : [];
+  } catch (error) {
+    console.warn("Present box history could not be loaded.", error);
+    return [];
+  }
+}
+
+function writePresentBoxHistory(history) {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.setItem(PRESENT_BOX_HISTORY_KEY, JSON.stringify(Array.isArray(history) ? history.slice(0, 20) : []));
+  } catch (error) {
+    console.warn("Present box history could not be saved.", error);
+  }
+}
+
+function addPresentBoxHistoryItem(item) {
+  const currentHistory = readPresentBoxHistory();
+  writePresentBoxHistory([
+    {
+      id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      date: getLocalDateKey(),
+      createdAt: new Date().toISOString(),
+      ...item,
+    },
+    ...currentHistory,
+  ]);
+}
+
+function getLocalDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function readDailyLoginBonusData() {
+  if (typeof window === "undefined") {
+    return { lastClaimDate: "", claimCount: 0 };
+  }
+
+  try {
+    const rawBonusData = window.localStorage.getItem(DAILY_LOGIN_BONUS_KEY);
+    if (!rawBonusData) return { lastClaimDate: "", claimCount: 0 };
+
+    const parsedBonusData = JSON.parse(rawBonusData);
+    if (!parsedBonusData || typeof parsedBonusData !== "object") {
+      return { lastClaimDate: "", claimCount: 0 };
+    }
+
+    return {
+      lastClaimDate: parsedBonusData.lastClaimDate ?? "",
+      claimCount: Math.max(0, Math.round(Number(parsedBonusData.claimCount) || 0)),
+    };
+  } catch (error) {
+    console.warn("Daily login bonus data could not be loaded.", error);
+    return { lastClaimDate: "", claimCount: 0 };
+  }
+}
+
+function writeDailyLoginBonusData(loginBonusData) {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.setItem(DAILY_LOGIN_BONUS_KEY, JSON.stringify(loginBonusData));
+  } catch (error) {
+    console.warn("Daily login bonus data could not be saved.", error);
+  }
+}
+
+function getDailyLoginBonusStatus() {
+  const todayKey = getLocalDateKey();
+  const bonusData = readDailyLoginBonusData();
+  const canClaim = bonusData.lastClaimDate !== todayKey;
+  const reward = getLoginBonusRewardByCount(bonusData.claimCount);
+  const nextClaimCount = bonusData.claimCount + (canClaim ? 1 : 0);
+  const cycleDay = reward.day;
+
+  return {
+    todayKey,
+    canClaim,
+    claimCount: bonusData.claimCount,
+    nextClaimCount,
+    cycleDay,
+    reward,
+    rewardName: reward.name,
+    rewardCount: reward.count,
+    rewardText: reward.text,
+    weeklyRewards: LOGIN_BONUS_REWARDS,
+  };
+}
+
+
+function readHomeMissionData() {
+  if (typeof window === "undefined") {
+    return { claimedMissionIds: [], updatedAt: "" };
+  }
+
+  try {
+    const rawMissionData = window.localStorage.getItem(HOME_MISSION_DATA_KEY);
+    if (!rawMissionData) return { claimedMissionIds: [], updatedAt: "" };
+
+    const parsedMissionData = JSON.parse(rawMissionData);
+    if (!parsedMissionData || typeof parsedMissionData !== "object") {
+      return { claimedMissionIds: [], updatedAt: "" };
+    }
+
+    return {
+      claimedMissionIds: Array.isArray(parsedMissionData.claimedMissionIds) ? parsedMissionData.claimedMissionIds : [],
+      updatedAt: parsedMissionData.updatedAt ?? "",
+    };
+  } catch (error) {
+    console.warn("Home mission data could not be loaded.", error);
+    return { claimedMissionIds: [], updatedAt: "" };
+  }
+}
+
+function writeHomeMissionData(missionData) {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.setItem(HOME_MISSION_DATA_KEY, JSON.stringify(missionData));
+  } catch (error) {
+    console.warn("Home mission data could not be saved.", error);
+  }
+}
+
 
 
 function calculateEmployeeSalaryByLevel(level) {
@@ -278,19 +469,19 @@ const STORY_TUTORIAL_EVENTS = {
 
 const STORY_GIFU_EVENTS = {
   INTRO: {
-    portrait: "formal",
+    portrait: "serious",
     title: "第1章 岐阜編",
     text: "社長、いよいよ本格的な経営の始まりですね。\n第0章で学んだ『買う』『直す』『建てる』を、ここ岐阜の街で実践していきましょう。\n岐阜駅の南側に小さな本社を構えました。第0章で学んだ操作を使って、ここ岐阜で実際に経営を進めていきましょう。",
   },
   HQ_PLACED: {
     portrait: "happy",
     title: "岐阜支社の第一歩",
-    text: "本社の設置が完了しました！\nここからは通常の経営プレイに入ります。社員チケットも使えるようになりました。\n社員を採用したり、物件を購入したりしながら会社を大きくしていきましょう！\n岐阜編の目標は、人口650人以上、総資産3億円以上です。",
+    text: "本社の設置が完了しました！\nここからは通常の経営プレイに入ります。社員チケットも使えるようになりました。\n社員を採用したり、物件を購入したりしながら会社を大きくしていきましょう！\n岐阜編の目標は、人口500人以上、総資産3億円以上です。",
   },
   CLEAR: {
-    portrait: "formal",
+    portrait: "serious",
     title: "岐阜編クリア",
-    text: "社長！岐阜での経営目標を達成しました！\n人口650人以上、総資産3億円以上。小さな不動産会社だった私たちも、ここまで成長できたんですね。\n次の舞台へ進む準備が整いました！",
+    text: "社長！岐阜での経営目標を達成しました！\n人口500人以上、総資産3億円以上。小さな不動産会社だった私たちも、ここまで成長できたんですね。\n次の舞台へ進む準備が整いました！",
   },
 };
 
@@ -304,9 +495,12 @@ const STORY_NAGOYA_TUTORIAL_STEPS = {
   COMPLETE: "complete",
 };
 
+const NAGOYA_PROLOGUE_BACKGROUND = "/backgrounds/city_nagoya.png";
+
 const STORY_NAGOYA_EVENTS = {
   INTRO: {
-    portrait: "formal",
+    background: NAGOYA_PROLOGUE_BACKGROUND,
+    portrait: "serious",
     title: "第2章 名古屋編・進出準備",
     text: "社長、岐阜での実績が認められました！ 次はいよいよ名古屋方面への進出です。ですが、大きな都市へ進むには資金も人手も必要です。まずは銀行融資の流れを確認しましょう。",
   },
@@ -344,33 +538,33 @@ const STORY_NAGOYA_EVENTS = {
 
 const NAGOYA_PROLOGUE_SCENES = [
   {
-    background: null,
+    background: NAGOYA_PROLOGUE_BACKGROUND,
     speaker: "七瀬 灯里",
     portrait: "happy",
     text: "社長、岐阜での経営目標を達成できましたね。最初は小さな一歩でしたけど、会社として確かな実績になりました。",
   },
   {
-    background: null,
+    background: NAGOYA_PROLOGUE_BACKGROUND,
     speaker: "七瀬 灯里",
     portrait: "serious",
     text: "でも、名古屋へ進出するには資金も拠点も必要です。銀行融資で資金を確保して、支店を作る流れを確認しておきましょう。",
   },
   {
-    background: null,
+    background: NAGOYA_PROLOGUE_BACKGROUND,
     speaker: "七瀬 灯里",
     portrait: "surprise",
     text: "わぁ……岐阜とは街の規模が全然違いますね。名古屋駅の周辺はマンションも商業施設も多くて、すでに大きな市場ができあがっています。",
   },
   {
-    background: null,
+    background: NAGOYA_PROLOGUE_BACKGROUND,
     speaker: "七瀬 灯里",
     portrait: "serious",
     text: "本社だけでは遠方の管理に限界があります。だからこそ支店を作って、活動範囲を広げる必要があるんですね。",
   },
   {
-    background: null,
+    background: NAGOYA_PROLOGUE_BACKGROUND,
     speaker: "七瀬 灯里",
-    portrait: "formal",
+    portrait: "happy",
     text: "第2章、名古屋編。銀行融資と支店経営を武器に、中京圏最大の都市へ挑戦しましょう！",
   },
 ];
@@ -1247,6 +1441,235 @@ function readSaveSlot(slot) {
   }
 }
 
+function readAccountData() {
+  if (typeof window === "undefined") {
+    return { playerRank: 1, playerExp: 0, employeeVault: [], unlockedStoryAkari: false, rookieEmployeeTickets: 0, employeeTickets: 1, premiumEmployeeTickets: 0, updatedAt: "" };
+  }
+
+  try {
+    const rawAccountData = window.localStorage.getItem(ACCOUNT_DATA_KEY);
+    if (!rawAccountData) {
+      return { playerRank: 1, playerExp: 0, employeeVault: [], unlockedStoryAkari: false, rookieEmployeeTickets: 0, employeeTickets: 1, premiumEmployeeTickets: 0, updatedAt: "" };
+    }
+
+    const parsedAccountData = JSON.parse(rawAccountData);
+    if (!parsedAccountData || typeof parsedAccountData !== "object") {
+      return { playerRank: 1, playerExp: 0, employeeVault: [], unlockedStoryAkari: false, rookieEmployeeTickets: 0, employeeTickets: 1, premiumEmployeeTickets: 0, updatedAt: "" };
+    }
+
+    return {
+      playerRank: Math.max(1, Math.round(Number(parsedAccountData.playerRank) || 1)),
+      playerExp: Math.max(0, Math.round(Number(parsedAccountData.playerExp) || 0)),
+      employeeVault: Array.isArray(parsedAccountData.employeeVault) ? parsedAccountData.employeeVault : [],
+      unlockedStoryAkari: parsedAccountData.unlockedStoryAkari === true,
+      rookieEmployeeTickets: Math.max(0, Math.round(Number(parsedAccountData.rookieEmployeeTickets) || 0)),
+      employeeTickets: Math.max(0, Math.round(Number(parsedAccountData.employeeTickets ?? 1) || 0)),
+      premiumEmployeeTickets: Math.max(0, Math.round(Number(parsedAccountData.premiumEmployeeTickets) || 0)),
+      updatedAt: parsedAccountData.updatedAt ?? "",
+    };
+  } catch (error) {
+    console.warn("Account data could not be loaded.", error);
+    return { playerRank: 1, playerExp: 0, employeeVault: [], unlockedStoryAkari: false, rookieEmployeeTickets: 0, employeeTickets: 1, premiumEmployeeTickets: 0, updatedAt: "" };
+  }
+}
+
+function writeAccountData(accountData) {
+  if (typeof window === "undefined") return;
+
+  try {
+    window.localStorage.setItem(ACCOUNT_DATA_KEY, JSON.stringify(accountData));
+  } catch (error) {
+    console.warn("Account data could not be saved.", error);
+  }
+}
+
+function getAccountTicketCounts(accountData = {}, fallbackSaveData = {}) {
+  const hasAccountTicketData =
+    Object.prototype.hasOwnProperty.call(accountData, "rookieEmployeeTickets") ||
+    Object.prototype.hasOwnProperty.call(accountData, "employeeTickets") ||
+    Object.prototype.hasOwnProperty.call(accountData, "premiumEmployeeTickets");
+
+  return {
+    rookieEmployeeTickets: Math.max(0, Math.round(Number(
+      hasAccountTicketData ? accountData.rookieEmployeeTickets : fallbackSaveData.rookieEmployeeTickets
+    ) || 0)),
+    employeeTickets: Math.max(0, Math.round(Number(
+      hasAccountTicketData ? accountData.employeeTickets : (fallbackSaveData.employeeTickets ?? 1)
+    ) || 0)),
+    premiumEmployeeTickets: Math.max(0, Math.round(Number(
+      hasAccountTicketData ? accountData.premiumEmployeeTickets : fallbackSaveData.premiumEmployeeTickets
+    ) || 0)),
+  };
+}
+
+function getEmployeeAbilityTotal(employee) {
+  if (!employee) return 0;
+  return (Number(employee.leadership) || 0) +
+    (Number(employee.sales) || 0) +
+    (Number(employee.construction) || 0) +
+    (Number(employee.management) || 0);
+}
+
+function getComparableEmployeePower(employee) {
+  if (!employee) return 0;
+
+  // v199: 社員保管庫は「弱いデータで上書きしない」。
+  // レベル → EXP → 覚醒 → 能力合計の順で比較し、セーブスロットをまたいでも強い方を残す。
+  const level = Math.max(1, Math.round(Number(employee.level) || 1));
+  const exp = Math.max(0, Math.round(Number(employee.exp) || 0));
+  const awakening = Math.max(0, Math.round(Number(employee.awakening) || 0));
+  const abilityTotal = getEmployeeAbilityTotal(employee);
+
+  return level * 100000000 + exp * 10000 + awakening * 1000 + abilityTotal;
+}
+
+function normalizeAccountEmployee(employee) {
+  if (!employee || employee.id === 0) return null;
+
+  const level = Math.max(1, Math.round(Number(employee?.level) || 1));
+  const awakeningMax = typeof EMPLOYEE_AWAKENING_MAX === "number" ? EMPLOYEE_AWAKENING_MAX : 5;
+
+  return {
+    ...employee,
+    level,
+    exp: Math.max(0, Math.round(Number(employee?.exp) || 0)),
+    awakening: Math.max(0, Math.min(awakeningMax, Math.round(Number(employee?.awakening) || 0))),
+    baseLeadership: employee.baseLeadership ?? employee.leadership ?? 0,
+    baseSales: employee.baseSales ?? employee.sales ?? 0,
+    baseConstruction: employee.baseConstruction ?? employee.construction ?? 0,
+    baseManagement: employee.baseManagement ?? employee.management ?? 0,
+    baseSalary: BASE_EMPLOYEE_SALARY,
+    salary: calculateEmployeeSalaryByLevel(level),
+    officeId: null,
+    // 社員保管庫は会社をまたいで使うため、前の会社での行動中情報は持ち越さない。
+    busyUntilMonth: null,
+    busyActionName: null,
+    founderCarryOver: false,
+    envelopeId: undefined,
+    envelopeType: undefined,
+    opened: undefined,
+  };
+}
+
+function normalizeFounderEmployeeForNewCompany(employee) {
+  const normalizedEmployee = normalizeAccountEmployee(employee);
+
+  if (!normalizedEmployee) return null;
+
+  return {
+    ...normalizedEmployee,
+    officeId: "hq",
+    busyUntilMonth: null,
+    busyActionName: null,
+    founderCarryOver: true,
+  };
+}
+
+function mergeEmployeeCollections(...employeeLists) {
+  const employeeMap = new Map();
+
+  employeeLists.flat().forEach((employee) => {
+    const normalizedEmployee = normalizeAccountEmployee(employee);
+    if (!normalizedEmployee) return;
+
+    const currentEmployee = employeeMap.get(normalizedEmployee.id);
+    if (!currentEmployee || getComparableEmployeePower(normalizedEmployee) >= getComparableEmployeePower(currentEmployee)) {
+      employeeMap.set(normalizedEmployee.id, normalizedEmployee);
+    }
+  });
+
+  return Array.from(employeeMap.values());
+}
+
+function getBetterAccountRankExp(accountData, rank, exp) {
+  const accountRank = Math.max(1, Math.round(Number(accountData?.playerRank) || 1));
+  const accountExp = Math.max(0, Math.round(Number(accountData?.playerExp) || 0));
+  const incomingRank = Math.max(1, Math.round(Number(rank) || 1));
+  const incomingExp = Math.max(0, Math.round(Number(exp) || 0));
+
+  if (incomingRank > accountRank) return { playerRank: incomingRank, playerExp: incomingExp };
+  if (incomingRank < accountRank) return { playerRank: accountRank, playerExp: accountExp };
+
+  return { playerRank: accountRank, playerExp: Math.max(accountExp, incomingExp) };
+}
+
+function mergeAccountDataWithGame(accountData, gameData = {}) {
+  const rankExp = getBetterAccountRankExp(accountData, gameData.playerRank, gameData.playerExp);
+  const employeeVault = mergeEmployeeCollections(
+    accountData?.employeeVault ?? [],
+    gameData.employees ?? [],
+    gameData.employeeStorage ?? []
+  );
+  const currentTickets = getAccountTicketCounts(accountData);
+
+  return {
+    playerRank: rankExp.playerRank,
+    playerExp: rankExp.playerExp,
+    employeeVault,
+    unlockedStoryAkari: accountData?.unlockedStoryAkari === true ||
+      employeeVault.some((employee) => employee.id === 122) ||
+      gameData.hasClearedNagoyaChapter === true,
+    rookieEmployeeTickets: Math.max(0, Math.round(Number(gameData.rookieEmployeeTickets ?? currentTickets.rookieEmployeeTickets) || 0)),
+    employeeTickets: Math.max(0, Math.round(Number(gameData.employeeTickets ?? currentTickets.employeeTickets) || 0)),
+    premiumEmployeeTickets: Math.max(0, Math.round(Number(gameData.premiumEmployeeTickets ?? currentTickets.premiumEmployeeTickets) || 0)),
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+function getEmployeeFromAccountVault(accountData, employeeId) {
+  const targetId = Number(employeeId);
+  if (!Number.isFinite(targetId)) return null;
+
+  const employeeVault = Array.isArray(accountData?.employeeVault) ? accountData.employeeVault : [];
+  const found = employeeVault.find((employee) => Number(employee?.id) === targetId);
+  return found ? normalizeAccountEmployee(found) : null;
+}
+
+function getStoryAkariForFounder(accountData) {
+  const savedAkari = getEmployeeFromAccountVault(accountData, 122);
+  if (savedAkari) return savedAkari;
+  if (accountData?.unlockedStoryAkari === true) return normalizeAccountEmployee(createStoryAkari());
+  return null;
+}
+
+function getFounderEmployeesFromAccount(accountData, selectedEmployeeIds = []) {
+  const founderEmployees = [];
+  const akari = getStoryAkariForFounder(accountData);
+
+  if (akari) {
+    founderEmployees.push({
+      ...akari,
+      officeId: "hq",
+    });
+  }
+
+  const uniqueSelectedIds = Array.from(new Set(selectedEmployeeIds.map((id) => Number(id)).filter((id) => Number.isFinite(id) && id !== 122))).slice(0, 2);
+  uniqueSelectedIds.forEach((employeeId) => {
+    const employee = getEmployeeFromAccountVault(accountData, employeeId);
+    if (!employee) return;
+    founderEmployees.push({
+      ...employee,
+      officeId: "hq",
+    });
+  });
+
+  return founderEmployees
+    .map((employee) => normalizeFounderEmployeeForNewCompany(employee))
+    .filter(Boolean);
+}
+
+function getFounderSelectableEmployees(accountData) {
+  const employeeVault = Array.isArray(accountData?.employeeVault) ? accountData.employeeVault : [];
+  return mergeEmployeeCollections(employeeVault)
+    .filter((employee) => employee.id !== 122)
+    .sort((a, b) => {
+      const rarityOrder = { UR: 6, SSR: 5, SR: 4, HR: 3, R: 2, N: 1 };
+      const rarityDiff = (rarityOrder[b.rarity] ?? 0) - (rarityOrder[a.rarity] ?? 0);
+      if (rarityDiff !== 0) return rarityDiff;
+      return getComparableEmployeePower(b) - getComparableEmployeePower(a);
+    });
+}
+
 
 const OWNER = {
   PLAYER: "player",
@@ -1875,20 +2298,6 @@ logistics_center: {
 
   allowedTenants: ["SHOP"],
 },
-  commercial_big: {
-    category: "商業",
-    name: "大型商業施設",
-     structure: "RC造",
-  lifeYears: 47,
-    short: "大商",
-    cost: 50000,
-    baseRent: 300,
-    rooms: 4,
-    buildMonths: 14,
-    width: 3,
-    height: 2,
-    allowedTenants: ["SHOP"],
-  },
 };
 const HQ_TYPES = {
   normal: {
@@ -11035,6 +11444,705 @@ export default function App() {
         .status-good { color: #15803d; font-weight: 800; }
         .status-warn { color: #b45309; font-weight: 800; }
         .status-bad { color: #b91c1c; font-weight: 800; }
+
+        /* v212: プレイ画面UI第一世代・スマホゲームHUD刷新 */
+        .map-section.playfield-v212 {
+          position: relative;
+          overflow: hidden;
+          border-radius: 22px !important;
+          background:
+            radial-gradient(circle at 18% 0%, rgba(56, 189, 248, 0.22), transparent 30%),
+            radial-gradient(circle at 86% 12%, rgba(250, 204, 21, 0.18), transparent 28%),
+            linear-gradient(135deg, rgba(15, 23, 42, 0.94), rgba(30, 64, 175, 0.82) 46%, rgba(13, 148, 136, 0.72));
+          border: 1px solid rgba(255, 255, 255, 0.22) !important;
+          box-shadow: 0 20px 55px rgba(15, 23, 42, 0.24) !important;
+        }
+        .map-section.playfield-v212::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+          background-size: 42px 42px;
+          mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), transparent 72%);
+          opacity: 0.5;
+        }
+        .playfield-hud-v212 {
+          position: relative;
+          z-index: 2;
+          display: grid;
+          grid-template-columns: repeat(4, minmax(110px, 1fr));
+          gap: 8px;
+          margin: 8px 0 10px;
+        }
+        .playfield-hud-chip-v212 {
+          display: grid;
+          grid-template-columns: auto 1fr;
+          gap: 8px;
+          align-items: center;
+          min-height: 46px;
+          padding: 8px 10px;
+          border-radius: 16px;
+          color: #fff;
+          background: rgba(15, 23, 42, 0.58);
+          border: 1px solid rgba(255, 255, 255, 0.22);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 10px 24px rgba(15, 23, 42, 0.18);
+          backdrop-filter: blur(8px);
+        }
+        .playfield-hud-chip-v212 .hud-icon-v212 { font-size: 22px; filter: drop-shadow(0 4px 7px rgba(0, 0, 0, 0.22)); }
+        .playfield-hud-chip-v212 small { display: block; font-size: 10px; line-height: 1.1; opacity: 0.78; font-weight: 800; }
+        .playfield-hud-chip-v212 strong { display: block; margin-top: 2px; font-size: 14px; line-height: 1.1; font-weight: 950; letter-spacing: 0.01em; }
+        .playfield-selection-card-v212 {
+          position: relative;
+          z-index: 2;
+          display: grid;
+          grid-template-columns: auto 1fr auto;
+          gap: 12px;
+          align-items: center;
+          margin: 0 0 10px;
+          padding: 12px 14px;
+          border-radius: 20px;
+          color: #f8fafc;
+          background: linear-gradient(135deg, rgba(15, 23, 42, 0.78), rgba(30, 41, 59, 0.62));
+          border: 1px solid rgba(255, 255, 255, 0.22);
+          box-shadow: 0 14px 34px rgba(15, 23, 42, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+          backdrop-filter: blur(10px);
+        }
+        .playfield-selection-icon-v212 {
+          width: 48px;
+          height: 48px;
+          display: grid;
+          place-items: center;
+          border-radius: 16px;
+          font-size: 24px;
+          background: linear-gradient(135deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.08));
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 18px rgba(0, 0, 0, 0.18);
+        }
+        .playfield-selection-main-v212 h3 { margin: 0; font-size: 15px; line-height: 1.2; font-weight: 950; }
+        .playfield-selection-main-v212 p { margin: 4px 0 0; font-size: 11px; opacity: 0.78; font-weight: 750; }
+        .playfield-selection-tags-v212 { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+        .playfield-selection-tags-v212 span {
+          padding: 5px 8px;
+          border-radius: 999px;
+          font-size: 10px;
+          font-weight: 900;
+          color: #fff;
+          background: rgba(255, 255, 255, 0.14);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .playfield-v212 .legend {
+          position: relative;
+          z-index: 2;
+          color: rgba(255, 255, 255, 0.86) !important;
+          background: rgba(15, 23, 42, 0.35) !important;
+          border: 1px solid rgba(255, 255, 255, 0.12) !important;
+          border-radius: 14px !important;
+          padding: 7px 9px !important;
+        }
+        .playfield-v212 .map-scroll {
+          position: relative;
+          z-index: 2;
+          border-radius: 18px;
+          background: rgba(255, 255, 255, 0.8);
+          box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08), 0 18px 40px rgba(15, 23, 42, 0.22);
+        }
+        .playfield-v212 .map-grid { padding: 10px; }
+        .playfield-v212 .map-tile {
+          border-radius: 7px !important;
+          border: 1px solid rgba(15, 23, 42, 0.22) !important;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42), 0 2px 4px rgba(15, 23, 42, 0.1);
+          transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
+          font-weight: 900;
+        }
+        .playfield-v212 .map-tile:hover { transform: translateY(-1px); filter: brightness(1.06); }
+        .playfield-v212 .map-tile.selected {
+          transform: translateY(-2px) scale(1.08);
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.9), 0 0 18px rgba(59, 130, 246, 0.85), 0 7px 16px rgba(15, 23, 42, 0.22) !important;
+          z-index: 15;
+        }
+        .playfield-v212 .tile-owned-building-v212:not(.selected) {
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.44), 0 0 0 2px rgba(34, 197, 94, 0.45), 0 5px 11px rgba(22, 163, 74, 0.14) !important;
+        }
+        .playfield-v212 .tile-constructing-v212 {
+          animation: v212ConstructPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes v212ConstructPulse {
+          0%, 100% { box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.45), 0 0 6px rgba(245, 158, 11, 0.35); }
+          50% { box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.75), 0 0 18px rgba(245, 158, 11, 0.65); }
+        }
+        .map-section.playfield-v214 {
+          background:
+            radial-gradient(circle at 18% 18%, rgba(250, 204, 21, 0.22), transparent 28%),
+            radial-gradient(circle at 82% 8%, rgba(56, 189, 248, 0.18), transparent 30%),
+            linear-gradient(135deg, #0f172a 0%, #1e3a8a 48%, #064e3b 100%) !important;
+        }
+        .map-section.playfield-v214::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background-image:
+            radial-gradient(circle, rgba(255,255,255,0.42) 0 1px, transparent 1.6px),
+            radial-gradient(circle, rgba(125,211,252,0.32) 0 1px, transparent 1.8px);
+          background-size: 86px 86px, 132px 132px;
+          background-position: 0 0, 34px 24px;
+          opacity: 0.34;
+          animation: v214CitySparkle 12s linear infinite;
+          z-index: 1;
+        }
+        @keyframes v214CitySparkle {
+          from { transform: translate3d(0, 0, 0); opacity: 0.24; }
+          50% { opacity: 0.44; }
+          to { transform: translate3d(18px, -20px, 0); opacity: 0.24; }
+        }
+        .playfield-v214 .map-scroll {
+          background:
+            linear-gradient(180deg, rgba(255,255,255,0.92), rgba(219,234,254,0.86)),
+            radial-gradient(circle at center, rgba(34,197,94,0.18), transparent 55%) !important;
+        }
+        .city-ambience-v214 {
+          position: relative;
+          z-index: 2;
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 8px;
+          margin: 9px 0 10px;
+        }
+        .city-ambience-chip-v214 {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          min-height: 42px;
+          padding: 8px 10px;
+          border-radius: 16px;
+          color: #fff;
+          background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.07));
+          border: 1px solid rgba(255,255,255,0.18);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 10px 22px rgba(15,23,42,0.16);
+          backdrop-filter: blur(10px);
+        }
+        .city-ambience-chip-v214 b { font-size: 16px; line-height: 1; }
+        .city-ambience-chip-v214 span { display: block; font-size: 10px; font-weight: 850; opacity: 0.7; }
+        .city-ambience-chip-v214 strong { display: block; margin-top: 2px; font-size: 12px; font-weight: 950; }
+        .playfield-v214 .map-tile { overflow: hidden; isolation: isolate; }
+        .playfield-v214 .map-tile::after {
+          content: "";
+          position: absolute;
+          inset: 2px;
+          border-radius: 5px;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.2s ease;
+          z-index: 0;
+        }
+        .playfield-v214 .tile-occupied-v214::after {
+          opacity: 0.92;
+          background: radial-gradient(circle at 50% 45%, rgba(253,224,71,0.92), rgba(250,204,21,0.22) 35%, transparent 66%);
+          animation: v214RoomLight 2.8s ease-in-out infinite;
+        }
+        .playfield-v214 .tile-vacant-v214::after {
+          opacity: 0.44;
+          background: radial-gradient(circle at 50% 45%, rgba(148,163,184,0.35), transparent 64%);
+        }
+        .playfield-v214 .tile-sale-v214:not(.selected) {
+          animation: v214SalePulse 2.4s ease-in-out infinite;
+        }
+        .playfield-v214 .tile-station-v214:not(.selected) {
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.52), 0 0 0 2px rgba(56,189,248,0.42), 0 0 14px rgba(56,189,248,0.45) !important;
+        }
+        .playfield-v214 .tile-owned-building-v212:not(.selected) {
+          animation: v214OwnedPulse 3.4s ease-in-out infinite;
+        }
+        @keyframes v214RoomLight {
+          0%, 100% { transform: scale(0.86); opacity: 0.74; }
+          50% { transform: scale(1.12); opacity: 1; }
+        }
+        @keyframes v214SalePulse {
+          0%, 100% { filter: brightness(1); }
+          50% { filter: brightness(1.15) saturate(1.12); }
+        }
+        @keyframes v214OwnedPulse {
+          0%, 100% { filter: brightness(1); }
+          50% { filter: brightness(1.08); }
+        }
+        .playfield-v214 .map-tile > * { position: relative; z-index: 2; }
+        @media (max-width: 760px) {
+          .city-ambience-v214 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .city-ambience-chip-v214 { min-height: 38px; padding: 7px 9px; }
+        }
+
+
+        /* v216: プレイ画面フルスクリーン最適化 */
+        :root {
+          --game-safe-top-v216: env(safe-area-inset-top, 0px);
+          --game-safe-bottom-v216: env(safe-area-inset-bottom, 0px);
+        }
+        html, body, #root {
+          min-height: 100%;
+        }
+        .main-layout.full-panel {
+          min-height: calc(100dvh - 88px);
+          height: auto;
+          align-items: stretch;
+        }
+        .map-section.playfield-v216 {
+          display: flex;
+          flex-direction: column;
+          min-height: calc(100dvh - 110px);
+          max-height: none;
+          padding: clamp(8px, 1.4vw, 14px) !important;
+        }
+        .playfield-v216 .v153-map-control-row {
+          position: sticky;
+          top: max(0px, var(--game-safe-top-v216));
+          z-index: 40;
+          margin-bottom: 8px;
+          padding: 8px 10px;
+          border-radius: 18px;
+          background: rgba(15, 23, 42, 0.58);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+          backdrop-filter: blur(12px);
+        }
+        .playfield-v216 .map-title-status,
+        .playfield-v216 .zoom-controls {
+          min-width: 0;
+        }
+        .playfield-v216 .map-compact-stat,
+        .playfield-v216 .zoom-controls button,
+        .playfield-v216 .zoom-controls span {
+          min-height: 34px;
+          border-radius: 999px;
+        }
+        .playfield-v216 .playfield-hud-v212 {
+          flex: 0 0 auto;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: clamp(5px, 1vw, 8px);
+          margin: 0 0 8px;
+        }
+        .playfield-v216 .playfield-hud-chip-v212 {
+          min-height: 42px;
+          padding: 7px 9px;
+        }
+        .playfield-v216 .playfield-hud-chip-v212 strong {
+          font-size: clamp(12px, 1.7vw, 14px);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .playfield-v216 .playfield-selection-card-v212 {
+          flex: 0 0 auto;
+          margin-bottom: 8px;
+          padding: 10px 12px;
+        }
+        .playfield-v216 .playfield-selection-icon-v212 {
+          width: 42px;
+          height: 42px;
+          border-radius: 14px;
+          font-size: 22px;
+        }
+        .playfield-v216 .playfield-selection-tags-v212 span {
+          padding: 4px 7px;
+        }
+        .playfield-v216 .city-ambience-v214 {
+          flex: 0 0 auto;
+          margin: 0 0 8px;
+          gap: 6px;
+        }
+        .playfield-v216 .city-ambience-chip-v214 {
+          min-height: 36px;
+          padding: 6px 8px;
+        }
+        .playfield-v216 .legend {
+          flex: 0 0 auto;
+          margin-bottom: 8px;
+          white-space: nowrap;
+          overflow-x: auto;
+          scrollbar-width: none;
+        }
+        .playfield-v216 .legend::-webkit-scrollbar { display: none; }
+        .playfield-v216 .map-scroll {
+          flex: 1 1 auto;
+          min-height: 280px;
+          max-height: none;
+          overflow: auto;
+          overscroll-behavior: contain;
+          touch-action: pan-x pan-y;
+        }
+        .playfield-v216 .map-grid {
+          padding: clamp(6px, 1vw, 10px);
+        }
+        .playfield-v216 .coord-header,
+        .playfield-v216 .coord-side,
+        .playfield-v216 .coord-top-left {
+          position: sticky;
+          z-index: 22;
+          background: rgba(248, 250, 252, 0.86);
+          backdrop-filter: blur(8px);
+        }
+        .playfield-v216 .coord-header { top: 0; }
+        .playfield-v216 .coord-side { left: 0; }
+        .playfield-v216 .coord-top-left { top: 0; left: 0; z-index: 24; }
+        @media (orientation: landscape) and (max-height: 620px) {
+          .main-layout.full-panel {
+            min-height: calc(100dvh - 54px);
+          }
+          .map-section.playfield-v216 {
+            min-height: calc(100dvh - 62px);
+            padding: 6px !important;
+          }
+          .playfield-v216 .v153-map-control-row {
+            padding: 5px 7px;
+            margin-bottom: 5px;
+          }
+          .playfield-v216 .playfield-hud-v212 {
+            grid-template-columns: repeat(4, minmax(82px, 1fr));
+            gap: 5px;
+            margin-bottom: 5px;
+          }
+          .playfield-v216 .playfield-hud-chip-v212 {
+            min-height: 34px;
+            padding: 5px 7px;
+            gap: 5px;
+          }
+          .playfield-v216 .playfield-hud-chip-v212 .hud-icon-v212 { font-size: 17px; }
+          .playfield-v216 .playfield-hud-chip-v212 small { font-size: 9px; }
+          .playfield-v216 .playfield-hud-chip-v212 strong { font-size: 11px; }
+          .playfield-v216 .playfield-selection-card-v212 {
+            grid-template-columns: auto 1fr;
+            padding: 7px 9px;
+            margin-bottom: 5px;
+          }
+          .playfield-v216 .playfield-selection-icon-v212 {
+            width: 34px;
+            height: 34px;
+            font-size: 18px;
+          }
+          .playfield-v216 .playfield-selection-main-v212 h3 { font-size: 12px; }
+          .playfield-v216 .playfield-selection-main-v212 p { font-size: 9px; }
+          .playfield-v216 .playfield-selection-tags-v212 { display: none; }
+          .playfield-v216 .city-ambience-v214,
+          .playfield-v216 .legend {
+            display: none;
+          }
+          .playfield-v216 .map-scroll {
+            min-height: 180px;
+          }
+          .side-section.floating-panel {
+            max-height: calc(100dvh - 18px) !important;
+          }
+        }
+        @media (max-width: 760px) and (orientation: portrait) {
+          .main-layout.full-panel {
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100dvh - 64px);
+            gap: 8px;
+          }
+          .map-section.playfield-v216 {
+            min-height: calc(100dvh - 76px);
+            border-radius: 16px !important;
+            padding: 7px !important;
+          }
+          .playfield-v216 .v153-map-control-row {
+            gap: 6px;
+            padding: 6px 7px;
+          }
+          .playfield-v216 .playfield-hud-v212 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 5px;
+          }
+          .playfield-v216 .playfield-hud-chip-v212 {
+            min-height: 36px;
+            padding: 6px 7px;
+            gap: 6px;
+            border-radius: 13px;
+          }
+          .playfield-v216 .playfield-hud-chip-v212 .hud-icon-v212 { font-size: 18px; }
+          .playfield-v216 .playfield-hud-chip-v212 small { font-size: 9px; }
+          .playfield-v216 .playfield-hud-chip-v212 strong { font-size: 12px; }
+          .playfield-v216 .playfield-selection-card-v212 {
+            grid-template-columns: auto 1fr;
+            gap: 8px;
+            padding: 8px 9px;
+            border-radius: 15px;
+          }
+          .playfield-v216 .playfield-selection-icon-v212 {
+            width: 36px;
+            height: 36px;
+            font-size: 19px;
+          }
+          .playfield-v216 .playfield-selection-main-v212 h3 { font-size: 13px; }
+          .playfield-v216 .playfield-selection-main-v212 p { font-size: 10px; }
+          .playfield-v216 .playfield-selection-tags-v212 {
+            grid-column: 1 / -1;
+            justify-content: flex-start;
+          }
+          .playfield-v216 .city-ambience-v214 {
+            grid-template-columns: repeat(4, minmax(54px, 1fr));
+            gap: 4px;
+          }
+          .playfield-v216 .city-ambience-chip-v214 {
+            display: grid;
+            place-items: center;
+            text-align: center;
+            min-height: 42px;
+            padding: 5px 3px;
+            border-radius: 12px;
+          }
+          .playfield-v216 .city-ambience-chip-v214 b { font-size: 15px; }
+          .playfield-v216 .city-ambience-chip-v214 span { display: none; }
+          .playfield-v216 .city-ambience-chip-v214 strong { font-size: 10px; margin: 1px 0 0; }
+          .playfield-v216 .legend {
+            font-size: 10px;
+            padding: 5px 7px !important;
+          }
+          .playfield-v216 .map-scroll {
+            min-height: 46dvh;
+            max-height: none;
+          }
+          .side-section:not(.floating-panel) {
+            max-height: 42dvh;
+            overflow: auto;
+            border-radius: 16px;
+          }
+        }
+        @media (min-width: 1024px) {
+          .main-layout.full-panel {
+            min-height: calc(100dvh - 96px);
+          }
+          .map-section.playfield-v216 {
+            min-height: calc(100dvh - 116px);
+          }
+          .playfield-v216 .map-scroll {
+            min-height: 520px;
+          }
+        }
+
+
+        /* v216.1: マップ巨大発光・PCホーム全画面崩れ修正 */
+        .playfield-v214 .map-tile,
+        .playfield-v216 .map-tile {
+          position: relative !important;
+          overflow: hidden !important;
+          isolation: isolate !important;
+        }
+        .playfield-v214 .map-tile::after {
+          inset: 2px !important;
+          width: auto !important;
+          height: auto !important;
+          max-width: none !important;
+          max-height: none !important;
+          border-radius: 5px !important;
+          transform-origin: center center !important;
+        }
+        .playfield-v214 .tile-occupied-v214::after {
+          background: radial-gradient(circle at 50% 50%, rgba(253,224,71,0.70) 0%, rgba(250,204,21,0.18) 38%, transparent 68%) !important;
+          opacity: 0.72 !important;
+        }
+        .playfield-v214 .tile-vacant-v214::after {
+          background: radial-gradient(circle at 50% 50%, rgba(148,163,184,0.18), transparent 62%) !important;
+          opacity: 0.28 !important;
+        }
+        .playfield-v214 .map-section::after,
+        .playfield-v216 .map-section::after {
+          max-width: 100%;
+          max-height: 100%;
+        }
+        .playfield-v214 .map-scroll {
+          background: rgba(248,250,252,0.94) !important;
+        }
+        .map-section.playfield-v216 {
+          height: calc(100dvh - 28px) !important;
+          min-height: 0 !important;
+          overflow: hidden !important;
+        }
+        .playfield-v216 .map-scroll {
+          flex: 1 1 0 !important;
+          min-height: 0 !important;
+          height: auto !important;
+        }
+        @media (min-width: 1024px) {
+          .title-home-overlay-v201 {
+            align-items: stretch !important;
+            justify-content: center !important;
+            padding: 10px 18px !important;
+            min-height: 100dvh !important;
+            max-height: 100dvh !important;
+            overflow: hidden !important;
+          }
+          .title-home-shell-v201 {
+            width: min(1320px, calc(100vw - 36px)) !important;
+            max-width: calc(100vw - 36px) !important;
+            height: calc(100dvh - 20px) !important;
+            max-height: calc(100dvh - 20px) !important;
+            grid-template-columns: minmax(320px, 0.92fr) minmax(520px, 1.08fr) !important;
+            align-self: center !important;
+          }
+          .title-home-character-panel-v201,
+          .title-home-menu-panel-v201 {
+            min-height: 0 !important;
+            max-height: 100% !important;
+            overflow: hidden !important;
+          }
+          .title-home-menu-panel-v201 {
+            overflow-y: auto !important;
+            scrollbar-width: thin;
+          }
+          .title-home-character-stage-v201 {
+            min-height: 0 !important;
+            flex: 1 1 auto !important;
+          }
+          .home-side-shortcuts-v209 {
+            right: 10px !important;
+            top: 10px !important;
+          }
+        }
+        @media (orientation: landscape) and (max-height: 720px) {
+          .title-home-overlay-v201 {
+            align-items: stretch !important;
+            padding: 6px 8px !important;
+            overflow: hidden !important;
+          }
+          .title-home-shell-v201 {
+            height: calc(100dvh - 12px) !important;
+            max-height: calc(100dvh - 12px) !important;
+          }
+          .title-home-character-stage-v201 { min-height: 180px !important; }
+          .home-akari-portrait-v201 { max-height: 210px !important; }
+        }
+
+
+        .floating-panel-header strong {
+          min-width: 0;
+          flex: 1 1 auto;
+        }
+        .floating-land-title-v2187 {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          min-width: 0;
+          max-width: 100%;
+          white-space: nowrap;
+        }
+        .floating-land-title-main-v2187 {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          min-width: 0;
+          overflow: hidden;
+        }
+        .floating-land-title-icon-v2187 {
+          flex: 0 0 auto;
+          font-size: 15px;
+          line-height: 1;
+        }
+        .floating-land-title-text-v2187 {
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .floating-land-build-progress-v2187 {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          flex: 0 0 auto;
+          max-width: 128px;
+          font-size: 11px;
+          font-weight: 900;
+          color: #92400e;
+        }
+        .floating-land-build-label-v2187 {
+          white-space: nowrap;
+        }
+        .floating-land-build-meter-v2187 {
+          width: 46px;
+          height: 6px;
+          overflow: hidden;
+          border-radius: 999px;
+          background: rgba(251, 191, 36, 0.28);
+          border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+        .floating-land-build-meter-v2187 span {
+          display: block;
+          height: 100%;
+          border-radius: inherit;
+          background: linear-gradient(90deg, #f59e0b, #facc15);
+        }
+        @media (max-width: 760px) {
+          .floating-land-title-v2187 { gap: 5px; }
+          .floating-land-build-progress-v2187 { max-width: 104px; font-size: 10px; gap: 3px; }
+          .floating-land-build-meter-v2187 { width: 34px; height: 5px; }
+          .side-section.floating-panel .land-smart-panel.land-smart-panel-v212 { padding-top: 6px !important; }
+        }
+
+        .land-smart-panel.land-smart-panel-v212 {
+          border-radius: 22px !important;
+          background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(239, 246, 255, 0.94)) !important;
+          border: 1px solid rgba(59, 130, 246, 0.16) !important;
+          box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14) !important;
+        }
+        .property-hero-v212 {
+          display: none !important;
+          position: relative;
+          overflow: hidden;
+          display: grid;
+          grid-template-columns: auto 1fr;
+          gap: 12px;
+          align-items: center;
+          margin: 0 0 12px;
+          padding: 14px;
+          border-radius: 20px;
+          color: #fff;
+          background: linear-gradient(135deg, #0f172a, #1d4ed8 54%, #0f766e);
+          box-shadow: 0 16px 34px rgba(15, 23, 42, 0.24);
+        }
+        .property-hero-v212::after {
+          content: "";
+          position: absolute;
+          inset: -40%;
+          background: radial-gradient(circle, rgba(255, 255, 255, 0.22), transparent 34%);
+          animation: v212HeroShine 6s linear infinite;
+        }
+        @keyframes v212HeroShine { from { transform: translateX(-20%) rotate(0deg); } to { transform: translateX(20%) rotate(360deg); } }
+        .property-hero-icon-v212 {
+          position: relative;
+          z-index: 1;
+          width: 56px;
+          height: 56px;
+          display: grid;
+          place-items: center;
+          border-radius: 18px;
+          font-size: 28px;
+          background: rgba(255, 255, 255, 0.16);
+          border: 1px solid rgba(255, 255, 255, 0.22);
+        }
+        .property-hero-body-v212 { position: relative; z-index: 1; }
+        .property-hero-body-v212 h2 { margin: 0; font-size: 18px; line-height: 1.2; }
+        .property-hero-body-v212 p { margin: 5px 0 0; font-size: 12px; opacity: 0.82; font-weight: 800; }
+        .condition-meter-v212 {
+          margin-top: 9px;
+          height: 8px;
+          overflow: hidden;
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.18);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+        }
+        .condition-meter-fill-v212 {
+          height: 100%;
+          border-radius: 999px;
+          background: linear-gradient(90deg, #22c55e, #bef264, #facc15);
+          box-shadow: 0 0 12px rgba(250, 204, 21, 0.55);
+          transition: width 0.35s ease;
+        }
+        @media (max-width: 760px) {
+          .playfield-hud-v212 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .playfield-selection-card-v212 { grid-template-columns: auto 1fr; }
+          .playfield-selection-tags-v212 { grid-column: 1 / -1; justify-content: flex-start; }
+        }
+
         .smart-chip.good, .action-good { background: #dcfce7 !important; border-color: #86efac !important; color: #166534 !important; }
         .smart-chip.bad, .action-bad { background: #fee2e2 !important; border-color: #fca5a5 !important; color: #991b1b !important; }
         .smart-chip { white-space: nowrap; }
@@ -11592,6 +12700,8 @@ export default function App() {
     });
   }, []);
  const savedGame = loadSavedGameSafely();
+const savedAccountData = readAccountData();
+const initialAccountRankExp = getBetterAccountRankExp(savedAccountData, savedGame?.playerRank, savedGame?.playerExp);
 
 const initialMap = sanitizeMapForV138(savedGame ?? createMap());
 const loadedHqPlaced = Boolean(
@@ -11678,26 +12788,34 @@ const [employeeStorage, setEmployeeStorage] = useState(() => {
     }));
 });
 
+const initialAccountTicketCounts = getAccountTicketCounts(savedAccountData, savedGame ?? {});
+
+const [rookieEmployeeTickets, setRookieEmployeeTickets] = useState(
+  initialAccountTicketCounts.rookieEmployeeTickets
+);
+
 const [employeeTickets, setEmployeeTickets] = useState(
-  savedGame?.employeeTickets ?? 1
+  initialAccountTicketCounts.employeeTickets
 );
 
 const [premiumEmployeeTickets, setPremiumEmployeeTickets] = useState(
-  savedGame?.premiumEmployeeTickets ?? 0
+  initialAccountTicketCounts.premiumEmployeeTickets
 );
 
 const [hasEmployeeRecruitNotice, setHasEmployeeRecruitNotice] = useState(false);
-const previousEmployeeTicketTotalRef = useRef((savedGame?.employeeTickets ?? 1) + (savedGame?.premiumEmployeeTickets ?? 0));
+const previousEmployeeTicketTotalRef = useRef(
+  initialAccountTicketCounts.rookieEmployeeTickets + initialAccountTicketCounts.employeeTickets + initialAccountTicketCounts.premiumEmployeeTickets
+);
 
 useEffect(() => {
-  const currentTicketTotal = employeeTickets + premiumEmployeeTickets;
+  const currentTicketTotal = rookieEmployeeTickets + employeeTickets + premiumEmployeeTickets;
 
   if (currentTicketTotal > previousEmployeeTicketTotalRef.current) {
     setHasEmployeeRecruitNotice(true);
   }
 
   previousEmployeeTicketTotalRef.current = currentTicketTotal;
-}, [employeeTickets, premiumEmployeeTickets]);
+}, [rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets]);
 
 
 const [employeeSortKey, setEmployeeSortKey] = useState(
@@ -11718,6 +12836,43 @@ useEffect(() => {
       }));
   });
 }, []);
+
+useEffect(() => {
+  // v193: 保管庫から持ち込んだ創業メンバーは、前の会社の行動中状態を引き継がない。
+  // 既にv192で開始済みのデータでも、創業メンバー扱いの社員を本社配属・行動可能に補正する。
+  if (!hqPlaced) return;
+
+  setEmployees((currentEmployees) => {
+    let changed = false;
+
+    const nextEmployees = currentEmployees
+      .filter((employee) => employee.id !== 0)
+      .map((employee) => {
+        const shouldFixFounder =
+          employee.founderCarryOver === true ||
+          (
+            currentGameMode === "free" &&
+            employee.officeId === "hq" &&
+            employee.busyUntilMonth &&
+            employee.busyUntilMonth > month &&
+            month <= 6
+          );
+
+        if (!shouldFixFounder) return employee;
+
+        changed = true;
+        return normalizeEmployeeGrowthBase({
+          ...employee,
+          officeId: "hq",
+          busyUntilMonth: null,
+          busyActionName: null,
+          founderCarryOver: true,
+        });
+      });
+
+    return changed ? nextEmployees : currentEmployees;
+  });
+}, [hqPlaced, currentGameMode]);
 
 useEffect(() => {
   const hasPlayerHQ = tiles.some((tile) => {
@@ -11860,10 +13015,10 @@ const [log, setLog] = useState(
   savedGame?.log ?? "売り物件を探して、土地を購入しましょう。"
 );
 const [logHistory, setLogHistory] = useState((savedGame?.logHistory ?? []).slice(0, 200));
-const [playerRank, setPlayerRank] = useState(savedGame?.playerRank ?? 1);
-const [playerExp, setPlayerExp] = useState(savedGame?.playerExp ?? 0);
-const playerRankRef = useRef(savedGame?.playerRank ?? 1);
-const playerExpRef = useRef(savedGame?.playerExp ?? 0);
+const [playerRank, setPlayerRank] = useState(initialAccountRankExp.playerRank);
+const [playerExp, setPlayerExp] = useState(initialAccountRankExp.playerExp);
+const playerRankRef = useRef(initialAccountRankExp.playerRank);
+const playerExpRef = useRef(initialAccountRankExp.playerExp);
 
 useEffect(() => {
   playerRankRef.current = playerRank;
@@ -11955,7 +13110,9 @@ useEffect(() => {
       employees,
       employeeCandidates,
       employeeStorage,
+      accountSnapshot: mergeAccountDataWithGame(savedAccountData, { playerRank, playerExp, employees, employeeStorage, hasClearedNagoyaChapter, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }),
       actionPoints,
+      rookieEmployeeTickets,
       employeeTickets,
       premiumEmployeeTickets,
       employeeSortKey,
@@ -11998,6 +13155,7 @@ useEffect(() => {
   employeeCandidates,
   employeeStorage,
   actionPoints,
+  rookieEmployeeTickets,
   employeeTickets,
   premiumEmployeeTickets,
   employeeSortKey,
@@ -12008,10 +13166,32 @@ useEffect(() => {
   isDemoMode,
   usedSecretCommands,
   hasClearedGifuChapter,
+  hasClearedNagoyaChapter,
 ]);
 
+useEffect(() => {
+  const nextAccountData = mergeAccountDataWithGame(readAccountData(), {
+    playerRank,
+    playerExp,
+    employees,
+    employeeStorage,
+    hasClearedNagoyaChapter,
+    rookieEmployeeTickets,
+    employeeTickets,
+    premiumEmployeeTickets,
+  });
+
+  writeAccountData(nextAccountData);
+}, [playerRank, playerExp, employees, employeeStorage, hasClearedNagoyaChapter, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets]);
+
 const [tileSize, setTileSize] = useState(24);
-const [activePanel, setActivePanel] = useState(loadedHqPlaced ? "home" : "hq");
+const [activePanel, setActivePanel] = useState(() => {
+  const savedNavigationState = readLastNavigationState();
+  if (savedNavigationState.screen === "game" && savedNavigationState.activePanel) {
+    return savedNavigationState.activePanel;
+  }
+  return loadedHqPlaced ? "home" : "hq";
+});
 const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
 
 useEffect(() => {
@@ -12028,11 +13208,25 @@ const [floatingPanelResetKey, setFloatingPanelResetKey] = useState(0);
 const floatingPanelDragRef = useRef(null);
 const floatingPanelResizeRef = useRef(null);
 const [showOptions, setShowOptions] = useState(false);
-const [showTitleScreen, setShowTitleScreen] = useState(true);
+const [showTitleScreen, setShowTitleScreen] = useState(() => readLastNavigationState().screen !== "game");
 const [showPrologue, setShowPrologue] = useState(false);
 const [prologueIndex, setPrologueIndex] = useState(0);
 const [pendingNewGame, setPendingNewGame] = useState(null);
+const [selectedFounderEmployeeIds, setSelectedFounderEmployeeIds] = useState([]);
+const [titleVaultRarityFilter, setTitleVaultRarityFilter] = useState("ALL");
+const [titleVaultSortKey, setTitleVaultSortKey] = useState("power");
+const [titleVaultDetailEmployee, setTitleVaultDetailEmployee] = useState(null);
+const [titleHomeAkariTalkIndex, setTitleHomeAkariTalkIndex] = useState(0);
+const [titleHomeAkariExpression, setTitleHomeAkariExpression] = useState(null);
 const [titleModal, setTitleModal] = useState(null);
+
+useEffect(() => {
+  writeLastNavigationState({
+    screen: showTitleScreen ? "home" : "game",
+    activePanel,
+    titleModal: showTitleScreen ? titleModal : null,
+  });
+}, [showTitleScreen, activePanel, titleModal]);
 const [saveLoadModal, setSaveLoadModal] = useState(null);
 const [selectedBuildCategory, setSelectedBuildCategory] = useState(null);
 const [selectedHousingType, setSelectedHousingType] = useState(null);
@@ -12132,15 +13326,72 @@ function closeFloatingPanel() {
   setActivePanel("home");
 }
 
+function getSelectedTileHeaderIcon(tile = selectedTile, mainTile = selectedMainTile, buildingInfo = selectedBuilding) {
+  if (!tile) return "🗺️";
+  if ((mainTile?.buildRemaining ?? 0) > 0) return "🚧";
+  if (tile.feature === FEATURE.HQ) return "🏢";
+  if (tile.feature === FEATURE.BRANCH) return "🏬";
+  if (tile.feature === FEATURE.STATION) return "🚉";
+  if (tile.feature === FEATURE.SCHOOL) return "🏫";
+  if (tile.feature === FEATURE.ROAD) return "🛣️";
+  if (buildingInfo) {
+    if (buildingInfo.subCategory === "戸建") return "🏠";
+    if (buildingInfo.subCategory === "アパート") return "🏘️";
+    if (buildingInfo.subCategory === "マンション") return "🏢";
+    if (buildingInfo.category === "商業") return "🏪";
+    if (buildingInfo.category === "工業") return "🏭";
+    return "🏠";
+  }
+  if (tile.owner === OWNER.SALE) return "🏷️";
+  if (tile.owner === OWNER.PLAYER) return "📍";
+  return "🗺️";
+}
+
+function getSelectedBuildProgressMeta(tile = selectedMainTile, buildingInfo = selectedBuilding) {
+  const remaining = Math.max(0, Math.round(Number(tile?.buildRemaining) || 0));
+  if (!tile || remaining <= 0) return null;
+
+  const total = Math.max(
+    1,
+    Math.round(Number(tile.buildActualMonths || tile.buildStandardMonths || buildingInfo?.buildMonths || remaining) || remaining)
+  );
+  const completed = Math.max(0, total - remaining);
+  const progress = Math.max(0, Math.min(100, Math.round((completed / total) * 100)));
+
+  return { remaining, total, progress };
+}
+
 function getFloatingPanelTitle(panelName = activePanel) {
   if (panelName === "hq") return "本社設置（本社タイプを選択）";
 
   if (panelName === "land") {
-    if (!selectedTile) return "土地情報";
-    if (selectedBuilding) return selectedBuilding.name;
-    if (selectedTile.feature === FEATURE.HQ) return "本社";
-    if (selectedTile.feature === FEATURE.BRANCH) return getBranchDisplayName(selectedTile);
-    return "土地情報";
+    const progressMeta = getSelectedBuildProgressMeta();
+    const baseTitle = !selectedTile
+      ? "土地情報"
+      : selectedBuilding
+        ? selectedBuilding.name
+        : selectedTile.feature === FEATURE.HQ
+          ? "本社"
+          : selectedTile.feature === FEATURE.BRANCH
+            ? getBranchDisplayName(selectedTile)
+            : "土地情報";
+
+    return (
+      <span className="floating-land-title-v2187">
+        <span className="floating-land-title-main-v2187">
+          <span className="floating-land-title-icon-v2187">{getSelectedTileHeaderIcon()}</span>
+          <span className="floating-land-title-text-v2187">{baseTitle}</span>
+        </span>
+        {progressMeta && (
+          <span className="floating-land-build-progress-v2187" title={`工事進捗 ${progressMeta.progress}% / 残り${progressMeta.remaining}ヶ月`}>
+            <span className="floating-land-build-label-v2187">残{progressMeta.remaining}ヶ月</span>
+            <span className="floating-land-build-meter-v2187">
+              <span style={{ width: `${progressMeta.progress}%` }} />
+            </span>
+          </span>
+        )}
+      </span>
+    );
   }
 
   if (panelName === "build") {
@@ -12827,11 +14078,69 @@ const activeOfficeTiles = useMemo(() => {
   return officeTiles.filter((officeTile) => getOfficeActionRange(officeTile) > 0);
 }, [officeTiles]);
 
-const employeeLimit = useMemo(() => {
-  return Number.POSITIVE_INFINITY;
-}, []);
+function getEmployeeAssignedCountForOffice(officeId, employeeList = employees) {
+  const targetOfficeId = officeId ?? "hq";
+  return employeeList.filter((employee) => (employee.officeId ?? "hq") === targetOfficeId).length;
+}
 
-const employeeLimitText = "";
+function hasOfficeEmployeeVacancy(officeId, employeeList = employees) {
+  return getEmployeeAssignedCountForOffice(officeId, employeeList) < OFFICE_EMPLOYEE_ASSIGN_LIMIT;
+}
+
+function getFirstAvailableOffice(employeeList = employees) {
+  return activeOfficeTiles.find((officeTile) => {
+    const officeId = officeTile.officeId ?? "hq";
+    return hasOfficeEmployeeVacancy(officeId, employeeList);
+  }) ?? null;
+}
+
+function normalizeEmployeesByOfficeCapacity(employeeList) {
+  const activeOfficeIdSet = new Set(activeOfficeTiles.map((officeTile) => officeTile.officeId ?? "hq"));
+  const officeCounts = new Map();
+  const assignedEmployees = [];
+  const overflowEmployees = [];
+
+  employeeList.forEach((employee) => {
+    const officeId = employee.officeId ?? "hq";
+    const isActiveOffice = activeOfficeIdSet.has(officeId);
+    const currentOfficeCount = officeCounts.get(officeId) ?? 0;
+
+    if (!isActiveOffice || currentOfficeCount >= OFFICE_EMPLOYEE_ASSIGN_LIMIT) {
+      overflowEmployees.push({
+        ...employee,
+        officeId: null,
+      });
+      return;
+    }
+
+    officeCounts.set(officeId, currentOfficeCount + 1);
+    assignedEmployees.push(employee);
+  });
+
+  return { assignedEmployees, overflowEmployees };
+}
+
+useEffect(() => {
+  if (activeOfficeTiles.length === 0 || employees.length === 0) return;
+
+  const { assignedEmployees, overflowEmployees } = normalizeEmployeesByOfficeCapacity(employees);
+
+  if (overflowEmployees.length === 0 && assignedEmployees.length === employees.length) return;
+
+  setEmployees(assignedEmployees);
+  setEmployeeStorage((currentStorage) => {
+    const currentStorageIds = new Set(currentStorage.map((employee) => employee.id));
+    const newOverflowEmployees = overflowEmployees.filter((employee) => !currentStorageIds.has(employee.id));
+    return [...currentStorage, ...newOverflowEmployees];
+  });
+  setLog(`配属上限は各本社・支店${OFFICE_EMPLOYEE_ASSIGN_LIMIT}人です。上限を超えた社員${overflowEmployees.length}人を社員保管庫へ移動しました。`);
+}, [activeOfficeTiles, employees]);
+
+const employeeLimit = useMemo(() => {
+  return activeOfficeTiles.length * OFFICE_EMPLOYEE_ASSIGN_LIMIT;
+}, [activeOfficeTiles]);
+
+const employeeLimitText = ` / 配属上限${employeeLimit}人（各拠点${OFFICE_EMPLOYEE_ASSIGN_LIMIT}人）`;
 
 const nextBranchRequiredEmployeeCount = useMemo(() => {
   return 0;
@@ -12854,8 +14163,8 @@ const employeeSalaryTotal = useMemo(() => {
 }, [employees]);
 
 const employeeCountText = useMemo(() => {
-  return `${employees.length}人`;
-}, [employees]);
+  return `${employees.length}人${employeeLimitText}`;
+}, [employees, employeeLimitText]);
 
 const ownedEmployeeCount = useMemo(() => {
   return employees.length + employeeStorage.length;
@@ -13530,10 +14839,6 @@ function getBranchDisplayName(tile) {
   return "支店";
 }
 
-function getFirstAvailableOffice() {
-  return activeOfficeTiles[0] ?? null;
-}
-
 function getEmployeeRarityOrder(rarity) {
   if (rarity === "UR") return 6;
   if (rarity === "SSR") return 5;
@@ -13562,9 +14867,21 @@ function drawPremiumRecruitRarity() {
   return "UR";
 }
 
-function pickRecruitEmployee(availableEmployees, pickedEmployees, premiumOnly = false) {
+function drawRookieRecruitRarity() {
+  const roll = Math.random() * 100;
+
+  if (roll < 72) return "N";
+  if (roll < 94) return "R";
+  if (roll < 99) return "HR";
+  return "SR";
+}
+
+function pickRecruitEmployee(availableEmployees, pickedEmployees, ticketType = "normal") {
+  const isPremium = ticketType === "premium";
+  const isRookie = ticketType === "rookie";
+
   for (let attempt = 0; attempt < 20; attempt++) {
-    const rarity = premiumOnly ? drawPremiumRecruitRarity() : drawRecruitRarity();
+    const rarity = isPremium ? drawPremiumRecruitRarity() : isRookie ? drawRookieRecruitRarity() : drawRecruitRarity();
     const sameRarityEmployees = availableEmployees.filter((employee) => {
       return employee.rarity === rarity;
     });
@@ -13575,7 +14892,8 @@ function pickRecruitEmployee(availableEmployees, pickedEmployees, premiumOnly = 
   }
 
   const fallbackEmployees = availableEmployees.filter((employee) => {
-    if (premiumOnly) return ["SR", "SSR", "UR"].includes(employee.rarity);
+    if (isPremium) return ["SR", "SSR", "UR"].includes(employee.rarity);
+    if (isRookie) return ["N", "R", "HR", "SR"].includes(employee.rarity);
     return true;
   });
 
@@ -14006,6 +15324,18 @@ function getPlayerRequiredExp(rank) {
   return getEmployeeRequiredExp(rank);
 }
 
+function getPlayerTotalExp(rank, exp) {
+  const safeRank = Math.max(1, Math.round(Number(rank) || 1));
+  const safeExp = Math.max(0, Math.round(Number(exp) || 0));
+  let totalExp = safeExp;
+
+  for (let currentRank = 1; currentRank < safeRank; currentRank += 1) {
+    totalExp += getPlayerRequiredExp(currentRank);
+  }
+
+  return totalExp;
+}
+
 function applyPlayerRankExp(currentRank, currentExp, gainedExp) {
   let nextRank = Math.max(1, currentRank ?? 1);
   let nextExp = (currentExp ?? 0) + Math.max(0, gainedExp ?? 0);
@@ -14078,7 +15408,63 @@ function getTicketOddsText(ticketType) {
     return "SR 79.4% / SSR 15.9% / UR 4.7%";
   }
 
+  if (ticketType === "rookie") {
+    return "N 72.0% / R 22.0% / HR 5.0% / SR 1.0%";
+  }
+
   return "N 61.7% / R 22.0% / HR 10.0% / SR 5.0% / SSR 1.0% / UR 0.3%";
+}
+
+const EMPLOYEE_RECRUITMENT_BRANDS = {
+  rookie: {
+    ticketName: "ライト採用パス",
+    menuName: "ライト採用",
+    stageTitle: "ライト採用",
+    subtitle: "毎日使いやすい通常演出。白封筒中心で、まれにSR履歴書が届きます。",
+    badge: "DAILY",
+    icon: "📄",
+    className: "recruit-stage-rookie",
+    buttonGradient: "linear-gradient(145deg,#fff7df,#ffe4a0)",
+    borderColor: "#e8d08a",
+  },
+  normal: {
+    ticketName: "社員採用パス",
+    menuName: "社員採用",
+    stageTitle: "社員採用",
+    subtitle: "標準採用演出。NからURまで、すべての人材と出会える基本ルートです。",
+    badge: "STANDARD",
+    icon: "🎫",
+    className: "recruit-stage-normal",
+    buttonGradient: "linear-gradient(145deg,#edf5ef,#bff1cd)",
+    borderColor: "#9cd4aa",
+  },
+  premium: {
+    ticketName: "プレミアム採用パス",
+    menuName: "プレミアム採用",
+    stageTitle: "プレミアム採用",
+    subtitle: "SR以上確定の特別演出。茶封筒以上だけが並ぶ、貴重な採用ルートです。",
+    badge: "SR+ 確定",
+    icon: "✨",
+    className: "recruit-stage-premium",
+    buttonGradient: "linear-gradient(145deg,#fff0ff,#d9c5ff 48%,#ffd878)",
+    borderColor: "#d8c8ff",
+  },
+};
+
+function getRecruitmentBrand(ticketType) {
+  return EMPLOYEE_RECRUITMENT_BRANDS[ticketType] ?? EMPLOYEE_RECRUITMENT_BRANDS.normal;
+}
+
+function getTicketName(ticketType) {
+  return getRecruitmentBrand(ticketType).ticketName;
+}
+
+function getRecruitmentMenuName(ticketType) {
+  return getRecruitmentBrand(ticketType).menuName;
+}
+
+function getRecruitmentStageClass(ticketType) {
+  return getRecruitmentBrand(ticketType).className;
 }
 
 
@@ -14105,8 +15491,8 @@ function normalizeCommandText(text) {
 }
 
 function renderEmployeeStatValue(employee, statKey, baseKey) {
-  const currentValue = employee?.[statKey] ?? 0;
-  const baseValue = employee?.[baseKey] ?? currentValue;
+  const currentValue = Number(employee?.[statKey]) || 0;
+  const baseValue = Number(employee?.[baseKey] ?? currentValue) || currentValue;
   const diff = currentValue - baseValue;
 
   if (diff > 0) {
@@ -14117,7 +15503,7 @@ function renderEmployeeStatValue(employee, statKey, baseKey) {
     return `${currentValue}（${diff}）`;
   }
 
-  return `${currentValue}`;
+  return `${currentValue}（+0）`;
 }
 
 function getEmployeeSalary(employee) {
@@ -14126,17 +15512,6 @@ function getEmployeeSalary(employee) {
 
 function renderEmployeeSalaryValue(employee) {
   const currentSalary = getEmployeeSalary(employee);
-  const baseSalary = BASE_EMPLOYEE_SALARY;
-  const diff = currentSalary - baseSalary;
-
-  if (diff > 0) {
-    return `${currentSalary}万円（初任給+${diff}万円）`;
-  }
-
-  if (diff < 0) {
-    return `${currentSalary}万円（${diff}万円）`;
-  }
-
   return `${currentSalary}万円`;
 }
 
@@ -14533,13 +15908,14 @@ function grantEmployeesExp(employeeIds, gainedExp, reason) {
       const isTutorialNoTicketReward = isStoryTutorialActive();
 
       if (!isTutorialNoTicketReward) {
-        setEmployeeTickets((current) => current + playerResult.rankUpCount);
+        setRookieEmployeeTickets((current) => current + playerResult.rankUpCount);
       }
 
       setPlayerRankUpResult({
         beforeRank: beforePlayerRank,
         rank: playerResult.rank,
         ticketCount: isTutorialNoTicketReward ? 0 : playerResult.rankUpCount,
+        ticketType: "rookie",
         tutorialNoTicketReward: isTutorialNoTicketReward,
         unlockMessages,
       });
@@ -14547,7 +15923,7 @@ function grantEmployeesExp(employeeIds, gainedExp, reason) {
       resultMessages.push(
         isTutorialNoTicketReward
           ? `プレイヤーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。${unlockMessages.join(" / ")}`
-          : `プレイヤーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。社員チケット+${playerResult.rankUpCount}枚。${unlockMessages.join(" / ")}`
+          : `プレイヤーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。社員ライトチケット+${playerResult.rankUpCount}枚。${unlockMessages.join(" / ")}`
       );
     }
   }
@@ -14563,6 +15939,16 @@ function grantEmployeesExp(employeeIds, gainedExp, reason) {
 
 function grantEmployeeExp(employeeId, gainedExp, reason) {
   grantEmployeesExp([employeeId], gainedExp, reason);
+}
+
+function recruitRookieEmployees() {
+  if (isStoryTutorialActive()) {
+    showStoryTutorialBlockedMessage();
+    alert("チュートリアル中は社員採用はできません。まずは表示されている目標を進めましょう。");
+    return;
+  }
+
+  startEmployeeRecruitmentByTicket("rookie");
 }
 
 function recruitEmployees() {
@@ -14599,8 +15985,10 @@ function getRecruitEnvelopeLabel(envelopeType) {
 
 function createRecruitmentApplicants(ticketType) {
   const isPremium = ticketType === "premium";
+  const isRookie = ticketType === "rookie";
   const availableEmployees = EMPLOYEE_POOL.filter((employee) => {
     if (isPremium) return ["SR", "SSR", "UR"].includes(employee.rarity);
+    if (isRookie) return ["N", "R", "HR", "SR"].includes(employee.rarity);
     return true;
   });
 
@@ -14609,7 +15997,7 @@ function createRecruitmentApplicants(ticketType) {
   const pickedEmployees = [];
 
   for (let i = 0; i < applicantCount; i++) {
-    const pickedEmployee = pickRecruitEmployee(availableEmployees, pickedEmployees, isPremium);
+    const pickedEmployee = pickRecruitEmployee(availableEmployees, pickedEmployees, ticketType);
     if (pickedEmployee) {
       pickedEmployees.push(pickedEmployee);
     }
@@ -14638,8 +16026,14 @@ function startEmployeeRecruitmentByTicket(ticketType) {
   }
 
   const isPremium = ticketType === "premium";
+  const isRookie = ticketType === "rookie";
 
-  if (!isPremium && employeeTickets < 1) {
+  if (isRookie && rookieEmployeeTickets < 1) {
+    alert("社員ライトチケットがありません。ライト採用にはライトチケット1枚が必要です。");
+    return;
+  }
+
+  if (!isPremium && !isRookie && employeeTickets < 1) {
     alert("社員チケットがありません。社員募集には社員チケット1枚が必要です。");
     return;
   }
@@ -14658,6 +16052,8 @@ function startEmployeeRecruitmentByTicket(ticketType) {
 
   if (isPremium) {
     setPremiumEmployeeTickets(premiumEmployeeTickets - 1);
+  } else if (isRookie) {
+    setRookieEmployeeTickets(rookieEmployeeTickets - 1);
   } else {
     setEmployeeTickets(employeeTickets - 1);
   }
@@ -14670,7 +16066,7 @@ function startEmployeeRecruitmentByTicket(ticketType) {
     selectedEnvelopeId: null,
   });
 
-  setLog(`${isPremium ? "社員プレミアムチケット" : "社員チケット"}1枚を使い、履歴書が${applicants.length}通届きました。封筒を開封して1人を採用してください。`);
+  setLog(`${getTicketName(ticketType)}1枚を使い、履歴書が${applicants.length}通届きました。封筒を開封して1人を採用してください。`);
 }
 
 function openRecruitEnvelope(envelopeId) {
@@ -14816,22 +16212,48 @@ function confirmRecruitApplicant(applicant) {
 
   if (!ok) return;
 
-  const storedEmployee = normalizeEmployeeGrowthBase({
+  const targetOffice = getFirstAvailableOffice();
+  const targetOfficeId = targetOffice?.officeId ?? null;
+  const targetOfficeName = targetOffice
+    ? (targetOffice.officeName ?? targetOffice.hqName ?? getOfficeName(targetOfficeId))
+    : null;
+
+  const hiredEmployee = normalizeEmployeeGrowthBase({
     ...applicant,
     envelopeId: undefined,
     envelopeType: undefined,
     opened: undefined,
-    officeId: null,
+    officeId: targetOfficeId,
   });
 
-  setEmployeeStorage([
-    ...employeeStorage,
-    storedEmployee,
-  ]);
+  if (targetOffice) {
+    setEmployees([
+      ...employees,
+      hiredEmployee,
+    ]);
+  } else {
+    setEmployeeStorage([
+      ...employeeStorage,
+      {
+        ...hiredEmployee,
+        officeId: null,
+      },
+    ]);
+  }
+
   setEmployeeRecruitmentOffer(null);
   setEmployeeGachaResult(null);
 
-  setLog(`${storedEmployee.name}（${storedEmployee.rarity}）を採用しました。社員保管庫に追加されました。`);
+  setLog(
+    targetOffice
+      ? `${hiredEmployee.name}（${hiredEmployee.rarity}）を採用しました。${targetOfficeName}へ自動配属しました。配属枠:${getEmployeeAssignedCountForOffice(targetOfficeId) + 1}/${OFFICE_EMPLOYEE_ASSIGN_LIMIT}人。`
+      : `${hiredEmployee.name}（${hiredEmployee.rarity}）を採用しました。配属枠が満員のため社員保管庫に追加されました。`
+  );
+}
+
+function addRookieEmployeeTicketForDemo() {
+  setRookieEmployeeTickets(rookieEmployeeTickets + 1);
+  setLog("デモ用に社員ライトチケットを1枚追加しました。");
 }
 
 function addEmployeeTicketForDemo() {
@@ -14861,6 +16283,8 @@ function grantTicketReward(ticketType, count, reason, showPopup = true) {
 
   if (ticketType === "premium") {
     setPremiumEmployeeTickets((current) => current + amount);
+  } else if (ticketType === "rookie") {
+    setRookieEmployeeTickets((current) => current + amount);
   } else {
     setEmployeeTickets((current) => current + amount);
   }
@@ -14877,7 +16301,7 @@ function grantTicketReward(ticketType, count, reason, showPopup = true) {
     setTicketRewardResult(reward);
   }
 
-  setLog(`${reason}：${ticketType === "premium" ? "社員プレミアムチケット" : "社員チケット"}を${amount}枚獲得しました。`);
+  setLog(`${reason}：${getTicketName(ticketType)}を${amount}枚獲得しました。`);
 }
 
 function handleDeveloperCommand() {
@@ -14943,6 +16367,10 @@ function assignStoredEmployee(employee, officeId) {
     return;
   }
 
+  if (!hasOfficeEmployeeVacancy(officeId)) {
+    alert(`${getOfficeName(officeId)}の配属上限は${OFFICE_EMPLOYEE_ASSIGN_LIMIT}人です。先に社員を保管庫へ戻してください。`);
+    return;
+  }
 
   const officeName = getOfficeName(officeId);
 
@@ -14958,7 +16386,7 @@ function assignStoredEmployee(employee, officeId) {
     employeeStorage.filter((item) => item.id !== employee.id)
   );
 
-  setLog(`${employee.name}を${officeName}へ配属しました。`);
+  setLog(`${employee.name}を${officeName}へ配属しました。${officeName}の配属枠は${getEmployeeAssignedCountForOffice(officeId) + 1}/${OFFICE_EMPLOYEE_ASSIGN_LIMIT}人です。`);
 }
 
 function unassignEmployee(employee) {
@@ -18039,10 +19467,11 @@ function newGame() {
   setLoanAmountInput("5000");
   setSelectedBankId("regional");
   setMonth(1);
-  setPlayerRank(1);
-  setPlayerExp(0);
-  playerRankRef.current = 1;
-  playerExpRef.current = 0;
+  const accountRankExp = getBetterAccountRankExp(readAccountData(), playerRank, playerExp);
+  setPlayerRank(accountRankExp.playerRank);
+  setPlayerExp(accountRankExp.playerExp);
+  playerRankRef.current = accountRankExp.playerRank;
+  playerExpRef.current = accountRankExp.playerExp;
   setPlayerRankUpResult(null);
 
   const newMap = createMap();
@@ -18067,6 +19496,7 @@ function fullResetGame() {
 
   localStorage.removeItem("realEstateGameSave");
   localStorage.removeItem(getSaveSlotKey(activeSaveSlot));
+  localStorage.removeItem(ACCOUNT_DATA_KEY);
 
   const newMap = createMap();
 
@@ -18078,10 +19508,11 @@ function fullResetGame() {
   setLoanAmountInput("5000");
   setSelectedBankId("regional");
   setMonth(1);
-  setPlayerRank(1);
-  setPlayerExp(0);
-  playerRankRef.current = 1;
-  playerExpRef.current = 0;
+  const accountRankExp = getBetterAccountRankExp(readAccountData(), 1, 0);
+  setPlayerRank(accountRankExp.playerRank);
+  setPlayerExp(accountRankExp.playerExp);
+  playerRankRef.current = accountRankExp.playerRank;
+  playerExpRef.current = accountRankExp.playerExp;
   setPlayerRankUpResult(null);
   setTiles(newMap.tiles);
   setSelectedId(null);
@@ -18091,8 +19522,10 @@ function fullResetGame() {
   setEmployeeCandidates([]);
   setEmployeeStorage([]);
   setActionPoints(0);
-  setEmployeeTickets(1);
-  setPremiumEmployeeTickets(0);
+  const gifuAccountTickets = getAccountTicketCounts(readAccountData());
+  setRookieEmployeeTickets(gifuAccountTickets.rookieEmployeeTickets);
+  setEmployeeTickets(Math.max(gifuAccountTickets.employeeTickets, 1));
+  setPremiumEmployeeTickets(gifuAccountTickets.premiumEmployeeTickets);
   setEmployeeSortKey("rarity");
   setEmployeeSortDirection("desc");
   setLogHistory([]);
@@ -19136,6 +20569,74 @@ function getTileLabel(tile) {
     selectedMainTile?.building ? BUILDINGS[selectedMainTile.building] : null;
 
 
+  const selectedTilePlaySummary = useMemo(() => {
+    if (!selectedTile) {
+      return {
+        icon: "🗺️",
+        title: "マップから土地を選択",
+        subtitle: "土地・建物・拠点を選ぶと詳細がここに表示されます。",
+        tags: ["未選択"],
+        condition: 0,
+      };
+    }
+
+    const mainTile = getMainTile(selectedTile);
+    const buildingInfo = mainTile?.building ? BUILDINGS[mainTile.building] : null;
+    const occupiedRooms = mainTile?.rooms?.filter((room) => room.occupied).length ?? 0;
+    const roomCount = mainTile?.rooms?.length ?? 0;
+    const ownerName = getTileOwnerName(mainTile ?? selectedTile);
+    const featureName = getFeatureName(selectedTile.feature);
+    const terrainName = getTerrainName(selectedTile.terrain);
+    const zoneName = getZoneName(selectedTile.zone);
+    const rangeName = isTileInOfficeRange(selectedTile) ? "行動範囲内" : "行動範囲外";
+    const isConstructing = mainTile?.buildingStatus === "constructing";
+    const icon = isConstructing
+      ? "🚧"
+      : selectedTile.feature === FEATURE.HQ
+        ? "🏢"
+        : selectedTile.feature === FEATURE.BRANCH
+          ? "🏬"
+          : selectedTile.feature === FEATURE.STATION
+            ? "🚉"
+            : selectedTile.feature === FEATURE.SCHOOL
+              ? "🏫"
+              : selectedTile.feature === FEATURE.ROAD
+                ? "🛣️"
+                : buildingInfo
+                  ? "🏠"
+                  : selectedTile.owner === OWNER.SALE
+                    ? "🏷️"
+                    : selectedTile.owner === OWNER.PLAYER
+                      ? "📍"
+                      : "🗺️";
+
+    return {
+      icon,
+      title: buildingInfo?.name ?? (selectedTile.hqName || selectedTile.officeName || featureName || "空き地"),
+      subtitle: `座標 ${selectedTile.x},${selectedTile.y} / ${terrainName} / ${zoneName} / ${ownerName}`,
+      tags: [rangeName, selectedTile.landPrice ? `地価${selectedTile.landPrice}万円` : "地価不明", roomCount > 0 ? `入居${occupiedRooms}/${roomCount}` : featureName],
+      condition: Math.round(mainTile?.condition ?? 0),
+    };
+  }, [selectedTile, tiles]);
+
+  const cityVisualSummary = useMemo(() => {
+    const mainBuildingTiles = tiles.filter((tile) => tile.building && !tile.buildingMainId);
+    const occupiedRoomCount = mainBuildingTiles.reduce((sum, tile) => {
+      return sum + (Array.isArray(tile.rooms) ? tile.rooms.filter((room) => room.occupied).length : 0);
+    }, 0);
+    const playerBuildingCount = mainBuildingTiles.filter((tile) => tile.owner === OWNER.PLAYER).length;
+    const constructingCount = tiles.filter((tile) => tile.buildingStatus === "constructing").length;
+    const stationCount = tiles.filter((tile) => tile.feature === FEATURE.STATION).length;
+
+    return {
+      occupiedRoomCount,
+      playerBuildingCount,
+      constructingCount,
+      stationCount,
+    };
+  }, [tiles]);
+
+
 // v79方針：需要指数・住宅需要平均・商業需要平均・工業需要平均の数値表示は停止。
 // 理由：70×70マップ全体に対して需要平均を毎回集計すると処理が重くなるため。
 // ユーザー指示により、将来復活できるように需要計算関数自体は残すが、この平均集計は実行しない。
@@ -19204,7 +20705,9 @@ function saveCurrentGameToSlot(slot = activeSaveSlot) {
     employees,
     employeeCandidates,
     employeeStorage,
+    accountSnapshot: mergeAccountDataWithGame(savedAccountData, { playerRank, playerExp, employees, employeeStorage, hasClearedNagoyaChapter, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }),
     actionPoints,
+    rookieEmployeeTickets,
     employeeTickets,
     premiumEmployeeTickets,
     employeeSortKey,
@@ -19218,12 +20721,14 @@ function saveCurrentGameToSlot(slot = activeSaveSlot) {
     tutorialStep,
     hasShownGifuHqCompleteGuide,
     hasClearedGifuChapter,
+    hasClearedNagoyaChapter,
     nagoyaTutorialStep,
   };
 
   localStorage.setItem("realEstateGameCurrentSlot", String(slot));
   localStorage.setItem(getSaveSlotKey(slot), JSON.stringify(saveData));
   localStorage.setItem("realEstateGameSave", JSON.stringify(saveData));
+  writeAccountData(mergeAccountDataWithGame(readAccountData(), { playerRank, playerExp, employees, employeeStorage, hasClearedNagoyaChapter, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }));
   setActiveSaveSlot(slot);
   setSaveSlotRefreshKey((current) => current + 1);
   setLog(`スロット${slot}に保存しました。`);
@@ -19236,8 +20741,9 @@ function applySaveDataToCurrentGame(data, slot) {
   }
 
   const loadedCompanyName = data.playerCompanyName || DEFAULT_COMPANY_NAME;
-  const loadedPlayerRank = data.playerRank ?? 1;
-  const loadedPlayerExp = data.playerExp ?? 0;
+  const loadedRankExp = getBetterAccountRankExp(readAccountData(), data.playerRank, data.playerExp);
+  const loadedPlayerRank = loadedRankExp.playerRank;
+  const loadedPlayerExp = loadedRankExp.playerExp;
 
   setActiveSaveSlot(slot);
   setPlayerCompanyName(loadedCompanyName);
@@ -19261,6 +20767,7 @@ function applySaveDataToCurrentGame(data, slot) {
   setTutorialStep(data.tutorialStep ?? null);
   setHasShownGifuHqCompleteGuide(data.hasShownGifuHqCompleteGuide ?? false);
   setHasClearedGifuChapter(data.hasClearedGifuChapter ?? false);
+  setHasClearedNagoyaChapter(data.hasClearedNagoyaChapter ?? false);
   setNagoyaTutorialStep(data.nagoyaTutorialStep ?? null);
   setTiles(data.tiles);
   setSelectedId(data.selectedId ?? null);
@@ -19283,9 +20790,18 @@ function applySaveDataToCurrentGame(data, slot) {
       ...employee,
       officeId: null,
     })));
+  writeAccountData(mergeAccountDataWithGame(readAccountData(), {
+    playerRank: loadedPlayerRank,
+    playerExp: loadedPlayerExp,
+    employees: data.employees ?? [],
+    employeeStorage: data.employeeStorage ?? [],
+    hasClearedNagoyaChapter: data.hasClearedNagoyaChapter ?? false,
+  }));
   setActionPoints(data.actionPoints ?? 0);
-  setEmployeeTickets(data.employeeTickets ?? 1);
-  setPremiumEmployeeTickets(data.premiumEmployeeTickets ?? 0);
+  const loadedAccountTickets = getAccountTicketCounts(readAccountData(), data);
+  setRookieEmployeeTickets(loadedAccountTickets.rookieEmployeeTickets);
+  setEmployeeTickets(loadedAccountTickets.employeeTickets);
+  setPremiumEmployeeTickets(loadedAccountTickets.premiumEmployeeTickets);
   setEmployeeSortKey(data.employeeSortKey ?? "rarity");
   setEmployeeSortDirection(data.employeeSortDirection ?? "desc");
   setAnnualStats(data.annualStats ?? { income: 0, maintenance: 0, tax: 0, purchase: 0, net: 0 });
@@ -19342,19 +20858,20 @@ function loadSaveSlotFromTitle(slot) {
   }
 }
 
-function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode = "free") {
+function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode = "free", founderEmployeeIds = []) {
   const companyName = (fixedCompanyName || newCompanyNameInput || DEFAULT_COMPANY_NAME).trim() || DEFAULT_COMPANY_NAME;
   const isStoryTutorial = mode === "story";
   const newMap = isStoryTutorial ? createStoryTutorialMap() : createMap();
   const initialEmployees = isStoryTutorial
-  ? [normalizeEmployeeGrowthBase(createStoryAkari())]
-  : [];
+    ? [normalizeEmployeeGrowthBase(createStoryAkari())]
+    : getFounderEmployeesFromAccount(readAccountData(), founderEmployeeIds);
 
   localStorage.setItem("realEstateGameCurrentSlot", String(slot));
   setActiveSaveSlot(slot);
   setCurrentGameMode(mode);
   setHasShownGifuHqCompleteGuide(false);
   setHasClearedGifuChapter(false);
+  setHasClearedNagoyaChapter(false);
   setNagoyaTutorialStep(null);
   setTutorialStep(isStoryTutorial ? STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE : null);
   setStoryEvent(isStoryTutorial ? STORY_TUTORIAL_EVENTS.START : null);
@@ -19368,10 +20885,11 @@ function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode
   setLoanAmountInput("5000");
   setSelectedBankId("regional");
   setMonth(1);
-  setPlayerRank(1);
-  setPlayerExp(0);
-  playerRankRef.current = 1;
-  playerExpRef.current = 0;
+  const accountRankExp = getBetterAccountRankExp(readAccountData(), 1, 0);
+  setPlayerRank(accountRankExp.playerRank);
+  setPlayerExp(accountRankExp.playerExp);
+  playerRankRef.current = accountRankExp.playerRank;
+  playerExpRef.current = accountRankExp.playerExp;
   setPlayerRankUpResult(null);
 
   setTiles(newMap.tiles);
@@ -19382,8 +20900,10 @@ function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode
   setEmployeeCandidates([]);
   setEmployeeStorage([]);
   setActionPoints(isStoryTutorial ? 5 : 0);
-  setEmployeeTickets(isStoryTutorial ? 0 : 1);
-  setPremiumEmployeeTickets(0);
+  const nextAccountTickets = getAccountTicketCounts(readAccountData());
+  setRookieEmployeeTickets(nextAccountTickets.rookieEmployeeTickets);
+  setEmployeeTickets(nextAccountTickets.employeeTickets);
+  setPremiumEmployeeTickets(nextAccountTickets.premiumEmployeeTickets);
   setEmployeeSortKey("rarity");
   setEmployeeSortDirection("desc");
   setLogHistory([]);
@@ -19397,6 +20917,7 @@ function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode
   setShowTitleScreen(false);
   setShowPrologue(false);
   setPendingNewGame(null);
+  setSelectedFounderEmployeeIds([]);
   setPrologueIndex(0);
   setTitleModal(null);
   setSaveLoadModal(null);
@@ -19412,7 +20933,7 @@ function finishPrologue() {
     companyName: (newCompanyNameInput || DEFAULT_COMPANY_NAME).trim() || DEFAULT_COMPANY_NAME,
   };
 
-  resetGameFromTitle(pending.slot, pending.companyName, pending.mode ?? "story");
+  resetGameFromTitle(pending.slot, pending.companyName, pending.mode ?? "story", pending.founderEmployeeIds ?? []);
 }
 
 function startNewGameFromTitle(slot = activeSaveSlot, mode = "story") {
@@ -19422,16 +20943,37 @@ function startNewGameFromTitle(slot = activeSaveSlot, mode = "story") {
 このスロットの既存データは上書きされます。`);
   if (!ok) return;
 
-  setPendingNewGame({ slot, companyName, mode });
+  const nextPendingNewGame = { slot, companyName, mode };
+  setPendingNewGame(nextPendingNewGame);
   setPrologueIndex(0);
+
   if (mode === "story") {
     setShowPrologue(true);
-  } else {
-    resetGameFromTitle(slot, companyName, "free");
+    setTitleModal(null);
+    setSaveLoadModal(null);
     return;
   }
-  setTitleModal(null);
-  setSaveLoadModal(null);
+
+  const accountData = readAccountData();
+  const canSelectFounders = Boolean(getStoryAkariForFounder(accountData)) || getFounderSelectableEmployees(accountData).length > 0;
+  if (canSelectFounders) {
+    setSelectedFounderEmployeeIds([]);
+    setTitleModal("founderSelect");
+    setSaveLoadModal(null);
+    return;
+  }
+
+  resetGameFromTitle(slot, companyName, "free", []);
+}
+
+function startFreeGameWithSelectedFounders() {
+  const pending = pendingNewGame ?? {
+    slot: activeSaveSlot,
+    companyName: (newCompanyNameInput || DEFAULT_COMPANY_NAME).trim() || DEFAULT_COMPANY_NAME,
+    mode: "free",
+  };
+
+  resetGameFromTitle(pending.slot, pending.companyName, "free", selectedFounderEmployeeIds);
 }
 
 function startGifuChapter() {
@@ -19440,6 +20982,7 @@ function startGifuChapter() {
   setTutorialStep(null);
   setHasShownGifuHqCompleteGuide(true);
   setHasClearedGifuChapter(false);
+  setHasClearedNagoyaChapter(false);
   setNagoyaTutorialStep(null);
   setStoryEvent(STORY_GIFU_EVENTS.INTRO);
   setTiles(gifuMap.tiles);
@@ -19473,7 +21016,7 @@ useEffect(() => {
 
   setHasClearedGifuChapter(true);
   setStoryEvent(STORY_GIFU_EVENTS.CLEAR);
-  setLog("岐阜編の目標を達成しました。人口650人以上、総資産3億円以上を達成です。");
+  setLog("岐阜編の目標を達成しました。人口500人以上、総資産3億円以上を達成です。");
 }, [isGifuChapterClearConditionMet, hasClearedGifuChapter]);
 
 function startNagoyaBridgeChapter() {
@@ -19500,7 +21043,8 @@ function startNagoyaBridgeChapter() {
 function finishNagoyaBridgeChapter() {
   setCurrentGameMode("story_nagoya");
   setStoryEvent({
-    portrait: "formal",
+    background: NAGOYA_PROLOGUE_BACKGROUND,
+    portrait: "happy",
     title: "第2章 名古屋編",
     text: "社長、銀行融資と支店建設の流れを確認できましたね。ここからは名古屋方面への本格進出です。名古屋編の目標は、人口1,000人以上、総資産5億円以上です。社員を支店へ配属しながら、より広いエリアで経営していきましょう！",
   });
@@ -19522,10 +21066,27 @@ useEffect(() => {
   setStoryEvent({
     portrait: "happy",
     title: "名古屋編クリア",
-    text: "社長！名古屋編の経営目標を達成しました！\n人口1,000人以上、総資産5億円以上。支店を使った都市部への進出も形になってきましたね。",
+    text: "社長、本当にここまで来ましたね。\n\n最初は空き家一軒から始まった会社でしたけど、\n今では名古屋へ進出する企業になりました。\n\n私も入社したばかりで、\n右も左も分からなかったのに、\nたくさんの経験をさせてもらいました。\n\nまだまだ未熟ですけど、\nこれからも社長と一緒に頑張っていきたいです。\n\n━━━━━━━━━━━━\nストーリーモード 第1部 完\n創業編 ～ 名古屋進出編\n━━━━━━━━━━━━",
   });
-  setLog("名古屋編の目標を達成しました。人口1,000人以上、総資産5億円以上を達成です。");
+  setLog("名古屋編の目標を達成しました。ストーリーモード第1部を完了しました。");
 }, [isNagoyaChapterClearConditionMet, hasClearedNagoyaChapter]);
+
+function continueAfterStoryFirstPart() {
+  setCurrentGameMode("free");
+  setStoryEvent(null);
+  setStorySequence(null);
+  setStorySequenceIndex(0);
+  setActivePanel("home");
+  setLog("ストーリーモード第1部完了後、そのまま経営を継続します。");
+}
+
+function returnToTitleAfterStoryFirstPart() {
+  saveCurrentGameToSlot(activeSaveSlot);
+  setStoryEvent(null);
+  setStorySequence(null);
+  setStorySequenceIndex(0);
+  returnToTitleScreen();
+}
 
 useEffect(() => {
   if (currentGameMode !== "story_nagoya_bridge" || !nagoyaTutorialStep) return;
@@ -19597,7 +21158,7 @@ function getCurrentAkariGuide() {
 
   if (currentGameMode === "story_nagoya_bridge" && nagoyaTutorialStep) {
     return {
-      portrait: "formal",
+      portrait: "serious",
       title: "第2章 名古屋編：進出準備",
       goal: getStoryNagoyaGoalText(nagoyaTutorialStep),
       text: getStoryNagoyaAdviceText(nagoyaTutorialStep),
@@ -19609,7 +21170,7 @@ function getCurrentAkariGuide() {
 
   if (currentGameMode === "story_nagoya") {
     return {
-      portrait: "formal",
+      portrait: "serious",
       title: "第2章 名古屋編",
       goal: `人口${NAGOYA_CLEAR_POPULATION.toLocaleString()}人以上、総資産${Math.round(NAGOYA_CLEAR_TOTAL_ASSETS / 10000)}億円以上を目指しましょう。`,
       text: "名古屋編では、支店を使って活動範囲を広げます。社員画面で社員を本社・支店へ配属変更できるので、支店にも担当社員を置いてから購入・建設・修繕を進めましょう。",
@@ -19619,7 +21180,7 @@ function getCurrentAkariGuide() {
 
   if (currentGameMode === "story_gifu" && !hqPlaced) {
     return {
-      portrait: "formal",
+      portrait: "serious",
       title: "第1章 岐阜編：本社設置",
       goal: "本社を設置する土地を選びましょう。",
       text: "普通の本社は初期費用を抑えられます。アパート付き本社は費用が高い代わりに、最初から賃貸収入を狙えます。どちらを選んでも大丈夫です。",
@@ -19644,6 +21205,27 @@ const currentAkariGuide = getCurrentAkariGuide();
 
 
 const hasSaveData = Boolean(savedGame) || hasAnySaveSlot;
+const titleSavedMode = savedGame?.currentGameMode ?? currentGameMode ?? "free";
+const titleHasStorySave = Boolean(savedGame) && String(titleSavedMode).startsWith("story");
+const titleHasFreeSave = Boolean(savedGame) && titleSavedMode === "free";
+function continueStoryFromTitle() {
+  if (titleHasStorySave) {
+    openGameFromTitle();
+    return;
+  }
+
+  startNewGameFromTitle(activeSaveSlot, "story");
+}
+
+function continueFreeFromTitle() {
+  if (titleHasFreeSave) {
+    openGameFromTitle();
+    return;
+  }
+
+  startNewGameFromTitle(activeSaveSlot, "free");
+}
+
 const ownedBuildingCountForTitle = tiles.filter((tile) => {
   return tile.owner === OWNER.PLAYER && tile.building && !tile.buildingMainId;
 }).length;
@@ -19653,10 +21235,433 @@ const titleTotalAssets = money + tiles.reduce((sum, tile) => {
   const buildingValue = tile.building ? Math.round((BUILDINGS[tile.building]?.cost ?? 0) * 0.65) : 0;
   return sum + (tile.landPrice ?? 0) + buildingValue;
 }, 0);
+const titleAccountData = readAccountData();
+const titleAccountEmployeeVault = mergeEmployeeCollections(titleAccountData.employeeVault ?? []);
+const titleFounderSelectableEmployees = getFounderSelectableEmployees(titleAccountData);
+const titleStoryAkari = getStoryAkariForFounder(titleAccountData);
+const titleDateLabel = getGameDate(month).label;
+const titleFreeStatusText = titleHasFreeSave ? `${titleDateLabel} / 所持金 ${money.toLocaleString()}万円` : "未開始 / 自由経営を開始";
+const titleStoryStatusText = currentGameMode === "story_nagoya"
+  ? "名古屋編 進行中"
+  : currentGameMode === "story_gifu"
+    ? "岐阜編 進行中"
+    : currentGameMode === "story_tutorial"
+      ? "第0章 創業編"
+      : titleAccountData.unlockedStoryAkari
+        ? "岐阜編から再開できます"
+        : "第0章から開始";
+const titleEmployeeTotalCount = EMPLOYEE_POOL.length;
+const titleEmployeeCollectedCount = titleAccountEmployeeVault.length;
+const titleEmployeeCompletionRate = titleEmployeeTotalCount > 0
+  ? Math.round((titleEmployeeCollectedCount / titleEmployeeTotalCount) * 1000) / 10
+  : 0;
+const titleEmployeePoolRarityCounts = EMPLOYEE_POOL.reduce((counts, employee) => {
+  const rarity = employee.rarity ?? "N";
+  counts[rarity] = (counts[rarity] ?? 0) + 1;
+  return counts;
+}, {});
+const titleEmployeeCollectedRarityCounts = titleAccountEmployeeVault.reduce((counts, employee) => {
+  const rarity = employee.rarity ?? "N";
+  counts[rarity] = (counts[rarity] ?? 0) + 1;
+  return counts;
+}, {});
+
+const titleVaultRarityOptions = ["ALL", "N", "R", "HR", "SR", "SSR", "UR"];
+const titleVaultSortOptions = [
+  { key: "power", label: "能力合計順" },
+  { key: "rarity", label: "レア順" },
+  { key: "level", label: "レベル順" },
+  { key: "leadership", label: "統率順" },
+  { key: "sales", label: "営業順" },
+  { key: "construction", label: "建築順" },
+  { key: "management", label: "管理順" },
+  { key: "name", label: "名前順" },
+];
+const titleVaultRarityCounts = titleAccountEmployeeVault.reduce((counts, employee) => {
+  const rarity = employee.rarity ?? "N";
+  counts[rarity] = (counts[rarity] ?? 0) + 1;
+  return counts;
+}, {});
+
+function getEmployeeRarityRankForVault(employee) {
+  const rarityOrder = { UR: 6, SSR: 5, SR: 4, HR: 3, R: 2, N: 1 };
+  return rarityOrder[employee?.rarity] ?? 0;
+}
+
+function getEmployeeAbilityTotalForVault(employee) {
+  return (Number(employee?.leadership) || 0) +
+    (Number(employee?.sales) || 0) +
+    (Number(employee?.construction) || 0) +
+    (Number(employee?.management) || 0);
+}
+
+function compareEmployeesForVault(a, b, sortKey = titleVaultSortKey) {
+  if (Number(a?.id) === 122 && Number(b?.id) !== 122) return -1;
+  if (Number(b?.id) === 122 && Number(a?.id) !== 122) return 1;
+
+  if (sortKey === "name") {
+    return String(a?.name ?? "").localeCompare(String(b?.name ?? ""), "ja");
+  }
+
+  if (sortKey === "rarity") {
+    const rarityDiff = getEmployeeRarityRankForVault(b) - getEmployeeRarityRankForVault(a);
+    if (rarityDiff !== 0) return rarityDiff;
+    return getComparableEmployeePower(b) - getComparableEmployeePower(a);
+  }
+
+  if (sortKey === "level") {
+    const levelDiff = (b?.level ?? 1) - (a?.level ?? 1);
+    if (levelDiff !== 0) return levelDiff;
+    return getComparableEmployeePower(b) - getComparableEmployeePower(a);
+  }
+
+  if (["leadership", "sales", "construction", "management"].includes(sortKey)) {
+    const statDiff = (b?.[sortKey] ?? 0) - (a?.[sortKey] ?? 0);
+    if (statDiff !== 0) return statDiff;
+    return getComparableEmployeePower(b) - getComparableEmployeePower(a);
+  }
+
+  // 「能力合計順」はレベル・経験値・覚醒を含めず、
+  // 統率＋営業＋建築＋管理だけで並べる。
+  const abilityTotalDiff = getEmployeeAbilityTotalForVault(b) - getEmployeeAbilityTotalForVault(a);
+  if (abilityTotalDiff !== 0) return abilityTotalDiff;
+
+  const rarityDiff = getEmployeeRarityRankForVault(b) - getEmployeeRarityRankForVault(a);
+  if (rarityDiff !== 0) return rarityDiff;
+
+  const levelDiff = (b?.level ?? 1) - (a?.level ?? 1);
+  if (levelDiff !== 0) return levelDiff;
+
+  return String(a?.name ?? "").localeCompare(String(b?.name ?? ""), "ja");
+}
+
+function getFilteredSortedVaultEmployees(employeeList, options = {}) {
+  const rarityFilter = options.rarityFilter ?? titleVaultRarityFilter;
+  const sortKey = options.sortKey ?? titleVaultSortKey;
+
+  return mergeEmployeeCollections(employeeList)
+    .filter((employee) => rarityFilter === "ALL" || employee.rarity === rarityFilter)
+    .sort((a, b) => compareEmployeesForVault(a, b, sortKey));
+}
+
+function renderVaultControls(compact = false) {
+  return (
+    <div style={{ display: "grid", gap: 5, marginBottom: 6 }}>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${titleVaultRarityOptions.length}, minmax(42px, 1fr))`, gap: 4, width: "100%" }}>
+        {titleVaultRarityOptions.map((rarity) => {
+          const active = titleVaultRarityFilter === rarity;
+          const collectedCount = rarity === "ALL" ? titleEmployeeCollectedCount : (titleEmployeeCollectedRarityCounts[rarity] ?? 0);
+          const totalCount = rarity === "ALL" ? titleEmployeeTotalCount : (titleEmployeePoolRarityCounts[rarity] ?? 0);
+          const rarityLabel = rarity === "ALL" ? "全" : rarity;
+          const buttonLabel = `${rarityLabel} ${collectedCount}/${totalCount}`;
+          return (
+            <button
+              key={rarity}
+              type="button"
+              onClick={() => setTitleVaultRarityFilter(rarity)}
+              style={{
+                padding: compact ? "4px 3px" : "5px 4px",
+                borderRadius: 999,
+                border: active ? "2px solid #1d5c3a" : "1px solid #d8e0d8",
+                background: active ? "#e8f6ee" : "#ffffff",
+                color: "#1d2b22",
+                fontSize: compact ? 9.5 : 11,
+                fontWeight: 900,
+                lineHeight: 1.05,
+                letterSpacing: compact ? "-0.06em" : "normal",
+                whiteSpace: "nowrap",
+                overflow: "visible",
+                textOverflow: "clip",
+                cursor: "pointer",
+              }}
+            >
+              {buttonLabel}
+            </button>
+          );
+        })}
+      </div>
+      <label style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 6, alignItems: "center", fontSize: 11 }}>
+        <span style={{ fontWeight: 900 }}>並び替え</span>
+        <select
+          value={titleVaultSortKey}
+          onChange={(event) => setTitleVaultSortKey(event.target.value)}
+          style={{ padding: "5px 8px", borderRadius: 9, border: "1px solid #cfd8cf", background: "#ffffff", fontSize: 12, minHeight: 30 }}
+        >
+          {titleVaultSortOptions.map((option) => (
+            <option key={option.key} value={option.key}>{option.label}</option>
+          ))}
+        </select>
+      </label>
+    </div>
+  );
+}
+
+function getVaultEmployeePortraitSrc(employee) {
+  if (!employee) return null;
+
+  if (Number(employee.id) === 122) {
+    return AKARI_PORTRAIT_PATHS.normal;
+  }
+
+  const directImage = employee.portraitPath ?? employee.imagePath ?? employee.image ?? employee.avatar ?? null;
+  if (typeof directImage === "string" && directImage.trim()) {
+    return directImage.startsWith("/") ? directImage : `/${directImage}`;
+  }
+
+  if (!employee.graphicCode) return null;
+  return `/characters/employees/${employee.graphicCode}.png`;
+}
+
+function handleVaultEmployeePortraitError(event, employee) {
+  const image = event.currentTarget;
+  const triedCount = Number(image.dataset.fallbackTriedCount || 0);
+  const graphicCode = employee?.graphicCode;
+  const fallbackCandidates = graphicCode ? [
+    `/characters/${graphicCode}.png`,
+    `/employees/${graphicCode}.png`,
+    `/characters/employees/${String(graphicCode).toLowerCase()}.png`,
+  ] : [];
+
+  if (triedCount < fallbackCandidates.length) {
+    image.dataset.fallbackTriedCount = String(triedCount + 1);
+    image.src = fallbackCandidates[triedCount];
+    return;
+  }
+
+  image.style.display = "none";
+}
+
+function getVaultEmployeeInitial(employee) {
+  return String(employee?.name ?? "社").slice(0, 1);
+}
+
+function getVaultEmployeeRoleHint(employee) {
+  const stats = [
+    { key: "leadership", label: "統率", value: Number(employee?.leadership) || 0 },
+    { key: "sales", label: "営業", value: Number(employee?.sales) || 0 },
+    { key: "construction", label: "建築", value: Number(employee?.construction) || 0 },
+    { key: "management", label: "管理", value: Number(employee?.management) || 0 },
+  ];
+  const top = stats.sort((a, b) => b.value - a.value)[0];
+  return top ? `${top.label}型` : "万能型";
+}
+
+function renderVaultPortrait(employee, size = 72, rounded = 16) {
+  const portraitSrc = getVaultEmployeePortraitSrc(employee);
+  return (
+    <span
+      style={{
+        width: size,
+        height: size,
+        borderRadius: rounded,
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: employee?.graphicCode || Number(employee?.id) === 122
+          ? "linear-gradient(145deg, #f6faf7, #e6efe8)"
+          : "linear-gradient(145deg, #eef4ef, #ffffff)",
+        border: "1px solid #d8e0d8",
+        fontWeight: 900,
+        color: "#31563f",
+        fontSize: Math.max(16, Math.round(size * 0.32)),
+        flexShrink: 0,
+      }}
+    >
+      {portraitSrc ? (
+        <img
+          src={portraitSrc}
+          alt={employee?.name ?? "社員"}
+          onError={(event) => handleVaultEmployeePortraitError(event, employee)}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        />
+      ) : (
+        <span>{getVaultEmployeeInitial(employee)}</span>
+      )}
+    </span>
+  );
+}
+
+function renderFounderSlotSummary(akari, selectedEmployees) {
+  const slots = [
+    { label: "固定", employee: akari, fixed: true },
+    { label: "自由1", employee: selectedEmployees[0] ?? null, fixed: false },
+    { label: "自由2", employee: selectedEmployees[1] ?? null, fixed: false },
+  ];
+
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 12 }}>
+      {slots.map((slot) => (
+        <div
+          key={slot.label}
+          style={{
+            minHeight: 132,
+            borderRadius: 16,
+            border: slot.employee ? "2px solid #1d5c3a" : "1px dashed #b8c7b9",
+            background: slot.fixed ? "#fff7df" : slot.employee ? "#ecf7ef" : "#f7faf7",
+            padding: 9,
+            display: "grid",
+            placeItems: "center",
+            textAlign: "center",
+            gap: 5,
+          }}
+        >
+          <div style={{ fontSize: 11, fontWeight: 900, color: slot.fixed ? "#8a5a00" : "#31563f" }}>{slot.label}</div>
+          {slot.employee ? (
+            <>
+              {renderVaultPortrait(slot.employee, 54, 13)}
+              <strong style={{ fontSize: 12, lineHeight: 1.25 }}>{slot.employee.name}</strong>
+              <span style={{ fontSize: 10, opacity: 0.72 }}>{slot.employee.rarity} / Lv{slot.employee.level ?? 1}</span>
+            </>
+          ) : (
+            <span style={{ fontSize: 12, opacity: 0.62 }}>未選択</span>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function renderVaultEmployeeCard(employee, options = {}) {
+  const checked = Boolean(options.checked);
+  const disabled = Boolean(options.disabled);
+  const selectable = typeof options.onToggle === "function";
+  const cardBackground = employee.id === 122 ? "#fff7df" : checked ? "#ecf7ef" : "#ffffff";
+  const cardBorder = checked ? "2px solid #1d5c3a" : employee.id === 122 ? "1px solid #e3c46a" : "1px solid #d8e0d8";
+  const roleHint = getVaultEmployeeRoleHint(employee);
+  const abilityTotal = getEmployeeAbilityTotalForVault(employee);
+  const content = (
+    <span style={{ display: "grid", gridTemplateColumns: "44px 1fr", gap: 7, alignItems: "center" }}>
+      {renderVaultPortrait(employee, 44, 11)}
+      <span style={{ minWidth: 0 }}>
+        <span style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
+          <strong style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: 12 }}>{employee.name}</strong>
+          <span style={{ fontSize: 10, opacity: 0.72, whiteSpace: "nowrap" }}>{employee.rarity} / Lv{employee.level ?? 1}</span>
+        </span>
+        <span style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 2, alignItems: "center" }}>
+          <span style={{ fontSize: 10, fontWeight: 800, color: "#31563f", background: "#edf5ef", borderRadius: 999, padding: "2px 6px" }}>{roleHint}</span>
+          <span style={{ fontSize: 10, opacity: 0.76 }}>合計{abilityTotal}</span>
+          {employee.id === 122 && <span style={{ fontSize: 10, fontWeight: 800, color: "#8a5a00", background: "#fff0bf", borderRadius: 999, padding: "2px 6px" }}>七瀬</span>}
+          {checked && <span style={{ fontSize: 10, fontWeight: 800, color: "#1d5c3a", background: "#dff2e7", borderRadius: 999, padding: "2px 6px" }}>選択中</span>}
+        </span>
+        <span style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 2, fontSize: 9, opacity: 0.84, marginTop: 3 }}>
+          <span>統{Number(employee.leadership) || 0}</span>
+          <span>営{Number(employee.sales) || 0}</span>
+          <span>建{Number(employee.construction) || 0}</span>
+          <span>管{Number(employee.management) || 0}</span>
+        </span>
+      </span>
+    </span>
+  );
+
+  if (selectable) {
+    return (
+      <div key={employee.id} style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 8, alignItems: "center", padding: 9, borderRadius: 14, border: cardBorder, background: cardBackground, opacity: disabled ? 0.55 : 1 }}>
+        <input type="checkbox" checked={checked} disabled={disabled} onChange={() => options.onToggle(employee.id)} />
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={() => options.onToggle(employee.id)}
+          style={{ padding: 0, border: "none", background: "transparent", color: "inherit", textAlign: "left", cursor: disabled ? "not-allowed" : "pointer" }}
+        >
+          {content}
+        </button>
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            setTitleVaultDetailEmployee(employee);
+          }}
+          style={{ alignSelf: "center", padding: "7px 9px", borderRadius: 999, border: "1px solid #b8c7b9", background: "#ffffff", fontSize: 12, fontWeight: 800, cursor: "pointer" }}
+        >
+          詳細
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      key={employee.id}
+      type="button"
+      onClick={() => setTitleVaultDetailEmployee(employee)}
+      style={{ width: "100%", padding: 5, borderRadius: 12, border: cardBorder, background: cardBackground, color: "#1d2b22", textAlign: "left", cursor: "pointer" }}
+    >
+      {content}
+    </button>
+  );
+}
+
+function renderVaultEmployeeDetailPanel(employee) {
+  if (!employee) return null;
+
+  const employeeSkills = getEmployeeSkills(employee);
+  const roleHint = getVaultEmployeeRoleHint(employee);
+
+  return (
+    <div style={{ display: "grid", gap: 12 }}>
+      <button
+        type="button"
+        onClick={() => setTitleVaultDetailEmployee(null)}
+        style={{ justifySelf: "start", padding: "7px 12px", borderRadius: 999, border: "1px solid #b8c7b9", background: "#ffffff", fontWeight: 800, cursor: "pointer" }}
+      >
+        ← 一覧へ戻る
+      </button>
+
+      <div style={{ display: "grid", gridTemplateColumns: "150px 1fr", gap: 16, alignItems: "center", padding: 15, borderRadius: 20, background: employee.id === 122 ? "#fff7df" : "#f3f6f1", border: employee.id === 122 ? "1px solid #e3c46a" : "1px solid #d8e0d8" }}>
+        {renderVaultPortrait(employee, 150, 24)}
+
+        <div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginBottom: 7 }}>
+            <span className={`employee-rarity-label rarity-label-${String(employee.rarity || "N").toLowerCase()}`}>{getRarityLabel(employee.rarity)}</span>
+            <span style={{ fontSize: 12, fontWeight: 800, color: "#31563f", background: "#edf5ef", borderRadius: 999, padding: "3px 8px" }}>{roleHint}</span>
+            {employee.id === 122 && <span style={{ fontSize: 12, fontWeight: 800, color: "#8a5a00", background: "#fff0bf", borderRadius: 999, padding: "3px 8px" }}>七瀬固定枠</span>}
+            {employee.founderCarryOver && <span style={{ fontSize: 12, fontWeight: 800, color: "#31563f", background: "#edf5ef", borderRadius: 999, padding: "3px 8px" }}>引継ぎ社員</span>}
+          </div>
+          <h2 style={{ margin: "0 0 6px", fontSize: 24 }}>{employee.name}</h2>
+          <div style={{ fontSize: 13, lineHeight: 1.8, opacity: 0.86 }}>
+            <div>Lv {employee.level ?? 1} / EXP {employee.exp ?? 0} / 覚醒+{employee.awakening ?? 0}</div>
+            <div>月給 {renderEmployeeSalaryValue(employee)}</div>
+            <div>保管庫状態：アカウント共通保存</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+        {[
+          ["統率", renderEmployeeStatValue(employee, "leadership", "baseLeadership")],
+          ["営業", renderEmployeeStatValue(employee, "sales", "baseSales")],
+          ["建築", renderEmployeeStatValue(employee, "construction", "baseConstruction")],
+          ["管理", renderEmployeeStatValue(employee, "management", "baseManagement")],
+        ].map(([label, value]) => (
+          <div key={label} style={{ padding: 12, borderRadius: 12, background: "#f7faf7", border: "1px solid #e1e8e1", display: "flex", justifyContent: "space-between", fontWeight: 800 }}>
+            <span>{label}</span>
+            <strong>{value}</strong>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ padding: 12, borderRadius: 14, background: "#f7faf7", border: "1px solid #e1e8e1" }}>
+        <strong>特殊能力</strong>
+        <div style={{ display: "grid", gap: 7, marginTop: 8 }}>
+          {employeeSkills.length === 0 ? (
+            <span style={{ fontSize: 13, opacity: 0.72 }}>なし</span>
+          ) : employeeSkills.map((skill) => (
+            <div key={skill.id ?? skill.name} style={{ padding: "8px 10px", borderRadius: 12, background: "#edf5ef", color: "#31563f" }}>
+              <strong style={{ fontSize: 13 }}>{skill.name}</strong>
+              {skill.description && <div style={{ fontSize: 12, opacity: 0.78, marginTop: 2 }}>{skill.description}</div>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function openGameFromTitle() {
   setShowTitleScreen(false);
   setTitleModal(null);
+  setTitleVaultDetailEmployee(null);
   setActivePanel(hqPlaced ? "home" : "hq");
   setMapViewMode("normal");
   setIsMainMenuOpen(false);
@@ -19667,10 +21672,536 @@ function openGameFromTitle() {
 function returnToTitleScreen() {
   setShowTitleScreen(true);
   setTitleModal(null);
+  setTitleVaultDetailEmployee(null);
   setIsMainMenuOpen(false);
   setShowOptions(false);
   setIsMoneyInfoOpen(false);
   setIsDateInfoOpen(false);
+}
+
+
+function getHomeTimeGreeting() {
+  const hour = new Date().getHours();
+
+  if (hour >= 5 && hour < 11) return "おはようございます、社長。今日も街を元気にしていきましょう！";
+  if (hour >= 11 && hour < 17) return "今日も頑張りましょう、社長。物件も社員も少しずつ育てていきましょう！";
+  if (hour >= 17 && hour < 23) return "遅くまでお疲れ様です、社長。今日の経営状況を確認しておきましょう。";
+  return "社長、そろそろ休んだ方が……。でも、少しだけなら私もお付き合いします。";
+}
+
+function getHomeAkariTalkMessages() {
+  const ticketTotal = (titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0);
+  const vaultCount = titleAccountEmployeeVault.length;
+  const rank = titleAccountData.playerRank ?? 1;
+
+  return [
+    getHomeTimeGreeting(),
+    "社長、お疲れ様です！今日も一緒に会社を大きくしていきましょう。",
+    ticketTotal > 0
+      ? "社員採用チケットがあります。新しい仲間を迎えるチャンスですね！"
+      : "採用チケットが手に入ったら、社員採用も確認してみましょう。",
+    vaultCount > 0
+      ? `社員保管庫には${vaultCount}名の社員がいます。次の創業メンバー選びも楽しみですね。`
+      : "まだ社員保管庫は空です。ここから少しずつ仲間を増やしていきましょう。",
+    `現在のプレイヤーランクは${rank}です。社長の実績、ちゃんと積み上がっていますよ。`,
+    "岐阜で学んだことは、名古屋でもきっと役に立ちます。焦らず進めましょう。",
+    "街にもう一度、灯りを増やしていく。不動産会社の仕事って素敵ですね。",
+    "本日のおすすめは、社員確認とセーブです。大きな投資の前は忘れずにお願いします。",
+  ];
+}
+
+function getHomeAkariMessage() {
+  const messages = getHomeAkariTalkMessages();
+  return messages[titleHomeAkariTalkIndex % messages.length] ?? getHomeTimeGreeting();
+}
+
+
+function getHomeTimeTone() {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 10) return "morning";
+  if (hour >= 10 && hour < 17) return "day";
+  if (hour >= 17 && hour < 22) return "evening";
+  return "night";
+}
+
+function getHomeTimeToneLabel() {
+  const tone = getHomeTimeTone();
+  if (tone === "morning") return "朝の社長室";
+  if (tone === "day") return "昼のオフィス";
+  if (tone === "evening") return "夕方のオフィス";
+  return "夜の社長室";
+}
+
+function getHomeTimeBackgroundStyle() {
+  const tone = getHomeTimeTone();
+  const styles = {
+    morning: {
+      overlay: "linear-gradient(180deg, rgba(255,241,198,0.18), rgba(12,42,35,0.32)), url(/backgrounds/office_startup.png)",
+      aura: "radial-gradient(circle at 28% 20%, rgba(255,232,155,0.36), transparent 34%), radial-gradient(circle at 68% 18%, rgba(255,255,255,0.20), transparent 38%)",
+      shell: "radial-gradient(circle at 16% 14%, rgba(255,232,155,0.42), transparent 30%), linear-gradient(135deg, #123524 0%, #1d5c3a 48%, #f3e2b8 100%)",
+    },
+    day: {
+      overlay: "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(8,22,17,0.32)), url(/backgrounds/office_startup.png)",
+      aura: "radial-gradient(circle at 50% 22%, rgba(255,255,255,0.19), transparent 45%), radial-gradient(circle at 18% 28%, rgba(151,221,255,0.16), transparent 38%)",
+      shell: "radial-gradient(circle at 18% 18%, rgba(255,240,191,0.35), transparent 28%), linear-gradient(135deg, #123524 0%, #1d5c3a 48%, #f3e2b8 100%)",
+    },
+    evening: {
+      overlay: "linear-gradient(180deg, rgba(255,175,110,0.20), rgba(34,16,32,0.42)), url(/backgrounds/office_startup.png)",
+      aura: "radial-gradient(circle at 22% 16%, rgba(255,174,94,0.34), transparent 34%), radial-gradient(circle at 80% 22%, rgba(255,102,123,0.18), transparent 38%)",
+      shell: "radial-gradient(circle at 18% 18%, rgba(255,165,109,0.38), transparent 30%), linear-gradient(135deg, #2a1830 0%, #6a3734 48%, #f3c07e 100%)",
+    },
+    night: {
+      overlay: "linear-gradient(180deg, rgba(90,125,255,0.14), rgba(4,9,28,0.58)), url(/backgrounds/office_startup.png)",
+      aura: "radial-gradient(circle at 70% 16%, rgba(154,188,255,0.27), transparent 34%), radial-gradient(circle at 26% 24%, rgba(255,255,255,0.14), transparent 30%)",
+      shell: "radial-gradient(circle at 18% 18%, rgba(133,167,255,0.30), transparent 28%), linear-gradient(135deg, #071022 0%, #12305a 52%, #35235c 100%)",
+    },
+  };
+
+  return styles[tone] ?? styles.day;
+}
+
+function getHomeSparkleElements() {
+  return [
+    { left: "9%", top: "15%", delay: "0s", size: 5 },
+    { left: "82%", top: "12%", delay: "0.7s", size: 4 },
+    { left: "72%", top: "36%", delay: "1.3s", size: 6 },
+    { left: "18%", top: "44%", delay: "1.9s", size: 4 },
+    { left: "88%", top: "62%", delay: "2.4s", size: 5 },
+    { left: "12%", top: "70%", delay: "3.1s", size: 6 },
+  ];
+}
+
+function getHomeAkariPortraitKey() {
+  if (titleHomeAkariExpression) return titleHomeAkariExpression;
+
+  const ticketTotal = (titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0);
+  if (ticketTotal > 0) return "happy";
+  if (!titleStoryAkari) return "normal";
+  return "normal";
+}
+
+function handleHomeAkariTap() {
+  const expressions = ["normal", "happy", "serious", "surprise", "trouble"];
+
+  setTitleHomeAkariTalkIndex((currentIndex) => currentIndex + 1);
+  setTitleHomeAkariExpression(expressions[(titleHomeAkariTalkIndex + 1) % expressions.length]);
+}
+
+function getHomeTopVaultEmployees(limit = 3) {
+  return getFilteredSortedVaultEmployees(titleAccountEmployeeVault, {
+    rarityFilter: "ALL",
+    sortKey: "rarity",
+  }).slice(0, limit);
+}
+
+function renderHomeStatPill(icon, label, value, tone = "default") {
+  const backgrounds = {
+    default: "linear-gradient(145deg, rgba(255,255,255,0.22), rgba(255,255,255,0.08))",
+    gold: "linear-gradient(145deg, rgba(255, 226, 126, 0.32), rgba(112, 82, 12, 0.16))",
+    green: "linear-gradient(145deg, rgba(134, 255, 191, 0.26), rgba(12, 80, 46, 0.18))",
+    blue: "linear-gradient(145deg, rgba(142, 207, 255, 0.28), rgba(31, 82, 128, 0.16))",
+  };
+
+  return (
+    <div className="home-stat-pill-v201" style={{ padding: "8px 10px", borderRadius: 999, background: backgrounds[tone] ?? backgrounds.default, border: "1px solid rgba(255,255,255,0.22)", display: "grid", gridTemplateColumns: "auto 1fr", columnGap: 7, alignItems: "center", boxShadow: "0 8px 18px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.25)" }}>
+      <span className="home-stat-icon-v201" style={{ width: 25, height: 25, borderRadius: 999, display: "grid", placeItems: "center", background: "rgba(255,255,255,0.9)", color: "#123524", fontSize: 13, fontWeight: 900 }}>{icon}</span>
+      <span style={{ minWidth: 0 }}>
+        <span style={{ display: "block", fontSize: 10, opacity: 0.78, lineHeight: 1 }}>{label}</span>
+        <strong style={{ display: "block", fontSize: 14, lineHeight: 1.15, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{value}</strong>
+      </span>
+    </div>
+  );
+}
+
+function renderHomeMenuCard({ icon, title, sub, onClick, accent = "#ffffff", disabled = false, badge = "", featured = false }) {
+  return (
+    <button
+      type="button"
+      className={`home-menu-card-v201 home-menu-card-v203${featured ? " featured" : ""}`}
+      disabled={disabled}
+      onClick={onClick}
+      style={{
+        minHeight: featured ? 96 : 78,
+        padding: featured ? 13 : 10,
+        borderRadius: featured ? 22 : 18,
+        border: featured ? "1px solid rgba(255, 232, 155, 0.72)" : "1px solid rgba(255,255,255,0.26)",
+        background: disabled
+          ? "rgba(255,255,255,0.08)"
+          : featured
+            ? "linear-gradient(145deg, rgba(255, 225, 120, 0.36), rgba(255,255,255,0.13) 52%, rgba(255, 153, 102, 0.20))"
+            : "linear-gradient(145deg, rgba(255,255,255,0.23), rgba(255,255,255,0.08))",
+        color: "#ffffff",
+        textAlign: "left",
+        cursor: disabled ? "not-allowed" : "pointer",
+        boxShadow: disabled ? "none" : featured ? "0 16px 34px rgba(74, 41, 12, 0.34), 0 0 24px rgba(255, 214, 98, 0.20), inset 0 1px 0 rgba(255,255,255,0.22)" : "0 12px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.18)",
+        display: "grid",
+        gridTemplateColumns: featured ? "56px 1fr" : "46px 1fr",
+        gap: featured ? 12 : 10,
+        alignItems: "center",
+        opacity: disabled ? 0.55 : 1,
+        overflow: "hidden",
+        position: "relative",
+      }}
+    >
+      <span aria-hidden="true" style={{ position: "absolute", inset: 0, background: featured ? "radial-gradient(circle at 16% 16%, rgba(255,255,255,0.35), transparent 34%), radial-gradient(circle at 82% 18%, rgba(255,229,124,0.28), transparent 36%)" : "radial-gradient(circle at 18% 12%, rgba(255,255,255,0.22), transparent 36%)", pointerEvents: "none" }} />
+      {badge && (
+        <span className="home-menu-badge-v203" style={{ position: "absolute", top: 8, right: 8, zIndex: 2, padding: "3px 8px", borderRadius: 999, background: "linear-gradient(145deg,#ff4d5d,#c40022)", color: "#ffffff", fontSize: 10, fontWeight: 900, letterSpacing: 0.4, boxShadow: "0 6px 12px rgba(0,0,0,0.25)" }}>{badge}</span>
+      )}
+      <span className="home-menu-icon-v201" style={{ width: featured ? 56 : 46, height: featured ? 56 : 46, borderRadius: featured ? 20 : 16, display: "grid", placeItems: "center", background: `linear-gradient(145deg, ${accent}, #ffffff)`, color: "#123524", fontSize: featured ? 24 : 19, fontWeight: 900, boxShadow: "0 8px 16px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(255,255,255,0.34)", position: "relative", zIndex: 1 }}>{icon}</span>
+      <span style={{ position: "relative", zIndex: 1, minWidth: 0 }}>
+        <strong style={{ display: "block", fontSize: featured ? 18 : 15, marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{title}</strong>
+        <span className="home-menu-sub-v201" style={{ fontSize: featured ? 12 : 11, opacity: 0.86, lineHeight: 1.35 }}>{sub}</span>
+      </span>
+    </button>
+  );
+}
+
+function startHomeEmployeeRecruitmentByTicket(ticketType) {
+  const accountData = readAccountData();
+  const tickets = getAccountTicketCounts(accountData);
+  const isPremium = ticketType === "premium";
+  const isRookie = ticketType === "rookie";
+
+  if (isRookie && tickets.rookieEmployeeTickets < 1) {
+    alert("社員ライトチケットがありません。");
+    return;
+  }
+  if (!isPremium && !isRookie && tickets.employeeTickets < 1) {
+    alert("社員チケットがありません。");
+    return;
+  }
+  if (isPremium && tickets.premiumEmployeeTickets < 1) {
+    alert("社員プレミアムチケットがありません。");
+    return;
+  }
+
+  const applicants = createRecruitmentApplicants(ticketType);
+  if (applicants.length === 0) {
+    alert("応募者を生成できませんでした");
+    return;
+  }
+
+  const nextTickets = {
+    rookieEmployeeTickets: tickets.rookieEmployeeTickets - (isRookie ? 1 : 0),
+    employeeTickets: tickets.employeeTickets - (!isPremium && !isRookie ? 1 : 0),
+    premiumEmployeeTickets: tickets.premiumEmployeeTickets - (isPremium ? 1 : 0),
+  };
+
+  const nextAccountData = {
+    ...accountData,
+    ...nextTickets,
+    updatedAt: new Date().toISOString(),
+  };
+  writeAccountData(nextAccountData);
+  setRookieEmployeeTickets(nextTickets.rookieEmployeeTickets);
+  setEmployeeTickets(nextTickets.employeeTickets);
+  setPremiumEmployeeTickets(nextTickets.premiumEmployeeTickets);
+  setEmployeeCandidates([]);
+  setEmployeeGachaResult(null);
+  setEmployeeRecruitmentOffer({
+    ticketType,
+    applicants,
+    selectedEnvelopeId: null,
+  });
+  setTitleModal(null);
+  setTitleVaultDetailEmployee(null);
+  setLog(`ホームで${getTicketName(ticketType)}1枚を使い、履歴書が${applicants.length}通届きました。`);
+}
+
+
+const homeLoginBonusStatus = getDailyLoginBonusStatus();
+const homeMissionData = readHomeMissionData();
+
+function getHomeMissionItems() {
+  const claimedMissionIds = new Set(homeMissionData.claimedMissionIds ?? []);
+  const currentGameModeLabel = currentGameMode ?? "free";
+
+  const missionDefinitions = [
+    {
+      id: "daily_login",
+      group: "デイリー",
+      icon: "☀",
+      title: "今日ログインする",
+      description: "ホーム画面を開く。",
+      current: 1,
+      target: 1,
+      rewardExp: 10,
+    },
+    {
+      id: "daily_login_bonus",
+      group: "デイリー",
+      icon: "🎁",
+      title: "ログインボーナスを受け取る",
+      description: "プレゼントBOXから本日の報酬を受け取る。",
+      current: homeLoginBonusStatus.canClaim ? 0 : 1,
+      target: 1,
+      rewardExp: 15,
+    },
+    {
+      id: "check_company",
+      group: "デイリー",
+      icon: "📊",
+      title: "会社状況を確認する",
+      description: "保存済み会社または現在の経営データを確認する。",
+      current: hasSaveData ? 1 : 0,
+      target: 1,
+      rewardExp: 10,
+    },
+    {
+      id: "own_employee_1",
+      group: "実績",
+      icon: "👥",
+      title: "社員を1名以上保管する",
+      description: "社員採用やストーリーで社員を保管庫に登録する。",
+      current: titleAccountEmployeeVault.length,
+      target: 1,
+      rewardExp: 20,
+    },
+    {
+      id: "own_employee_10",
+      group: "実績",
+      icon: "🏢",
+      title: "社員を10名以上保管する",
+      description: "会社を支える仲間を増やす。",
+      current: titleAccountEmployeeVault.length,
+      target: 10,
+      rewardExp: 40,
+    },
+    {
+      id: "own_building_1",
+      group: "経営",
+      icon: "🏠",
+      title: "自社物件を1件以上所有する",
+      description: "購入・建設で自社物件を増やす。",
+      current: ownedBuildingCountForTitle,
+      target: 1,
+      rewardExp: 25,
+    },
+    {
+      id: "asset_1000",
+      group: "経営",
+      icon: "💰",
+      title: "総資産1,000万円以上",
+      description: "土地・建物・所持金を増やす。",
+      current: titleTotalAssets,
+      target: 1000,
+      rewardExp: 25,
+    },
+    {
+      id: "asset_10000",
+      group: "経営",
+      icon: "💎",
+      title: "総資産1億円以上",
+      description: "地方の小さな会社から中堅企業へ成長する。",
+      current: titleTotalAssets,
+      target: 10000,
+      rewardExp: 60,
+    },
+    {
+      id: "rank_2",
+      group: "実績",
+      icon: "⭐",
+      title: "プレイヤーランク2到達",
+      description: "経験を積んで社長として成長する。",
+      current: titleAccountData.playerRank ?? 1,
+      target: 2,
+      rewardExp: 30,
+    },
+    {
+      id: "clear_gifu",
+      group: "ストーリー",
+      icon: "岐",
+      title: "岐阜編をクリアする",
+      description: "岐阜で経営目標を達成する。",
+      current: hasClearedGifuChapter ? 1 : 0,
+      target: 1,
+      rewardExp: 80,
+    },
+    {
+      id: "reach_nagoya",
+      group: "ストーリー",
+      icon: "名",
+      title: "名古屋編へ到達する",
+      description: "銀行融資と支店経営で次の都市へ進む。",
+      current: (currentGameModeLabel === "story_nagoya" || currentGameModeLabel === "story_nagoya_bridge" || hasClearedNagoyaChapter) ? 1 : 0,
+      target: 1,
+      rewardExp: 80,
+    },
+    {
+      id: "daily_present_check",
+      group: "デイリー",
+      icon: "箱",
+      title: "プレゼントBOXを確認する",
+      description: "ホームからプレゼントBOXを開ける状態にする。",
+      current: 1,
+      target: 1,
+      rewardExp: 10,
+    },
+    {
+      id: "ticket_total_3",
+      group: "採用",
+      icon: "券",
+      title: "採用パスを合計3枚以上所持",
+      description: "ログインボーナスや報酬で採用パスを集める。",
+      current: rookieEmployeeTickets + employeeTickets + premiumEmployeeTickets,
+      target: 3,
+      rewardExp: 25,
+    },
+    {
+      id: "login_7_total",
+      group: "ログイン",
+      icon: "7",
+      title: "ログインボーナスを累計7回受け取る",
+      description: "7日目のプレミアム採用パスを目指す。",
+      current: homeLoginBonusStatus.claimCount,
+      target: 7,
+      rewardExp: 70,
+    },
+  ];
+
+  return missionDefinitions.map((mission) => {
+    const safeCurrent = Math.max(0, Math.round(Number(mission.current) || 0));
+    const safeTarget = Math.max(1, Math.round(Number(mission.target) || 1));
+    const completed = safeCurrent >= safeTarget;
+    const claimed = claimedMissionIds.has(mission.id);
+
+    return {
+      ...mission,
+      current: safeCurrent,
+      target: safeTarget,
+      completed,
+      claimed,
+      progressRate: Math.max(0, Math.min(100, Math.round((safeCurrent / safeTarget) * 100))),
+    };
+  });
+}
+
+const homeMissionItems = getHomeMissionItems();
+const homeMissionClaimableCount = homeMissionItems.filter((mission) => mission.completed && !mission.claimed).length;
+const homeMissionCompletedCount = homeMissionItems.filter((mission) => mission.completed).length;
+const homePresentBoxHistory = readPresentBoxHistory();
+const homePresentNoticeCount = (homeLoginBonusStatus.canClaim ? 1 : 0) + homeMissionClaimableCount;
+const titleFullPageModal = ["recruitHome", "accountVault", "presentBox", "missions", "settings"].includes(titleModal);
+const titleRainbowPaper = Math.max(0, Math.round(Number(titleAccountData.rainbowPaper ?? titleAccountData.rainbowPapers ?? 0) || 0));
+
+function claimHomeMissionReward(missionId) {
+  const mission = getHomeMissionItems().find((item) => item.id === missionId);
+
+  if (!mission || !mission.completed || mission.claimed) return;
+
+  const nextClaimedMissionIds = Array.from(new Set([...(homeMissionData.claimedMissionIds ?? []), mission.id]));
+  writeHomeMissionData({
+    claimedMissionIds: nextClaimedMissionIds,
+    updatedAt: new Date().toISOString(),
+  });
+
+  const accountData = readAccountData();
+  const rankResult = applyPlayerRankExp(accountData.playerRank ?? 1, accountData.playerExp ?? 0, mission.rewardExp);
+  const nextAccountData = {
+    ...accountData,
+    playerRank: rankResult.rank,
+    playerExp: rankResult.exp,
+    updatedAt: new Date().toISOString(),
+  };
+
+  writeAccountData(nextAccountData);
+  setPlayerRank(rankResult.rank);
+  setPlayerExp(rankResult.exp);
+  playerRankRef.current = rankResult.rank;
+  playerExpRef.current = rankResult.exp;
+  setLog(`任務「${mission.title}」を達成しました。プレイヤーEXP +${mission.rewardExp}`);
+}
+
+function renderHomeMissionCard(mission) {
+  const isClaimable = mission.completed && !mission.claimed;
+
+  return (
+    <div key={mission.id} className={isClaimable ? "home-mission-card-v205 claimable" : "home-mission-card-v205"} style={{ padding: 12, borderRadius: 16, background: isClaimable ? "linear-gradient(145deg,#fff7df,#ffe6a6)" : mission.claimed ? "#edf3ed" : "#f7faf7", border: isClaimable ? "1px solid #e8c85f" : "1px solid #d8e0d8", color: "#1d2b22", display: "grid", gap: 8 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "38px 1fr auto", gap: 9, alignItems: "center" }}>
+        <span style={{ width: 38, height: 38, borderRadius: 14, display: "grid", placeItems: "center", background: "#ffffff", boxShadow: "0 5px 12px rgba(0,0,0,0.12)", fontWeight: 900 }}>{mission.icon}</span>
+        <span style={{ minWidth: 0 }}>
+          <strong style={{ display: "block", fontSize: 14 }}>{mission.title}</strong>
+          <span style={{ display: "block", fontSize: 10, opacity: 0.72, marginTop: 2 }}>{mission.group} / EXP +{mission.rewardExp}</span>
+        </span>
+        <span style={{ padding: "4px 8px", borderRadius: 999, background: mission.claimed ? "#7a8a7a" : isClaimable ? "#ff4d5d" : "#b8c7b9", color: "#ffffff", fontSize: 10, fontWeight: 900 }}>
+          {mission.claimed ? "受取済" : isClaimable ? "達成" : `${mission.progressRate}%`}
+        </span>
+      </div>
+      <div style={{ fontSize: 12, opacity: 0.78, lineHeight: 1.45 }}>{mission.description}</div>
+      <div style={{ height: 8, borderRadius: 999, background: "rgba(29,43,34,0.12)", overflow: "hidden" }}>
+        <div style={{ width: `${mission.progressRate}%`, height: "100%", borderRadius: 999, background: mission.completed ? "linear-gradient(90deg,#ffb02e,#ff5a3d)" : "linear-gradient(90deg,#4ca26a,#8fd6a7)" }} />
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 8, alignItems: "center", fontSize: 12 }}>
+        <span>{Math.min(mission.current, mission.target).toLocaleString()} / {mission.target.toLocaleString()}</span>
+        <button type="button" disabled={!isClaimable} onClick={() => claimHomeMissionReward(mission.id)} style={{ padding: "7px 10px", borderRadius: 999, border: "none", background: isClaimable ? "linear-gradient(145deg,#ffb02e,#ff5a3d)" : "#c8d0c8", color: "#ffffff", fontWeight: 900, cursor: isClaimable ? "pointer" : "not-allowed", opacity: isClaimable ? 1 : 0.65 }}>
+          {mission.claimed ? "受取済" : isClaimable ? "報酬受取" : "進行中"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function claimHomeDailyLoginBonus() {
+  const currentStatus = getDailyLoginBonusStatus();
+
+  if (!currentStatus.canClaim) {
+    alert("本日のログインボーナスは受け取り済みです。");
+    return;
+  }
+
+  const reward = currentStatus.reward;
+  const accountData = readAccountData();
+  const tickets = getAccountTicketCounts(accountData);
+  const nextTickets = {
+    rookieEmployeeTickets: tickets.rookieEmployeeTickets,
+    employeeTickets: tickets.employeeTickets,
+    premiumEmployeeTickets: tickets.premiumEmployeeTickets,
+  };
+
+  if (reward.type === "rookieTicket") {
+    nextTickets.rookieEmployeeTickets += reward.count;
+  } else if (reward.type === "employeeTicket") {
+    nextTickets.employeeTickets += reward.count;
+  } else if (reward.type === "premiumTicket") {
+    nextTickets.premiumEmployeeTickets += reward.count;
+  }
+
+  const nextAccountData = {
+    ...accountData,
+    rookieEmployeeTickets: nextTickets.rookieEmployeeTickets,
+    employeeTickets: nextTickets.employeeTickets,
+    premiumEmployeeTickets: nextTickets.premiumEmployeeTickets,
+    updatedAt: new Date().toISOString(),
+  };
+
+  writeAccountData(nextAccountData);
+  writeDailyLoginBonusData({
+    lastClaimDate: currentStatus.todayKey,
+    claimCount: currentStatus.claimCount + 1,
+    rewardName: reward.name,
+    rewardCount: reward.count,
+    rewardType: reward.type,
+    rewardText: reward.text,
+    updatedAt: new Date().toISOString(),
+  });
+
+  if (reward.type === "money") {
+    setMoney((current) => current + reward.count);
+  }
+
+  setRookieEmployeeTickets(nextTickets.rookieEmployeeTickets);
+  setEmployeeTickets(nextTickets.employeeTickets);
+  setPremiumEmployeeTickets(nextTickets.premiumEmployeeTickets);
+  addPresentBoxHistoryItem({
+    source: "ログインボーナス",
+    name: reward.name,
+    text: reward.text,
+    icon: reward.icon,
+    type: reward.type,
+    count: reward.count,
+  });
+  setLog(`ログインボーナスとして${reward.text}を受け取りました。`);
+  setTitleModal("presentBox");
 }
 
 function turnBgmOn() {
@@ -19837,6 +22368,104 @@ function forceStoryAkariLevel(targetLevel, reasonText) {
   });
 }
 
+
+function isRivalMonthlyEventText(text) {
+  return /ライバル|東雲地所|紫苑リアルティ|大手ライバル|地所|リアルティ|不動産|都市開発|ホームズ|エステート/.test(String(text ?? ""));
+}
+
+function getMonthlyEventPresentation(line) {
+  const text = String(line ?? "");
+  const isRivalEvent = isRivalMonthlyEventText(text);
+
+  if (!text.trim()) {
+    return { type: "normal", icon: "・", title: "記録", detail: text };
+  }
+
+  if (text.includes("入居")) {
+    return { type: "tenant", icon: "🔑", title: "入居決定", detail: text, akari: "社長、空室が埋まりました！街に少しずつ人が戻ってきていますね。" };
+  }
+
+  if (text.includes("退去")) {
+    return { type: "warning", icon: "🚪", title: "退去発生", detail: text, akari: "退去が出ました。状態や家賃を見直して、次の入居につなげましょう。" };
+  }
+
+  if (text.includes("完成")) {
+    if (text.includes("新駅")) {
+      return { type: "station", icon: "🚉", title: "新駅完成", detail: text, akari: "新駅が完成しました！周辺の価値にも大きな影響がありそうです。" };
+    }
+    if (text.includes("工場")) {
+      return { type: "factory", icon: "🏭", title: "工場完成", detail: text, akari: "工場が完成しました。雇用と住宅需要に期待できますね。" };
+    }
+    if (text.includes("支店") || text.includes("本社")) {
+      return { type: "office", icon: "🏢", title: "拠点完成", detail: text, akari: "新しい拠点が完成しました！活動範囲が広がります。" };
+    }
+    return { type: "build", icon: "🏗️", title: "建物完成", detail: text, akari: "建物が完成しました！ここから収益化を狙っていきましょう。" };
+  }
+
+  if (text.includes("修繕") || text.includes("外装工事") || text.includes("大規模修繕")) {
+    return { type: "repair", icon: "🔨", title: "修繕進行", detail: text, akari: "建物の価値を守る大切な仕事ですね。状態改善は入居にも効いてきます。" };
+  }
+
+  if (text.includes("融資審査") && (text.includes("承認") || text.includes("減額承認"))) {
+    return { type: "loan", icon: "🏦", title: "融資承認", detail: text, akari: "資金調達に成功しました！次の投資判断が重要です。" };
+  }
+
+  if (text.includes("融資審査は否決")) {
+    return { type: "warning", icon: "🏦", title: "融資否決", detail: text, akari: "今回は厳しい結果でした。社員能力や財務状況を整えて再挑戦しましょう。" };
+  }
+
+  if (text.includes("新駅の整備計画") || text.includes("工場誘致計画") || text.includes("経済ニュース")) {
+    return { type: "news", icon: "📣", title: "街のニュース", detail: text, akari: "街に動きがあります。周辺の土地や需要を確認しておきましょう。" };
+  }
+
+  if (text.includes("購入しました") || text.includes("購入できました")) {
+    return { type: "purchase", icon: "📄", title: "購入成立", detail: text, akari: "購入が成立しました。ここからどう活かすかが社長の腕の見せ所です。" };
+  }
+
+  if (text.includes("銀行返済") || text.includes("法人税") || text.includes("社員給与") || text.includes("固定資産税")) {
+    return { type: "finance", icon: "💴", title: "支払処理", detail: text };
+  }
+
+  return { type: "normal", icon: "•", title: "月次記録", detail: text };
+}
+
+function getMonthlyEventHighlights(popupText) {
+  const lines = String(popupText ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const summaryLine = lines[0] ?? "月末報告";
+  const eventLines = lines.slice(1);
+  const presentations = eventLines.map((line) => {
+    const presentation = getMonthlyEventPresentation(line);
+    return isRivalMonthlyEventText(line) ? { ...presentation, akari: null, type: "normal", icon: "🏢", title: "ライバル動向" } : presentation;
+  });
+  const featuredEvents = presentations.filter((event) => event.type !== "normal" && event.type !== "finance").slice(0, 4);
+  const financeEvents = presentations.filter((event) => event.type === "finance").slice(0, 3);
+  const otherEvents = presentations.filter((event) => event.type === "normal").slice(0, 5);
+
+  return {
+    summaryLine,
+    featuredEvents,
+    financeEvents,
+    otherEvents,
+    allEvents: presentations,
+  };
+}
+
+function renderMonthlyEventCard(event, index, compact = false) {
+  return (
+    <div key={`${event.title}-${index}-${event.detail}`} className={`monthly-event-card-v213 event-${event.type} ${compact ? "compact" : ""}`}>
+      <div className="monthly-event-icon-v213">{event.icon}</div>
+      <div className="monthly-event-body-v213">
+        <div className="monthly-event-title-v213">{event.title}</div>
+        <div className="monthly-event-detail-v213">{event.detail}</div>
+        {!compact && event.akari && <div className="monthly-event-akari-v213">七瀬「{event.akari}」</div>}
+      </div>
+    </div>
+  );
+}
+
 function selectStoryTutorialTargetTile() {
   const targetTag = getStoryTutorialTargetTagForStep();
   if (!targetTag) return false;
@@ -19925,6 +22554,970 @@ return (
         }
       }
 
+      .recruit-stage-v206 { position: relative; overflow: hidden; }
+      .recruit-stage-v206.recruit-stage-rookie { background: linear-gradient(180deg, #fffdf7, #fff3d6); }
+      .recruit-stage-v206.recruit-stage-normal { background: linear-gradient(180deg, #f8fff9, #e5f3ea); }
+      .recruit-stage-v206.recruit-stage-premium { background: radial-gradient(circle at 50% 0%, rgba(255,227,126,0.78), transparent 34%), linear-gradient(180deg, #2b213d, #140d22 58%, #fff7e8 58%); border-color: #f5d77d; color: #fff; box-shadow: 0 26px 70px rgba(21,10,35,0.48), 0 0 38px rgba(255,206,90,0.34); }
+      .recruit-stage-v206.recruit-stage-premium .recruit-title-area-v206 p { color: rgba(255,255,255,0.84); }
+      .recruit-stage-v206.recruit-stage-premium .recruit-tap-guide, .recruit-stage-v206.recruit-stage-premium .recruit-required-note { color: #2b213d; }
+      .recruit-stage-aura-v206 { position: absolute; inset: -20%; pointer-events: none; background: radial-gradient(circle at 30% 16%, rgba(255,255,255,0.42), transparent 26%), radial-gradient(circle at 74% 14%, rgba(255,218,112,0.38), transparent 30%); animation: recruitAuraV206 4.8s ease-in-out infinite; }
+      .recruit-stage-premium .recruit-stage-aura-v206 { background: radial-gradient(circle at 50% 18%, rgba(255,238,164,0.64), transparent 28%), radial-gradient(circle at 30% 34%, rgba(180,136,255,0.34), transparent 26%), radial-gradient(circle at 70% 34%, rgba(255,92,132,0.28), transparent 24%); animation-duration: 3s; }
+      .recruit-stage-light-v206 { position: absolute; top: -40px; width: 120px; height: 130%; pointer-events: none; opacity: 0.22; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.46), transparent); filter: blur(1px); transform-origin: top center; }
+      .recruit-stage-light-v206.light-left { left: 8%; transform: rotate(16deg); animation: recruitLightSweepLeftV206 5.5s ease-in-out infinite; }
+      .recruit-stage-light-v206.light-right { right: 8%; transform: rotate(-16deg); animation: recruitLightSweepRightV206 6.2s ease-in-out infinite; }
+      .recruit-title-area-v206 { position: relative; z-index: 1; }
+      .recruit-ticket-badge-v206 { display: inline-block; margin-bottom: 4px; padding: 4px 10px; border-radius: 999px; background: linear-gradient(145deg,#ff4d5d,#c40022); color: #fff; font-size: 11px; font-weight: 900; letter-spacing: 0.6px; box-shadow: 0 8px 16px rgba(0,0,0,0.22); }
+      .recruit-arrival-text-v206 { font-weight: 900; }
+      .recruit-envelope-card-v206.closed { animation: recruitEnvelopeEntranceV206 0.54s ease both, recruitEnvelopeIdleV206 3.2s ease-in-out infinite; }
+      .recruit-stage-premium .recruit-envelope-card-v206.closed { animation: recruitEnvelopeEntranceV206 0.54s ease both, recruitEnvelopePremiumIdleV206 2.3s ease-in-out infinite; }
+      .recruit-stage-premium .recruit-sparkle { color: #ffe38a; text-shadow: 0 0 14px rgba(255,219,92,0.85); }
+      .recruit-stage-premium .envelope-brown, .recruit-stage-premium .envelope-black { box-shadow: 0 16px 30px rgba(0,0,0,0.32), 0 0 22px rgba(255,218,112,0.26); }
+      .sparkle-e { left: 18%; top: 46%; animation-delay: 0.35s; }
+      .sparkle-f { right: 18%; top: 38%; animation-delay: 0.72s; }
+      @keyframes recruitAuraV206 { 0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.75; } 50% { transform: scale(1.05) rotate(2deg); opacity: 1; } }
+      @keyframes recruitLightSweepLeftV206 { 0%, 100% { transform: translateX(-18px) rotate(16deg); opacity: 0.12; } 50% { transform: translateX(20px) rotate(12deg); opacity: 0.28; } }
+      @keyframes recruitLightSweepRightV206 { 0%, 100% { transform: translateX(18px) rotate(-16deg); opacity: 0.12; } 50% { transform: translateX(-20px) rotate(-12deg); opacity: 0.28; } }
+      @keyframes recruitEnvelopeEntranceV206 { from { transform: translateY(24px) scale(0.94) rotate(-1deg); opacity: 0; } to { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; } }
+      @keyframes recruitEnvelopeIdleV206 { 0%, 100% { translate: 0 0; } 50% { translate: 0 -3px; } }
+      @keyframes recruitEnvelopePremiumIdleV206 { 0%, 100% { translate: 0 0; filter: brightness(1); } 50% { translate: 0 -5px; filter: brightness(1.08); } }
+
+      .employee-role-guide-v207 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 12px 0; }
+      .employee-role-card-v207 { border-radius: 18px; padding: 12px; background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(244,248,255,0.88)); border: 1px solid rgba(92,116,146,0.18); box-shadow: 0 10px 24px rgba(31,45,70,0.08); }
+      .employee-role-card-v207 strong { display: block; font-size: 15px; margin-bottom: 4px; }
+      .employee-role-card-v207 span { display: block; font-size: 12px; opacity: 0.78; line-height: 1.5; }
+      .employee-storage-grid-v207 { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; margin-top: 10px; }
+      .employee-storage-card-v207 { position: relative; display: grid; grid-template-columns: 74px 1fr; gap: 10px; padding: 10px; border-radius: 20px; background: linear-gradient(145deg, #fffdf8, #f1f6ff); border: 1px solid rgba(76,98,130,0.18); box-shadow: 0 12px 28px rgba(31,45,70,0.10); overflow: hidden; }
+      .employee-storage-card-v207::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 12% 0%, rgba(255,230,140,0.32), transparent 30%); pointer-events: none; }
+      .employee-storage-portrait-v207 { position: relative; z-index: 1; width: 74px; height: 92px; border-radius: 18px; overflow: hidden; background: linear-gradient(145deg, #e6edf7, #ffffff); display: grid; place-items: center; font-weight: 900; box-shadow: inset 0 1px 0 rgba(255,255,255,0.8); }
+      .employee-storage-portrait-v207 img { width: 100%; height: 100%; object-fit: cover; }
+      .employee-storage-body-v207 { position: relative; z-index: 1; display: grid; gap: 6px; min-width: 0; }
+      .employee-storage-title-v207 { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+      .employee-storage-title-v207 strong { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .employee-storage-rarity-v207 { flex: 0 0 auto; padding: 2px 7px; border-radius: 999px; background: rgba(31,45,70,0.82); color: #fff; font-size: 11px; font-weight: 900; }
+      .employee-storage-stat-grid-v207 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; font-size: 11px; }
+      .employee-storage-stat-grid-v207 span { padding: 3px 5px; border-radius: 9px; background: rgba(255,255,255,0.70); }
+      .employee-storage-action-row-v207 { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
+      .employee-storage-action-row-v207 button { min-height: 28px; padding: 4px 7px; border-radius: 999px; font-size: 11px; font-weight: 900; }
+      .employee-library-mode-note-v207 { margin-top: 8px; padding: 9px 11px; border-radius: 16px; background: linear-gradient(145deg, rgba(255,250,235,0.95), rgba(238,246,255,0.95)); border: 1px solid rgba(120,140,170,0.18); font-size: 12px; line-height: 1.55; color: #26364d; }
+      .employee-library-card { position: relative; overflow: hidden; }
+      .employee-library-card::after { content: ""; position: absolute; inset: -40%; background: linear-gradient(120deg, transparent 36%, rgba(255,255,255,0.28), transparent 63%); transform: translateX(-42%) rotate(8deg); opacity: 0; pointer-events: none; }
+      .employee-library-card:hover::after { animation: employeeLibraryShineV207 1.2s ease; }
+      @keyframes employeeLibraryShineV207 { 0% { transform: translateX(-42%) rotate(8deg); opacity: 0; } 45% { opacity: 0.7; } 100% { transform: translateX(42%) rotate(8deg); opacity: 0; } }
+      @media (max-width: 760px) { .employee-role-guide-v207 { grid-template-columns: 1fr; } .employee-storage-grid-v207 { grid-template-columns: 1fr; } }
+
+
+      .monthly-report-card-v213 { position: relative; overflow: hidden; max-width: min(720px, 96vw); background: linear-gradient(180deg, rgba(255,253,247,0.98), rgba(239,246,255,0.98)); border: 1px solid rgba(99,121,158,0.20); box-shadow: 0 24px 70px rgba(31,45,70,0.25); }
+      .monthly-report-card-v213::before { content: ""; position: absolute; inset: -35%; pointer-events: none; background: radial-gradient(circle at 16% 10%, rgba(255,221,113,0.34), transparent 26%), radial-gradient(circle at 84% 8%, rgba(111,166,255,0.24), transparent 28%); animation: monthlyReportAuraV213 6s ease-in-out infinite; }
+      .monthly-report-head-v213 { position: relative; z-index: 1; display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+      .monthly-report-title-v213 h3 { margin: 0 0 6px; font-size: 22px; }
+      .monthly-report-summary-v213 { font-size: 12px; font-weight: 800; color: #526276; line-height: 1.55; }
+      .monthly-report-badge-v213 { flex: 0 0 auto; padding: 7px 12px; border-radius: 999px; color: #fff; font-size: 12px; font-weight: 900; background: linear-gradient(135deg, #2468ff, #8b5cff); box-shadow: 0 10px 22px rgba(55,90,210,0.25); }
+      .monthly-event-showcase-v213 { position: relative; z-index: 1; display: grid; gap: 10px; max-height: min(58vh, 520px); overflow-y: auto; padding-right: 4px; }
+      .monthly-event-section-title-v213 { margin: 8px 0 2px; font-size: 12px; font-weight: 900; color: #5d6b7f; letter-spacing: 0.04em; }
+      .monthly-event-card-v213 { position: relative; display: grid; grid-template-columns: 44px 1fr; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 18px; background: rgba(255,255,255,0.82); border: 1px solid rgba(90,111,145,0.18); box-shadow: 0 10px 24px rgba(31,45,70,0.08); animation: monthlyEventSlideV213 0.42s ease both; }
+      .monthly-event-card-v213:nth-child(2) { animation-delay: 0.04s; }
+      .monthly-event-card-v213:nth-child(3) { animation-delay: 0.08s; }
+      .monthly-event-card-v213:nth-child(4) { animation-delay: 0.12s; }
+      .monthly-event-card-v213.event-tenant { background: linear-gradient(145deg, #fffdf4, #eaf9ee); border-color: rgba(42,152,87,0.24); }
+      .monthly-event-card-v213.event-build, .monthly-event-card-v213.event-repair, .monthly-event-card-v213.event-office { background: linear-gradient(145deg, #fff9e8, #eef6ff); border-color: rgba(221,155,36,0.26); }
+      .monthly-event-card-v213.event-loan { background: linear-gradient(145deg, #eff8ff, #f5f0ff); border-color: rgba(72,112,205,0.24); }
+      .monthly-event-card-v213.event-station, .monthly-event-card-v213.event-factory, .monthly-event-card-v213.event-news { background: linear-gradient(145deg, #fff4f9, #f0f7ff); border-color: rgba(199,96,145,0.23); }
+      .monthly-event-card-v213.event-warning { background: linear-gradient(145deg, #fff1ed, #fff8e7); border-color: rgba(224,83,61,0.24); }
+      .monthly-event-card-v213.compact { grid-template-columns: 34px 1fr; padding: 8px 10px; border-radius: 14px; box-shadow: none; }
+      .monthly-event-icon-v213 { width: 44px; height: 44px; border-radius: 15px; display: grid; place-items: center; font-size: 24px; background: rgba(255,255,255,0.72); box-shadow: inset 0 1px 0 rgba(255,255,255,0.85); }
+      .monthly-event-card-v213.compact .monthly-event-icon-v213 { width: 34px; height: 34px; border-radius: 12px; font-size: 18px; }
+      .monthly-event-title-v213 { font-size: 13px; font-weight: 900; color: #243348; margin-bottom: 3px; }
+      .monthly-event-detail-v213 { font-size: 12px; font-weight: 700; color: #3f4f65; line-height: 1.45; white-space: pre-wrap; }
+      .monthly-event-akari-v213 { margin-top: 6px; padding: 6px 8px; border-radius: 12px; background: rgba(255,255,255,0.62); color: #7b4d00; font-size: 11px; font-weight: 900; line-height: 1.45; }
+      .monthly-report-actions-v213 { position: relative; z-index: 1; margin-top: 14px; display: flex; justify-content: flex-end; }
+      @keyframes monthlyReportAuraV213 { 0%,100% { transform: scale(1) rotate(0deg); opacity: 0.72; } 50% { transform: scale(1.04) rotate(2deg); opacity: 1; } }
+      @keyframes monthlyEventSlideV213 { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+      @media (max-width: 760px) { .monthly-report-head-v213 { flex-direction: column; } .monthly-report-title-v213 h3 { font-size: 19px; } .monthly-event-card-v213 { grid-template-columns: 38px 1fr; } .monthly-event-icon-v213 { width: 38px; height: 38px; font-size: 21px; } }
+
+
+      /* v218: 整理・画面分離・社員名簿全画面 */
+      .city-ambience-v214 { display: none !important; }
+      .employee-storage-grid-v207 { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important; gap: 8px !important; }
+      .employee-storage-card-v207 { grid-template-columns: 48px 1fr !important; gap: 8px !important; padding: 8px !important; border-radius: 14px !important; }
+      .employee-storage-portrait-v207 { width: 48px !important; height: 58px !important; border-radius: 12px !important; }
+      .employee-storage-stat-grid-v207 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 3px !important; font-size: 10px !important; }
+      .employee-storage-title-v207 strong { font-size: 12px !important; }
+      .employee-storage-rarity-v207 { font-size: 10px !important; padding: 1px 6px !important; }
+      .employee-storage-action-row-v207 button { min-height: 24px !important; padding: 3px 6px !important; font-size: 10px !important; }
+      @media (max-width: 760px) {
+        .title-home-overlay-v201 { padding: 0 !important; align-items: stretch !important; }
+        .title-home-overlay-v201 > div[style*="background: rgb"], .title-home-overlay-v201 > div[style*="background: #ffffff"] { border-radius: 0 !important; }
+        .employee-vault-header-v218 { position: sticky; top: 0; z-index: 3; background: #ffffff; padding: 4px 0 8px; }
+        .employee-storage-grid-v207 { grid-template-columns: 1fr 1fr !important; gap: 6px !important; }
+        .employee-storage-card-v207 { grid-template-columns: 40px 1fr !important; padding: 6px !important; }
+        .employee-storage-portrait-v207 { width: 40px !important; height: 50px !important; }
+        .employee-storage-stat-grid-v207 span { padding: 2px 3px !important; }
+      }
+
+      /* v218.4: 社員名簿・採用画面の省スペース化 */
+      .home-recruit-pass-grid-v2184 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 6px; }
+      .home-recruit-pass-button-v2184 { min-height: 104px !important; padding: 10px 8px !important; border-radius: 16px !important; display: grid !important; grid-template-rows: auto auto auto auto !important; align-content: center !important; justify-items: center !important; gap: 3px !important; box-shadow: 0 8px 18px rgba(31,45,70,0.10) !important; }
+      .home-recruit-pass-button-v2184 .home-recruit-pass-badge-v206 { display: none !important; }
+      .home-recruit-pass-icon-v2184 { width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,0.68); font-size: 20px; font-weight: 900; }
+      .home-recruit-pass-button-v2184 strong { font-size: 13px !important; line-height: 1.25 !important; text-align: center; }
+      .home-recruit-pass-button-v2184 small { font-size: 10px !important; line-height: 1.25 !important; text-align: center; opacity: 0.78; }
+      .home-recruit-pass-button-v2184 em { font-size: 16px !important; line-height: 1 !important; font-style: normal !important; font-weight: 900 !important; }
+      .home-recruit-odds-compact-v2184 { margin-top: 8px; padding: 8px 10px; border-radius: 12px; background: #f7faf7; border: 1px solid #d8e0d8; display: grid; gap: 3px; font-size: 11px; line-height: 1.45; color: #4d5b50; }
+      .employee-vault-rarity-row-v2182 { display: none !important; }
+      /* v218.6: 名簿ボタン均等配置・マップ上部情報削除・誤リロード対策 */
+      html, body, #root { overscroll-behavior-y: contain; }
+      .playfield-hud-v212,
+      .playfield-selection-card-v212,
+      .city-ambience-v214 { display: none !important; }
+      .employee-vault-header-v218 + div { width: 100% !important; }
+      @media (max-width: 760px) {
+        .employee-vault-header-v218 { gap: 6px !important; margin-bottom: 5px !important; }
+        .employee-vault-header-v218 h2 { font-size: 16px !important; }
+        .employee-vault-header-v218 > div:last-child { min-width: auto !important; padding: 3px 7px !important; font-size: 10px !important; }
+      }
+
+      @media (max-width: 760px) {
+        .home-recruit-pass-grid-v2184 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+        .home-recruit-pass-button-v2184 { min-height: 92px !important; padding: 8px 5px !important; border-radius: 14px !important; }
+        .home-recruit-pass-icon-v2184 { width: 28px; height: 28px; border-radius: 10px; font-size: 17px; }
+        .home-recruit-pass-button-v2184 strong { font-size: 11px !important; }
+        .home-recruit-pass-button-v2184 small { display: none !important; }
+        .home-recruit-pass-button-v2184 em { font-size: 15px !important; }
+      }
+
+      /* v218.8: スマホ採用結果画面を1画面内に収める */
+      .resume-envelope-logo { display: none !important; }
+      @media (max-width: 760px) {
+        .recruit-popup-stage {
+          padding: 6px !important;
+          align-items: stretch !important;
+          justify-content: flex-start !important;
+          overflow: hidden !important;
+        }
+        .recruit-stage-v206 {
+          width: calc(100vw - 12px) !important;
+          max-width: calc(100vw - 12px) !important;
+          height: calc(100dvh - 12px) !important;
+          max-height: calc(100dvh - 12px) !important;
+          overflow: hidden !important;
+          padding: 12px 10px !important;
+          border-radius: 22px !important;
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 7px !important;
+        }
+        .recruit-stage-light-v206,
+        .recruit-desk-decoration,
+        .recruit-sparkle { display: none !important; }
+        .recruit-title-area-v206 {
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          gap: 3px !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          min-height: 0 !important;
+          text-align: left !important;
+        }
+        .recruit-title-area-v206 .recruit-ornament { display: none !important; }
+        .recruit-ticket-badge-v206 {
+          margin: 0 0 2px !important;
+          padding: 3px 9px !important;
+          font-size: 10px !important;
+          line-height: 1 !important;
+        }
+        .recruit-title-area-v206 h2 {
+          margin: 0 !important;
+          font-size: clamp(24px, 8vw, 32px) !important;
+          line-height: 1.05 !important;
+          white-space: nowrap !important;
+          writing-mode: horizontal-tb !important;
+        }
+        .recruit-title-area-v206 p:not(.recruit-arrival-text-v206) { display: none !important; }
+        .recruit-arrival-text-v206 {
+          margin: 2px 0 0 !important;
+          font-size: 12px !important;
+          line-height: 1.2 !important;
+          white-space: nowrap !important;
+          writing-mode: horizontal-tb !important;
+          text-orientation: mixed !important;
+          letter-spacing: 0 !important;
+        }
+        .recruit-envelope-desk-row,
+        .recruit-envelope-grid.recruit-envelope-desk-row {
+          display: grid !important;
+          grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+          gap: 5px !important;
+          align-items: stretch !important;
+          overflow: visible !important;
+          padding: 0 !important;
+          margin: 2px 0 0 !important;
+          min-height: 0 !important;
+        }
+        .recruit-envelope-card-v206 {
+          width: 100% !important;
+          min-width: 0 !important;
+          height: 102px !important;
+          min-height: 102px !important;
+          padding: 3px !important;
+          border-radius: 14px !important;
+          transform: none !important;
+        }
+        .resume-envelope-visual {
+          width: 64px !important;
+          height: 76px !important;
+          max-width: 100% !important;
+          margin: 0 auto !important;
+          transform: none !important;
+        }
+        .resume-paper-title { font-size: 9px !important; }
+        .resume-envelope-seal {
+          width: 22px !important;
+          height: 22px !important;
+          left: 50% !important;
+          bottom: 4px !important;
+          transform: translateX(-50%) !important;
+        }
+        .recruit-new-stamp.envelope-new-stamp {
+          font-size: 13px !important;
+          padding: 2px 6px !important;
+          left: 3px !important;
+          top: 4px !important;
+          transform: rotate(-7deg) !important;
+        }
+        .recruit-applicant-summary {
+          font-size: 9px !important;
+          line-height: 1 !important;
+          margin-top: 1px !important;
+          white-space: nowrap !important;
+        }
+        .recruit-tap-guide {
+          margin: 2px 0 0 !important;
+          padding: 5px 7px !important;
+          font-size: 10px !important;
+          line-height: 1.2 !important;
+          min-height: 0 !important;
+        }
+        .recruit-profile-wrap {
+          margin-top: 2px !important;
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          gap: 5px !important;
+          min-height: 0 !important;
+        }
+        .recruit-profile-panel {
+          display: grid !important;
+          grid-template-columns: 76px 1fr !important;
+          gap: 7px !important;
+          padding: 7px !important;
+          border-radius: 14px !important;
+          min-height: 0 !important;
+        }
+        .recruit-profile-photo {
+          width: 76px !important;
+          height: 92px !important;
+          border-radius: 12px !important;
+        }
+        .recruit-profile-header { gap: 4px !important; margin-bottom: 4px !important; }
+        .recruit-profile-header h3 {
+          font-size: 20px !important;
+          line-height: 1.1 !important;
+          margin: 0 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+        .recruit-stat-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 4px !important;
+        }
+        .recruit-stat-grid div { padding: 5px 6px !important; border-radius: 10px !important; }
+        .recruit-stat-grid span { font-size: 10px !important; }
+        .recruit-stat-grid strong { font-size: 17px !important; }
+        .recruit-special-box-expanded {
+          margin-top: 5px !important;
+          padding: 6px 8px !important;
+          border-radius: 11px !important;
+          min-height: 0 !important;
+        }
+        .recruit-special-label { font-size: 10px !important; padding: 3px 7px !important; }
+        .recruit-special-none, .recruit-special-item strong { font-size: 12px !important; }
+        .recruit-special-item small { display: block !important; font-size: 10px !important; line-height: 1.25 !important; color: #3f3a2d !important; margin-top: 2px !important; }
+        .recruit-hire-side { margin-top: 0 !important; padding: 0 !important; }
+        .recruit-hire-button {
+          min-height: 36px !important;
+          padding: 8px 10px !important;
+          border-radius: 999px !important;
+          font-size: 13px !important;
+        }
+        .recruit-hire-side p,
+        .recruit-required-note { display: none !important; }
+      }
+
+
+      /* v218.9: 採用結果画面の封筒5枚表示・プロフィール写真位置修正 */
+      @media (max-width: 760px) {
+        .recruit-stage-v206 {
+          gap: 5px !important;
+          padding: 10px 8px !important;
+        }
+        .recruit-title-area-v206 h2 {
+          font-size: clamp(22px, 7vw, 29px) !important;
+          letter-spacing: -0.02em !important;
+        }
+        .recruit-arrival-text-v206 {
+          font-size: 11px !important;
+          margin-top: 0 !important;
+        }
+        .recruit-envelope-desk-row,
+        .recruit-envelope-grid.recruit-envelope-desk-row,
+        .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-5,
+        .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-4,
+        .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-3 {
+          width: 100% !important;
+          display: grid !important;
+          gap: 4px !important;
+          padding: 0 2px !important;
+          margin: 2px 0 0 !important;
+          overflow: visible !important;
+          justify-content: stretch !important;
+          align-items: stretch !important;
+        }
+        .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-5 {
+          grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        }
+        .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-4 {
+          grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        }
+        .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-3 {
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+        .recruit-envelope-card-v206 {
+          width: 100% !important;
+          min-width: 0 !important;
+          height: 82px !important;
+          min-height: 82px !important;
+          padding: 2px !important;
+          border-radius: 12px !important;
+          overflow: hidden !important;
+        }
+        .resume-envelope-visual {
+          width: min(52px, 100%) !important;
+          height: 58px !important;
+          margin: 0 auto !important;
+        }
+        .resume-paper-title {
+          font-size: 8px !important;
+        }
+        .resume-envelope-seal {
+          width: 18px !important;
+          height: 18px !important;
+          bottom: 2px !important;
+        }
+        .recruit-new-stamp.envelope-new-stamp {
+          font-size: 10px !important;
+          padding: 1px 4px !important;
+          left: 2px !important;
+          top: 3px !important;
+        }
+        .recruit-applicant-summary {
+          display: none !important;
+        }
+        .recruit-tap-guide {
+          display: none !important;
+        }
+        .recruit-profile-wrap {
+          gap: 4px !important;
+          margin-top: 4px !important;
+        }
+        .recruit-profile-panel {
+          grid-template-columns: 78px 1fr !important;
+          gap: 7px !important;
+          padding: 7px !important;
+          align-items: start !important;
+        }
+        .recruit-profile-photo {
+          width: 74px !important;
+          height: 84px !important;
+          margin-top: 34px !important;
+          align-self: start !important;
+          overflow: visible !important;
+        }
+        .recruit-profile-photo img,
+        .recruit-character-image {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover !important;
+          border-radius: 10px !important;
+        }
+        .recruit-profile-photo .profile-new-stamp {
+          top: -34px !important;
+          left: -8px !important;
+          right: auto !important;
+          transform: rotate(-8deg) !important;
+          z-index: 5 !important;
+          font-size: 13px !important;
+          padding: 2px 8px !important;
+        }
+        .recruit-profile-header h3 {
+          font-size: 18px !important;
+          line-height: 1.1 !important;
+        }
+        .recruit-stat-grid div {
+          padding: 4px 5px !important;
+        }
+        .recruit-stat-grid strong {
+          font-size: 15px !important;
+        }
+        .recruit-special-box-expanded {
+          margin-top: 4px !important;
+          padding: 5px 7px !important;
+        }
+        .recruit-hire-button {
+          min-height: 34px !important;
+          padding: 7px 10px !important;
+          font-size: 13px !important;
+        }
+      }
+
+
+
+      /* v218.12: 情報系画面は圧縮、操作画面は全画面を使う */
+      .property-section.info-section,
+      .property-section.bank-section {
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-y !important;
+        overscroll-behavior: contain !important;
+      }
+
+      .property-section.info-section .player-info-box.v74-player-info-box,
+      .property-section.bank-section .player-info-box.v74-player-info-box {
+        padding: 10px 12px !important;
+        margin: 8px 0 10px !important;
+        border-radius: 14px !important;
+        background: rgba(255,255,255,0.78) !important;
+      }
+
+      .property-section.info-section .player-info-box.v74-player-info-box h3,
+      .property-section.bank-section .player-info-box.v74-player-info-box h3 {
+        margin: 0 0 6px !important;
+        font-size: 16px !important;
+        line-height: 1.2 !important;
+      }
+
+      .property-section.info-section .player-info-grid,
+      .property-section.bank-section .player-info-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 2px 12px !important;
+      }
+
+      .property-section.info-section .player-info-grid > div,
+      .property-section.bank-section .player-info-grid > div {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: baseline !important;
+        gap: 8px !important;
+        min-height: 0 !important;
+        padding: 3px 0 !important;
+        border: none !important;
+        border-bottom: 1px dashed rgba(0,0,0,0.10) !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+
+      .property-section.info-section .player-info-grid span,
+      .property-section.bank-section .player-info-grid span {
+        font-size: 11px !important;
+        line-height: 1.15 !important;
+        color: #5f6670 !important;
+        font-weight: 800 !important;
+        white-space: nowrap !important;
+      }
+
+      .property-section.info-section .player-info-grid strong,
+      .property-section.bank-section .player-info-grid strong {
+        font-size: 12px !important;
+        line-height: 1.15 !important;
+        font-weight: 900 !important;
+        text-align: right !important;
+        white-space: nowrap !important;
+      }
+
+      .property-section.info-section .finance-detail-box {
+        margin-top: 6px !important;
+        padding: 6px 8px !important;
+        border-radius: 10px !important;
+      }
+
+      .property-section.info-section .finance-detail-row {
+        display: flex !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+        padding: 2px 0 !important;
+        font-size: 11px !important;
+      }
+
+      .property-section.info-section .finance-detail-row strong {
+        white-space: nowrap !important;
+      }
+
+      .property-section.info-section .detail-card,
+      .property-section.bank-section .detail-card {
+        padding: 10px 12px !important;
+        margin: 8px 0 !important;
+        border-radius: 14px !important;
+      }
+
+      .property-section.info-section .detail-card h3,
+      .property-section.bank-section .detail-card h3 {
+        margin: 0 0 6px !important;
+        font-size: 15px !important;
+      }
+
+      .property-section.bank-section .detail-card p,
+      .property-section.info-section .detail-card p {
+        font-size: 12px !important;
+        line-height: 1.35 !important;
+        margin: 4px 0 8px !important;
+      }
+
+      .property-section.bank-section .table-scroll,
+      .property-section.info-section .table-scroll,
+      .employee-table-scroll {
+        overflow: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-x pan-y !important;
+        overscroll-behavior: contain !important;
+      }
+
+      .property-section.bank-section .property-table th,
+      .property-section.bank-section .property-table td,
+      .property-section.info-section .property-table th,
+      .property-section.info-section .property-table td {
+        padding: 4px 5px !important;
+        font-size: 11px !important;
+        line-height: 1.2 !important;
+      }
+
+      .employee-library-portrait,
+      .employee-storage-portrait-v207 {
+        position: relative !important;
+        overflow: hidden !important;
+      }
+
+      .employee-library-portrait img,
+      .employee-storage-portrait-v207 img {
+        position: relative !important;
+        z-index: 2 !important;
+      }
+
+      .employee-library-fallback-initial {
+        position: absolute !important;
+        inset: 0 !important;
+        display: grid !important;
+        place-items: center !important;
+        font-size: 28px !important;
+        font-weight: 900 !important;
+        color: rgba(32, 40, 64, 0.84) !important;
+        background: linear-gradient(135deg, #f6f0ff, #e7f4ff) !important;
+        z-index: 1 !important;
+      }
+
+      @media (max-width: 760px) {
+        .main-layout.full-panel {
+          min-height: calc(100dvh - 118px) !important;
+        }
+
+        .floating-panel-employee,
+        .floating-panel-employeeLibrary {
+          position: fixed !important;
+          left: 8px !important;
+          right: 8px !important;
+          top: 126px !important;
+          bottom: 8px !important;
+          width: auto !important;
+          height: auto !important;
+          max-height: calc(100dvh - 134px) !important;
+          overflow: hidden !important;
+          z-index: 2500 !important;
+        }
+
+        .floating-panel-employee .detail-card,
+        .floating-panel-employeeLibrary .detail-card,
+        .floating-panel-employee .employee-library-panel,
+        .floating-panel-employeeLibrary .employee-library-panel {
+          height: calc(100dvh - 178px) !important;
+          max-height: calc(100dvh - 178px) !important;
+          overflow-y: auto !important;
+          -webkit-overflow-scrolling: touch !important;
+          padding: 10px 12px !important;
+          margin: 0 !important;
+        }
+
+        .floating-panel-employee .smart-section-card,
+        .floating-panel-employeeLibrary .employee-library-header,
+        .floating-panel-employeeLibrary .employee-library-mode-note-v207 {
+          padding: 8px 10px !important;
+          margin-bottom: 8px !important;
+        }
+
+        .floating-panel-employee .employee-subnav-description,
+        .floating-panel-employeeLibrary .employee-library-mode-note-v207,
+        .floating-panel-employee .employee-sort-row {
+          display: none !important;
+        }
+
+        .floating-panel-employee .employee-library-grid,
+        .floating-panel-employeeLibrary .employee-library-grid {
+          max-height: none !important;
+          padding-bottom: 10px !important;
+        }
+
+        .floating-panel-employeeLibrary .employee-library-card {
+          min-height: 72px !important;
+          padding: 6px 8px !important;
+        }
+
+        .floating-panel-employeeLibrary .employee-library-portrait {
+          width: 58px !important;
+          height: 58px !important;
+        }
+
+        .property-section.info-section,
+        .property-section.bank-section {
+          max-height: calc(100dvh - 126px) !important;
+          padding: 8px 10px 18px !important;
+        }
+
+        .property-section.info-section .player-info-grid,
+        .property-section.bank-section .player-info-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 1px 10px !important;
+        }
+
+        .property-section.info-section .player-info-box.v74-player-info-box,
+        .property-section.bank-section .player-info-box.v74-player-info-box {
+          padding: 8px 10px !important;
+        }
+
+        .property-section.info-section .player-info-grid > div,
+        .property-section.bank-section .player-info-grid > div {
+          padding: 2px 0 !important;
+        }
+      }
+
+
+
+      /* v218.13: マップ上部重複削減・座標ヘッダー視認性修正 */
+      .akari-page-guide-goal {
+        display: none !important;
+      }
+
+      .playfield-v216 .v153-map-control-row {
+        min-height: 46px !important;
+        padding: 6px 8px !important;
+        gap: 7px !important;
+        align-items: center !important;
+      }
+
+      .playfield-v216 .v153-map-control-row button,
+      .playfield-v216 .v153-map-control-row .top-compact-stat,
+      .playfield-v216 .v153-map-control-row .zoom-controls button {
+        min-height: 36px !important;
+        min-width: 36px !important;
+        font-size: 13px !important;
+      }
+
+      .playfield-v216 .top-status-inline.v73-top-status-inline,
+      .playfield-v216 .v73-top-status-inline {
+        min-height: 38px !important;
+        align-items: center !important;
+      }
+
+      .playfield-v216 .top-status-chip-wrap .top-compact-stat {
+        min-height: 34px !important;
+        padding: 5px 8px !important;
+        font-size: 13px !important;
+      }
+
+      .playfield-v216 .map-scroll {
+        min-height: calc(100dvh - 330px) !important;
+      }
+
+      .playfield-v216 .map-grid {
+        align-items: stretch !important;
+        justify-items: stretch !important;
+      }
+
+      .playfield-v216 .coord-header,
+      .playfield-v216 .coord-side,
+      .playfield-v216 .coord-top-left {
+        color: #1f2937 !important;
+        background: rgba(245, 247, 250, 0.96) !important;
+        border: 1px solid rgba(15, 23, 42, 0.38) !important;
+        border-radius: 7px !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.75) !important;
+        font-weight: 900 !important;
+        font-size: 10px !important;
+        line-height: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        min-width: 28px !important;
+        min-height: 28px !important;
+        overflow: hidden !important;
+        text-shadow: none !important;
+      }
+
+      .playfield-v216 .coord-header {
+        height: 28px !important;
+        top: 0 !important;
+      }
+
+      .playfield-v216 .coord-side {
+        width: 28px !important;
+        left: 0 !important;
+      }
+
+      .playfield-v216 .coord-top-left {
+        width: 28px !important;
+        height: 28px !important;
+      }
+
+      @media (max-width: 760px) {
+        .akari-page-guide-box {
+          margin-bottom: 6px !important;
+        }
+
+        .akari-page-guide-box .akari-page-guide-text {
+          font-size: 12.5px !important;
+          line-height: 1.35 !important;
+        }
+
+        .gifu-goal-panel {
+          margin: 4px 0 6px !important;
+          padding: 6px 8px !important;
+          min-height: 0 !important;
+          font-size: 12px !important;
+        }
+
+        .gifu-goal-panel strong,
+        .gifu-goal-panel span {
+          font-size: 12px !important;
+          line-height: 1.2 !important;
+        }
+
+        .playfield-v216 .v153-map-control-row {
+          min-height: 48px !important;
+          padding: 6px 7px !important;
+        }
+
+        .playfield-v216 .map-scroll {
+          min-height: calc(100dvh - 318px) !important;
+        }
+
+        .playfield-v216 .coord-header,
+        .playfield-v216 .coord-side,
+        .playfield-v216 .coord-top-left {
+          min-width: 28px !important;
+          min-height: 28px !important;
+          font-size: 10px !important;
+          color: #111827 !important;
+        }
+      }
+
+      /* v218.10: 封筒を丸枠ではなく四角い履歴書封筒に戻す */
+      @media (max-width: 760px) {
+        .recruit-envelope-card-v206 {
+          border-radius: 8px !important;
+          background: transparent !important;
+          box-shadow: none !important;
+          overflow: visible !important;
+        }
+        .recruit-envelope-card-v206.selected {
+          border-radius: 8px !important;
+          outline: 2px solid rgba(255, 207, 74, 0.95) !important;
+          outline-offset: 1px !important;
+        }
+        .resume-envelope-visual,
+        .resume-envelope-back,
+        .resume-envelope-paper,
+        .resume-envelope-flap,
+        .resume-envelope-body {
+          border-radius: 3px !important;
+        }
+        .resume-envelope-paper {
+          clip-path: none !important;
+        }
+        .resume-envelope-flap {
+          clip-path: polygon(0 0, 50% 48%, 100% 0, 100% 100%, 0 100%) !important;
+        }
+        .resume-envelope-body {
+          clip-path: polygon(0 0, 50% 42%, 100% 0, 100% 100%, 0 100%) !important;
+        }
+        .resume-envelope-seal {
+          border-radius: 50% !important;
+        }
+      }
+
+
+
+      /* ===== v218.14：スマホ縦の余白圧縮・ポップアップ固定・座標修正 ===== */
+      .story-event-card { max-height: calc(100dvh - 24px) !important; }
+      .story-event-card img[alt="七瀬 灯里"] { object-fit: contain !important; }
+      .story-event-overlay { padding: 8px !important; }
+      @media (max-width: 760px) {
+        .story-event-card { width: calc(100vw - 16px) !important; border-radius: 14px !important; }
+        .story-event-card > div:nth-of-type(1) { gap: 8px !important; padding: 10px !important; }
+        .story-event-card > div:nth-of-type(1) > div:first-child { flex-basis: 104px !important; width: 104px !important; height: 134px !important; min-height: 134px !important; max-height: 134px !important; }
+        .story-event-card > div:nth-of-type(1) > div:nth-child(2) { max-height: calc(100dvh - 118px) !important; }
+        .story-event-card button { min-height: 36px !important; }
+      }
+
+      .detail-card, .property-section, .bank-section, .info-section {
+        overscroll-behavior: contain !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      .detail-card:has(.employee-role-guide-v207),
+      .detail-card.employee-library-panel,
+      .property-section.bank-section,
+      .property-section.info-section {
+        min-height: calc(100dvh - 118px) !important;
+        max-height: calc(100dvh - 118px) !important;
+        overflow-y: auto !important;
+        padding-bottom: 14px !important;
+        background: linear-gradient(180deg, rgba(255,253,247,0.98), rgba(255,248,226,0.98)) !important;
+      }
+      .detail-card:has(.employee-role-guide-v207) h2,
+      .employee-library-panel h2,
+      .bank-section h2,
+      .info-section h2 { margin: 0 0 6px !important; font-size: 17px !important; }
+      .detail-card:has(.employee-role-guide-v207) .employee-role-guide-v207 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        margin: 4px 0 6px !important;
+      }
+      .detail-card:has(.employee-role-guide-v207) .employee-role-card-v207 {
+        padding: 7px 8px !important;
+        border-radius: 12px !important;
+        min-height: 0 !important;
+      }
+      .detail-card:has(.employee-role-guide-v207) .employee-role-card-v207 strong { font-size: 12px !important; margin-bottom: 1px !important; }
+      .detail-card:has(.employee-role-guide-v207) .employee-role-card-v207 span { font-size: 10px !important; line-height: 1.25 !important; }
+      .detail-card:has(.employee-role-guide-v207) .employee-subnav-row { margin: 4px 0 !important; gap: 6px !important; }
+      .detail-card:has(.employee-role-guide-v207) .employee-subnav-row button { min-height: 30px !important; padding: 4px 8px !important; font-size: 12px !important; }
+      .detail-card:has(.employee-role-guide-v207) p { margin: 4px 0 !important; font-size: 11px !important; line-height: 1.35 !important; }
+      .detail-card:has(.employee-role-guide-v207) .employee-salary-note { display: none !important; }
+      .detail-card:has(.employee-role-guide-v207) .ticket-button-row,
+      .detail-card:has(.employee-role-guide-v207) .ticket-odds-box,
+      .detail-card:has(.employee-role-guide-v207) .employee-sort-row { display: none !important; }
+      .detail-card:has(.employee-role-guide-v207) h3 { margin: 8px 0 4px !important; font-size: 13px !important; }
+      .employee-table-scroll { max-height: 34dvh !important; overflow: auto !important; }
+      .employee-storage-grid-v207 { grid-template-columns: repeat(auto-fill, minmax(172px, 1fr)) !important; gap: 6px !important; margin-top: 4px !important; }
+      .employee-storage-card-v207 { grid-template-columns: 50px 1fr !important; gap: 6px !important; padding: 6px !important; border-radius: 13px !important; }
+      .employee-storage-portrait-v207 { width: 50px !important; height: 62px !important; border-radius: 10px !important; }
+      .employee-storage-body-v207 { gap: 3px !important; }
+      .employee-storage-title-v207 strong { font-size: 12px !important; }
+      .employee-storage-rarity-v207 { font-size: 9px !important; padding: 1px 5px !important; }
+      .employee-storage-stat-grid-v207 { gap: 2px !important; font-size: 9px !important; }
+      .employee-storage-stat-grid-v207 span { padding: 2px 4px !important; }
+      .employee-storage-action-row-v207 button { min-height: 24px !important; padding: 2px 5px !important; font-size: 9px !important; }
+
+      .player-info-grid,
+      .loan-status-grid,
+      .bank-summary-grid,
+      .finance-summary-grid,
+      .info-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 4px 6px !important;
+      }
+      .player-info-grid > div,
+      .loan-status-grid > div,
+      .bank-summary-grid > div,
+      .finance-summary-grid > div,
+      .info-summary-grid > div {
+        min-height: 0 !important;
+        padding: 4px 6px !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 6px !important;
+      }
+      .player-info-grid span,
+      .loan-status-grid span,
+      .bank-summary-grid span,
+      .finance-summary-grid span,
+      .info-summary-grid span { font-size: 10px !important; white-space: nowrap !important; }
+      .player-info-grid strong,
+      .loan-status-grid strong,
+      .bank-summary-grid strong,
+      .finance-summary-grid strong,
+      .info-summary-grid strong { font-size: 11px !important; text-align: right !important; white-space: nowrap !important; }
+      .player-info-box, .loan-status-box, .bank-status-box, .finance-status-box {
+        padding: 7px 8px !important;
+        border-radius: 12px !important;
+        margin-bottom: 8px !important;
+      }
+      .player-info-box h3, .loan-status-box h3, .bank-status-box h3, .finance-status-box h3 {
+        margin: 0 0 5px !important;
+        font-size: 13px !important;
+      }
+      .finance-detail-box { margin-top: 6px !important; padding: 6px 7px !important; border-radius: 10px !important; }
+      .finance-detail-row { padding: 3px 0 !important; font-size: 10.5px !important; }
+
+      .map-coordinate-header,
+      .map-x-axis,
+      .map-y-axis,
+      .map-axis-cell,
+      .coordinate-label,
+      .x-axis-cell,
+      .y-axis-cell {
+        color: #26364d !important;
+        background: rgba(255,255,255,0.92) !important;
+        border-color: rgba(38,54,77,0.18) !important;
+        text-shadow: none !important;
+        font-weight: 900 !important;
+        opacity: 1 !important;
+      }
+      .map-x-axis .map-axis-cell,
+      .x-axis-cell,
+      .map-coordinate-header > div {
+        min-width: var(--tile-size, 28px) !important;
+        width: var(--tile-size, 28px) !important;
+        height: 18px !important;
+        min-height: 18px !important;
+        line-height: 18px !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+        font-size: 10px !important;
+        flex: 0 0 var(--tile-size, 28px) !important;
+      }
+      .map-y-axis .map-axis-cell,
+      .y-axis-cell {
+        width: 22px !important;
+        min-width: 22px !important;
+        height: var(--tile-size, 28px) !important;
+        min-height: var(--tile-size, 28px) !important;
+        line-height: var(--tile-size, 28px) !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+        font-size: 10px !important;
+      }
+      @media (max-width: 760px) {
+        .detail-card:has(.employee-role-guide-v207),
+        .detail-card.employee-library-panel,
+        .property-section.bank-section,
+        .property-section.info-section {
+          min-height: calc(100dvh - 96px) !important;
+          max-height: calc(100dvh - 96px) !important;
+        }
+      }
     `}</style>
 
     <audio
@@ -20076,14 +23669,17 @@ return (
               display: "flex",
               position: "relative",
               gap: 14,
-              alignItems: "stretch",
+              alignItems: "flex-start",
               padding: 14,
             }}
           >
             <div
               style={{
                 flex: "0 0 132px",
+                width: 132,
+                height: 160,
                 minHeight: 160,
+                maxHeight: 160,
                 borderRadius: 14,
                 background: "rgba(255,255,255,0.8)",
                 border: "1px solid rgba(0,0,0,0.08)",
@@ -20104,20 +23700,20 @@ return (
               />
             </div>
 
-            <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ flex: 1, minWidth: 0, display: "grid", gridTemplateRows: "auto auto minmax(0, 1fr)", maxHeight: "calc(100dvh - 150px)" }}>
               <div style={{ fontWeight: 900, fontSize: 15, color: "#7a4a00", marginBottom: 4 }}>
                 七瀬 灯里
               </div>
               <div style={{ fontWeight: 900, fontSize: 18, marginBottom: 10 }}>
                 {storyEvent.title}
               </div>
-              <div style={{ whiteSpace: "pre-line", lineHeight: 1.7, fontWeight: 700 }}>
+              <div style={{ whiteSpace: "pre-line", lineHeight: 1.65, fontWeight: 700, overflowY: "auto", WebkitOverflowScrolling: "touch", paddingRight: 4 }}>
                 {storyEvent.text}
               </div>
             </div>
           </div>
 
-          <div style={{ position: "relative", zIndex: 2, padding: "0 14px 14px", textAlign: "right" }}>
+          <div style={{ position: "sticky", bottom: 0, zIndex: 2, padding: "8px 14px 14px", textAlign: "right", background: "linear-gradient(180deg, rgba(255,253,247,0), rgba(255,253,247,0.96) 35%)" }}>
             <button
               type="button"
               onMouseDown={(event) => event.stopPropagation()}
@@ -20136,6 +23732,7 @@ return (
 
 {showTitleScreen && (
       <div
+        className="title-home-overlay-v201"
         style={{
           position: "fixed",
           inset: 0,
@@ -20143,109 +23740,383 @@ return (
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          padding: 16,
-          background: "linear-gradient(135deg, #123524 0%, #1d5c3a 45%, #f3e2b8 100%)",
+          padding: 12,
+          background: getHomeTimeBackgroundStyle().shell,
           color: "#ffffff",
+          overflowY: titleModal === "accountVault" ? "hidden" : "auto",
         }}
       >
+        <div className="mobile-landscape-lock-v2182">
+          <div>
+            <div style={{ fontSize: 36, marginBottom: 8 }}>📱</div>
+            <strong style={{ fontSize: 18 }}>スマホでは縦画面でプレイしてください</strong>
+            <div style={{ marginTop: 8, fontSize: 13, opacity: 0.82, lineHeight: 1.6 }}>PCでは横画面、スマホでは縦画面に最適化しています。</div>
+          </div>
+        </div>
         <div
           style={{
             position: "absolute",
             inset: 0,
-            opacity: 0.18,
+            opacity: 0.16,
             backgroundImage:
-              "linear-gradient(90deg, rgba(255,255,255,0.24) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.24) 1px, transparent 1px)",
+              "linear-gradient(90deg, rgba(255,255,255,0.25) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.25) 1px, transparent 1px)",
             backgroundSize: "34px 34px",
           }}
         />
-
-        <div
-          style={{
-            position: "relative",
-            width: "min(420px, 94vw)",
-            borderRadius: 24,
-            padding: 24,
-            background: "rgba(15, 38, 30, 0.88)",
-            boxShadow: "0 24px 70px rgba(0, 0, 0, 0.35)",
-            border: "1px solid rgba(255,255,255,0.22)",
-            textAlign: "center",
-          }}
-        >
-          <div style={{ fontSize: 42, lineHeight: 1, marginBottom: 10 }}>🏘️</div>
-          <p style={{ margin: "0 0 6px", letterSpacing: 2, fontSize: 12, opacity: 0.82 }}>NOGUCHI CORPORATION PRESENTS</p>
-          <h1 style={{ margin: "0 0 8px", fontSize: 28, lineHeight: 1.25 }}>箱庭不動産経営<br />シミュレーション</h1>
-          <p style={{ margin: "0 0 20px", fontSize: 14, opacity: 0.86 }}>V167</p>
-
-          <div
-            style={{
-              margin: "0 auto 14px",
-              padding: 14,
-              borderRadius: 16,
-              background: "rgba(255,255,255,0.1)",
-              textAlign: "left",
-              fontSize: 13,
-              lineHeight: 1.7,
-            }}
-          >
-            <label style={{ display: "block", marginBottom: 8, fontWeight: 700 }}>会社名</label>
-            <input
-              type="text"
-              value={newCompanyNameInput}
-              onChange={(event) => setNewCompanyNameInput(event.target.value)}
-              placeholder="会社名を入力"
+        <div className="home-atmosphere-v208">
+          {getHomeSparkleElements().map((sparkle, index) => (
+            <span
+              key={index}
+              className="home-sparkle-v208"
               style={{
-                width: "100%",
-                boxSizing: "border-box",
-                padding: "10px 12px",
-                borderRadius: 12,
-                border: "1px solid rgba(255,255,255,0.35)",
-                background: "rgba(255,255,255,0.92)",
-                color: "#123524",
-                fontWeight: 700,
+                "--spark-left": sparkle.left,
+                "--spark-top": sparkle.top,
+                "--spark-delay": sparkle.delay,
+                "--spark-size": `${sparkle.size}px`,
               }}
             />
+          ))}
+        </div>
+        <style>{`
+          html, body, #root { max-width: 100%; overflow-x: hidden; }
+          .mobile-landscape-lock-v2182 { display: none; }
+          .title-home-overlay-v201 { box-sizing: border-box !important; width: 100vw !important; max-width: 100vw !important; overflow-x: hidden !important; }
+          .title-home-menu-panel-v201 { display: none !important; }
+          .title-home-shell-v201 { padding-bottom: 86px !important; }
+          .title-home-character-panel-v201 { width: min(520px, calc(100vw - 18px)); justify-self: center; }
+          .title-home-character-stage-v201 { min-height: min(64dvh, 620px) !important; }
+          .home-akari-portrait-v201 { max-height: min(58dvh, 560px) !important; width: 88% !important; }
+          .home-stat-grid-v217 { display: none !important; }
+          .home-lobby-top-status-v2182 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+          .home-lobby-status-pill-v2182 { padding: 6px 8px; border-radius: 999px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); color: #fff; font-size: 11px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          .home-lobby-banner-v2182 { position: absolute; left: 14px; right: 14px; bottom: 82px; z-index: 5; padding: 9px 12px; border-radius: 17px; background: linear-gradient(145deg, rgba(255,247,223,0.94), rgba(255,225,140,0.9)); color: #213125; border: 1px solid rgba(255,255,255,0.72); box-shadow: 0 12px 26px rgba(0,0,0,0.22); display: flex; align-items: center; justify-content: space-between; gap: 8px; font-weight: 900; }
+          .home-lobby-bottom-nav-v2182 { position: absolute; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 60; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; padding: 7px; border-radius: 24px; background: rgba(10, 25, 22, 0.86); border: 1px solid rgba(255,255,255,0.22); box-shadow: 0 -8px 28px rgba(0,0,0,0.30); backdrop-filter: blur(12px); }
+          .home-lobby-nav-button-v2182 { position: relative; min-width: 0; border: none; border-radius: 17px; padding: 6px 3px; min-height: 57px; background: linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0.12)); color: #fff; display: grid; place-items: center; gap: 1px; font-weight: 900; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,0.28); }
+          .home-lobby-nav-icon-v2182 { width: 31px; height: 31px; border-radius: 13px; display: grid; place-items: center; background: rgba(255,255,255,0.92); color: #123524; font-size: 17px; }
+          .home-lobby-nav-label-v2182 { font-size: 10px; line-height: 1.05; white-space: nowrap; }
+          .home-lobby-nav-badge-v2182 { position: absolute; top: -4px; right: -2px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; display: grid; place-items: center; background: linear-gradient(145deg,#ff4d5d,#c40022); color: #fff; font-size: 10px; box-shadow: 0 5px 12px rgba(0,0,0,0.28); }
+          .home-page-modal-v2182 { position: absolute; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center; padding: 12px; background: #f7faf7; }
+          .employee-vault-rarity-row-v2182 { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 9px; }
+          .employee-vault-rarity-chip-v2182 { padding: 4px 8px; border-radius: 999px; background: #edf5ef; border: 1px solid #cfe2d3; font-size: 11px; font-weight: 900; color: #1d2b22; }
+          .title-home-shell-v201 { box-sizing: border-box !important; max-width: calc(100vw - 16px) !important; }
+          .title-home-character-panel-v201, .title-home-menu-panel-v201 { box-sizing: border-box !important; min-width: 0 !important; }
+          .home-side-shortcuts-v209 { box-sizing: border-box !important; }
+          .title-home-overlay-v201 { align-items: center !important; justify-content: center !important; }
+          .home-atmosphere-v208 { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+          .home-atmosphere-v208::before { content: ""; position: absolute; inset: -20%; background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18), transparent 24%), radial-gradient(circle at 80% 10%, rgba(255,227,126,0.16), transparent 22%), radial-gradient(circle at 50% 86%, rgba(255,255,255,0.10), transparent 28%); animation: homeAtmosphereDriftV208 12s ease-in-out infinite; }
+          .home-sparkle-v208 { position: absolute; width: var(--spark-size); height: var(--spark-size); left: var(--spark-left); top: var(--spark-top); border-radius: 999px; background: rgba(255,255,255,0.88); box-shadow: 0 0 12px rgba(255,234,154,0.88), 0 0 24px rgba(255,255,255,0.42); animation: homeSparkleTwinkleV208 3.8s ease-in-out infinite; animation-delay: var(--spark-delay); }
+          .home-time-chip-v208 { animation: homeTimeChipPulseV208 3.4s ease-in-out infinite; }
+          .home-akari-message-v208 { animation: homeSpeechFloatV208 4.4s ease-in-out infinite; }
+          .home-akari-spotlight-v208 { position: absolute; left: 50%; bottom: -18px; width: 72%; height: 72px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(ellipse at center, rgba(255,231,152,0.30), rgba(255,255,255,0.08) 48%, transparent 70%); filter: blur(1px); animation: homeSpotlightV208 4.2s ease-in-out infinite; }
+          @keyframes homeAtmosphereDriftV208 { 0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.74; } 50% { transform: translate3d(2%, -1%, 0) scale(1.03); opacity: 1; } }
+          @keyframes homeSparkleTwinkleV208 { 0%, 100% { transform: scale(0.55); opacity: 0.15; } 45% { transform: scale(1.18); opacity: 0.92; } 70% { transform: scale(0.75); opacity: 0.36; } }
+          @keyframes homeTimeChipPulseV208 { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.12); } }
+          @keyframes homeSpeechFloatV208 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+          @keyframes homeSpotlightV208 { 0%, 100% { opacity: 0.72; transform: translateX(-50%) scaleX(1); } 50% { opacity: 1; transform: translateX(-50%) scaleX(1.08); } }
+          .title-home-shell-v201 { max-height: calc(100vh - 24px); }
+          .title-home-character-panel-v201, .title-home-menu-panel-v201 { min-height: 0; }
+          .title-home-character-stage-v201 { min-height: 0 !important; }
+          .home-menu-card-v201 { transition: transform 0.14s ease, filter 0.14s ease; }
+          .home-menu-card-v201:hover { transform: translateY(-2px); filter: brightness(1.06); }
+          .home-menu-card-v203:active { transform: scale(0.985); }
+          .home-menu-card-v203.featured { animation: homeFeaturedCardGlowV203 3.2s ease-in-out infinite; }
+          .home-menu-badge-v203 { animation: homeBadgePopV203 1.8s ease-in-out infinite; }
+
+          .present-box-stage-v210::before { content: ""; position: absolute; inset: -45%; background: radial-gradient(circle, rgba(255,255,255,0.55) 0 8%, transparent 9% 100%); background-size: 42px 42px; opacity: 0.45; animation: presentSparkleV210 7s linear infinite; }
+          @keyframes presentSparkleV210 { from { transform: translate3d(0,0,0) rotate(0deg); } to { transform: translate3d(24px,-18px,0) rotate(12deg); } }
+          .home-login-bonus-card-v204 { position: relative; overflow: hidden; }
+          .home-login-bonus-card-v204::before { content: ""; position: absolute; inset: -40%; background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,0.32), transparent 65%); transform: translateX(-35%); animation: homeBonusShineV204 3.5s ease-in-out infinite; }
+          .home-login-bonus-card-v204.claimed::before { display: none; }
+          .home-present-box-v204 { animation: homePresentFloatV204 2.8s ease-in-out infinite; display: inline-block; }
+          .home-mission-card-v205.claimable { animation: homeMissionGlowV205 2.4s ease-in-out infinite; }
+          .home-top-command-v209, .home-side-shortcut-v209, .home-bottom-nav-button-v209 { transition: transform 0.14s ease, filter 0.14s ease, box-shadow 0.14s ease; }
+          .home-top-command-v209:hover, .home-side-shortcut-v209:hover, .home-bottom-nav-button-v209:hover { transform: translateY(-2px); filter: brightness(1.08); }
+          .home-top-command-v209:active, .home-side-shortcut-v209:active, .home-bottom-nav-button-v209:active { transform: scale(0.975); }
+          .home-mini-badge-v209 { position: absolute; top: -5px; right: -5px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; display: grid; placeItems: center; background: linear-gradient(145deg,#ff4d5d,#c40022); color: #fff; font-size: 10px; font-weight: 900; box-shadow: 0 5px 12px rgba(0,0,0,0.28); animation: homeBadgePopV203 1.8s ease-in-out infinite; }
+          .home-recruit-pass-grid-v206 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+          .home-recruit-pass-button-v206 { position: relative; min-height: 132px; padding: 12px 10px; border-radius: 18px; color: #1d2b22; font-weight: 900; display: grid; gap: 5px; justify-items: center; text-align: center; overflow: hidden; box-shadow: 0 10px 22px rgba(31,45,34,0.16), inset 0 1px 0 rgba(255,255,255,0.55); transition: transform 0.14s ease, filter 0.14s ease; }
+          .home-recruit-pass-button-v206:not(:disabled):hover { transform: translateY(-2px); filter: brightness(1.04); }
+          .home-recruit-pass-button-v206:not(:disabled):active { transform: scale(0.985); }
+          .home-recruit-pass-button-v206::before { content: ""; position: absolute; inset: -45%; background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,0.42), transparent 62%); transform: translateX(-38%) rotate(8deg); animation: recruitPassShineV206 4.2s ease-in-out infinite; pointer-events: none; }
+          .home-recruit-pass-button-v206.recruit-stage-premium::before { animation-duration: 2.8s; }
+          .home-recruit-pass-badge-v206 { position: absolute; top: 7px; right: 7px; padding: 3px 7px; border-radius: 999px; background: rgba(31,45,34,0.82); color: #fff; font-size: 9px; letter-spacing: 0.4px; }
+          .home-recruit-pass-icon-v206 { width: 42px; height: 42px; border-radius: 15px; display: grid; place-items: center; background: rgba(255,255,255,0.72); box-shadow: inset 0 1px 0 rgba(255,255,255,0.8); font-size: 22px; }
+          .home-recruit-pass-button-v206 strong { font-size: 15px; }
+          .home-recruit-pass-button-v206 small { font-size: 10px; line-height: 1.35; opacity: 0.76; }
+          .home-recruit-pass-button-v206 em { font-style: normal; margin-top: 2px; padding: 3px 9px; border-radius: 999px; background: rgba(255,255,255,0.74); font-size: 12px; }
+          @keyframes recruitPassShineV206 { 0%, 100% { transform: translateX(-38%) rotate(8deg); opacity: 0; } 42% { opacity: 0.75; } 64% { transform: translateX(38%) rotate(8deg); opacity: 0; } }
+          @keyframes homeFeaturedCardGlowV203 {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.08); }
+          }
+          @keyframes homeBadgePopV203 {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+          }
+          @keyframes homeBonusShineV204 {
+            0%, 100% { transform: translateX(-35%) rotate(8deg); opacity: 0; }
+            45% { opacity: 0.75; }
+            70% { transform: translateX(35%) rotate(8deg); opacity: 0; }
+          }
+          @keyframes homePresentFloatV204 {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-4px) rotate(2deg); }
+          }
+
+          .vault-employee-grid-v217 button { min-height: 68px; }
+          .home-action-grid-v217 .home-menu-card-v201 { min-height: 66px !important; }
+          @media (min-width: 900px) {
+            .title-home-shell-v201 { max-height: calc(100dvh - 24px) !important; }
+            .title-home-character-panel-v201, .title-home-menu-panel-v201 { max-height: calc(100dvh - 28px) !important; overflow: hidden !important; }
+            .title-home-character-stage-v201 { min-height: 230px !important; }
+            .home-akari-portrait-v201 { max-height: 220px !important; }
+          }
+          .home-akari-portrait-v202 { animation: homeAkariBreathV202 3.8s ease-in-out infinite; transform-origin: 50% 100%; }
+          .home-akari-stage-v202 { cursor: pointer; }
+          .home-akari-stage-v202::after { content: "タップで会話"; position: absolute; right: 12px; top: 12px; padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,0.84); color: #1d2b22; font-size: 11px; font-weight: 900; box-shadow: 0 6px 14px rgba(0,0,0,0.18); }
+          @keyframes homeAkariBreathV202 {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-7px) scale(1.018); }
+          }
+          .home-action-grid-v201 { align-items: stretch; }
+          .home-save-slots-v201 { max-height: 165px; overflow: auto; }
+
+          @media (orientation: landscape) and (max-width: 900px) and (max-height: 620px) {
+            .mobile-landscape-lock-v2182 { position: fixed; inset: 0; z-index: 999999; display: grid; place-items: center; padding: 24px; background: radial-gradient(circle at 50% 20%, #24466a, #091420 70%); color: #fff; text-align: center; }
+            .mobile-landscape-lock-v2182 > div { max-width: 420px; padding: 22px; border-radius: 24px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 18px 50px rgba(0,0,0,0.32); }
+            .title-home-shell-v201, .home-lobby-bottom-nav-v2182, .home-atmosphere-v208 { display: none !important; }
+          }
+          @media (orientation: landscape) and (min-width: 901px) {
+            .title-home-overlay-v201 { padding: 8px !important; }
+            .title-home-shell-v201 { width: min(1120px, 98vw) !important; grid-template-columns: minmax(260px, 0.82fr) minmax(470px, 1.18fr) !important; gap: 10px !important; }
+            .title-home-character-panel-v201, .title-home-menu-panel-v201 { padding: 12px !important; border-radius: 22px !important; gap: 8px !important; }
+            .title-home-character-stage-v201 { min-height: 230px !important; }
+            .home-akari-portrait-v201 { max-height: 230px !important; width: 78% !important; }
+            .home-menu-card-v201 { min-height: 66px !important; padding: 8px !important; grid-template-columns: 40px 1fr !important; }
+            .home-menu-icon-v201 { width: 40px !important; height: 40px !important; }
+            .home-login-news-grid-v201, .home-action-grid-v201 { gap: 8px !important; }
+            .home-featured-v201, .home-save-slots-v201 { display: none !important; }
+          }
+          @media (max-width: 900px) {
+            .home-side-shortcuts-v209 { display: none !important; }
+            .title-home-overlay-v201 { padding-left: 6px !important; padding-right: 6px !important; }
+            .title-home-shell-v201 { width: calc(100vw - 12px) !important; max-width: calc(100vw - 12px) !important; margin: 0 auto !important; }
+          }
+          @media (min-width: 901px) {
+            .home-side-shortcuts-v209 { right: 10px !important; top: 12px !important; }
+            .title-home-menu-panel-v201 { padding-right: 72px !important; }
+          }
+          @media (orientation: portrait), (max-width: 760px) {
+            .title-home-overlay-v201 { align-items: flex-start !important; padding: 8px !important; overflow-y: auto !important; }
+            .title-home-shell-v201 { width: min(520px, 98vw) !important; grid-template-columns: 1fr !important; gap: 8px !important; max-height: none !important; }
+            .title-home-character-panel-v201 { padding: 10px !important; border-radius: 22px !important; gap: 8px !important; }
+            .title-home-menu-panel-v201 { padding: 10px !important; border-radius: 22px !important; gap: 8px !important; }
+            .home-title-brand-v201 h1 { font-size: 20px !important; }
+            .title-home-character-stage-v201 { min-height: calc(100dvh - 210px) !important; }
+            .home-akari-portrait-v201 { max-height: calc(100dvh - 250px) !important; width: 92% !important; }
+            .home-akari-message-v201 { left: 8px !important; right: 8px !important; bottom: 8px !important; padding: 8px 10px !important; }
+            .home-stat-grid-v201 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 5px !important; }
+            .home-stat-pill-v201 { grid-template-columns: 1fr !important; justify-items: center !important; padding: 6px 4px !important; border-radius: 14px !important; text-align: center !important; }
+            .home-stat-icon-v201 { width: 21px !important; height: 21px !important; font-size: 11px !important; }
+            .home-ticket-grid-v201 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 5px !important; }
+            .home-ticket-card-v201 { padding: 7px 6px !important; border-radius: 13px !important; text-align: center !important; }
+            .home-action-grid-v201 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 7px !important; }
+            .home-recruit-pass-grid-v206 { grid-template-columns: 1fr !important; }
+            .home-recruit-pass-button-v206 { min-height: 86px !important; }
+            .home-menu-card-v201 { min-height: 74px !important; padding: 8px 5px !important; grid-template-columns: 1fr !important; justify-items: center !important; text-align: center !important; gap: 5px !important; border-radius: 17px !important; }
+            .home-menu-icon-v201 { width: 38px !important; height: 38px !important; border-radius: 14px !important; font-size: 17px !important; }
+            .home-menu-sub-v201 { display: none !important; }
+            .home-login-news-grid-v201 { grid-template-columns: 1fr 1fr !important; gap: 7px !important; }
+            .home-login-news-grid-v201 > div { padding: 9px !important; border-radius: 15px !important; }
+            .home-featured-v201 { display: none !important; }
+            .home-company-input-v201, .home-save-slots-v201 { display: none !important; }
+            .home-bottom-buttons-v201 { grid-template-columns: 1fr 1fr !important; gap: 7px !important; }
+          }
+        `}</style>
+
+        {!titleFullPageModal && (
+        <div
+          className="title-home-shell-v201"
+          style={{
+            position: "relative",
+            width: "min(520px, calc(100vw - 16px))",
+            display: "grid",
+            gridTemplateColumns: "1fr",
+            gap: 10,
+            alignItems: "stretch",
+          }}
+        >
+          {/* v217: 重複する右側ショートカットは廃止。ホーム内コマンドに統合。 */}
+          <div
+            className="title-home-character-panel-v201"
+            style={{
+              borderRadius: 28,
+              padding: 12,
+              background: "rgba(15, 38, 30, 0.9)",
+              boxShadow: "0 24px 70px rgba(0, 0, 0, 0.35)",
+              border: "1px solid rgba(255,255,255,0.22)",
+              display: "grid",
+              gap: 12,
+            }}
+          >
+            <div className="home-title-brand-v201">
+              <h1 style={{ margin: 0, fontSize: 22, lineHeight: 1.1, whiteSpace: "nowrap" }}>箱庭不動産ホーム <span style={{ fontSize: 12, opacity: 0.82 }}>{GAME_VERSION}</span></h1>
+              <div className="home-lobby-top-status-v2182" style={{ marginTop: 8 }}>
+                <span className="home-lobby-status-pill-v2182">RANK {titleAccountData.playerRank ?? 1}</span>
+                <span className="home-lobby-status-pill-v2182">累計EXP {getPlayerTotalExp(titleAccountData.playerRank ?? 1, titleAccountData.playerExp ?? 0).toLocaleString()}</span>
+                <span className="home-lobby-status-pill-v2182">🌈 虹紙 {titleRainbowPaper.toLocaleString()}</span>
+              </div>
+            </div>
+
+            <div
+              className="title-home-character-stage-v201 home-akari-stage-v202"
+              onClick={handleHomeAkariTap}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  handleHomeAkariTap();
+                }
+              }}
+              style={{
+                minHeight: "min(64dvh, 620px)",
+                borderRadius: 24,
+                backgroundImage: getHomeTimeBackgroundStyle().overlay,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                border: "1px solid rgba(255,255,255,0.16)",
+                position: "relative",
+                overflow: "hidden",
+                display: "grid",
+                alignItems: "end",
+              }}
+            >
+              <div style={{ position: "absolute", inset: 0, background: getHomeTimeBackgroundStyle().aura }} />
+              <div className="home-akari-spotlight-v208" />
+              <img
+                src={AKARI_PORTRAIT_PATHS[getHomeAkariPortraitKey()]}
+                alt="七瀬 灯里"
+                className="home-akari-portrait-v201 home-akari-portrait-v202"
+                style={{ position: "relative", width: "92%", maxHeight: "min(58dvh, 560px)", objectFit: "contain", justifySelf: "center", alignSelf: "end", filter: "drop-shadow(0 12px 18px rgba(0,0,0,0.35))" }}
+              />
+              <div
+                className="home-akari-message-v201 home-akari-message-v208"
+                style={{
+                  position: "absolute",
+                  left: 12,
+                  right: 12,
+                  bottom: 12,
+                  padding: "10px 12px",
+                  borderRadius: 16,
+                  background: "rgba(255, 253, 247, 0.94)",
+                  color: "#1d2b22",
+                  boxShadow: "0 10px 24px rgba(0,0,0,0.22)",
+                  textAlign: "left",
+                }}
+              >
+                <strong style={{ color: "#7a4a00", fontSize: 12 }}>七瀬 灯里</strong>
+                <div style={{ fontWeight: 800, fontSize: 13, lineHeight: 1.55, marginTop: 2 }}>{getHomeAkariMessage()}</div>
+              </div>
+            </div>
+
+            {homeLoginBonusStatus.canClaim && (
+              <div className="home-lobby-banner-v2182">
+                <span>🎁 {homeLoginBonusStatus.rewardText}</span>
+                <button type="button" onClick={claimHomeDailyLoginBonus} style={{ border: "none", borderRadius: 999, padding: "6px 10px", background: "#1d5c3a", color: "#fff", fontWeight: 900, cursor: "pointer" }}>受け取る</button>
+              </div>
+            )}
           </div>
 
           <div
+            className="title-home-menu-panel-v201"
             style={{
-              margin: "0 auto 18px",
-              padding: 12,
-              borderRadius: 16,
-              background: "rgba(255,255,255,0.1)",
-              textAlign: "left",
-              fontSize: 12,
-              lineHeight: 1.45,
+              borderRadius: 28,
+              padding: 18,
+              background: "linear-gradient(180deg, rgba(20, 50, 37, 0.92), rgba(10, 30, 22, 0.9))",
+              backdropFilter: "blur(10px)",
+              color: "#ffffff",
+              boxShadow: "0 24px 70px rgba(0, 0, 0, 0.28)",
+              border: "1px solid rgba(255,255,255,0.5)",
+              display: "grid",
+              gap: 12,
             }}
           >
-            <strong>セーブスロット</strong>
-            <div style={{ display: "grid", gap: 8, marginTop: 8 }}>
-              {saveSlotSummaries.map((slotInfo) => (
-                <div key={slotInfo.slot} style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: 6, alignItems: "center" }}>
-                  <div>
-                    <strong>Slot {slotInfo.slot}</strong>：{slotInfo.hasData ? `${slotInfo.companyName} / ${getGameDate(slotInfo.month).label} / ${Number(slotInfo.money ?? 0).toLocaleString()}万円` : "空き"}
-                    {slotInfo.hasData && <div style={{ opacity: 0.72 }}>保存：{slotInfo.savedAtText}</div>}
-                  </div>
-                  <button type="button" onClick={() => { setPendingNewGame({slot: slotInfo.slot}); setTitleModal("modeSelect"); }} style={{ padding: "7px 9px", borderRadius: 999, border: "none", fontWeight: 700, cursor: "pointer" }}>
-                    最初から
-                  </button>
-                  <button type="button" onClick={() => loadSaveSlotFromTitle(slotInfo.slot)} disabled={!slotInfo.hasData} style={{ padding: "7px 9px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.35)", background: slotInfo.hasData ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.06)", color: "#ffffff", fontWeight: 700, cursor: slotInfo.hasData ? "pointer" : "not-allowed", opacity: slotInfo.hasData ? 1 : 0.55 }}>
-                    ロード
-                  </button>
-                </div>
-              ))}
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+              <div>
+                <h2 style={{ margin: 0, fontSize: 21 }}>ホームコマンド</h2>
+                <p style={{ margin: "4px 0 0", fontSize: 12, opacity: 0.72 }}>よく使う操作をスマホゲーム風に集約しました。</p>
+              </div>
+              <div style={{ fontSize: 28, filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.3))" }}>◇</div>
             </div>
-          </div>
 
-          <div style={{ display: "grid", gap: 10 }}>
-            <button type="button" onClick={() => setTitleModal("settings")} style={{ padding: "12px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.35)", background: "rgba(255,255,255,0.12)", color: "#ffffff", fontWeight: 700, cursor: "pointer" }}>
-              ▶ 設定
-            </button>
-            <button type="button" onClick={() => setTitleModal("credit")} style={{ padding: "12px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.35)", background: "rgba(255,255,255,0.12)", color: "#ffffff", fontWeight: 700, cursor: "pointer" }}>
-              ▶ クレジット
-            </button>
-          </div>
+            <div className="home-ticket-grid-v201" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+              <div className="home-ticket-card-v201" style={{ padding: 10, borderRadius: 16, background: "linear-gradient(145deg,#fff7df,#ffe5a3)", border: "1px solid #e8d08a", color: "#2e2410", boxShadow: "0 8px 16px rgba(0,0,0,0.16)" }}>
+                <div style={{ fontSize: 11, color: "#8a5a00", fontWeight: 800 }}>📄 ライト</div>
+                <strong>{titleAccountData.rookieEmployeeTickets ?? 0}枚</strong>
+              </div>
+              <div className="home-ticket-card-v201" style={{ padding: 10, borderRadius: 16, background: "linear-gradient(145deg,#edf5ef,#ccebd7)", border: "1px solid #cfe2d3", color: "#183323", boxShadow: "0 8px 16px rgba(0,0,0,0.16)" }}>
+                <div style={{ fontSize: 11, color: "#31563f", fontWeight: 800 }}>🎫 社員</div>
+                <strong>{titleAccountData.employeeTickets ?? 0}枚</strong>
+              </div>
+              <div className="home-ticket-card-v201" style={{ padding: 10, borderRadius: 16, background: "linear-gradient(145deg,#f3edff,#dfccff)", border: "1px solid #d8c8ff", color: "#2d204d", boxShadow: "0 8px 16px rgba(0,0,0,0.16)" }}>
+                <div style={{ fontSize: 11, color: "#59408f", fontWeight: 800 }}>✨ プレミア</div>
+                <strong>{titleAccountData.premiumEmployeeTickets ?? 0}枚</strong>
+              </div>
+            </div>
 
-          <p style={{ margin: "18px 0 0", fontSize: 12, opacity: 0.72 }}>地方都市で土地を買い、建て、貸し、会社を育てる。</p>
+            <div className="home-action-grid-v201 home-action-grid-v203 home-action-grid-v217" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
+              {renderHomeMenuCard({ icon: "物", title: "ストーリー", sub: "第0章から物語を始める", accent: "#fff0bf", featured: true, onClick: continueStoryFromTitle })}
+              {renderHomeMenuCard({ icon: "経", title: "フリー", sub: hasSaveData ? "保存中の会社へ戻る" : "自由経営を開始", accent: "#dff2e7", featured: true, onClick: continueFreeFromTitle })}
+              {renderHomeMenuCard({ icon: "採", title: "社員採用", sub: "採用パスで履歴書確認", accent: "#fff0bf", badge: ((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) > 0 ? "OK" : "", featured: true, onClick: () => setTitleModal("recruitHome") })}
+              {renderHomeMenuCard({ icon: "社", title: "社員名簿", sub: `${titleAccountEmployeeVault.length}/${EMPLOYEE_POOL.length}名・図鑑/保管庫統合`, accent: "#e8f6ee", badge: titleAccountEmployeeVault.length > 0 ? `${titleAccountEmployeeVault.length}` : "", onClick: () => setTitleModal("accountVault") })}
+              {renderHomeMenuCard({ icon: "🎁", title: "BOX", sub: homeLoginBonusStatus.canClaim ? "ログイン報酬あり" : "受取済み", accent: "#ffe8f0", badge: homeLoginBonusStatus.canClaim ? "NEW" : "", onClick: () => setTitleModal("presentBox") })}
+              {renderHomeMenuCard({ icon: "任", title: "ミッション", sub: homeMissionClaimableCount > 0 ? `${homeMissionClaimableCount}件受取可能` : `${homeMissionCompletedCount}/${homeMissionItems.length}件達成`, accent: "#ffe7e7", badge: homeMissionClaimableCount > 0 ? "NEW" : "", onClick: () => setTitleModal("missions") })}
+              {renderHomeMenuCard({ icon: "設", title: "設定", sub: "設定・クレジット", accent: "#eeeeee", onClick: () => setTitleModal("settings") })}
+            </div>
+
+            {/* v217: 下部ナビは重複するため廃止。主要導線はホームコマンドへ集約。 */}
+
+            <button
+              type="button"
+              className={`home-login-bonus-card-v204${homeLoginBonusStatus.canClaim ? "" : " claimed"}`}
+              onClick={homeLoginBonusStatus.canClaim ? claimHomeDailyLoginBonus : () => setTitleModal("presentBox")}
+              style={{
+                padding: 11,
+                borderRadius: 16,
+                background: homeLoginBonusStatus.canClaim ? "linear-gradient(145deg, rgba(255,247,223,0.98), rgba(255,229,163,0.96))" : "rgba(247,250,247,0.95)",
+                border: homeLoginBonusStatus.canClaim ? "1px solid #e8c85f" : "1px solid #d8e0d8",
+                color: "#1d2b22",
+                textAlign: "left",
+                cursor: "pointer",
+                boxShadow: homeLoginBonusStatus.canClaim ? "0 10px 22px rgba(96,68,0,0.22)" : "none",
+              }}
+            >
+              <strong><span className="home-present-box-v204">🎁</span> ログインボーナス</strong>
+              <span style={{ marginLeft: 8, fontSize: 12, opacity: 0.82 }}>
+                {homeLoginBonusStatus.canClaim ? homeLoginBonusStatus.rewardText : "本日は受取済み"}
+              </span>
+            </button>
+
+          </div>
+        </div>
+        )}
+
+        <div className="home-lobby-bottom-nav-v2182">
+          {[
+            { icon: "仕", label: "仕事", badge: "", action: () => setTitleModal("workSelect") },
+            { icon: "採", label: "採用", badge: ((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) > 0 ? String((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) : "", action: () => setTitleModal("recruitHome") },
+            { icon: "名", label: "名簿", badge: "", action: () => setTitleModal("accountVault") },
+            { icon: "🎁", label: "BOX", badge: homeLoginBonusStatus.canClaim ? "!" : "", action: () => setTitleModal("presentBox") },
+            { icon: "任", label: "任務", badge: homeMissionClaimableCount > 0 ? String(homeMissionClaimableCount) : "", action: () => setTitleModal("missions") },
+            { icon: "⚙", label: "設定", badge: "", action: () => setTitleModal("settings") },
+          ].map((item) => (
+            <button key={item.label} type="button" className="home-lobby-nav-button-v2182" onClick={item.action}>
+              {item.badge ? <span className="home-lobby-nav-badge-v2182">{item.badge}</span> : null}
+              <span className="home-lobby-nav-icon-v2182">{item.icon}</span>
+              <span className="home-lobby-nav-label-v2182">{item.label}</span>
+            </button>
+          ))}
         </div>
 
         {titleModal && (
@@ -20256,26 +24127,270 @@ return (
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              padding: 16,
-              background: "rgba(0,0,0,0.45)",
+              zIndex: titleFullPageModal ? 35 : 30,
+              padding: titleFullPageModal ? "0 0 84px" : 16,
+              background: titleFullPageModal ? "#f7faf7" : "rgba(0,0,0,0.45)",
             }}
           >
             <div
               style={{
-                width: "min(360px, 92vw)",
-                borderRadius: 20,
-                padding: 22,
+                width: titleFullPageModal ? "100vw" : titleModal === "founderSelect" || titleModal === "missions" ? "min(720px, 94vw)" : "min(420px, 92vw)",
+                height: titleFullPageModal ? "calc(100dvh - 84px)" : "auto",
+                maxHeight: titleFullPageModal ? "calc(100dvh - 84px)" : "min(90dvh, 760px)",
+                overflowY: "auto",
+                borderRadius: titleFullPageModal ? 0 : 20,
+                padding: titleFullPageModal ? "10px 10px 18px" : 22,
                 background: "#ffffff",
                 color: "#1d2b22",
-                boxShadow: "0 18px 60px rgba(0,0,0,0.34)",
+                boxShadow: titleFullPageModal ? "none" : "0 18px 60px rgba(0,0,0,0.34)",
                 textAlign: "left",
               }}
             >
-              {titleModal === "modeSelect" ? (
+              {titleModal === "workSelect" ? (
+                <>
+                  <h2 style={{ marginTop: 0 }}>仕事を選択</h2>
+                  <div style={{ display: "grid", gap: 10 }}>
+                    <button type="button" onClick={continueStoryFromTitle} style={{ padding: 14, borderRadius: 18, border: "1px solid #e3c867", background: "linear-gradient(145deg,#fff7df,#ffe7a3)", color: "#1d2b22", textAlign: "left", fontWeight: 900, cursor: "pointer" }}>
+                      <div style={{ fontSize: 17 }}>📖 ストーリーモード</div>
+                      <div style={{ fontSize: 12, marginTop: 4, opacity: 0.75 }}>{titleStoryStatusText}</div>
+                    </button>
+                    <button type="button" onClick={continueFreeFromTitle} style={{ padding: 14, borderRadius: 18, border: "1px solid #cfe2d3", background: "linear-gradient(145deg,#edf5ef,#d8f0e2)", color: "#1d2b22", textAlign: "left", fontWeight: 900, cursor: "pointer" }}>
+                      <div style={{ fontSize: 17 }}>🏢 フリーモード</div>
+                      <div style={{ fontSize: 12, marginTop: 4, opacity: 0.75 }}>{titleFreeStatusText}</div>
+                    </button>
+                  </div>
+                </>
+              ) : titleModal === "modeSelect" ? (
                 <>
                   <h2 style={{ marginTop: 0 }}>モード選択</h2>
                   <button type="button" onClick={() => startNewGameFromTitle((pendingNewGame?.slot ?? activeSaveSlot), "story")} style={{width:"100%",padding:12,marginBottom:8}}>ストーリーモード</button>
                   <button type="button" onClick={() => startNewGameFromTitle((pendingNewGame?.slot ?? activeSaveSlot), "free")} style={{width:"100%",padding:12}}>フリーモード</button>
+                </>
+              ) : titleModal === "founderSelect" ? (
+                (() => {
+                  const accountData = readAccountData();
+                  const akari = getStoryAkariForFounder(accountData);
+                  const founderSelectableBase = getFounderSelectableEmployees(accountData);
+                  const founderCandidates = getFilteredSortedVaultEmployees(founderSelectableBase, {
+                    rarityFilter: titleVaultRarityFilter,
+                    sortKey: titleVaultSortKey,
+                  });
+                  const selectedFounderEmployees = selectedFounderEmployeeIds
+                    .map((employeeId) => founderSelectableBase.find((employee) => employee.id === employeeId))
+                    .filter(Boolean);
+
+                  function toggleFounderEmployee(employeeId) {
+                    setSelectedFounderEmployeeIds((currentIds) => {
+                      if (currentIds.includes(employeeId)) {
+                        return currentIds.filter((id) => id !== employeeId);
+                      }
+                      if (currentIds.length >= 2) return currentIds;
+                      return [...currentIds, employeeId];
+                    });
+                  }
+
+                  if (titleVaultDetailEmployee) {
+                    return (
+                      <>
+                        <h2 style={{ marginTop: 0 }}>社員詳細</h2>
+                        {renderVaultEmployeeDetailPanel(titleVaultDetailEmployee)}
+                      </>
+                    );
+                  }
+
+                  return (
+                    <>
+                      <h2 style={{ marginTop: 0 }}>創業メンバー選択</h2>
+                      <p style={{ fontSize: 13, lineHeight: 1.6, marginTop: 0 }}>
+                        七瀬灯里は固定枠、自由枠は最大2名です。保管庫の社員はレアリティや能力で絞り込み・並び替えできます。能力合計順での並び替えもできますが、ステータス表示には合計値を出しません。
+                      </p>
+                      {renderFounderSlotSummary(akari, selectedFounderEmployees)}
+                      <div style={{ padding: 10, borderRadius: 12, background: "#f3f6f1", marginBottom: 10 }}>
+                        <strong>固定枠：七瀬 灯里</strong>
+                        <div style={{ marginTop: 6 }}>
+                          {akari ? renderVaultEmployeeCard(akari) : "七瀬 灯里：未解放"}
+                        </div>
+                      </div>
+                      <div style={{ fontWeight: 800, marginBottom: 6 }}>自由枠 {selectedFounderEmployeeIds.length}/2</div>
+                      {renderVaultControls(true)}
+                      <div style={{ fontSize: 12, opacity: 0.72, marginBottom: 6 }}>表示中：{founderCandidates.length}名</div>
+                      <div style={{ display: "grid", gap: 6, maxHeight: 260, overflowY: "auto", paddingRight: 2 }}>
+                        {founderCandidates.length === 0 ? (
+                          <div style={{ fontSize: 13, opacity: 0.7 }}>条件に合う社員がいません。</div>
+                        ) : founderCandidates.map((employee) => {
+                          const checked = selectedFounderEmployeeIds.includes(employee.id);
+                          const disabled = !checked && selectedFounderEmployeeIds.length >= 2;
+                          return renderVaultEmployeeCard(employee, {
+                            checked,
+                            disabled,
+                            onToggle: toggleFounderEmployee,
+                          });
+                        })}
+                      </div>
+                      <button type="button" onClick={startFreeGameWithSelectedFounders} style={{ marginTop: 14, width: "100%", padding: "11px 14px", borderRadius: 999, border: "none", background: "#1d5c3a", color: "#ffffff", fontWeight: 700, cursor: "pointer" }}>
+                        このメンバーで開始
+                      </button>
+                    </>
+                  );
+                })()
+              ) : titleModal === "accountVault" ? (
+                (() => {
+                  const accountData = readAccountData();
+                  const allVaultEmployees = mergeEmployeeCollections(accountData.employeeVault ?? []);
+                  const vaultEmployees = getFilteredSortedVaultEmployees(allVaultEmployees, {
+                    rarityFilter: titleVaultRarityFilter,
+                    sortKey: titleVaultSortKey,
+                  });
+                  const akariForVault = getStoryAkariForFounder(accountData);
+                  if (titleVaultDetailEmployee) {
+                    return (
+                      <>
+                        <h2 style={{ marginTop: 0 }}>社員詳細</h2>
+                        {renderVaultEmployeeDetailPanel(titleVaultDetailEmployee)}
+                      </>
+                    );
+                  }
+
+                  return (
+                    <>
+                      <div className="employee-vault-header-v218" style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center", marginBottom: 8 }}>
+                        <h2 style={{ margin: 0, fontSize: 18 }}>社員名簿</h2>
+                        <div style={{ padding: "4px 8px", borderRadius: 999, background: "#edf5ef", border: "1px solid #cfe2d3", textAlign: "right", minWidth: 128, fontSize: 11 }}>
+                          <strong>収集率 {titleEmployeeCollectedCount}/{titleEmployeeTotalCount}名（{titleEmployeeCompletionRate}%）</strong>
+                        </div>
+                      </div>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 3, alignItems: "end", marginBottom: 5 }}>
+                        {renderVaultControls(true)}
+                        <div style={{ fontSize: 10, opacity: 0.68, whiteSpace: "nowrap", paddingBottom: 1 }}>表示中：{vaultEmployees.length}名</div>
+                      </div>
+                      <div className="vault-employee-grid-v217" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(205px, 1fr))", gap: 6, maxHeight: "min(82dvh, 800px)", overflowY: "auto", paddingRight: 4 }}>
+                        {vaultEmployees.length === 0 ? (
+                          <div style={{ fontSize: 13, opacity: 0.7 }}>条件に合う社員がいません。</div>
+                        ) : vaultEmployees.map((employee) => renderVaultEmployeeCard(employee))}
+                      </div>
+                    </>
+                  );
+                })()
+              ) : titleModal === "recruitHome" ? (
+                <>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                    <h2 style={{ margin: 0, fontSize: 20 }}>社員採用</h2>
+                    <span style={{ fontSize: 12, fontWeight: 900, color: "#31563f", background: "#edf5ef", border: "1px solid #cfe2d3", borderRadius: 999, padding: "4px 8px" }}>採用パスで履歴書確認</span>
+                  </div>
+                  <div className="home-recruit-pass-grid-v2184" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 6, marginBottom: 8 }}>
+                    {[
+                      ["rookie", titleAccountData.rookieEmployeeTickets ?? 0, "低確率・毎日用"],
+                      ["normal", titleAccountData.employeeTickets ?? 0, "URまで排出"],
+                      ["premium", titleAccountData.premiumEmployeeTickets ?? 0, "SR以上確定"],
+                    ].map(([ticketType, ticketCount, description]) => {
+                      const brand = getRecruitmentBrand(ticketType);
+                      const disabled = Number(ticketCount) < 1;
+                      return (
+                        <button
+                          key={ticketType}
+                          type="button"
+                          className={`home-recruit-pass-button-v206 home-recruit-pass-button-v2184 ${brand.className}`}
+                          disabled={disabled}
+                          onClick={() => startHomeEmployeeRecruitmentByTicket(ticketType)}
+                          style={{
+                            border: `1px solid ${brand.borderColor}`,
+                            background: brand.buttonGradient,
+                            opacity: disabled ? 0.55 : 1,
+                            cursor: disabled ? "not-allowed" : "pointer",
+                          }}
+                        >
+                          <span className="home-recruit-pass-icon-v2184">{brand.icon}</span>
+                          <strong>{brand.menuName}</strong>
+                          <small>{description}</small>
+                          <em>{ticketCount}枚</em>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div className="home-recruit-odds-compact-v2184">
+                    <span><strong>{getRecruitmentMenuName("rookie")}:</strong> {getTicketOddsText("rookie")}</span>
+                    <span><strong>{getRecruitmentMenuName("normal")}:</strong> {getTicketOddsText("normal")}</span>
+                    <span><strong>{getRecruitmentMenuName("premium")}:</strong> {getTicketOddsText("premium")}</span>
+                  </div>
+                </>
+              ) : titleModal === "presentBox" ? (
+                <>
+                  <h2 style={{ marginTop: 0 }}>🎁 プレゼントBOX</h2>
+                  <p style={{ fontSize: 13, lineHeight: 1.7, marginTop: 0 }}>
+                    v210では7日サイクルのログインボーナスと受取履歴を追加しました。報酬がある日はホームとBOXが光ります。
+                  </p>
+                  <div className="present-box-stage-v210" style={{ padding: 14, borderRadius: 22, background: homeLoginBonusStatus.canClaim ? "radial-gradient(circle at 50% 0%,#fff7c8 0%,#ffd4e2 42%,#fff7df 100%)" : "linear-gradient(145deg,#f3f6f1,#e6efe5)", border: homeLoginBonusStatus.canClaim ? "1px solid #e8c85f" : "1px solid #d8e0d8", color: "#1d2b22", display: "grid", gap: 10, position: "relative", overflow: "hidden" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center", position: "relative", zIndex: 1 }}>
+                      <div>
+                        <strong style={{ fontSize: 16 }}>Day {homeLoginBonusStatus.cycleDay} ログインボーナス</strong>
+                        <div style={{ fontSize: 12, opacity: 0.75, marginTop: 2 }}>{homeLoginBonusStatus.rewardText}</div>
+                      </div>
+                      <span style={{ padding: "5px 10px", borderRadius: 999, background: homeLoginBonusStatus.canClaim ? "#ff4d5d" : "#7a8a7a", color: "#ffffff", fontSize: 11, fontWeight: 900 }}>
+                        {homeLoginBonusStatus.canClaim ? "受取可能" : "受取済み"}
+                      </span>
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 6, position: "relative", zIndex: 1 }}>
+                      {homeLoginBonusStatus.weeklyRewards.map((reward) => {
+                        const isToday = reward.day === homeLoginBonusStatus.cycleDay;
+                        return (
+                          <div key={reward.day} style={{ padding: "8px 4px", borderRadius: 14, textAlign: "center", background: isToday ? "linear-gradient(145deg,#fff,#ffe09b)" : "rgba(255,255,255,0.58)", border: isToday ? "1px solid #f4b83a" : "1px solid rgba(255,255,255,0.8)", boxShadow: isToday ? "0 8px 18px rgba(174,106,0,0.22)" : "none" }}>
+                            <div style={{ fontSize: 10, fontWeight: 900 }}>D{reward.day}</div>
+                            <div style={{ fontSize: 17, marginTop: 2 }}>{reward.icon}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <button
+                      type="button"
+                      disabled={!homeLoginBonusStatus.canClaim}
+                      onClick={claimHomeDailyLoginBonus}
+                      style={{ position: "relative", zIndex: 1, padding: "12px 14px", borderRadius: 999, border: "none", background: homeLoginBonusStatus.canClaim ? "linear-gradient(145deg,#ffb02e,#ff5a3d)" : "#b8c7b9", color: "#ffffff", fontWeight: 900, cursor: homeLoginBonusStatus.canClaim ? "pointer" : "not-allowed", boxShadow: homeLoginBonusStatus.canClaim ? "0 8px 18px rgba(139,65,0,0.26)" : "none" }}
+                    >
+                      {homeLoginBonusStatus.canClaim ? "まとめて受け取る" : "本日は受け取り済み"}
+                    </button>
+                  </div>
+                  <div style={{ marginTop: 12, padding: 12, borderRadius: 16, background: "#f7faf7", border: "1px solid #d8e0d8", fontSize: 12, lineHeight: 1.7 }}>
+                    <div><strong>累計受け取り回数：</strong>{homeLoginBonusStatus.claimCount}回</div>
+                    <div><strong>未受取通知：</strong>{homePresentNoticeCount}件</div>
+                  </div>
+                  <h3 style={{ margin: "14px 0 8px", fontSize: 15 }}>受取履歴</h3>
+                  <div style={{ display: "grid", gap: 8, maxHeight: 180, overflowY: "auto", paddingRight: 3 }}>
+                    {homePresentBoxHistory.length > 0 ? homePresentBoxHistory.map((item) => (
+                      <div key={item.id} style={{ display: "grid", gridTemplateColumns: "38px 1fr", gap: 9, alignItems: "center", padding: 10, borderRadius: 14, background: "#ffffff", border: "1px solid #d8e0d8" }}>
+                        <span style={{ width: 38, height: 38, borderRadius: 13, display: "grid", placeItems: "center", background: "#fff7df", fontWeight: 900 }}>{item.icon ?? "🎁"}</span>
+                        <span>
+                          <strong style={{ display: "block", fontSize: 13 }}>{item.text ?? item.name}</strong>
+                          <small style={{ color: "#61705f" }}>{item.source ?? "報酬"} / {item.date ?? ""}</small>
+                        </span>
+                      </div>
+                    )) : (
+                      <div style={{ padding: 12, borderRadius: 14, background: "#f3f6f1", border: "1px solid #d8e0d8", fontSize: 12 }}>まだ受取履歴はありません。</div>
+                    )}
+                  </div>
+                </>
+              ) : titleModal === "missions" ? (
+                <>
+                  <h2 style={{ marginTop: 0 }}>任務・実績</h2>
+                  <p style={{ fontSize: 13, lineHeight: 1.7, marginTop: 0 }}>
+                    v210では、デイリー・採用・経営・ストーリーの導線を整理し、ホームから報酬を受け取りやすくしました。受取可能な任務は発光します。
+                  </p>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
+                    <div style={{ padding: 10, borderRadius: 14, background: "#fff7df", border: "1px solid #e8d08a", textAlign: "center" }}>
+                      <div style={{ fontSize: 11, color: "#8a5a00", fontWeight: 900 }}>受取可能</div>
+                      <strong>{homeMissionClaimableCount}件</strong>
+                    </div>
+                    <div style={{ padding: 10, borderRadius: 14, background: "#edf5ef", border: "1px solid #cfe2d3", textAlign: "center" }}>
+                      <div style={{ fontSize: 11, color: "#31563f", fontWeight: 900 }}>達成済み</div>
+                      <strong>{homeMissionCompletedCount}件</strong>
+                    </div>
+                    <div style={{ padding: 10, borderRadius: 14, background: "#edf2ff", border: "1px solid #cbd8ff", textAlign: "center" }}>
+                      <div style={{ fontSize: 11, color: "#314c8a", fontWeight: 900 }}>任務総数</div>
+                      <strong>{homeMissionItems.length}件</strong>
+                    </div>
+                  </div>
+                  <div style={{ display: "grid", gap: 8, maxHeight: 430, overflowY: "auto", paddingRight: 3 }}>
+                    {homeMissionItems.map((mission) => renderHomeMissionCard(mission))}
+                  </div>
                 </>
               ) : titleModal === "settings" ? (
                 <>
@@ -20308,7 +24423,7 @@ return (
                   </div>
                 </>
               )}
-              <button type="button" onClick={() => setTitleModal(null)} style={{ marginTop: 18, width: "100%", padding: "11px 14px", borderRadius: 999, border: "none", background: "#1d5c3a", color: "#ffffff", fontWeight: 700, cursor: "pointer" }}>
+              <button type="button" onClick={() => { setTitleModal(null); setTitleVaultDetailEmployee(null); }} style={{ marginTop: 12, marginBottom: 4, width: "100%", padding: "10px 14px", borderRadius: 999, border: "none", background: "#1d5c3a", color: "#ffffff", fontWeight: 700, cursor: "pointer" }}>
                 閉じる
               </button>
             </div>
@@ -20317,59 +24432,122 @@ return (
       </div>
     )}
 
+
+
+    {showTitleScreen && employeeRecruitmentOffer && (
+      <div className="popup-log recruit-popup-stage" style={{ zIndex: 12000 }}>
+        <div className={`popup-log-card employee-recruitment-card recruit-desk-card recruit-stage-v206 ${getRecruitmentStageClass(employeeRecruitmentOffer.ticketType)}`} style={{ maxHeight: "calc(100dvh - 104px)", overflowY: "auto" }}>
+          <div className="recruit-stage-aura-v206"></div>
+          <div className="recruit-title-area recruit-title-area-v206">
+            <div>
+              <span className="recruit-ticket-badge-v206">{getRecruitmentBrand(employeeRecruitmentOffer.ticketType).badge}</span>
+              <h2>{getRecruitmentBrand(employeeRecruitmentOffer.ticketType).stageTitle}</h2>
+              <p className="recruit-arrival-text-v206">履歴書が{employeeRecruitmentOffer.applicants.length}通届きました</p>
+            </div>
+          </div>
+          <div className={`recruit-envelope-grid recruit-envelope-desk-row recruit-envelope-count-${employeeRecruitmentOffer.applicants.length}`}>
+            {employeeRecruitmentOffer.applicants.map((applicant, index) => {
+              const isNewApplicant = !findOwnedEmployeeById(applicant.id);
+              return (
+                <button
+                  key={applicant.envelopeId}
+                  type="button"
+                  className={`recruit-envelope-card recruit-envelope-card-v206 envelope-${applicant.envelopeType} ${applicant.opened ? "opened" : "closed"} ${employeeRecruitmentOffer.selectedEnvelopeId === applicant.envelopeId ? "selected" : ""}`}
+                  style={{ animationDelay: `${index * 90}ms` }}
+                  onClick={() => openRecruitEnvelope(applicant.envelopeId)}
+                  aria-label={`履歴書${index + 1}を開封する`}
+                >
+                  {isNewApplicant && <span className="recruit-new-stamp envelope-new-stamp">NEW!</span>}
+                  <span className="resume-envelope-visual" aria-hidden="true">
+                    <span className="resume-envelope-back"></span>
+                    <span className="resume-envelope-paper"><span className="resume-paper-title">履歴書</span><span className="resume-paper-line"></span><span className="resume-paper-line short"></span></span>
+                    <span className="resume-envelope-flap"></span><span className="resume-envelope-body"></span><span className="resume-envelope-seal"><span className="resume-seal-emblem" aria-hidden="true"></span></span><span className="resume-envelope-shine"></span>
+                  </span>
+                  <span className="recruit-applicant-summary">{applicant.opened ? "開封済み" : "タップして確認"}</span>
+                </button>
+              );
+            })}
+          </div>
+          {(() => {
+            const selectedApplicant = employeeRecruitmentOffer.applicants.find((applicant) => applicant.envelopeId === employeeRecruitmentOffer.selectedEnvelopeId);
+            if (!selectedApplicant || !selectedApplicant.opened) return <div className="recruit-tap-guide">封筒をタップして履歴書を確認してください</div>;
+            const isNewApplicant = !findOwnedEmployeeById(selectedApplicant.id);
+            const selectedApplicantSkills = getEmployeeSkills(selectedApplicant);
+            return (
+              <div className="recruit-profile-wrap">
+                <div className="recruit-profile-panel">
+                  <div className="recruit-profile-photo">
+                    {isNewApplicant && <span className="recruit-new-stamp profile-new-stamp">NEW!</span>}
+                    {selectedApplicant.graphicCode ? <img className="recruit-character-image" src={`/characters/${selectedApplicant.graphicCode}.png`} alt={selectedApplicant.name} /> : <div className={`recruit-avatar recruit-avatar-${selectedApplicant.gender === "female" ? "female" : "male"}`}><span>{selectedApplicant.name.slice(0, 1)}</span></div>}
+                  </div>
+                  <div className="recruit-profile-main">
+                    <div className="recruit-profile-header"><h3>{selectedApplicant.name}</h3><span className={`employee-rarity-label rarity-label-${String(selectedApplicant.rarity || "N").toLowerCase()}`}>{getRarityLabel(selectedApplicant.rarity)}</span></div>
+                    <div className="recruit-stat-grid"><div><span>統率</span><strong>{selectedApplicant.leadership ?? 0}</strong></div><div><span>営業</span><strong>{selectedApplicant.sales ?? 0}</strong></div><div><span>建築</span><strong>{selectedApplicant.construction ?? 0}</strong></div><div><span>管理</span><strong>{selectedApplicant.management ?? 0}</strong></div></div>
+                    <div className="recruit-special-box recruit-special-box-expanded"><span className="recruit-special-label">特性</span>{selectedApplicantSkills.length > 0 ? <div className="recruit-special-list">{selectedApplicantSkills.map((skill) => <div className="recruit-special-item" key={skill.id}><strong>{skill.name}</strong><small>{skill.description}</small></div>)}</div> : <strong className="recruit-special-none">なし</strong>}</div>
+                  </div>
+                </div>
+                <div className="recruit-hire-side"><button className="recruit-hire-button" onClick={() => confirmRecruitApplicant(selectedApplicant)}>この社員を採用する</button><p>※採用できるのは1名のみです</p></div>
+              </div>
+            );
+          })()}
+        </div>
+      </div>
+    )}
+
+    {!showTitleScreen && (
     <div className="app">
-      {popupLog && (
-  <div className="popup-log">
-    <div className="popup-log-card">
-      <h3>月末報告</h3>
-<div>
-  {popupLog.split("\n").map((line, index) => {
-    const isRivalLine = Object.keys(RIVAL_COMPANIES).some((companyId) => {
-      return tiles.some((tile) => {
-        return tile.owner === OWNER.RIVAL &&
-          tile.rivalCompanyId === companyId &&
-          tile.feature === FEATURE.HQ;
-      }) && line.startsWith(getRivalCompanyNameFromTiles(tiles, companyId));
-    }) || line.startsWith("【経済ニュース】");
+      {popupLog && (() => {
+        const monthlyReport = getMonthlyEventHighlights(popupLog);
+        return (
+          <div className="popup-log">
+            <div className="popup-log-card monthly-report-card-v213">
+              <div className="monthly-report-head-v213">
+                <div className="monthly-report-title-v213">
+                  <h3>月末報告</h3>
+                  <div className="monthly-report-summary-v213">{monthlyReport.summaryLine}</div>
+                </div>
+                <div className="monthly-report-badge-v213">街の動き {monthlyReport.allEvents.length}件</div>
+              </div>
 
-    const isPositive =
-      !isRivalLine &&
-      (line.includes("入居") ||
-        line.includes("完成") ||
-        line.includes("購入しました") ||
-        line.includes("修繕") ||
-        line.includes("外装工事") ||
-        line.includes("大規模修繕"));
+              <div className="monthly-event-showcase-v213">
+                {monthlyReport.featuredEvents.length > 0 ? (
+                  <>
+                    <div className="monthly-event-section-title-v213">注目イベント</div>
+                    {monthlyReport.featuredEvents.map((event, index) => renderMonthlyEventCard(event, index))}
+                  </>
+                ) : (
+                  <div className="monthly-event-card-v213 event-normal">
+                    <div className="monthly-event-icon-v213">🌙</div>
+                    <div className="monthly-event-body-v213">
+                      <div className="monthly-event-title-v213">大きな変化なし</div>
+                      <div className="monthly-event-detail-v213">今月は大きなイベントはありませんでした。次の投資判断に備えましょう。</div>
+                      <div className="monthly-event-akari-v213">七瀬「落ち着いた月でしたね。こういう時こそ、次の一手を整理しておきましょう。」</div>
+                    </div>
+                  </div>
+                )}
 
-    const isNegative =
-      !isRivalLine &&
-      (line.includes("退去") ||
-        line.includes("費用") ||
-        line.includes("固定資産税") ||
-        line.includes("取り壊し") ||
-        line.includes("資金不足"));
+                {monthlyReport.financeEvents.length > 0 && (
+                  <>
+                    <div className="monthly-event-section-title-v213">支払・財務</div>
+                    {monthlyReport.financeEvents.map((event, index) => renderMonthlyEventCard(event, index, true))}
+                  </>
+                )}
 
-    return (
-      <p
-        key={index}
-        className={
-          isPositive
-            ? "log-positive"
-            : isNegative
-            ? "log-negative"
-            : "log-normal"
-        }
-      >
-        {line}
-      </p>
-    );
-  })}
-</div>
+                {monthlyReport.otherEvents.length > 0 && (
+                  <>
+                    <div className="monthly-event-section-title-v213">その他の記録</div>
+                    {monthlyReport.otherEvents.map((event, index) => renderMonthlyEventCard(event, index, true))}
+                  </>
+                )}
+              </div>
 
-<button onClick={() => setPopupLog(null)}>OK</button>
-    </div>
-  </div>
-)}
+              <div className="monthly-report-actions-v213">
+                <button onClick={() => setPopupLog(null)}>OK</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
 
       {annualReport && (
@@ -20422,29 +24600,39 @@ return (
 
 {employeeRecruitmentOffer && (
   <div className="popup-log recruit-popup-stage">
-    <div className="popup-log-card employee-recruitment-card recruit-desk-card">
+    <div className={`popup-log-card employee-recruitment-card recruit-desk-card recruit-stage-v206 ${getRecruitmentStageClass(employeeRecruitmentOffer.ticketType)}`}>
+      <div className="recruit-stage-aura-v206"></div>
+      <div className="recruit-stage-light-v206 light-left"></div>
+      <div className="recruit-stage-light-v206 light-right"></div>
       <div className="recruit-desk-decoration recruit-ink-bottle"></div>
       <div className="recruit-desk-decoration recruit-pen"></div>
       <div className="recruit-sparkle sparkle-a">✦</div>
       <div className="recruit-sparkle sparkle-b">✦</div>
       <div className="recruit-sparkle sparkle-c">✦</div>
       <div className="recruit-sparkle sparkle-d">✦</div>
+      <div className="recruit-sparkle sparkle-e">✧</div>
+      <div className="recruit-sparkle sparkle-f">✧</div>
 
-      <div className="recruit-title-area">
+      <div className="recruit-title-area recruit-title-area-v206">
         <div className="recruit-ornament">◇</div>
-        <h2>{employeeRecruitmentOffer.ticketType === "premium" ? "プレミアム社員募集" : "社員募集"}</h2>
+        <div>
+          <span className="recruit-ticket-badge-v206">{getRecruitmentBrand(employeeRecruitmentOffer.ticketType).badge}</span>
+          <h2>{getRecruitmentBrand(employeeRecruitmentOffer.ticketType).stageTitle}</h2>
+          <p>{getRecruitmentBrand(employeeRecruitmentOffer.ticketType).subtitle}</p>
+          <p className="recruit-arrival-text-v206">履歴書が{employeeRecruitmentOffer.applicants.length}通届きました</p>
+        </div>
         <div className="recruit-ornament">◇</div>
-        <p>履歴書が{employeeRecruitmentOffer.applicants.length}通届きました</p>
       </div>
 
-      <div className="recruit-envelope-grid recruit-envelope-desk-row">
+      <div className={`recruit-envelope-grid recruit-envelope-desk-row recruit-envelope-count-${employeeRecruitmentOffer.applicants.length}`}>
         {employeeRecruitmentOffer.applicants.map((applicant, index) => {
           const isNewApplicant = !findOwnedEmployeeById(applicant.id);
           return (
             <button
               key={applicant.envelopeId}
               type="button"
-              className={`recruit-envelope-card envelope-${applicant.envelopeType} ${applicant.opened ? "opened" : "closed"} ${employeeRecruitmentOffer.selectedEnvelopeId === applicant.envelopeId ? "selected" : ""}`}
+              className={`recruit-envelope-card recruit-envelope-card-v206 envelope-${applicant.envelopeType} ${applicant.opened ? "opened" : "closed"} ${employeeRecruitmentOffer.selectedEnvelopeId === applicant.envelopeId ? "selected" : ""}`}
+              style={{ animationDelay: `${index * 90}ms` }}
               onClick={() => openRecruitEnvelope(applicant.envelopeId)}
               aria-label={`履歴書${index + 1}を開封する`}
             >
@@ -20458,7 +24646,7 @@ return (
                 </span>
                 <span className="resume-envelope-flap"></span>
                 <span className="resume-envelope-body"></span>
-                <span className="resume-envelope-logo">NOGUCHI<br />CORP.</span>
+                
                 <span className="resume-envelope-seal"><span className="resume-seal-emblem" aria-hidden="true"></span></span>
                 <span className="resume-envelope-shine"></span>
               </span>
@@ -20606,7 +24794,7 @@ return (
       <h2>ランクアップ！</h2>
       <p className="employee-gacha-rarity">Rank{playerRankUpResult.beforeRank} → Rank{playerRankUpResult.rank}</p>
       {!playerRankUpResult.tutorialNoTicketReward && playerRankUpResult.ticketCount > 0 && (
-        <p>社員チケット +{playerRankUpResult.ticketCount}枚</p>
+        <p>{getTicketName(playerRankUpResult.ticketType ?? "normal")} +{playerRankUpResult.ticketCount}枚</p>
       )}
       {(playerRankUpResult.unlockMessages ?? []).length > 0 ? (
         <div>
@@ -20625,8 +24813,8 @@ return (
 
 {ticketRewardResult && (
   <div className="popup-log">
-    <div className={`popup-log-card ticket-reward-card ${ticketRewardResult.ticketType === "premium" ? "premium" : "normal"}`}>
-      <h2>{ticketRewardResult.ticketType === "premium" ? "社員プレミアムチケット獲得！" : "社員チケット獲得！"}</h2>
+    <div className={`popup-log-card ticket-reward-card ${ticketRewardResult.ticketType === "premium" ? "premium" : ticketRewardResult.ticketType === "rookie" ? "rookie" : "normal"}`}>
+      <h2>{getTicketName(ticketRewardResult.ticketType)}獲得！</h2>
       <p className="employee-gacha-rarity">+{ticketRewardResult.count}枚</p>
       <p>{ticketRewardResult.reason}</p>
       <button onClick={() => setTicketRewardResult(null)}>OK</button>
@@ -20997,6 +25185,20 @@ return (
         </div>
       )}
 
+      {currentGameMode === "story_nagoya" && hasClearedNagoyaChapter && !storyEvent && !storySequence && (
+        <div className="story-next-chapter-panel story-first-part-complete-panel">
+          <div>
+            <strong>ストーリーモード 第1部 完</strong>
+            <span>創業編から名古屋進出編まで完了しました。</span>
+            <span>このまま経営を続けるか、保存してタイトルへ戻れます。</span>
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+            <button type="button" onClick={continueAfterStoryFirstPart}>経営を続ける</button>
+            <button type="button" onClick={returnToTitleAfterStoryFirstPart}>タイトルへ戻る</button>
+          </div>
+        </div>
+      )}
+
 <nav className="bottom-menu compact-command-menu icon-command-menu v72-top-command-bar v73-top-command-bar" aria-label="メイン操作">
   <button
     type="button"
@@ -21314,7 +25516,7 @@ return (
 
       <main className={`main-layout ${(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "employeeLibrary" || activePanel === "property" || activePanel === "log" || activePanel === "option" || activePanel === "info" || activePanel === "bank") ? "full-panel" : ""}`}>
         {(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build") && (
-        <section className="map-section">
+        <section className="map-section playfield-v212 playfield-v214 playfield-v216">
           <div className="panel-title-row map-title-row v153-map-control-row">
             <div className="map-title-status v153-map-title-status">
               <button
@@ -21380,6 +25582,24 @@ return (
               <button onClick={() => setTileSize(Math.max(18, tileSize - 2))}>－</button>
               <span>{tileSize}px</span>
               <button onClick={() => setTileSize(Math.min(40, tileSize + 2))}>＋</button>
+            </div>
+          </div>
+
+          <div className="playfield-hud-v212">
+            <div className="playfield-hud-chip-v212"><span className="hud-icon-v212">💰</span><div><small>所持金</small><strong>{money.toLocaleString()}万円</strong></div></div>
+            <div className="playfield-hud-chip-v212"><span className="hud-icon-v212">{monthlyProfitIcon}</span><div><small>実質月収支</small><strong>{monthlyProfitSign}{actualMonthlyProfit.toLocaleString()}万円</strong></div></div>
+            <div className="playfield-hud-chip-v212"><span className="hud-icon-v212">👥</span><div><small>人口</small><strong>{totalPopulation.toLocaleString()}人</strong></div></div>
+            <div className="playfield-hud-chip-v212"><span className="hud-icon-v212">⚡</span><div><small>行動力</small><strong>{actionPoints}</strong></div></div>
+          </div>
+
+          <div className="playfield-selection-card-v212">
+            <div className="playfield-selection-icon-v212">{selectedTilePlaySummary.icon}</div>
+            <div className="playfield-selection-main-v212">
+              <h3>{selectedTilePlaySummary.title}</h3>
+              <p>{selectedTilePlaySummary.subtitle}</p>
+            </div>
+            <div className="playfield-selection-tags-v212">
+              {selectedTilePlaySummary.tags.map((tag) => <span key={tag}>{tag}</span>)}
             </div>
           </div>
 
@@ -21521,6 +25741,30 @@ return (
               tile.tutorialTag === "nagoya_branch_land"
                 ? "story-nagoya-branch-target-tile"
                 : ""
+            } ${
+              tile.buildingStatus === "constructing"
+                ? "tile-constructing-v212"
+                : ""
+            } ${
+              tile.owner === OWNER.PLAYER && tile.building && !tile.buildingMainId
+                ? "tile-owned-building-v212"
+                : ""
+            } ${
+              tile.feature === FEATURE.STATION
+                ? "tile-station-v214"
+                : ""
+            } ${
+              tile.owner === OWNER.SALE
+                ? "tile-sale-v214"
+                : ""
+            } ${
+              tile.building && !tile.buildingMainId && Array.isArray(tile.rooms) && tile.rooms.some((room) => room.occupied)
+                ? "tile-occupied-v214"
+                : ""
+            } ${
+              tile.building && !tile.buildingMainId && Array.isArray(tile.rooms) && tile.rooms.length > 0 && !tile.rooms.some((room) => room.occupied)
+                ? "tile-vacant-v214"
+                : ""
             }`}
             title={`座標:${tile.x},${tile.y} / ${getTerrainName(
               tile.terrain
@@ -21629,7 +25873,7 @@ return (
   </div>
 )}
 {activePanel === "land" && (
-  <div className="detail-card smart-detail-card land-smart-panel">
+  <div className="detail-card smart-detail-card land-smart-panel land-smart-panel-v212">
     {!selectedTile && (
       <p className="office-empty-note">マップ上の土地を選択してください。</p>
     )}
@@ -21649,6 +25893,7 @@ return (
       const zoneName = getZoneName(selectedTile.zone);
       const terrainName = getTerrainName(selectedTile.terrain);
       const featureName = getFeatureName(selectedTile.feature);
+      const propertyHeroTitle = selectedBuilding?.name ?? (selectedTile.hqName || selectedTile.officeName || featureName || "空き地");
 
       return (
         <>
@@ -21874,6 +26119,17 @@ return (
   <div className="detail-card">
     <h2>社員管理</h2>
 
+    <div className="employee-role-guide-v207">
+      <div className="employee-role-card-v207">
+        <strong>社員管理</strong>
+        <span>配属・待機・支店配置を行う実務画面です。給与が発生するのは配属中社員だけです。</span>
+      </div>
+      <div className="employee-role-card-v207">
+        <strong>社員図鑑</strong>
+        <span>獲得済み社員の鑑賞・コンプリート確認用です。レアリティ別に集める楽しさを見せます。</span>
+      </div>
+    </div>
+
     <div className="employee-subnav-row">
       <button
         type="button"
@@ -21892,16 +26148,32 @@ return (
     </div>
 
     <p>
-      配属社員: {employeeCountText}人 / 保有社員: {ownedEmployeeCount}人 / 待機社員: {employeeStorage.length}人 / 月給合計: {employeeSalaryTotal}万円
+      配属社員: {employeeCountText} / 保有社員: {ownedEmployeeCount}人 / 待機社員: {employeeStorage.length}人 / 月給合計: {employeeSalaryTotal}万円
       {!isStoryTutorialActive() && (
-        <> / 社員チケット: {employeeTickets}枚 / プレミアム: {premiumEmployeeTickets}枚</>
+        <> / ライト採用パス: {rookieEmployeeTickets}枚 / 社員採用パス: {employeeTickets}枚 / プレミアム採用パス: {premiumEmployeeTickets}枚</>
       )}
     </p>
-    <p className="employee-salary-note">※月給が発生するのは本社・支店に配属中の社員だけです。社員保管庫の待機社員は給与なしです。</p>
+    <p className="employee-salary-note">※月給が発生するのは本社・支店に配属中の社員だけです。社員保管庫の待機社員は給与なしです。v207では「社員管理＝配属・実務」「社員図鑑＝鑑賞・コンプリート」に役割を分けています。</p>
 
     {!isStoryTutorialActive() && (
       <>
         <div className="button-row ticket-button-row">
+          <button
+            className="employee-ticket-button normal-ticket-button"
+            disabled={rookieEmployeeTickets < 1}
+            onClick={recruitRookieEmployees}
+          >
+            {rookieEmployeeTickets < 1
+              ? "社員採用（ライト不足）"
+              : "社員採用（ライト）"}
+          </button>
+
+          {isDemoMode && (
+            <button onClick={addRookieEmployeeTicketForDemo}>
+              ライト採用券+1
+            </button>
+          )}
+
           <button
             className="employee-ticket-button normal-ticket-button"
             disabled={employeeTickets < 1}
@@ -21936,11 +26208,14 @@ return (
         </div>
 
         <div className="ticket-odds-box">
+          {rookieEmployeeTickets > 0 && (
+            <p><strong>ライト採用排出率:</strong> {getTicketOddsText("rookie")}</p>
+          )}
           {employeeTickets > 0 && (
-            <p><strong>社員チケット排出率:</strong> {getTicketOddsText("normal")}</p>
+            <p><strong>社員採用排出率:</strong> {getTicketOddsText("normal")}</p>
           )}
           {premiumEmployeeTickets > 0 && (
-            <p><strong>社員プレミアムチケット排出率:</strong> {getTicketOddsText("premium")}</p>
+            <p><strong>プレミアム採用排出率:</strong> {getTicketOddsText("premium")}</p>
           )}
         </div>
       </>
@@ -22024,61 +26299,57 @@ return (
     )}
 
     {employeeStorage.length > 0 && (
-      <div className="employee-table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>{renderEmployeeSortHeader("名前", "name")}</th>
-              <th>{renderEmployeeSortHeader("レア", "rarity")}</th>
-              <th>{renderEmployeeSortHeader("Lv", "level")}</th>
-              <th>{renderEmployeeSortHeader("EXP", "exp")}</th>
-              <th>{renderEmployeeSortHeader("統率", "leadership")}</th>
-              <th>{renderEmployeeSortHeader("営業", "sales")}</th>
-              <th>{renderEmployeeSortHeader("建築", "construction")}</th>
-              <th>{renderEmployeeSortHeader("管理", "management")}</th>
-              <th>{renderEmployeeSortHeader("月給", "salary")}</th>
-              <th>{renderEmployeeSortHeader("特殊能力", "special")}</th>
-              <th>{renderEmployeeSortHeader("配属", "office")}</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {sortEmployeesForDisplay(employeeStorage).map((employee) => (
-              <tr key={employee.id}>
-                <td>{renderEmployeeNameButton(employee)}</td>
-                <td>{getRarityLabel(employee.rarity)}</td>
-                <td>{employee.level ?? 1}</td>
-                <td>{employee.exp ?? 0}</td>
-                <td>{renderEmployeeStatValue(employee, "leadership", "baseLeadership")}</td>
-                <td>{renderEmployeeStatValue(employee, "sales", "baseSales")}</td>
-                <td>{renderEmployeeStatValue(employee, "construction", "baseConstruction")}</td>
-                <td>{renderEmployeeStatValue(employee, "management", "baseManagement")}</td>
-                <td>{renderEmployeeSalaryValue(employee)}</td>
-                <td>{getEmployeeSpecialText(employee)}</td>
-                <td>
-                  <div className="button-row">
-                    {officeTiles.map((officeTile) => {
-                      const officeId = officeTile.officeId ?? "hq";
-                      const officeName = officeTile.officeName ?? officeTile.hqName ?? "本社";
-                      const officeCount = employees.filter((item) => {
-                        return (item.officeId ?? "hq") === officeId;
-                      }).length;
-
-                      return (
-                        <button
-                          key={officeId}
-                          onClick={() => assignStoredEmployee(employee, officeId)}
-                        >
-                          {`${officeName}へ（${officeCount}人）`}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="employee-storage-grid-v207">
+        {sortEmployeesForDisplay(employeeStorage).map((employee) => (
+          <div key={employee.id} className={`employee-storage-card-v207 rarity-card-${String(employee.rarity || "N").toLowerCase()}`}>
+            <button
+              type="button"
+              className="employee-storage-portrait-v207"
+              onClick={() => setSelectedEmployeeDetail(employee)}
+            >
+              {getVaultEmployeePortraitSrc(employee) ? (
+                <>
+                  <img src={getVaultEmployeePortraitSrc(employee)} alt={employee.name} onError={(event) => handleVaultEmployeePortraitError(event, employee)} />
+                  <span className="employee-library-fallback-initial">{getVaultEmployeeInitial(employee)}</span>
+                </>
+              ) : (
+                <span>{getVaultEmployeeInitial(employee)}</span>
+              )}
+            </button>
+            <div className="employee-storage-body-v207">
+              <div className="employee-storage-title-v207">
+                <strong>{employee.name}</strong>
+                <span className="employee-storage-rarity-v207">{getRarityLabel(employee.rarity)}</span>
+              </div>
+              <div style={{ fontSize: 10, opacity: 0.72 }}>
+                Lv.{employee.level ?? 1} / EXP {employee.exp ?? 0} / 覚醒+{employee.awakening ?? 0}
+              </div>
+              <div className="employee-storage-stat-grid-v207">
+                <span>統率 {renderEmployeeStatValue(employee, "leadership", "baseLeadership")}</span>
+                <span>営業 {renderEmployeeStatValue(employee, "sales", "baseSales")}</span>
+                <span>建築 {renderEmployeeStatValue(employee, "construction", "baseConstruction")}</span>
+                <span>管理 {renderEmployeeStatValue(employee, "management", "baseManagement")}</span>
+              </div>
+              <div style={{ fontSize: 11, opacity: 0.78 }}>{getEmployeeSpecialText(employee)}</div>
+              <div className="employee-storage-action-row-v207">
+                {officeTiles.map((officeTile) => {
+                  const officeId = officeTile.officeId ?? "hq";
+                  const officeName = officeTile.officeName ?? officeTile.hqName ?? "本社";
+                  const officeCount = employees.filter((item) => (item.officeId ?? "hq") === officeId).length;
+                  return (
+                    <button
+                      key={officeId}
+                      type="button"
+                      onClick={() => assignStoredEmployee(employee, officeId)}
+                    >
+                      {`${officeName}へ（${officeCount}人）`}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     )}
   </div>
@@ -22109,6 +26380,9 @@ return (
           採用済み {ownedEmployeeLibrary.length}人 / 全{EMPLOYEE_POOL.length}人
           （コンプリート率 {employeeLibraryCompletionRate}%）
         </p>
+        <div className="employee-library-mode-note-v207">
+          社員図鑑は「獲得済み社員を眺める・コンプリート率を見る」画面です。実際の配属や待機社員の管理は社員管理・社員保管庫で行います。
+        </div>
       </div>
       <div className="employee-library-summary">
         {employeeLibraryRarityOptions.filter((rarity) => rarity !== "ALL").map((rarity) => (
@@ -22144,13 +26418,17 @@ return (
             onClick={() => setSelectedEmployeeDetail(employee)}
           >
             <div className="employee-library-portrait">
-              {employee.graphicCode ? (
-               <img
-                src={`/characters/employees/${employee.graphicCode}.png`}
-                 alt={employee.name}
-                />
+              {getVaultEmployeePortraitSrc(employee) ? (
+                <>
+                  <img
+                    src={getVaultEmployeePortraitSrc(employee)}
+                    alt={employee.name}
+                    onError={(event) => handleVaultEmployeePortraitError(event, employee)}
+                  />
+                  <span className="employee-library-fallback-initial">{getVaultEmployeeInitial(employee)}</span>
+                </>
               ) : (
-                <span>{employee.name.slice(0, 1)}</span>
+                <span>{getVaultEmployeeInitial(employee)}</span>
               )}
             </div>
             <div className="employee-library-card-body">
@@ -23295,6 +27573,7 @@ const rent = occupiedRooms.reduce(
 
       </main>
     </div>
+    )}
   </>
 );
 }
