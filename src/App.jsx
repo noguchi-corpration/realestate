@@ -3,7 +3,7 @@ import "./App.css";
 
 /*
   箱庭不動産経営シミュレーター
-  v219.3: 名古屋背景整理・ポップアップ×修正・七瀬枠固定版 / v219.2: 閉じるUI×統一・ヘッダー圧縮版 / v219.1: 各種ポップアップ閉じる導線追加版 / v219: 新人七瀬・成長会話・チュートリアル成長補正版 / v218.10: 採用封筒四角化・ストーリー/フリー導線修正版 / v218.9: 採用画面5封筒表示・写真位置修正版 / v218.11: 採用特性説明復元・累計EXP表示・名古屋背景/七瀬服装整理版 / v218: 画面分離・不要情報削減・社員管理全画面版 / v218.1: ホーム整理・重複導線削減版 / v218.7: 土地情報ヘッダーアイコン集約版 / v218.6: 名簿均等配置・マップ情報削除・リロード復帰版 / v218.5: 名簿さらに圧縮・採用バグ修正版 / v218.4: 名簿・採用コンパクト化版 / v218.3: ページ遷移化・ホームHUD修正版 / v218.2: ホームロビー化・スマホ縦専用整理版 / v217: ホーム/経営分離・社員名簿統合版 / v216.2: ホーム横はみ出し・フルスクリーン再調整版 / v216: プレイ画面フルスクリーン最適化版 / v215: 配属上限5人・採用時自動配属版 / v214: 街演出・マップ視覚刷新版 / v213: プレイ画面イベント演出強化版 / v212: プレイ画面UI第一世代・スマホゲームHUD刷新版 / v210: ログインボーナス・ミッション・プレゼントBOX本格調整版 / v209: ホームメニュー第三世代UI版 / v208: ホーム背景・七瀬演出強化版 / v207: 社員図鑑・社員保管庫スマホUI整理版 / v206: 社員採用演出・採用名称統一版 / v201: 縦横レスポンシブ・キャラ中心ホームUI版 / v200: スマホゲーム風ホーム画面リニューアル版 / v199: 社員保管庫上書き保護・ライト採用券追加版 / v198: 能力成長表示・給与表示整理版 / v197: 社員詳細・創業メンバー選択UI仕上げ版 / v196: 社員保管庫能力合計ソート修正版 / v195: 社員保管庫カード画像＋詳細表示版 / v194: 社員保管庫・創業メンバー選択UI強化版 / v193: 創業メンバー配属・行動可能判定修正版 / v192: 社員保管庫UI改善・ソート絞り込み版 / v191: アカウント情報・社員保管庫確認強化版 / v190: 創業メンバー選択（七瀬固定＋自由2名）版 / v189: 社員保管庫・プレイヤーランク共通保存基盤版 / v188: 名古屋編クリア演出・第1部完結版 / v183: 岐阜固定本社・名古屋拡張マップ調整・0章修繕短縮版 / v182: 岐阜名古屋固定マップ調整版 / v181: 0章購入ボタン再表示修正版 / v180: 名古屋編ストーリーOKボタン修正版 / v179: 名古屋編チュートリアル誘導赤枠版 / v178: 名古屋編準備・銀行融資と支店建設チュートリアル版 / v177: チュートリアル進行不能対策・固定レベルアップ・岐阜15x15版 / v176: 岐阜編クリア条件・七瀬ガイド圧縮版 / v175: 岐阜編開始・七瀬ページガイド追加版 / v174: チュートリアル発光パルス・建築ロック・チケット抑制版 / v173: 建設完了判定修正版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル強調赤枠・行動制限強化版 / v170: チュートリアル行動制限・七瀬ナビ追加版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル指定マス赤枠強化版 / v170: チュートリアル会話追加版 / v169: ストーリー第0章チュートリアル固定マップ追加版 / v168: モード選択追加版 / v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
+  v226: フリーマップ選択コンパクト化・本社建物NPC除外・ライバル数調整版 / v225: 社員配置横切れ解消・ホームメニュー導線追加版 / v223: 社員配置を通常全画面化・採用/名簿はホーム導線統合版 / v222: 社員配置を名簿型リスト化・社員名簿改名・全画面固定強化版 / v221: 社員ページ重複整理・配置カード化・創業メンバー全画面修正版 / v219.3: 名古屋背景整理・ポップアップ×修正・七瀬枠固定版 / v219.2: 閉じるUI×統一・ヘッダー圧縮版 / v219.1: 各種ポップアップ閉じる導線追加版 / v219: 新人七瀬・成長会話・チュートリアル成長補正版 / v218.10: 採用封筒四角化・ストーリー/フリー導線修正版 / v218.9: 採用画面5封筒表示・写真位置修正版 / v218.11: 採用特性説明復元・累計EXP表示・名古屋背景/七瀬服装整理版 / v218: 画面分離・不要情報削減・社員管理全画面版 / v218.1: ホーム整理・重複導線削減版 / v218.7: 土地情報ヘッダーアイコン集約版 / v218.6: 名簿均等配置・マップ情報削除・リロード復帰版 / v218.5: 名簿さらに圧縮・採用バグ修正版 / v218.4: 名簿・採用コンパクト化版 / v218.3: ページ遷移化・ホームHUD修正版 / v218.2: ホームロビー化・スマホ縦専用整理版 / v217: ホーム/経営分離・社員名簿統合版 / v216.2: ホーム横はみ出し・フルスクリーン再調整版 / v216: プレイ画面フルスクリーン最適化版 / v215: 配属上限5人・採用時自動配属版 / v214: 街演出・マップ視覚刷新版 / v213: プレイ画面イベント演出強化版 / v212: プレイ画面UI第一世代・スマホゲームHUD刷新版 / v210: ログインボーナス・ミッション・プレゼントBOX本格調整版 / v209: ホームメニュー第三世代UI版 / v208: ホーム背景・七瀬演出強化版 / v207: 社員名簿・社員保管庫スマホUI整理版 / v206: 社員採用演出・採用名称統一版 / v201: 縦横レスポンシブ・キャラ中心ホームUI版 / v200: スマホゲーム風ホーム画面リニューアル版 / v199: 社員保管庫上書き保護・ライト採用券追加版 / v198: 能力成長表示・給与表示整理版 / v197: 社員詳細・創業メンバー選択UI仕上げ版 / v196: 社員保管庫能力合計ソート修正版 / v195: 社員保管庫カード画像＋詳細表示版 / v194: 社員保管庫・創業メンバー選択UI強化版 / v193: 創業メンバー配属・行動可能判定修正版 / v192: 社員保管庫UI改善・ソート絞り込み版 / v191: アカウント情報・社員保管庫確認強化版 / v190: 創業メンバー選択（七瀬固定＋自由2名）版 / v189: 社員保管庫・プレイヤーランク共通保存基盤版 / v188: 名古屋編クリア演出・第1部完結版 / v183: 岐阜固定本社・名古屋拡張マップ調整・0章修繕短縮版 / v182: 岐阜名古屋固定マップ調整版 / v181: 0章購入ボタン再表示修正版 / v180: 名古屋編ストーリーOKボタン修正版 / v179: 名古屋編チュートリアル誘導赤枠版 / v178: 名古屋編準備・銀行融資と支店建設チュートリアル版 / v177: チュートリアル進行不能対策・固定レベルアップ・岐阜15x15版 / v176: 岐阜編クリア条件・七瀬ガイド圧縮版 / v175: 岐阜編開始・七瀬ページガイド追加版 / v174: チュートリアル発光パルス・建築ロック・チケット抑制版 / v173: 建設完了判定修正版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル強調赤枠・行動制限強化版 / v170: チュートリアル行動制限・七瀬ナビ追加版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル指定マス赤枠強化版 / v170: チュートリアル会話追加版 / v169: ストーリー第0章チュートリアル固定マップ追加版 / v168: モード選択追加版 / v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
   PC・スマホ両対応版 / v133 配属上限撤廃・役職補正強化・拠点表示整理
   v131：特殊能力効果拡張（入居・家賃・融資・採用対応）
 
@@ -16,10 +16,35 @@ import "./App.css";
 */
 
 const MAP_SIZE = 70;
+
+const FREE_MAP_OPTIONS = [
+  { key: "free_15", label: "岐阜 15×15", size: 15, description: "軽量。スマホ確認向けの小型マップ。" },
+  { key: "free_30", label: "名古屋 30×30", size: 30, description: "標準。スマホでも遊びやすい広さ。" },
+  { key: "free_50", label: "名古屋県域 50×50", size: 50, description: "中規模。広めに開発したい方向け。" },
+  { key: "free_70", label: "首都圏 70×70", size: 70, description: "最大規模。長期プレイ向け。" },
+];
+
+function normalizeFreeModeKey(mode) {
+  if (mode === "free") return "free_70";
+  return FREE_MAP_OPTIONS.some((option) => option.key === mode) ? mode : "free_30";
+}
+
+function getFreeMapOption(mode) {
+  const key = normalizeFreeModeKey(mode);
+  return FREE_MAP_OPTIONS.find((option) => option.key === key) ?? FREE_MAP_OPTIONS[1];
+}
+
+function isFreeModeKey(mode) {
+  return mode === "free" || FREE_MAP_OPTIONS.some((option) => option.key === mode);
+}
+
+function getFreeModeSaveKey(slot, mapKey) {
+  return `realEstateGameFreeSave_slot${slot}_${normalizeFreeModeKey(mapKey)}`;
+}
 const SAVE_SLOT_COUNT = 3;
 const DEFAULT_COMPANY_NAME = "";
 const DEFAULT_SAVE_SLOT = 1;
-const GAME_VERSION = "v219.3";
+const GAME_VERSION = "v228";
 const BASE_EMPLOYEE_SALARY = 15;
 const EMPLOYEE_SALARY_GROWTH_RATE = 1.05;
 const GIFU_CLEAR_POPULATION = 500;
@@ -615,11 +640,11 @@ const AKARI_PAGE_GUIDES = {
   employee: {
     portrait: "happy",
     title: "社員",
-    text: "社員は会社の力そのものです。社員チケットがあれば採用できます。営業・建築・管理・統率の能力を見ながら役割を考えましょう。",
+    text: "社員配置では、保有している社員を本社・支店・待機に振り分けます。給与が発生するのは配属中の社員だけです。営業・建築・管理・統率を見ながら、拠点ごとの役割を整えましょう。",
   },
   employeeLibrary: {
     portrait: "normal",
-    title: "社員図鑑",
+    title: "社員名簿",
     text: "これまで獲得した社員を確認できます。レアリティや能力、特殊能力を見ながら会社の主力メンバーを育てていきましょう。",
   },
   property: {
@@ -10564,12 +10589,16 @@ function sanitizeMapForV138(mapData) {
         tile.terrain !== TERRAIN.PLAIN &&
         (tile.feature === FEATURE.STATION || tile.feature === FEATURE.FACTORY || tile.feature === FEATURE.SCHOOL);
 
-      if (!invalidFacilityOnNonPlain) return tile;
+      const invalidGeneralHqApartment =
+        tile.building === "hq_apartment" &&
+        !(tile.feature === FEATURE.HQ && (tile.owner === OWNER.PLAYER || tile.owner === OWNER.RIVAL));
+
+      if (!invalidFacilityOnNonPlain && !invalidGeneralHqApartment) return tile;
 
       return {
         ...tile,
-        feature: FEATURE.NONE,
-        rail: tile.feature === FEATURE.STATION ? false : tile.rail,
+        feature: invalidFacilityOnNonPlain ? FEATURE.NONE : tile.feature,
+        rail: invalidFacilityOnNonPlain && tile.feature === FEATURE.STATION ? false : tile.rail,
         building: null,
         buildingMainId: null,
         rooms: [],
@@ -10710,15 +10739,25 @@ function isTileNearRoadOrRail(tile, tiles) {
   });
 }
 
-function createMap() {
+function createMap(freeMapMode = "free_70") {
+const mapOption = getFreeMapOption(freeMapMode);
+const mapSize = mapOption.size;
+const hasSea = mapSize >= 50;
+const targetSchoolCount = mapSize <= 15 ? 1 : mapSize <= 30 ? 3 : mapSize <= 50 ? 5 : randomInt(4, 6);
+const hasFactory = true;
+const mapMargin = mapSize <= 15 ? 2 : mapSize <= 30 ? 3 : 5;
+const innerMin = mapMargin;
+const innerMax = Math.max(innerMin, mapSize - mapMargin - 1);
+function randomInnerCoordinate() { return randomInt(innerMin, innerMax); }
 const seaSide = randomInt(0, 3);
-const seaStart = randomInt(Math.floor(MAP_SIZE * 0.78), Math.floor(MAP_SIZE * 0.86));
+const seaStart = randomInt(Math.floor(mapSize * 0.78), Math.floor(mapSize * 0.86));
 
 function getCoastOffset(index) {
   return Math.round(Math.sin(index * 0.45) * 2);
 }
 
 function isSeaCoordinate(x, y) {
+  if (!hasSea) return false;
   const coastOffset =
     seaSide === 0 || seaSide === 1
       ? getCoastOffset(y)
@@ -10726,17 +10765,17 @@ function isSeaCoordinate(x, y) {
 
   return (
     (seaSide === 0 && x >= seaStart + coastOffset) ||
-    (seaSide === 1 && x <= MAP_SIZE - seaStart + coastOffset) ||
+    (seaSide === 1 && x <= mapSize - seaStart + coastOffset) ||
     (seaSide === 2 && y >= seaStart + coastOffset) ||
-    (seaSide === 3 && y <= MAP_SIZE - seaStart + coastOffset)
+    (seaSide === 3 && y <= mapSize - seaStart + coastOffset)
   );
 }
 
 function createRandomPoint(minDistance, usedPoints = []) {
   for (let attempt = 0; attempt < 200; attempt++) {
     const point = {
-      x: randomInt(5, MAP_SIZE - 12),
-      y: randomInt(5, MAP_SIZE - 12),
+      x: randomInnerCoordinate(),
+      y: randomInnerCoordinate(),
     };
 
     if (isSeaCoordinate(point.x, point.y)) continue;
@@ -10749,26 +10788,25 @@ function createRandomPoint(minDistance, usedPoints = []) {
   }
 
   return {
-    x: randomInt(5, MAP_SIZE - 12),
-    y: randomInt(5, MAP_SIZE - 12),
+    x: randomInnerCoordinate(),
+    y: randomInnerCoordinate(),
   };
 }
 
 // V68：70×70マップに合わせて、道路を縦横それぞれ4本へ増加。
 // 旧仕様は実質「縦2本・横2本」だったため、縦横各2本ずつ増やす。
-const verticalRoadXs = [
-  randomInt(6, 14),
-  randomInt(18, 28),
-  randomInt(32, 44),
-  randomInt(48, 62),
-];
-
-const horizontalRoadYs = [
-  randomInt(6, 14),
-  randomInt(18, 28),
-  randomInt(32, 44),
-  randomInt(48, 62),
-];
+const roadLineCount = mapSize <= 15 ? 2 : mapSize <= 30 ? 3 : 4;
+function createRoadLines(count) {
+  const lines = [];
+  for (let i = 1; i <= count; i++) {
+    const base = Math.round((mapSize * i) / (count + 1));
+    const jitter = mapSize <= 15 ? 0 : randomInt(-2, 2);
+    lines.push(Math.max(2, Math.min(mapSize - 3, base + jitter)));
+  }
+  return Array.from(new Set(lines)).sort((a, b) => a - b);
+}
+const verticalRoadXs = createRoadLines(roadLineCount);
+const horizontalRoadYs = createRoadLines(roadLineCount);
 
 const firstRailVertical = seaSide === 0 || seaSide === 1;
 
@@ -10776,38 +10814,42 @@ const firstRailVertical = seaSide === 0 || seaSide === 1;
 // 海が左右にある時は縦線路、海が上下にある時は横線路にする。
 const mainRailX = firstRailVertical
   ? seaSide === 1
-    ? verticalRoadXs[3]
+    ? verticalRoadXs[verticalRoadXs.length - 1]
     : verticalRoadXs[0]
   : null;
 
 const mainRailY = firstRailVertical
   ? null
   : seaSide === 3
-    ? horizontalRoadYs[3]
+    ? horizontalRoadYs[horizontalRoadYs.length - 1]
     : horizontalRoadYs[0];
 
 // 2本目：1本目と交差する線路。
 // 海に向かう側は海へ突き抜けさせず、海から約5マス手前で止めて終端駅を置く。
 const secondRailVertical = !firstRailVertical;
+const railCoordinateMin = Math.max(2, Math.floor(mapSize * 0.25));
+const railCoordinateMax = Math.max(railCoordinateMin, mapSize - 3);
 const secondRailX = secondRailVertical
-  ? randomInt(8, MAP_SIZE - 12)
+  ? randomInt(railCoordinateMin, railCoordinateMax)
   : null;
 const secondRailY = secondRailVertical
   ? null
-  : randomInt(8, MAP_SIZE - 12);
+  : randomInt(railCoordinateMin, railCoordinateMax);
 
-const coastRailEndX =
-  seaSide === 0
-    ? Math.max(5, seaStart - 5)
+const coastRailEndX = !hasSea
+  ? (secondRailVertical ? null : mapSize - 3)
+  : seaSide === 0
+    ? Math.max(2, seaStart - 5)
     : seaSide === 1
-      ? Math.min(MAP_SIZE - 6, MAP_SIZE - seaStart + 5)
+      ? Math.min(mapSize - 3, mapSize - seaStart + 5)
       : null;
 
-const coastRailEndY =
-  seaSide === 2
-    ? Math.max(5, seaStart - 5)
+const coastRailEndY = !hasSea
+  ? (secondRailVertical ? mapSize - 3 : null)
+  : seaSide === 2
+    ? Math.max(2, seaStart - 5)
     : seaSide === 3
-      ? Math.min(MAP_SIZE - 6, MAP_SIZE - seaStart + 5)
+      ? Math.min(mapSize - 3, mapSize - seaStart + 5)
       : null;
 
 const railIntersection = firstRailVertical
@@ -10852,15 +10894,15 @@ function isRailCoordinate(x, y) {
   return isMainRailCoordinate(x, y) || isSecondRailCoordinate(x, y);
 }
 
-const riverAnchor = randomInt(8, MAP_SIZE - 9);
-const riverDelta = randomInt(-18, 18);
+const riverAnchor = hasSea ? randomInt(innerMin, innerMax) : 0;
+const riverDelta = hasSea ? randomInt(-Math.max(3, Math.floor(mapSize / 4)), Math.max(3, Math.floor(mapSize / 4))) : 0;
 
 function getRiverCenterByX(x) {
-  const inlandStartX = seaSide === 0 ? 2 : seaSide === 1 ? MAP_SIZE - 3 : null;
+  const inlandStartX = seaSide === 0 ? 2 : seaSide === 1 ? mapSize - 3 : null;
   const coastEndX = seaSide === 0
     ? Math.max(4, seaStart - 1)
     : seaSide === 1
-      ? Math.min(MAP_SIZE - 5, MAP_SIZE - seaStart + 1)
+      ? Math.min(mapSize - 5, mapSize - seaStart + 1)
       : null;
 
   if (inlandStartX === null || coastEndX === null) return null;
@@ -10869,11 +10911,11 @@ function getRiverCenterByX(x) {
 }
 
 function getRiverCenterByY(y) {
-  const inlandStartY = seaSide === 2 ? 2 : seaSide === 3 ? MAP_SIZE - 3 : null;
+  const inlandStartY = seaSide === 2 ? 2 : seaSide === 3 ? mapSize - 3 : null;
   const coastEndY = seaSide === 2
     ? Math.max(4, seaStart - 1)
     : seaSide === 3
-      ? Math.min(MAP_SIZE - 5, MAP_SIZE - seaStart + 1)
+      ? Math.min(mapSize - 5, mapSize - seaStart + 1)
       : null;
 
   if (inlandStartY === null || coastEndY === null) return null;
@@ -10882,19 +10924,20 @@ function getRiverCenterByY(y) {
 }
 
 function isRiverCoordinate(x, y) {
+  if (!hasSea) return false;
   if (isSeaCoordinate(x, y)) return false;
 
   if (seaSide === 0 || seaSide === 1) {
     const centerY = getRiverCenterByX(x);
     if (centerY === null) return false;
-    const coastEndX = seaSide === 0 ? Math.max(4, seaStart - 1) : Math.min(MAP_SIZE - 5, MAP_SIZE - seaStart + 1);
+    const coastEndX = seaSide === 0 ? Math.max(4, seaStart - 1) : Math.min(mapSize - 5, mapSize - seaStart + 1);
     const inRiverLength = seaSide === 0 ? x <= coastEndX : x >= coastEndX;
     return inRiverLength && Math.abs(y - centerY) <= 0;
   }
 
   const centerX = getRiverCenterByY(y);
   if (centerX === null) return false;
-  const coastEndY = seaSide === 2 ? Math.max(4, seaStart - 1) : Math.min(MAP_SIZE - 5, MAP_SIZE - seaStart + 1);
+  const coastEndY = seaSide === 2 ? Math.max(4, seaStart - 1) : Math.min(mapSize - 5, mapSize - seaStart + 1);
   const inRiverLength = seaSide === 2 ? y <= coastEndY : y >= coastEndY;
   return inRiverLength && Math.abs(x - centerX) <= 0;
 }
@@ -10916,8 +10959,8 @@ function isReservedFacilityCoordinate(x, y) {
 function createFacilityPoint(minDistance, usedPoints = []) {
   for (let attempt = 0; attempt < 400; attempt++) {
     const point = {
-      x: randomInt(5, MAP_SIZE - 12),
-      y: randomInt(5, MAP_SIZE - 12),
+      x: randomInnerCoordinate(),
+      y: randomInnerCoordinate(),
     };
 
     if (isReservedFacilityCoordinate(point.x, point.y)) continue;
@@ -10929,8 +10972,8 @@ function createFacilityPoint(minDistance, usedPoints = []) {
     if (!tooClose) return point;
   }
 
-  for (let y = 5; y < MAP_SIZE - 5; y++) {
-    for (let x = 5; x < MAP_SIZE - 5; x++) {
+  for (let y = 5; y < mapSize - 5; y++) {
+    for (let x = 5; x < mapSize - 5; x++) {
       if (isReservedFacilityCoordinate(x, y)) continue;
 
       const tooClose = usedPoints.some((usedPoint) => {
@@ -10956,7 +10999,7 @@ function getSchoolBlockTiles(topLeft) {
 function canPlaceSchoolBlock(topLeft, usedPoints = [], minDistance = 8) {
   const blockTiles = getSchoolBlockTiles(topLeft);
 
-  if (blockTiles.some((point) => point.x < 0 || point.x >= MAP_SIZE || point.y < 0 || point.y >= MAP_SIZE)) {
+  if (blockTiles.some((point) => point.x < 0 || point.x >= mapSize || point.y < 0 || point.y >= mapSize)) {
     return false;
   }
 
@@ -10974,15 +11017,15 @@ function canPlaceSchoolBlock(topLeft, usedPoints = [], minDistance = 8) {
 function createSchoolBlockPoint(minDistance, usedPoints = []) {
   for (let attempt = 0; attempt < 600; attempt++) {
     const point = {
-      x: randomInt(5, MAP_SIZE - 13),
-      y: randomInt(5, MAP_SIZE - 13),
+      x: randomInt(innerMin, Math.max(innerMin, innerMax - 1)),
+      y: randomInt(innerMin, Math.max(innerMin, innerMax - 1)),
     };
 
     if (canPlaceSchoolBlock(point, usedPoints, minDistance)) return point;
   }
 
-  for (let y = 5; y < MAP_SIZE - 6; y++) {
-    for (let x = 5; x < MAP_SIZE - 6; x++) {
+  for (let y = 5; y < mapSize - 6; y++) {
+    for (let x = 5; x < mapSize - 6; x++) {
       const point = { x, y };
       if (canPlaceSchoolBlock(point, usedPoints, minDistance)) return point;
     }
@@ -10994,11 +11037,11 @@ function createSchoolBlockPoint(minDistance, usedPoints = []) {
 // v79方針：学校は1マスでは小さすぎるため、2×2の4マス施設として配置する。
 // ユーザー指示により、学校4マスのどのマスも海・川・道路・線路・駅に重ならないようにしている。
 // 工場も従来通り、海・川・道路・線路・駅・学校に重ならない場所へ先に確定する。
-const schoolCount = randomInt(4, 6);
+const schoolCount = targetSchoolCount;
 const schoolBlocks = [];
 const schoolPositions = [];
 for (let i = 0; i < schoolCount; i++) {
-  const schoolTopLeft = createSchoolBlockPoint(8, schoolPositions);
+  const schoolTopLeft = createSchoolBlockPoint(mapSize <= 15 ? 4 : 8, schoolPositions);
   const schoolTiles = getSchoolBlockTiles(schoolTopLeft);
   schoolBlocks.push({ topLeft: schoolTopLeft, tiles: schoolTiles });
   schoolPositions.push(...schoolTiles);
@@ -11007,20 +11050,20 @@ for (let i = 0; i < schoolCount; i++) {
 const schoolX = schoolPositions[0]?.x ?? 5;
 const schoolY = schoolPositions[0]?.y ?? 5;
 
-const factoryPoint = createFacilityPoint(10, [...stationPositions, ...schoolPositions]);
-const factoryX = factoryPoint.x;
-const factoryY = factoryPoint.y;
+const factoryPoint = hasFactory ? createFacilityPoint(mapSize <= 30 ? 7 : 10, [...stationPositions, ...schoolPositions]) : null;
+const factoryX = factoryPoint?.x ?? null;
+const factoryY = factoryPoint?.y ?? null;
 
   const tiles = [];
 
-  for (let y = 0; y < MAP_SIZE; y++) {
-    for (let x = 0; x < MAP_SIZE; x++) {
+  for (let y = 0; y < mapSize; y++) {
+    for (let x = 0; x < mapSize; x++) {
      let terrain = TERRAIN.PLAIN;
 
 // 山
 if (
   (x < randomInt(2, 5) && y < randomInt(2, 8)) ||
-  (x > MAP_SIZE - 20 && y < 8 && Math.random() < 0.7)
+  (mapSize >= 50 && x > mapSize - 20 && y < 8 && Math.random() < 0.7)
 ) {
   terrain = TERRAIN.MOUNTAIN;
 }
@@ -11062,7 +11105,7 @@ if (schoolPositions.some((school) => school.x === x && school.y === y)) {
 }
 
 // 工場
-if (x === factoryX && y === factoryY) {
+if (factoryX !== null && factoryY !== null && x === factoryX && y === factoryY) {
   terrain = TERRAIN.PLAIN;
   feature = FEATURE.FACTORY;
   rail = false;
@@ -11130,8 +11173,14 @@ if (
         }
       }
 
+      if (building === "hq_apartment" && feature !== FEATURE.HQ) {
+        building = null;
+        rooms = [];
+        buildingMainId = null;
+      }
+
       tiles.push({
-        id: y * MAP_SIZE + x,
+        id: y * mapSize + x,
         x,
         y,
         terrain,
@@ -11168,8 +11217,13 @@ function getRivalOfficeCandidates(minDistanceFromPlaced = 0, placedRivalOffices 
 }
 
 const placedRivalOffices = [];
-const initialRivalCompanyNames = pickRandomRivalCompanyNames(INITIAL_RIVAL_COMPANY_IDS.length);
-INITIAL_RIVAL_COMPANY_IDS.forEach((companyId, index) => {
+const initialRivalCompanyIds = mapSize <= 15
+  ? ["A"]
+  : mapSize <= 30
+    ? ["A", "B"]
+    : ["A", "B", "C"];
+const initialRivalCompanyNames = pickRandomRivalCompanyNames(initialRivalCompanyIds.length);
+initialRivalCompanyIds.forEach((companyId, index) => {
   const company = getRivalCompany(companyId);
   const companyName = initialRivalCompanyNames[index] ?? company.name;
   const strictCandidates = getRivalOfficeCandidates(15, placedRivalOffices, true);
@@ -12802,7 +12856,7 @@ export default function App() {
 const savedAccountData = readAccountData();
 const initialAccountRankExp = getBetterAccountRankExp(savedAccountData, savedGame?.playerRank, savedGame?.playerExp);
 
-const initialMap = sanitizeMapForV138(savedGame ?? createMap());
+const initialMap = sanitizeMapForV138(savedGame ?? createMap("free_30"));
 const loadedHqPlaced = Boolean(
   savedGame?.hqPlaced ||
     initialMap.tiles?.some((tile) => tile.owner === OWNER.PLAYER && tile.feature === FEATURE.HQ)
@@ -12950,7 +13004,7 @@ useEffect(() => {
         const shouldFixFounder =
           employee.founderCarryOver === true ||
           (
-            currentGameMode === "free" &&
+            isFreeModeKey(currentGameMode) &&
             employee.officeId === "hq" &&
             employee.busyUntilMonth &&
             employee.busyUntilMonth > month &&
@@ -13189,6 +13243,7 @@ useEffect(() => {
       playerCompanyName,
       activeSaveSlot,
       currentGameMode,
+      freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null,
       tutorialStep,
       hasShownGifuHqCompleteGuide,
       hasClearedGifuChapter,
@@ -13226,6 +13281,9 @@ useEffect(() => {
     localStorage.setItem("realEstateGameCurrentSlot", String(activeSaveSlot));
     localStorage.setItem(getSaveSlotKey(activeSaveSlot), JSON.stringify(saveData));
     localStorage.setItem("realEstateGameSave", JSON.stringify(saveData));
+    if (isFreeModeKey(currentGameMode)) {
+      localStorage.setItem(getFreeModeSaveKey(activeSaveSlot, currentGameMode), JSON.stringify(saveData));
+    }
     setSaveSlotRefreshKey((current) => current + 1);
   }, 250);
 
@@ -13294,7 +13352,7 @@ const [activePanel, setActivePanel] = useState(() => {
 const [isMainMenuOpen, setIsMainMenuOpen] = useState(false);
 
 useEffect(() => {
-  if (activePanel === "employee" || activePanel === "employeeLibrary") {
+  if (activePanel === "employee" || activePanel === "employeeRecruit" || activePanel === "employeeLibrary") {
     setHasEmployeeRecruitNotice(false);
   }
 }, [activePanel]);
@@ -13363,8 +13421,10 @@ function getDefaultFloatingPanel(panelName = activePanel) {
   const phonePortraitSize = panelName === "build"
     ? { width: 300, height: 250 }
     : panelName === "hq"
-      ? { width: 330, height: 240 }
-      : { width: 330, height: 240 };
+      ? { width: 306, height: 220 }
+      : panelName === "land"
+        ? { width: 382, height: 260 }
+        : { width: 330, height: 240 };
 
   const baseSize = isPhoneLandscape
     ? phoneLandscapeSize
@@ -13372,7 +13432,7 @@ function getDefaultFloatingPanel(panelName = activePanel) {
       ? phonePortraitSize
       : desktopSize;
 
-  const sideGap = isPhone ? 3 : 18;
+  const sideGap = isPhone ? (panelName === "land" ? 2 : 3) : 18;
   const topGap = isPhoneLandscape ? 36 : isPhonePortrait ? 66 : 118;
   const width = isPhone
     ? Math.max(260, Math.min(viewportWidth - sideGap * 2, baseSize.width))
@@ -13499,8 +13559,9 @@ function getFloatingPanelTitle(panelName = activePanel) {
     return `建設：${selectedBuildCategory}`;
   }
 
-  if (panelName === "employee") return "社員管理";
-  if (panelName === "employeeLibrary") return "社員図鑑";
+  if (panelName === "employee") return "社員配置";
+  if (panelName === "employeeRecruit") return "社員採用";
+  if (panelName === "employeeLibrary") return "社員名簿";
   return "操作パネル";
 }
 
@@ -15502,6 +15563,31 @@ function getPlayerRankUnlockSummary(fromRank, toRank) {
   return messages;
 }
 
+
+function getPlayerRankTicketRewards(fromRank, toRank) {
+  const rewards = { rookie: 0, normal: 0, premium: 0 };
+
+  for (let rank = Math.max(2, fromRank + 1); rank <= toRank; rank += 1) {
+    if (rank >= 2 && rank <= 4) {
+      rewards.rookie += 1;
+    } else if (rank === 5 || (rank >= 15 && rank % 5 === 0 && rank % 10 !== 0)) {
+      rewards.normal += 1;
+    } else if (rank >= 10 && rank % 10 === 0) {
+      rewards.premium += 1;
+    }
+  }
+
+  return rewards;
+}
+
+function formatPlayerRankTicketRewardLog(rewards) {
+  const messages = [];
+  if ((rewards.rookie ?? 0) > 0) messages.push(`ライト採用パス+${rewards.rookie}枚`);
+  if ((rewards.normal ?? 0) > 0) messages.push(`社員採用パス+${rewards.normal}枚`);
+  if ((rewards.premium ?? 0) > 0) messages.push(`プレミアム採用パス+${rewards.premium}枚`);
+  return messages;
+}
+
 function getTicketOddsText(ticketType) {
   if (ticketType === "premium") {
     return "SR 79.4% / SSR 15.9% / UR 4.7%";
@@ -16020,16 +16106,21 @@ function grantEmployeesExp(employeeIds, gainedExp, reason) {
     if (playerResult.rankUpCount > 0) {
       const unlockMessages = getPlayerRankUnlockSummary(beforePlayerRank, playerResult.rank);
       const isTutorialNoTicketReward = isStoryTutorialActive();
+      const ticketRewards = getPlayerRankTicketRewards(beforePlayerRank, playerResult.rank);
+      const rewardMessages = isTutorialNoTicketReward ? [] : formatPlayerRankTicketRewardLog(ticketRewards);
 
       if (!isTutorialNoTicketReward) {
-        setRookieEmployeeTickets((current) => current + playerResult.rankUpCount);
+        if ((ticketRewards.rookie ?? 0) > 0) setRookieEmployeeTickets((current) => current + ticketRewards.rookie);
+        if ((ticketRewards.normal ?? 0) > 0) setEmployeeTickets((current) => current + ticketRewards.normal);
+        if ((ticketRewards.premium ?? 0) > 0) setPremiumEmployeeTickets((current) => current + ticketRewards.premium);
       }
 
       setPlayerRankUpResult({
         beforeRank: beforePlayerRank,
         rank: playerResult.rank,
-        ticketCount: isTutorialNoTicketReward ? 0 : playerResult.rankUpCount,
-        ticketType: "rookie",
+        ticketCount: isTutorialNoTicketReward ? 0 : ((ticketRewards.rookie ?? 0) + (ticketRewards.normal ?? 0) + (ticketRewards.premium ?? 0)),
+        ticketType: (ticketRewards.premium ?? 0) > 0 ? "premium" : (ticketRewards.normal ?? 0) > 0 ? "normal" : "rookie",
+        ticketRewards: isTutorialNoTicketReward ? { rookie: 0, normal: 0, premium: 0 } : ticketRewards,
         tutorialNoTicketReward: isTutorialNoTicketReward,
         unlockMessages,
       });
@@ -16037,7 +16128,7 @@ function grantEmployeesExp(employeeIds, gainedExp, reason) {
       resultMessages.push(
         isTutorialNoTicketReward
           ? `プレイヤーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。${unlockMessages.join(" / ")}`
-          : `プレイヤーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。社員ライトチケット+${playerResult.rankUpCount}枚。${unlockMessages.join(" / ")}`
+          : `プレイヤーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。${rewardMessages.join(" / ") || "採用パス報酬なし"}。${unlockMessages.join(" / ")}`
       );
     }
   }
@@ -16874,7 +16965,7 @@ function placeHQ(hqTypeKey) {
   setHqPlaced(true);
   setActionPoints(Math.max(actionPoints, 1));
   setSelectedId(null);
-  setActivePanel("employee");
+  setActivePanel("home");
 
   if (currentGameMode === "story_gifu" && !hasShownGifuHqCompleteGuide) {
     setEmployeeTickets((current) => Math.max(current, 1));
@@ -20832,6 +20923,7 @@ function saveCurrentGameToSlot(slot = activeSaveSlot) {
     isDemoMode,
     usedSecretCommands,
     currentGameMode,
+    freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null,
     tutorialStep,
     hasShownGifuHqCompleteGuide,
     hasClearedGifuChapter,
@@ -20975,14 +21067,15 @@ function loadSaveSlotFromTitle(slot) {
 function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode = "free", founderEmployeeIds = []) {
   const companyName = (fixedCompanyName || newCompanyNameInput || DEFAULT_COMPANY_NAME).trim() || DEFAULT_COMPANY_NAME;
   const isStoryTutorial = mode === "story";
-  const newMap = isStoryTutorial ? createStoryTutorialMap() : createMap();
+  const freeMapOption = getFreeMapOption(mode);
+  const newMap = isStoryTutorial ? createStoryTutorialMap() : createMap(freeMapOption.key);
   const initialEmployees = isStoryTutorial
     ? [normalizeEmployeeGrowthBase(createStoryAkari())]
     : getFounderEmployeesFromAccount(readAccountData(), founderEmployeeIds);
 
   localStorage.setItem("realEstateGameCurrentSlot", String(slot));
   setActiveSaveSlot(slot);
-  setCurrentGameMode(mode);
+  setCurrentGameMode(isStoryTutorial ? mode : freeMapOption.key);
   setHasShownGifuHqCompleteGuide(false);
   setHasClearedGifuChapter(false);
   setHasClearedNagoyaChapter(false);
@@ -21038,7 +21131,7 @@ function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode
   setIsMainMenuOpen(false);
   setLog(isStoryTutorial
     ? "第0章 創業編を開始しました。赤く光っている売り物件を選択して、2階建戸建を購入しましょう。"
-    : `${companyName}として最初から開始しました。最初に本社を設置してください。`);
+    : `${companyName}として${freeMapOption.label}のフリーモードを開始しました。最初に本社を設置してください。`);
 }
 
 function finishPrologue() {
@@ -21087,7 +21180,7 @@ function startFreeGameWithSelectedFounders() {
     mode: "free",
   };
 
-  resetGameFromTitle(pending.slot, pending.companyName, "free", selectedFounderEmployeeIds);
+  resetGameFromTitle(pending.slot, pending.companyName, pending.mode ?? "free_30", selectedFounderEmployeeIds);
 }
 
 function startGifuChapter() {
@@ -21186,7 +21279,7 @@ useEffect(() => {
 }, [isNagoyaChapterClearConditionMet, hasClearedNagoyaChapter]);
 
 function continueAfterStoryFirstPart() {
-  setCurrentGameMode("free");
+  setCurrentGameMode("free_30");
   setStoryEvent(null);
   setStorySequence(null);
   setStorySequenceIndex(0);
@@ -21321,7 +21414,7 @@ const currentAkariGuide = getCurrentAkariGuide();
 const hasSaveData = Boolean(savedGame) || hasAnySaveSlot;
 const titleSavedMode = savedGame?.currentGameMode ?? currentGameMode ?? "free";
 const titleHasStorySave = Boolean(savedGame) && String(titleSavedMode).startsWith("story");
-const titleHasFreeSave = Boolean(savedGame) && titleSavedMode === "free";
+const titleHasFreeSave = Boolean(savedGame) && isFreeModeKey(titleSavedMode);
 function continueStoryFromTitle() {
   if (titleHasStorySave) {
     openGameFromTitle();
@@ -21331,13 +21424,33 @@ function continueStoryFromTitle() {
   startNewGameFromTitle(activeSaveSlot, "story");
 }
 
+function getFreeModeSavedData(mapKey) {
+  if (typeof window === "undefined") return null;
+  try {
+    const rawData = window.localStorage.getItem(getFreeModeSaveKey(activeSaveSlot, mapKey));
+    return rawData ? JSON.parse(rawData) : null;
+  } catch (error) {
+    console.warn("Free mode save could not be loaded.", error);
+    return null;
+  }
+}
+
 function continueFreeFromTitle() {
-  if (titleHasFreeSave) {
-    openGameFromTitle();
+  setTitleModal("freeMapSelect");
+}
+
+function openFreeMapFromTitle(mapKey) {
+  const data = getFreeModeSavedData(mapKey);
+  if (data) {
+    const loaded = applySaveDataToCurrentGame({ ...data, currentGameMode: normalizeFreeModeKey(mapKey) }, activeSaveSlot);
+    if (loaded) setLog(`${getFreeMapOption(mapKey).label}のフリーモードをロードしました。`);
     return;
   }
+  startNewGameFromTitle(activeSaveSlot, normalizeFreeModeKey(mapKey));
+}
 
-  startNewGameFromTitle(activeSaveSlot, "free");
+function resetFreeMapFromTitle(mapKey) {
+  startNewGameFromTitle(activeSaveSlot, normalizeFreeModeKey(mapKey));
 }
 
 const ownedBuildingCountForTitle = tiles.filter((tile) => {
@@ -21354,7 +21467,7 @@ const titleAccountEmployeeVault = mergeEmployeeCollections(titleAccountData.empl
 const titleFounderSelectableEmployees = getFounderSelectableEmployees(titleAccountData);
 const titleStoryAkari = getStoryAkariForFounder(titleAccountData);
 const titleDateLabel = getGameDate(month).label;
-const titleFreeStatusText = titleHasFreeSave ? `${titleDateLabel} / 所持金 ${money.toLocaleString()}万円` : "未開始 / 自由経営を開始";
+const titleFreeStatusText = "15×15 / 30×30 / 50×50 / 70×70 から選択";
 const titleStoryStatusText = currentGameMode === "story_nagoya"
   ? "名古屋編 進行中"
   : currentGameMode === "story_gifu"
@@ -22247,7 +22360,7 @@ const homeMissionClaimableCount = homeMissionItems.filter((mission) => mission.c
 const homeMissionCompletedCount = homeMissionItems.filter((mission) => mission.completed).length;
 const homePresentBoxHistory = readPresentBoxHistory();
 const homePresentNoticeCount = (homeLoginBonusStatus.canClaim ? 1 : 0) + homeMissionClaimableCount;
-const titleFullPageModal = ["recruitHome", "accountVault", "presentBox", "missions", "settings"].includes(titleModal);
+const titleFullPageModal = ["founderSelect", "recruitHome", "accountVault", "presentBox", "missions", "settings"].includes(titleModal);
 const titleRainbowPaper = Math.max(0, Math.round(Number(titleAccountData.rainbowPaper ?? titleAccountData.rainbowPapers ?? 0) || 0));
 
 function claimHomeMissionReward(missionId) {
@@ -23308,25 +23421,27 @@ return (
         }
 
         .floating-panel-employee,
+        .floating-panel-employeeRecruit,
         .floating-panel-employeeLibrary {
           position: fixed !important;
-          left: 8px !important;
-          right: 8px !important;
-          top: 126px !important;
-          bottom: 8px !important;
+          left: 0 !important;
+          right: 0 !important;
+          top: 0 !important;
+          bottom: 0 !important;
           width: auto !important;
           height: auto !important;
-          max-height: calc(100dvh - 134px) !important;
+          max-height: 100dvh !important;
           overflow: hidden !important;
           z-index: 2500 !important;
         }
 
         .floating-panel-employee .detail-card,
+        .floating-panel-employeeRecruit .detail-card,
         .floating-panel-employeeLibrary .detail-card,
         .floating-panel-employee .employee-library-panel,
         .floating-panel-employeeLibrary .employee-library-panel {
-          height: calc(100dvh - 178px) !important;
-          max-height: calc(100dvh - 178px) !important;
+          height: calc(100dvh - 46px) !important;
+          max-height: calc(100dvh - 46px) !important;
           overflow-y: auto !important;
           -webkit-overflow-scrolling: touch !important;
           padding: 10px 12px !important;
@@ -23334,6 +23449,7 @@ return (
         }
 
         .floating-panel-employee .smart-section-card,
+        .floating-panel-employeeRecruit .employee-recruit-page-header-v220,
         .floating-panel-employeeLibrary .employee-library-header,
         .floating-panel-employeeLibrary .employee-library-mode-note-v207 {
           padding: 8px 10px !important;
@@ -23386,6 +23502,295 @@ return (
       }
 
 
+
+
+      .employee-assignment-card-list-v221 { display: grid; gap: 8px; }
+      .employee-assignment-card-v221 { display: grid; grid-template-columns: 62px 1fr; gap: 10px; align-items: center; padding: 9px; border-radius: 16px; background: #ffffff; border: 1px solid #d8e0d8; box-shadow: 0 6px 18px rgba(20,40,30,0.06); }
+      .employee-assignment-card-body-v221 { min-width: 0; display: grid; gap: 5px; }
+      .employee-assignment-control-row-v221 { display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: center; }
+      .employee-assignment-control-row-v221 select { min-width: 0; padding: 7px 8px; border-radius: 10px; border: 1px solid #cfd8cf; background: #fff; font-weight: 800; }
+      .employee-assignment-control-row-v221 button { padding: 7px 10px; border-radius: 999px; border: 1px solid #b8c7b9; background: #ffffff; font-weight: 900; }
+      .employee-assignment-page-v221 { display: grid; gap: 10px; }
+      .employee-subnav-top-v221 { position: sticky; top: 0; z-index: 4; background: rgba(255,255,255,0.96); padding: 2px 0 6px; }
+      .employee-assignment-summary-v221 { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; padding: 8px 10px; border-radius: 14px; background: #edf5ef; border: 1px solid #cfe2d3; font-size: 13px; }
+      .employee-assignment-summary-v221 strong { font-size: 14px; }
+      .employee-salary-note.compact-v221 { margin: 0; padding: 8px 10px; font-size: 12px; line-height: 1.45; }
+
+      .employee-assignment-page-v222 { display: grid; gap: 8px; }
+      .employee-assignment-list-title-v222 { font-size: 16px; font-weight: 900; margin: 2px 0 0; }
+      .employee-assignment-vault-list-v222 { display: grid; gap: 7px; padding-bottom: 16px; }
+      .employee-assignment-vault-card-v222 { display: grid; grid-template-columns: 56px 1fr auto; gap: 7px; align-items: center; padding: 8px; border-radius: 15px; border: 1px solid #d8e0d8; background: #ffffff; box-shadow: 0 6px 16px rgba(20,40,30,0.06); }
+      .employee-office-mini-select-v222 { width: 56px; min-height: 36px; border-radius: 12px; border: 1px solid #b8c7b9; background: #f7faf7; color: #1d2b22; font-size: 12px; font-weight: 900; padding: 4px 2px; text-align: center; }
+      .employee-assignment-vault-main-v222 { min-width: 0; display: grid; grid-template-columns: 44px 1fr; gap: 7px; align-items: center; padding: 0; border: none; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+      .employee-assignment-vault-body-v222 { min-width: 0; display: grid; gap: 2px; }
+      .employee-assignment-vault-title-v222 { display: flex; justify-content: space-between; gap: 6px; align-items: baseline; min-width: 0; }
+      .employee-assignment-vault-title-v222 strong { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .employee-assignment-vault-title-v222 span { font-size: 10px; opacity: 0.72; white-space: nowrap; }
+      .employee-assignment-vault-tags-v222 { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+      .employee-assignment-vault-tags-v222 span { font-size: 10px; font-weight: 800; color: #31563f; background: #edf5ef; border-radius: 999px; padding: 2px 6px; }
+      .employee-assignment-vault-tags-v222 span.assigned { color: #1d5c3a; background: #dff2e7; }
+      .employee-assignment-vault-tags-v222 span.waiting { color: #6a5a35; background: #fff2cc; }
+      .employee-assignment-vault-stats-v222 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; font-size: 9px; opacity: 0.84; }
+      .employee-assignment-detail-button-v222 { padding: 7px 8px; border-radius: 999px; border: 1px solid #b8c7b9; background: #ffffff; font-size: 11px; font-weight: 900; white-space: nowrap; }
+      @media (max-width: 760px) {
+        .floating-panel-employee, .floating-panel-employeeRecruit, .floating-panel-employeeLibrary { top: 0 !important; bottom: 0 !important; height: 100dvh !important; border-radius: 0 !important; }
+        .floating-panel-employee .detail-card, .floating-panel-employeeRecruit .detail-card, .floating-panel-employeeLibrary .detail-card { height: 100dvh !important; max-height: 100dvh !important; padding: 10px 12px calc(24px + env(safe-area-inset-bottom, 0px)) !important; border-radius: 0 !important; }
+        .employee-assignment-vault-card-v222 { grid-template-columns: 54px 1fr 44px; gap: 6px; padding: 7px; }
+        .employee-office-mini-select-v222 { width: 54px; font-size: 11px; }
+        .employee-assignment-detail-button-v222 { padding: 7px 6px; font-size: 10px; }
+      }
+
+      @media (max-width: 760px) {
+        .employee-role-guide-v207 { display: none !important; }
+        .employee-subnav-row { gap: 6px !important; margin-bottom: 6px !important; }
+        .employee-subnav-row button { min-height: 34px !important; padding: 6px 8px !important; font-size: 13px !important; }
+        .employee-assignment-page-v221 h3 { margin: 4px 0 2px !important; font-size: 15px !important; }
+        .employee-table-scroll { max-height: none !important; }
+      }
+
+      /* v220: 社員配置・社員採用を別ページ化し、スマホ縦でも全画面で使う */
+      .employee-recruit-page-v220 {
+        display: grid;
+        gap: 12px;
+      }
+      .employee-recruit-page-header-v220 {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 12px 14px;
+        border-radius: 18px;
+        background: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(237,245,239,0.96));
+        border: 1px solid rgba(207,226,211,0.95);
+      }
+      .employee-recruit-page-header-v220 h2 {
+        margin: 0 0 4px;
+      }
+      .employee-recruit-page-header-v220 p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .employee-recruit-page-header-v220 > span {
+        flex: 0 0 auto;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: #edf5ef;
+        border: 1px solid #cfe2d3;
+        font-size: 12px;
+        font-weight: 900;
+        color: #31563f;
+      }
+      .employee-recruit-pass-grid-v220 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .employee-recruit-odds-v220 {
+        display: grid;
+        gap: 6px;
+      }
+      @media (max-width: 760px) {
+        .main-layout.full-panel:has(.employee-assignment-page-v222),
+        .main-layout.full-panel:has(.employee-recruit-page-v220),
+        .main-layout.full-panel:has(.employee-library-panel),
+        .main-layout.full-panel:has(.employee-storage-grid-v207),
+        .main-layout.full-panel:has(.employee-table-scroll) {
+          min-height: calc(100dvh - 72px) !important;
+          height: calc(100dvh - 72px) !important;
+          display: block !important;
+          overflow: hidden !important;
+        }
+        .main-layout.full-panel:has(.employee-assignment-page-v222) .side-section,
+        .main-layout.full-panel:has(.employee-recruit-page-v220) .side-section,
+        .main-layout.full-panel:has(.employee-library-panel) .side-section,
+        .main-layout.full-panel:has(.employee-storage-grid-v207) .side-section,
+        .main-layout.full-panel:has(.employee-table-scroll) .side-section {
+          max-height: none !important;
+          height: calc(100dvh - 78px) !important;
+          overflow: hidden !important;
+          border-radius: 16px !important;
+        }
+        .main-layout.full-panel:has(.employee-assignment-page-v222) .detail-card,
+        .main-layout.full-panel:has(.employee-recruit-page-v220) .detail-card,
+        .main-layout.full-panel:has(.employee-library-panel) .detail-card,
+        .main-layout.full-panel:has(.employee-storage-grid-v207) .detail-card,
+        .main-layout.full-panel:has(.employee-table-scroll) .detail-card {
+          height: calc(100dvh - 88px) !important;
+          max-height: calc(100dvh - 88px) !important;
+          overflow-y: auto !important;
+          -webkit-overflow-scrolling: touch !important;
+          margin: 0 !important;
+          padding: 10px 12px 22px !important;
+          box-sizing: border-box !important;
+        }
+        .employee-recruit-page-header-v220 {
+          padding: 10px 11px;
+          border-radius: 16px;
+        }
+        .employee-recruit-page-header-v220 p {
+          font-size: 12px;
+        }
+        .employee-recruit-page-header-v220 > span {
+          display: none;
+        }
+        .employee-recruit-pass-grid-v220 {
+          grid-template-columns: 1fr !important;
+          gap: 8px !important;
+        }
+      }
+
+
+
+      /* v223: 社員配置はドラッグ式別窓を使わず、情報/銀行と同じ通常全画面パネルにする */
+      .employee-assignment-page-v222 {
+        width: 100%;
+        max-width: none;
+        min-height: 100%;
+        align-content: start;
+      }
+      .employee-assignment-page-v222 .employee-salary-note.compact-v221 {
+        margin-bottom: 2px;
+      }
+      @media (max-width: 760px) {
+        .main-layout.full-panel:has(.employee-assignment-page-v222) {
+          min-height: calc(100dvh - 72px) !important;
+          height: calc(100dvh - 72px) !important;
+          display: block !important;
+          overflow: hidden !important;
+        }
+        .main-layout.full-panel:has(.employee-assignment-page-v222) .side-section {
+          position: static !important;
+          width: 100% !important;
+          height: calc(100dvh - 78px) !important;
+          max-height: none !important;
+          overflow: hidden !important;
+          border-radius: 16px !important;
+        }
+        .main-layout.full-panel:has(.employee-assignment-page-v222) .detail-card {
+          height: calc(100dvh - 88px) !important;
+          max-height: calc(100dvh - 88px) !important;
+          overflow-y: auto !important;
+          -webkit-overflow-scrolling: touch !important;
+          margin: 0 !important;
+          padding: 10px 12px 24px !important;
+          box-sizing: border-box !important;
+        }
+      }
+
+
+
+      /* v224: 社員配置のスマホ横切れ解消・外枠/余白を圧縮 */
+      .main-layout.full-panel:has(.employee-assignment-page-v222) {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+      }
+      .main-layout.full-panel:has(.employee-assignment-page-v222) .side-section,
+      .main-layout.full-panel:has(.employee-assignment-page-v222) .detail-card,
+      .employee-assignment-page-v222,
+      .employee-assignment-page-v222 * {
+        box-sizing: border-box !important;
+        max-width: 100% !important;
+      }
+      .employee-assignment-page-v222 {
+        overflow-x: hidden !important;
+      }
+      .employee-assignment-summary-v221,
+      .employee-salary-note.compact-v221 {
+        border-radius: 14px !important;
+        padding: 8px 9px !important;
+      }
+      .employee-assignment-vault-card-v222 {
+        grid-template-columns: 50px minmax(0, 1fr) 44px !important;
+        gap: 6px !important;
+        width: 100% !important;
+      }
+      .employee-office-mini-select-v222 {
+        width: 50px !important;
+        min-width: 50px !important;
+        font-size: 11px !important;
+        padding: 4px 1px !important;
+      }
+      .employee-assignment-vault-main-v222 {
+        min-width: 0 !important;
+        grid-template-columns: 42px minmax(0, 1fr) !important;
+      }
+      .employee-assignment-detail-button-v222 {
+        width: 44px !important;
+        min-width: 44px !important;
+        padding: 7px 4px !important;
+      }
+      @media (max-width: 760px) {
+        .main-layout.full-panel:has(.employee-assignment-page-v222) {
+          width: 100vw !important;
+          max-width: 100vw !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          gap: 0 !important;
+        }
+        .main-layout.full-panel:has(.employee-assignment-page-v222) .side-section {
+          width: 100vw !important;
+          max-width: 100vw !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          border: none !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
+          background: transparent !important;
+        }
+        .main-layout.full-panel:has(.employee-assignment-page-v222) .detail-card {
+          width: 100vw !important;
+          max-width: 100vw !important;
+          margin: 0 !important;
+          border-left: none !important;
+          border-right: none !important;
+          border-radius: 0 !important;
+          padding: 8px 8px calc(22px + env(safe-area-inset-bottom, 0px)) !important;
+          overflow-x: hidden !important;
+        }
+        .employee-assignment-summary-v221 {
+          display: grid !important;
+          grid-template-columns: 1fr !important;
+          gap: 4px !important;
+          font-size: 12px !important;
+        }
+        .employee-assignment-summary-v221 strong { font-size: 14px !important; }
+        .employee-salary-note.compact-v221 { font-size: 11px !important; line-height: 1.35 !important; }
+        .employee-assignment-list-title-v222 { font-size: 15px !important; margin-top: 0 !important; }
+        .employee-assignment-vault-list-v222 { gap: 7px !important; padding-bottom: 28px !important; }
+        .floating-panel-hq .detail-card { padding-left: 10px !important; padding-right: 10px !important; }
+        .floating-panel-land .detail-card { padding-left: 8px !important; padding-right: 8px !important; }
+        .floating-panel-land { max-width: calc(100vw - 4px) !important; }
+
+        .employee-assignment-vault-card-v222 {
+          grid-template-columns: 48px minmax(0, 1fr) 42px !important;
+          gap: 5px !important;
+          padding: 6px !important;
+          border-radius: 14px !important;
+        }
+        .employee-office-mini-select-v222 {
+          width: 48px !important;
+          min-width: 48px !important;
+          font-size: 10.5px !important;
+          border-radius: 10px !important;
+        }
+        .employee-assignment-vault-main-v222 {
+          grid-template-columns: 40px minmax(0, 1fr) !important;
+          gap: 6px !important;
+        }
+        .employee-assignment-vault-title-v222 strong { font-size: 12px !important; }
+        .employee-assignment-vault-title-v222 span { font-size: 9.5px !important; }
+        .employee-assignment-vault-tags-v222 { gap: 3px !important; }
+        .employee-assignment-vault-tags-v222 span { font-size: 9px !important; padding: 2px 4px !important; }
+        .employee-assignment-vault-stats-v222 { font-size: 8.5px !important; gap: 1px !important; }
+        .employee-assignment-detail-button-v222 {
+          width: 42px !important;
+          min-width: 42px !important;
+          font-size: 10px !important;
+          padding: 7px 2px !important;
+        }
+      }
 
       /* v218.13: マップ上部重複削減・座標ヘッダー視認性修正 */
       .akari-page-guide-goal {
@@ -23894,6 +24299,42 @@ return (
             .title-home-character-stage-v201 { min-height: 230px !important; }
             .home-akari-portrait-v201 { max-height: 220px !important; }
           }
+          @media (min-width: 901px) {
+            .home-page-modal-v2182 {
+              position: absolute !important;
+              top: 12px !important;
+              bottom: 88px !important;
+              left: 50% !important;
+              right: auto !important;
+              width: min(780px, calc(100vw - 28px)) !important;
+              max-width: 780px !important;
+              transform: translateX(-50%) !important;
+              padding: 14px !important;
+              border-radius: 24px !important;
+              overflow: auto !important;
+              box-shadow: 0 18px 52px rgba(0,0,0,0.20) !important;
+              border: 1px solid rgba(255,255,255,0.65) !important;
+            }
+            .home-page-modal-v2182 > div {
+              max-width: 100% !important;
+            }
+            .home-lobby-bottom-nav-v2182 {
+              left: 50% !important;
+              right: auto !important;
+              width: min(780px, calc(100vw - 28px)) !important;
+              max-width: 780px !important;
+              transform: translateX(-50%) !important;
+              bottom: 12px !important;
+            }
+            .home-recruit-pass-grid-v206 {
+              grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+              gap: 10px !important;
+            }
+            .vault-employee-grid-v217 {
+              grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+          }
+
           .home-akari-portrait-v202 { animation: homeAkariBreathV202 3.8s ease-in-out infinite; transform-origin: 50% 100%; }
           .home-akari-stage-v202 { cursor: pointer; }
           .home-akari-stage-v202::after { content: "タップで会話"; position: absolute; right: 12px; top: 12px; padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,0.84); color: #1d2b22; font-size: 11px; font-weight: 900; box-shadow: 0 6px 14px rgba(0,0,0,0.18); }
@@ -24157,18 +24598,18 @@ return (
               alignItems: "center",
               justifyContent: "center",
               zIndex: titleFullPageModal ? 35 : 30,
-              padding: titleFullPageModal ? "0 0 84px" : 16,
+              padding: titleFullPageModal ? 0 : 16,
               background: titleFullPageModal ? "#f7faf7" : "rgba(0,0,0,0.45)",
             }}
           >
             <div
               style={{
-                width: titleFullPageModal ? "100vw" : titleModal === "founderSelect" || titleModal === "missions" ? "min(720px, 94vw)" : "min(420px, 92vw)",
-                height: titleFullPageModal ? "calc(100dvh - 84px)" : "auto",
-                maxHeight: titleFullPageModal ? "calc(100dvh - 84px)" : "min(90dvh, 760px)",
+                width: titleFullPageModal ? "100vw" : titleModal === "freeMapSelect" ? "min(420px, calc(100vw - 28px))" : titleModal === "founderSelect" || titleModal === "missions" ? "min(720px, 94vw)" : "min(420px, 92vw)",
+                height: titleFullPageModal ? "100svh" : "auto",
+                maxHeight: titleFullPageModal ? "100svh" : titleModal === "freeMapSelect" ? "min(82dvh, 620px)" : "min(90dvh, 760px)",
                 overflowY: "auto",
                 borderRadius: titleFullPageModal ? 0 : 20,
-                padding: titleFullPageModal ? "10px 10px 18px" : 22,
+                padding: titleFullPageModal ? "10px 10px 18px" : titleModal === "freeMapSelect" ? 16 : 22,
                 background: "#ffffff",
                 color: "#1d2b22",
                 boxShadow: titleFullPageModal ? "none" : "0 18px 60px rgba(0,0,0,0.34)",
@@ -24193,7 +24634,26 @@ return (
                 <>
                   <h2 style={{ marginTop: 0 }}>モード選択</h2>
                   <button type="button" onClick={() => startNewGameFromTitle((pendingNewGame?.slot ?? activeSaveSlot), "story")} style={{width:"100%",padding:12,marginBottom:8}}>ストーリーモード</button>
-                  <button type="button" onClick={() => startNewGameFromTitle((pendingNewGame?.slot ?? activeSaveSlot), "free")} style={{width:"100%",padding:12}}>フリーモード</button>
+                  <button type="button" onClick={() => setTitleModal("freeMapSelect")} style={{width:"100%",padding:12}}>フリーモード</button>
+                </>
+              ) : titleModal === "freeMapSelect" ? (
+                <>
+                  <h2 style={{ margin: "0 0 10px", fontSize: 24, lineHeight: 1.15, whiteSpace: "nowrap" }}>フリーマップ選択</h2>
+                  <div style={{ display: "grid", gap: 8 }}>
+                    {FREE_MAP_OPTIONS.map((option) => {
+                      const data = getFreeModeSavedData(option.key);
+                      const hasData = Boolean(data);
+                      const dateText = data ? getGameDate(data.month ?? 1).label : "未開始";
+                      const moneyText = data ? `${Number(data.money ?? 0).toLocaleString()}万円` : "新規開始";
+                      return (
+                        <button key={option.key} type="button" onClick={() => openFreeMapFromTitle(option.key)} style={{ padding: "10px 12px", borderRadius: 16, border: "1px solid #cfe2d3", background: hasData ? "linear-gradient(145deg,#edf5ef,#d8f0e2)" : "#fff", color: "#1d2b22", textAlign: "left", fontWeight: 900, cursor: "pointer" }}>
+                          <div style={{ fontSize: 16, lineHeight: 1.2 }}>🏙 {option.label}</div>
+                          <div style={{ fontSize: 11, marginTop: 3, opacity: 0.75, lineHeight: 1.35 }}>{option.description}</div>
+                          <div style={{ fontSize: 11, marginTop: 4, opacity: 0.8 }}>{dateText} / {moneyText}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </>
               ) : titleModal === "founderSelect" ? (
                 (() => {
@@ -24243,7 +24703,7 @@ return (
                       <div style={{ fontWeight: 800, marginBottom: 6 }}>自由枠 {selectedFounderEmployeeIds.length}/2</div>
                       {renderVaultControls(true)}
                       <div style={{ fontSize: 12, opacity: 0.72, marginBottom: 6 }}>表示中：{founderCandidates.length}名</div>
-                      <div style={{ display: "grid", gap: 6, maxHeight: 260, overflowY: "auto", paddingRight: 2 }}>
+                      <div style={{ display: "grid", gap: 6, maxHeight: "calc(100svh - 470px)", minHeight: 220, overflowY: "auto", paddingRight: 2 }}>
                         {founderCandidates.length === 0 ? (
                           <div style={{ fontSize: 13, opacity: 0.7 }}>条件に合う社員がいません。</div>
                         ) : founderCandidates.map((employee) => {
@@ -24452,7 +24912,7 @@ return (
                   </div>
                 </>
               )}
-              <button type="button" onClick={() => { setTitleModal(null); setTitleVaultDetailEmployee(null); }} aria-label="閉じる" title="閉じる" style={{ marginTop: 12, marginBottom: 4, width: "100%", padding: "8px 14px", borderRadius: 999, border: "none", background: "#1d5c3a", color: "#ffffff", fontWeight: 900, cursor: "pointer", fontSize: 18, lineHeight: 1 }}>
+              <button type="button" onClick={() => { setTitleModal(null); setTitleVaultDetailEmployee(null); }} aria-label="閉じる" title="閉じる" style={{ marginTop: titleModal === "freeMapSelect" ? 8 : 12, marginBottom: titleModal === "freeMapSelect" ? 2 : 4, width: "100%", padding: titleModal === "freeMapSelect" ? "7px 14px" : "8px 14px", borderRadius: 999, border: "none", background: "#1d5c3a", color: "#ffffff", fontWeight: 900, cursor: "pointer", fontSize: titleModal === "freeMapSelect" ? 16 : 18, lineHeight: 1 }}>
                 ×
               </button>
             </div>
@@ -24823,7 +25283,11 @@ return (
       <h2>ランクアップ！</h2>
       <p className="employee-gacha-rarity">Rank{playerRankUpResult.beforeRank} → Rank{playerRankUpResult.rank}</p>
       {!playerRankUpResult.tutorialNoTicketReward && playerRankUpResult.ticketCount > 0 && (
-        <p>{getTicketName(playerRankUpResult.ticketType ?? "normal")} +{playerRankUpResult.ticketCount}枚</p>
+        <div>
+          {(playerRankUpResult.ticketRewards?.rookie ?? 0) > 0 && <p>{getTicketName("rookie")} +{playerRankUpResult.ticketRewards.rookie}枚</p>}
+          {(playerRankUpResult.ticketRewards?.normal ?? 0) > 0 && <p>{getTicketName("normal")} +{playerRankUpResult.ticketRewards.normal}枚</p>}
+          {(playerRankUpResult.ticketRewards?.premium ?? 0) > 0 && <p>{getTicketName("premium")} +{playerRankUpResult.ticketRewards.premium}枚</p>}
+        </div>
       )}
       {(playerRankUpResult.unlockMessages ?? []).length > 0 ? (
         <div>
@@ -25480,18 +25944,42 @@ return (
           🏗 建設
         </button>
         {!isStoryTutorialActive() && (
-          <button
-            type="button"
-            onClick={() => {
-              setActivePanel("employee");
-              setHasEmployeeRecruitNotice(false);
-              setIsMainMenuOpen(false);
-            }}
-            className={activePanel === "employee" ? "active" : ""}
-          >
-            👤 社員
-            {hasEmployeeRecruitNotice && <span className="menu-alert-dot">!</span>}
-          </button>
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                setActivePanel("employee");
+                setIsMainMenuOpen(false);
+              }}
+              className={activePanel === "employee" ? "active" : ""}
+            >
+              👥 社員配置
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setTitleModal("recruitHome");
+                setShowTitleScreen(true);
+                setHasEmployeeRecruitNotice(false);
+                setIsMainMenuOpen(false);
+              }}
+              className=""
+            >
+              ✉️ 社員採用
+              {hasEmployeeRecruitNotice && <span className="menu-alert-dot">!</span>}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setTitleModal("accountVault");
+                setShowTitleScreen(true);
+                setIsMainMenuOpen(false);
+              }}
+              className=""
+            >
+              📒 社員名簿
+            </button>
+          </>
         )}
         <button
           type="button"
@@ -25536,6 +26024,21 @@ return (
         <button
           type="button"
           onClick={() => {
+            setShowTitleScreen(true);
+            setTitleModal(null);
+            setTitleVaultDetailEmployee(null);
+            setActivePanel("home");
+            setIsMainMenuOpen(false);
+            setIsMoneyInfoOpen(false);
+            setIsDateInfoOpen(false);
+          }}
+          className=""
+        >
+          🏠 ホームメニューへ
+        </button>
+        <button
+          type="button"
+          onClick={() => {
             setActivePanel("option");
             setIsMainMenuOpen(false);
           }}
@@ -25558,7 +26061,7 @@ return (
 </nav>
 <div className="game-layout"></div>
 
-      <main className={`main-layout ${(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "employeeLibrary" || activePanel === "property" || activePanel === "log" || activePanel === "option" || activePanel === "info" || activePanel === "bank") ? "full-panel" : ""}`}>
+      <main className={`main-layout ${(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "employeeRecruit" || activePanel === "employeeLibrary" || activePanel === "property" || activePanel === "log" || activePanel === "option" || activePanel === "info" || activePanel === "bank") ? "full-panel" : ""}`}>
         {(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build") && (
         <section className="map-section playfield-v212 playfield-v214 playfield-v216">
           <div className="panel-title-row map-title-row v153-map-control-row">
@@ -25844,7 +26347,7 @@ return (
         </section>
         )}
 
-        {(activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "employeeLibrary") && (
+        {(activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "employeeRecruit" || activePanel === "employeeLibrary") && (
   <section
     key={isFloatingPanelMode() ? `floating-panel-${floatingPanelResetKey}` : "normal-side-section"}
     className={isFloatingPanelMode() ? `side-section floating-panel floating-panel-${activePanel}` : "side-section"}
@@ -26163,273 +26666,205 @@ return (
   </div>
 )}
             {activePanel === "employee" && (
-  <div className="detail-card">
-    <h2>社員管理</h2>
+  <div className="detail-card employee-assignment-page-v222">
+    <div className="employee-assignment-summary-v221">
+      <strong>配属 {employeeCountText}</strong>
+      <span>保有 {ownedEmployeeCount}人 / 待機 {employeeStorage.length}人 / 月給 {employeeSalaryTotal}万円</span>
+    </div>
+    <p className="employee-salary-note compact-v221">※給与は本社・支店に配属中の社員だけ発生。待機社員は給与なし。</p>
 
-    <div className="employee-role-guide-v207">
-      <div className="employee-role-card-v207">
-        <strong>社員管理</strong>
-        <span>配属・待機・支店配置を行う実務画面です。給与が発生するのは配属中社員だけです。</span>
+    {(() => {
+      const allAssignableEmployees = mergeEmployeeCollections([
+        ...employees.filter((employee) => employee.id !== 0),
+        ...employeeStorage,
+      ]);
+      const filteredAssignableEmployees = getFilteredSortedVaultEmployees(allAssignableEmployees, {
+        rarityFilter: titleVaultRarityFilter,
+        sortKey: titleVaultSortKey,
+      });
+      const assignedIdSet = new Set(employees.map((employee) => employee.id));
+      const getCurrentOfficeValue = (employee) => assignedIdSet.has(employee.id) ? (employee.officeId ?? "hq") : "waiting";
+      const handleAssignmentChange = (employee, nextOfficeId) => {
+        const currentOfficeId = getCurrentOfficeValue(employee);
+        if (nextOfficeId === currentOfficeId) return;
+        if (nextOfficeId === "waiting") {
+          if (assignedIdSet.has(employee.id)) unassignEmployee(employee);
+          return;
+        }
+        if (assignedIdSet.has(employee.id)) {
+          moveEmployee(employee.id, nextOfficeId);
+          return;
+        }
+        assignStoredEmployee(employee, nextOfficeId);
+      };
+      const getOfficeShortLabel = (officeTile) => {
+        const officeId = officeTile.officeId ?? "hq";
+        if (officeId === "hq") return "本社";
+        const match = String(officeTile.officeName ?? officeTile.hqName ?? "").match(/\d+/);
+        return match ? `支店${match[0]}` : String(officeTile.officeName ?? officeTile.hqName ?? "支店");
+      };
+
+      return (
+        <>
+          <div className="employee-assignment-list-title-v222">社員一覧</div>
+          {renderVaultControls(true)}
+          <div style={{ fontSize: 12, opacity: 0.72, marginBottom: 6 }}>表示中：{filteredAssignableEmployees.length}名</div>
+
+          {filteredAssignableEmployees.length === 0 ? (
+            <p>条件に合う社員がいません。</p>
+          ) : (
+            <div className="employee-assignment-vault-list-v222">
+              {filteredAssignableEmployees.map((employee) => {
+                const currentOfficeId = getCurrentOfficeValue(employee);
+                const roleHint = getVaultEmployeeRoleHint(employee);
+                const abilityTotal = getEmployeeAbilityTotalForVault(employee);
+                return (
+                  <div key={employee.id} className={`employee-assignment-vault-card-v222 rarity-card-${String(employee.rarity || "N").toLowerCase()}`}>
+                    <select
+                      className="employee-office-mini-select-v222"
+                      value={currentOfficeId}
+                      onChange={(event) => handleAssignmentChange(employee, event.target.value)}
+                      aria-label={`${employee.name}の配属先`}
+                    >
+                      <option value="waiting">待機</option>
+                      {officeTiles.map((officeTile) => {
+                        const officeId = officeTile.officeId ?? "hq";
+                        return (
+                          <option key={officeId} value={officeId}>{getOfficeShortLabel(officeTile)}</option>
+                        );
+                      })}
+                    </select>
+                    <button
+                      type="button"
+                      className="employee-assignment-vault-main-v222"
+                      onClick={() => setSelectedEmployeeDetail(employee)}
+                    >
+                      {renderVaultPortrait(employee, 44, 11)}
+                      <span className="employee-assignment-vault-body-v222">
+                        <span className="employee-assignment-vault-title-v222">
+                          <strong>{employee.name}</strong>
+                          <span>{employee.rarity} / Lv{employee.level ?? 1}</span>
+                        </span>
+                        <span className="employee-assignment-vault-tags-v222">
+                          <span>{roleHint}</span>
+                          <span>合計{abilityTotal}</span>
+                          <span className={currentOfficeId === "waiting" ? "waiting" : "assigned"}>{currentOfficeId === "waiting" ? "待機" : "配属中"}</span>
+                        </span>
+                        <span className="employee-assignment-vault-stats-v222">
+                          <span>統{Number(employee.leadership) || 0}</span>
+                          <span>営{Number(employee.sales) || 0}</span>
+                          <span>建{Number(employee.construction) || 0}</span>
+                          <span>管{Number(employee.management) || 0}</span>
+                        </span>
+                      </span>
+                    </button>
+                    <button type="button" className="employee-assignment-detail-button-v222" onClick={() => setSelectedEmployeeDetail(employee)}>詳細</button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      );
+    })()}
+  </div>
+)}
+
+
+
+{activePanel === "employeeRecruit" && (
+  <div className="detail-card employee-recruit-page-v220">
+    <div className="employee-recruit-page-header-v220">
+      <div>
+        <h2>社員採用</h2>
+        <p>ホームの社員採用と同じ履歴書・封筒演出で採用します。採用した社員は保管庫に入り、社員配置から本社・支店へ配属できます。</p>
       </div>
-      <div className="employee-role-card-v207">
-        <strong>社員図鑑</strong>
-        <span>獲得済み社員の鑑賞・コンプリート確認用です。レアリティ別に集める楽しさを見せます。</span>
-      </div>
+      <span>採用パスで履歴書確認</span>
     </div>
 
     <div className="employee-subnav-row">
-      <button
-        type="button"
-        className={activePanel === "employee" ? "active" : ""}
-        onClick={() => setActivePanel("employee")}
-      >
-        社員管理
-      </button>
-      <button
-        type="button"
-        className={activePanel === "employeeLibrary" ? "active" : ""}
-        onClick={() => setActivePanel("employeeLibrary")}
-      >
-        社員図鑑
-      </button>
+      <button type="button" onClick={() => setActivePanel("employee")}>社員配置</button>
+      <button type="button" className="active" onClick={() => setActivePanel("employeeRecruit")}>社員採用</button>
+      <button type="button" onClick={() => setActivePanel("employeeLibrary")}>社員名簿</button>
     </div>
 
-    <p>
-      配属社員: {employeeCountText} / 保有社員: {ownedEmployeeCount}人 / 待機社員: {employeeStorage.length}人 / 月給合計: {employeeSalaryTotal}万円
-      {!isStoryTutorialActive() && (
-        <> / ライト採用パス: {rookieEmployeeTickets}枚 / 社員採用パス: {employeeTickets}枚 / プレミアム採用パス: {premiumEmployeeTickets}枚</>
-      )}
-    </p>
-    <p className="employee-salary-note">※月給が発生するのは本社・支店に配属中の社員だけです。社員保管庫の待機社員は給与なしです。v207では「社員管理＝配属・実務」「社員図鑑＝鑑賞・コンプリート」に役割を分けています。</p>
-
-    {!isStoryTutorialActive() && (
-      <>
-        <div className="button-row ticket-button-row">
+    <div className="home-recruit-pass-grid-v2184 employee-recruit-pass-grid-v220">
+      {[
+        ["rookie", rookieEmployeeTickets, "低確率・毎日用"],
+        ["normal", employeeTickets, "URまで排出"],
+        ["premium", premiumEmployeeTickets, "SR以上確定"],
+      ].map(([ticketType, ticketCount, description]) => {
+        const brand = getRecruitmentBrand(ticketType);
+        const disabled = Number(ticketCount) < 1;
+        return (
           <button
-            className="employee-ticket-button normal-ticket-button"
-            disabled={rookieEmployeeTickets < 1}
-            onClick={recruitRookieEmployees}
+            key={ticketType}
+            type="button"
+            className={`home-recruit-pass-button-v206 home-recruit-pass-button-v2184 ${brand.className}`}
+            disabled={disabled}
+            onClick={() => startEmployeeRecruitmentByTicket(ticketType)}
+            style={{
+              border: `1px solid ${brand.borderColor}`,
+              background: brand.buttonGradient,
+              opacity: disabled ? 0.55 : 1,
+              cursor: disabled ? "not-allowed" : "pointer",
+            }}
           >
-            {rookieEmployeeTickets < 1
-              ? "社員採用（ライト不足）"
-              : "社員採用（ライト）"}
+            <span className="home-recruit-pass-icon-v2184">{brand.icon}</span>
+            <strong>{brand.menuName}</strong>
+            <small>{description}</small>
+            <em>{ticketCount}枚</em>
           </button>
-
-          {isDemoMode && (
-            <button onClick={addRookieEmployeeTicketForDemo}>
-              ライト採用券+1
-            </button>
-          )}
-
-          <button
-            className="employee-ticket-button normal-ticket-button"
-            disabled={employeeTickets < 1}
-            onClick={recruitEmployees}
-          >
-            {employeeTickets < 1
-              ? "社員採用（チケット不足）"
-              : "社員採用"}
-          </button>
-
-          {isDemoMode && (
-            <button onClick={addEmployeeTicketForDemo}>
-              採用券+1
-            </button>
-          )}
-
-          <button
-            className="employee-ticket-button premium-ticket-button"
-            disabled={premiumEmployeeTickets < 1}
-            onClick={recruitPremiumEmployees}
-          >
-            {premiumEmployeeTickets < 1
-              ? "社員採用（プラチナ不足）"
-              : "社員採用（プラチナ）"}
-          </button>
-
-          {isDemoMode && (
-            <button onClick={addPremiumEmployeeTicketForDemo}>
-              プラチナ採用券+1
-            </button>
-          )}
-        </div>
-
-        <div className="ticket-odds-box">
-          {rookieEmployeeTickets > 0 && (
-            <p><strong>ライト採用排出率:</strong> {getTicketOddsText("rookie")}</p>
-          )}
-          {employeeTickets > 0 && (
-            <p><strong>社員採用排出率:</strong> {getTicketOddsText("normal")}</p>
-          )}
-          {premiumEmployeeTickets > 0 && (
-            <p><strong>プレミアム採用排出率:</strong> {getTicketOddsText("premium")}</p>
-          )}
-        </div>
-      </>
-    )}
-
-    <div className="employee-sort-row">
-      <span>表の見出しを押すと並び替えできます。もう一度押すと昇順・降順が切り替わります。</span>
+        );
+      })}
     </div>
 
-    <h3>配属中社員</h3>
+    <div className="home-recruit-odds-compact-v2184 employee-recruit-odds-v220">
+      <span><strong>{getRecruitmentMenuName("rookie")}:</strong> {getTicketOddsText("rookie")}</span>
+      <span><strong>{getRecruitmentMenuName("normal")}:</strong> {getTicketOddsText("normal")}</span>
+      <span><strong>{getRecruitmentMenuName("premium")}:</strong> {getTicketOddsText("premium")}</span>
+    </div>
 
-    {employees.length === 0 && (
-      <p>現在、配属中の社員はいません。社員保管庫から本社・支店へ配属してください。</p>
-    )}
-
-    {employees.length > 0 && (
-      <div className="employee-table-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>{renderEmployeeSortHeader("名前", "name")}</th>
-              <th>{renderEmployeeSortHeader("レア", "rarity")}</th>
-              <th>{renderEmployeeSortHeader("Lv", "level")}</th>
-              <th>{renderEmployeeSortHeader("EXP", "exp")}</th>
-              <th>{renderEmployeeSortHeader("統率", "leadership")}</th>
-              <th>{renderEmployeeSortHeader("営業", "sales")}</th>
-              <th>{renderEmployeeSortHeader("建築", "construction")}</th>
-              <th>{renderEmployeeSortHeader("管理", "management")}</th>
-              <th>{renderEmployeeSortHeader("月給", "salary")}</th>
-              <th>{renderEmployeeSortHeader("特殊能力", "special")}</th>
-              <th>{renderEmployeeSortHeader("所属", "office")}</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {sortEmployeesForDisplay(employees.filter((employee) => employee.id !== 0)).map((employee) => (
-              <tr key={employee.id}>
-                <td>{renderEmployeeNameButton(employee)}</td>
-                <td>{getRarityLabel(employee.rarity)}</td>
-                <td>{employee.level ?? 1}</td>
-                <td>{employee.exp ?? 0}</td>
-                <td>{renderEmployeeStatValue(employee, "leadership", "baseLeadership")}</td>
-                <td>{renderEmployeeStatValue(employee, "sales", "baseSales")}</td>
-                <td>{renderEmployeeStatValue(employee, "construction", "baseConstruction")}</td>
-                <td>{renderEmployeeStatValue(employee, "management", "baseManagement")}</td>
-                <td>{renderEmployeeSalaryValue(employee)}</td>
-                <td>{getEmployeeSpecialText(employee)}</td>
-                <td>
-                  <select
-                    value={employee.officeId ?? "hq"}
-                    onChange={(event) => moveEmployee(employee.id, event.target.value)}
-                  >
-                    {officeTiles.map((officeTile) => (
-                      <option
-                        key={officeTile.officeId ?? "hq"}
-                        value={officeTile.officeId ?? "hq"}
-                      >
-                        {officeTile.officeName ?? officeTile.hqName ?? "本社"}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-
-                <td>
-                  <button onClick={() => unassignEmployee(employee)}>
-                    待機へ戻す
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    )}
-
-    <h3>社員保管庫</h3>
-
-    {employeeStorage.length === 0 && (
-      <p>社員チケットを使うと、獲得した社員がここに保管されます。</p>
-    )}
-
-    {employeeStorage.length > 0 && (
-      <div className="employee-storage-grid-v207">
-        {sortEmployeesForDisplay(employeeStorage).map((employee) => (
-          <div key={employee.id} className={`employee-storage-card-v207 rarity-card-${String(employee.rarity || "N").toLowerCase()}`}>
-            <button
-              type="button"
-              className="employee-storage-portrait-v207"
-              onClick={() => setSelectedEmployeeDetail(employee)}
-            >
-              {getVaultEmployeePortraitSrc(employee) ? (
-                <>
-                  <img src={getVaultEmployeePortraitSrc(employee)} alt={employee.name} onError={(event) => handleVaultEmployeePortraitError(event, employee)} />
-                  <span className="employee-library-fallback-initial">{getVaultEmployeeInitial(employee)}</span>
-                </>
-              ) : (
-                <span>{getVaultEmployeeInitial(employee)}</span>
-              )}
-            </button>
-            <div className="employee-storage-body-v207">
-              <div className="employee-storage-title-v207">
-                <strong>{employee.name}</strong>
-                <span className="employee-storage-rarity-v207">{getRarityLabel(employee.rarity)}</span>
-              </div>
-              <div style={{ fontSize: 10, opacity: 0.72 }}>
-                Lv.{employee.level ?? 1} / EXP {employee.exp ?? 0} / 覚醒+{employee.awakening ?? 0}
-              </div>
-              <div className="employee-storage-stat-grid-v207">
-                <span>統率 {renderEmployeeStatValue(employee, "leadership", "baseLeadership")}</span>
-                <span>営業 {renderEmployeeStatValue(employee, "sales", "baseSales")}</span>
-                <span>建築 {renderEmployeeStatValue(employee, "construction", "baseConstruction")}</span>
-                <span>管理 {renderEmployeeStatValue(employee, "management", "baseManagement")}</span>
-              </div>
-              <div style={{ fontSize: 11, opacity: 0.78 }}>{getEmployeeSpecialText(employee)}</div>
-              <div className="employee-storage-action-row-v207">
-                {officeTiles.map((officeTile) => {
-                  const officeId = officeTile.officeId ?? "hq";
-                  const officeName = officeTile.officeName ?? officeTile.hqName ?? "本社";
-                  const officeCount = employees.filter((item) => (item.officeId ?? "hq") === officeId).length;
-                  return (
-                    <button
-                      key={officeId}
-                      type="button"
-                      onClick={() => assignStoredEmployee(employee, officeId)}
-                    >
-                      {`${officeName}へ（${officeCount}人）`}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        ))}
+    {isDemoMode && (
+      <div className="button-row ticket-button-row employee-recruit-demo-row-v220">
+        <button onClick={addRookieEmployeeTicketForDemo}>ライト採用券+1</button>
+        <button onClick={addEmployeeTicketForDemo}>採用券+1</button>
+        <button onClick={addPremiumEmployeeTicketForDemo}>プラチナ採用券+1</button>
       </div>
     )}
   </div>
 )}
 
-
 {activePanel === "employeeLibrary" && (
   <div className="detail-card employee-library-panel">
     <div className="employee-library-header">
       <div>
-        <h2>社員図鑑</h2>
+        <h2>社員名簿</h2>
         <div className="employee-subnav-row employee-library-subnav-row">
           <button
             type="button"
             onClick={() => setActivePanel("employee")}
           >
-            社員管理
+            社員配置
+          </button>
+          <button
+            type="button"
+            onClick={() => setActivePanel("employeeRecruit")}
+          >
+            社員採用
           </button>
           <button
             type="button"
             className="active"
             onClick={() => setActivePanel("employeeLibrary")}
           >
-            社員図鑑
+            社員名簿
           </button>
         </div>
         <p>
           採用済み {ownedEmployeeLibrary.length}人 / 全{EMPLOYEE_POOL.length}人
           （コンプリート率 {employeeLibraryCompletionRate}%）
         </p>
-        <div className="employee-library-mode-note-v207">
-          社員図鑑は「獲得済み社員を眺める・コンプリート率を見る」画面です。実際の配属や待機社員の管理は社員管理・社員保管庫で行います。
-        </div>
       </div>
       <div className="employee-library-summary">
         {employeeLibraryRarityOptions.filter((rarity) => rarity !== "ALL").map((rarity) => (
