@@ -3,7 +3,7 @@ import "./App.css";
 
 /*
   箱庭不動産経営シミュレーター
-  v226: フリーマップ選択コンパクト化・本社建物NPC除外・ライバル数調整版 / v225: 社員配置横切れ解消・ホームメニュー導線追加版 / v223: 社員配置を通常全画面化・採用/名簿はホーム導線統合版 / v222: 社員配置を名簿型リスト化・社員名簿改名・全画面固定強化版 / v221: 社員ページ重複整理・配置カード化・創業メンバー全画面修正版 / v219.3: 名古屋背景整理・ポップアップ×修正・七瀬枠固定版 / v219.2: 閉じるUI×統一・ヘッダー圧縮版 / v219.1: 各種ポップアップ閉じる導線追加版 / v219: 新人七瀬・成長会話・チュートリアル成長補正版 / v218.10: 採用封筒四角化・ストーリー/フリー導線修正版 / v218.9: 採用画面5封筒表示・写真位置修正版 / v218.11: 採用特性説明復元・累計EXP表示・名古屋背景/七瀬服装整理版 / v218: 画面分離・不要情報削減・社員管理全画面版 / v218.1: ホーム整理・重複導線削減版 / v218.7: 土地情報ヘッダーアイコン集約版 / v218.6: 名簿均等配置・マップ情報削除・リロード復帰版 / v218.5: 名簿さらに圧縮・採用バグ修正版 / v218.4: 名簿・採用コンパクト化版 / v218.3: ページ遷移化・ホームHUD修正版 / v218.2: ホームロビー化・スマホ縦専用整理版 / v217: ホーム/経営分離・社員名簿統合版 / v216.2: ホーム横はみ出し・フルスクリーン再調整版 / v216: プレイ画面フルスクリーン最適化版 / v215: 配属上限5人・採用時自動配属版 / v214: 街演出・マップ視覚刷新版 / v213: プレイ画面イベント演出強化版 / v212: プレイ画面UI第一世代・スマホゲームHUD刷新版 / v210: ログインボーナス・ミッション・プレゼントBOX本格調整版 / v209: ホームメニュー第三世代UI版 / v208: ホーム背景・七瀬演出強化版 / v207: 社員名簿・社員保管庫スマホUI整理版 / v206: 社員採用演出・採用名称統一版 / v201: 縦横レスポンシブ・キャラ中心ホームUI版 / v200: スマホゲーム風ホーム画面リニューアル版 / v199: 社員保管庫上書き保護・ライト採用券追加版 / v198: 能力成長表示・給与表示整理版 / v197: 社員詳細・創業メンバー選択UI仕上げ版 / v196: 社員保管庫能力合計ソート修正版 / v195: 社員保管庫カード画像＋詳細表示版 / v194: 社員保管庫・創業メンバー選択UI強化版 / v193: 創業メンバー配属・行動可能判定修正版 / v192: 社員保管庫UI改善・ソート絞り込み版 / v191: アカウント情報・社員保管庫確認強化版 / v190: 創業メンバー選択（七瀬固定＋自由2名）版 / v189: 社員保管庫・プレイヤーランク共通保存基盤版 / v188: 名古屋編クリア演出・第1部完結版 / v183: 岐阜固定本社・名古屋拡張マップ調整・0章修繕短縮版 / v182: 岐阜名古屋固定マップ調整版 / v181: 0章購入ボタン再表示修正版 / v180: 名古屋編ストーリーOKボタン修正版 / v179: 名古屋編チュートリアル誘導赤枠版 / v178: 名古屋編準備・銀行融資と支店建設チュートリアル版 / v177: チュートリアル進行不能対策・固定レベルアップ・岐阜15x15版 / v176: 岐阜編クリア条件・七瀬ガイド圧縮版 / v175: 岐阜編開始・七瀬ページガイド追加版 / v174: チュートリアル発光パルス・建築ロック・チケット抑制版 / v173: 建設完了判定修正版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル強調赤枠・行動制限強化版 / v170: チュートリアル行動制限・七瀬ナビ追加版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル指定マス赤枠強化版 / v170: チュートリアル会話追加版 / v169: ストーリー第0章チュートリアル固定マップ追加版 / v168: モード選択追加版 / v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
+  v243: 会話直近除外・採用名称統一・知識会話追加版 / v241: 七瀬会話大幅追加・時間帯背景切替・会話UI整理版 / v240: 七瀬ホーム会話モード・知識ページ分割・成長段階会話版 / v239: ホーム会話拡充版 / v231: 支店配属表示・拠点活動範囲再修正版 / v230: ランク採用チケット報酬ルール再整理版 / v229: 支店エリア担当制修正・社員異動修正・七瀬成長特別化版 / v228: 本社設置後採用遷移廃止・ランク報酬整理版 / v227: スマホタブ幅・PCホーム導線調整版 / v226: フリーマップ選択コンパクト化・本社建物NPC除外・ライバル数調整版 / v225: 社員配置横切れ解消・ホームメニュー導線追加版 / v223: 社員配置を通常全画面化・採用/名簿はホーム導線統合版 / v222: 社員配置を名簿型リスト化・社員名簿改名・全画面固定強化版 / v221: 社員ページ重複整理・配置カード化・創業メンバー全画面修正版 / v219.3: 名古屋背景整理・ポップアップ×修正・七瀬枠固定版 / v219.2: 閉じるUI×統一・ヘッダー圧縮版 / v219.1: 各種ポップアップ閉じる導線追加版 / v219: 新人七瀬・成長会話・チュートリアル成長補正版 / v218.10: 採用封筒四角化・ストーリー/フリー導線修正版 / v218.9: 採用画面5封筒表示・写真位置修正版 / v218.11: 採用特性説明復元・累計EXP表示・名古屋背景/七瀬服装整理版 / v218: 画面分離・不要情報削減・社員管理全画面版 / v218.1: ホーム整理・重複導線削減版 / v218.7: 土地情報ヘッダーアイコン集約版 / v218.6: 名簿均等配置・マップ情報削除・リロード復帰版 / v218.5: 名簿さらに圧縮・採用バグ修正版 / v218.4: 名簿・採用コンパクト化版 / v218.3: ページ遷移化・ホームHUD修正版 / v218.2: ホームロビー化・スマホ縦専用整理版 / v217: ホーム/経営分離・社員名簿統合版 / v216.2: ホーム横はみ出し・フルスクリーン再調整版 / v216: プレイ画面フルスクリーン最適化版 / v215: 配属上限5人・採用時自動配属版 / v214: 街演出・マップ視覚刷新版 / v213: プレイ画面イベント演出強化版 / v212: プレイ画面UI第一世代・スマホゲームHUD刷新版 / v210: ログインボーナス・ミッション・プレゼントBOX本格調整版 / v209: ホームメニュー第三世代UI版 / v208: ホーム背景・七瀬演出強化版 / v207: 社員名簿・社員保管庫スマホUI整理版 / v206: 社員採用演出・採用名称統一版 / v201: 縦横レスポンシブ・キャラ中心ホームUI版 / v200: スマホゲーム風ホーム画面リニューアル版 / v199: 社員保管庫上書き保護・社員採用券追加版 / v198: 能力成長表示・給与表示整理版 / v197: 社員詳細・創業メンバー選択UI仕上げ版 / v196: 社員保管庫能力合計ソート修正版 / v195: 社員保管庫カード画像＋詳細表示版 / v194: 社員保管庫・創業メンバー選択UI強化版 / v193: 創業メンバー配属・行動可能判定修正版 / v192: 社員保管庫UI改善・ソート絞り込み版 / v191: アカウント情報・社員保管庫確認強化版 / v190: 創業メンバー選択（七瀬固定＋自由2名）版 / v189: 社員保管庫・プレイヤーランク共通保存基盤版 / v188: 名古屋編クリア演出・第1部完結版 / v183: 岐阜固定本社・名古屋拡張マップ調整・0章修繕短縮版 / v182: 岐阜名古屋固定マップ調整版 / v181: 0章購入ボタン再表示修正版 / v180: 名古屋編ストーリーOKボタン修正版 / v179: 名古屋編チュートリアル誘導赤枠版 / v178: 名古屋編準備・銀行融資と支店建設チュートリアル版 / v177: チュートリアル進行不能対策・固定レベルアップ・岐阜15x15版 / v176: 岐阜編クリア条件・七瀬ガイド圧縮版 / v175: 岐阜編開始・七瀬ページガイド追加版 / v174: チュートリアル発光パルス・建築ロック・チケット抑制版 / v173: 建設完了判定修正版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル強調赤枠・行動制限強化版 / v170: チュートリアル行動制限・七瀬ナビ追加版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル指定マス赤枠強化版 / v170: チュートリアル会話追加版 / v169: ストーリー第0章チュートリアル固定マップ追加版 / v168: モード選択追加版 / v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
   PC・スマホ両対応版 / v133 配属上限撤廃・役職補正強化・拠点表示整理
   v131：特殊能力効果拡張（入居・家賃・融資・採用対応）
 
@@ -44,7 +44,10 @@ function getFreeModeSaveKey(slot, mapKey) {
 const SAVE_SLOT_COUNT = 3;
 const DEFAULT_COMPANY_NAME = "";
 const DEFAULT_SAVE_SLOT = 1;
-const GAME_VERSION = "v228";
+const GAME_VERSION = "v247";
+// v244 roadmap: 七瀬レベル帯会話 / イベント会話 / 資産到達会話 / 支店到達会話 / 社員人数会話
+// v245 roadmap: 宅建講座 / 不動産投資講座 / 建築講座 / 税金講座 / 続き付き知識会話強化
+// v247: 七瀬レベル帯・資産/支店/社員イベント会話・知識会話実装版
 const BASE_EMPLOYEE_SALARY = 15;
 const EMPLOYEE_SALARY_GROWTH_RATE = 1.05;
 const GIFU_CLEAR_POPULATION = 500;
@@ -58,6 +61,7 @@ const DAILY_LOGIN_BONUS_KEY = "realEstateGameDailyLoginBonus_v1";
 const HOME_MISSION_DATA_KEY = "realEstateGameHomeMissions_v1";
 const PRESENT_BOX_HISTORY_KEY = "realEstateGamePresentBoxHistory_v1";
 const LAST_NAVIGATION_STATE_KEY = "realEstateGameLastNavigationState_v1";
+const HOME_AKARI_TALK_MODE_KEY = "realEstateGameHomeAkariTalkMode_v1";
 
 function readLastNavigationState() {
   if (typeof window === "undefined") {
@@ -93,13 +97,13 @@ function writeLastNavigationState(navigationState) {
 }
 
 const LOGIN_BONUS_REWARDS = [
-  { day: 1, type: "rookieTicket", name: "ライト採用パス", count: 1, icon: "✉", text: "ライト採用パス ×1" },
+  { day: 1, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
   { day: 2, type: "money", name: "運転資金", count: 100, icon: "💰", text: "運転資金 100万円" },
-  { day: 3, type: "rookieTicket", name: "ライト採用パス", count: 1, icon: "✉", text: "ライト採用パス ×1" },
-  { day: 4, type: "employeeTicket", name: "社員採用パス", count: 1, icon: "📨", text: "社員採用パス ×1" },
+  { day: 3, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
+  { day: 4, type: "employeeTicket", name: "レア社員採用チケット", count: 1, icon: "📨", text: "レア社員採用チケット ×1" },
   { day: 5, type: "money", name: "成長支援金", count: 200, icon: "💎", text: "成長支援金 200万円" },
-  { day: 6, type: "rookieTicket", name: "ライト採用パス", count: 2, icon: "✉", text: "ライト採用パス ×2" },
-  { day: 7, type: "premiumTicket", name: "プレミアム採用パス", count: 1, icon: "黒", text: "プレミアム採用パス ×1" },
+  { day: 6, type: "rookieTicket", name: "社員採用チケット", count: 2, icon: "✉", text: "社員採用チケット ×2" },
+  { day: 7, type: "premiumTicket", name: "プレミア社員採用チケット", count: 1, icon: "黒", text: "プレミア社員採用チケット ×1" },
 ];
 
 function getLoginBonusRewardByCount(claimCount = 0) {
@@ -252,13 +256,33 @@ function calculateEmployeeSalaryByLevel(level) {
 
 const AKARI_PORTRAIT_PATHS = {
   normal: "/characters/nanase_akari/nanase_akari_normal.png",
+  normal_1: "/characters/nanase_akari/nanase_akari_normal_1.png",
+  normal_2: "/characters/nanase_akari/nanase_akari_normal_2.png",
+  normal_3: "/characters/nanase_akari/nanase_akari_normal_3.png",
+  smile: "/characters/nanase_akari/nanase_akari_smile.png",
   trouble: "/characters/nanase_akari/nanase_akari_trouble.png",
   surprise: "/characters/nanase_akari/nanase_akari_surprise.png",
   happy: "/characters/nanase_akari/nanase_akari_happy.png",
+  happy_1: "/characters/nanase_akari/nanase_akari_happy_1.png",
+  happy_2: "/characters/nanase_akari/nanase_akari_happy_2.png",
+  happy_3: "/characters/nanase_akari/nanase_akari_happy_3.png",
+  happy_4: "/characters/nanase_akari/nanase_akari_happy_4.png",
   serious: "/characters/nanase_akari/nanase_akari_serious.png",
+  serious_1: "/characters/nanase_akari/nanase_akari_serious_1.png",
   cry: "/characters/nanase_akari/nanase_akari_cry.png",
   angry: "/characters/nanase_akari/nanase_akari_angry.png",
+  angry_1: "/characters/nanase_akari/nanase_akari_angry_1.png",
+  angry_2: "/characters/nanase_akari/nanase_akari_angry_2.png",
   formal: "/characters/nanase_akari/nanase_akari_formal.png",
+  proud: "/characters/nanase_akari/nanase_akari_proud.png",
+  proud_1: "/characters/nanase_akari/nanase_akari_proud_1.png",
+  sad: "/characters/nanase_akari/nanase_akari_sad.png",
+  shy: "/characters/nanase_akari/nanase_akari_shy.png",
+  shy_1: "/characters/nanase_akari/nanase_akari_shy._1.png",
+  sleepy: "/characters/nanase_akari/nanase_akari_sleepy.png",
+  sleepy_1: "/characters/nanase_akari/nanase_akari_sleepy_1.png",
+  think: "/characters/nanase_akari/nanase_akari_think_1.png",
+  laugh: "/characters/nanase_akari/nanase_akari_happy_4.png",
 };
 
 const PROLOGUE_SCENES = [
@@ -517,6 +541,7 @@ const STORY_NAGOYA_TUTORIAL_STEPS = {
   WAIT_LOAN_APPLICATION: "wait_loan_application",
   BUILD_BRANCH: "build_branch",
   WAIT_BRANCH: "wait_branch",
+  ASSIGN_BRANCH_EMPLOYEE: "assign_branch_employee",
   COMPLETE: "complete",
 };
 
@@ -557,7 +582,12 @@ const STORY_NAGOYA_EVENTS = {
   BRANCH_COMPLETE: {
     portrait: "happy",
     title: "支店完成",
-    text: "支店が完成しました！ これで本社から離れたエリアにも活動範囲を広げられます。岐阜の頃より、できることがずいぶん増えましたね。名古屋編では、支店に社員を配属して都市部へ進出していきましょう。",
+    text: "支店が完成しました！ 次は社員配置を開いて、誰か1人以上を支店へ配属しましょう。支店に社員がいないと、そのエリアでは購入・建設・修繕などの行動ができません。",
+  },
+  BRANCH_EMPLOYEE_ASSIGNED: {
+    portrait: "happy",
+    title: "支店配属完了",
+    text: "支店に社員を配属できました！ これで支店の活動範囲でも購入・建設・修繕ができるようになります。名古屋編へ進む準備は整いました。",
   },
 };
 
@@ -601,6 +631,7 @@ function getStoryNagoyaGoalText(step) {
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_APPLICATION) return "翌月へ進めて、融資審査結果を待ちましょう。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH) return "資金を使って支店を建設しましょう。自社の空き地が必要です。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_BRANCH) return "翌月へ進めて、支店完成を待ちましょう。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE) return "社員配置で、社員を1人以上支店へ配属しましょう。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE) return "名古屋編への進出準備が整いました。";
   return "銀行融資と支店建設の流れを確認しましょう。";
 }
@@ -612,7 +643,8 @@ function getStoryNagoyaAdviceText(step) {
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_APPLICATION) return "融資審査中です。翌月へ進めて結果を待ちましょう。承認されたら、条件を確認して借入を実行してください。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH) return "次は支店です。名古屋マップ上に用意された自社の空き地を使って、支店建設を体験しましょう。建設メニューの「支店」を選び、赤枠で案内される操作に進んでください。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_BRANCH) return "支店を建設中です。完成すると、その周辺が新しい活動範囲になります。翌月へ進めて完成を待ちましょう。";
-  if (step === STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE) return "銀行融資で資金を作り、支店で活動範囲を広げる流れを確認できました。社員画面で本社・支店の配属変更も確認できます。いよいよ名古屋編の本格スタートです。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE) return "社員配置を開き、配属先のプルダウンから完成した支店を選んでください。支店に社員を置くことで、その支店エリアの購入・建設・修繕が可能になります。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE) return "銀行融資で資金を作り、支店で活動範囲を広げ、社員を支店へ配属する流れまで確認できました。いよいよ名古屋編の本格スタートです。";
   return "銀行融資と支店建設を順番に体験しましょう。";
 }
 
@@ -841,7 +873,7 @@ function createStoryTutorialMap() {
   }
 
   return {
-    tiles,
+    tiles: recalculateTileZonesByFacilities(tiles),
     stationX,
     stationY,
     stationPositions,
@@ -1063,7 +1095,7 @@ function createGifuStoryMap() {
   }
 
   return {
-    tiles,
+    tiles: recalculateTileZonesByFacilities(tiles),
     stationX,
     stationY,
     stationPositions,
@@ -1425,7 +1457,7 @@ function createNagoyaStoryMap(gifuSourceTiles = []) {
   });
 
   return {
-    tiles,
+    tiles: recalculateTileZonesByFacilities(tiles),
     stationX,
     stationY,
     stationPositions,
@@ -10555,9 +10587,71 @@ function getNearestPointDistance(x, y, points, fallbackX, fallbackY) {
     );
   }
 
+  if (fallbackX == null || fallbackY == null) return Number.POSITIVE_INFINITY;
+
   return getDistance(x, y, fallbackX, fallbackY);
 }
 
+const ZONE_INFLUENCE_RANGE = 2;
+
+function getFacilityInfluenceType(feature) {
+  if (feature === FEATURE.STATION) return ZONE.COMMERCIAL;
+  if (feature === FEATURE.FACTORY) return ZONE.INDUSTRIAL;
+  if (feature === FEATURE.SCHOOL) return ZONE.RESIDENTIAL;
+  return null;
+}
+
+function isIndustrialBuildingKey(buildingKey) {
+  const buildingInfo = BUILDINGS?.[buildingKey];
+  return Boolean(buildingKey && (buildingInfo?.category === "工業" || String(buildingKey).includes("factory") || buildingKey === "warehouse"));
+}
+
+function getZoneFromFacilityInfluencers(x, y, stationPoints = [], factoryPoints = [], schoolPoints = []) {
+  const stationDistance = getNearestPointDistance(x, y, stationPoints, null, null);
+  const factoryDistance = getNearestPointDistance(x, y, factoryPoints, null, null);
+  const schoolDistance = getNearestPointDistance(x, y, schoolPoints, null, null);
+
+  if (stationDistance <= ZONE_INFLUENCE_RANGE) return ZONE.COMMERCIAL;
+  if (factoryDistance <= ZONE_INFLUENCE_RANGE) return ZONE.INDUSTRIAL;
+  if (schoolDistance <= ZONE_INFLUENCE_RANGE) return ZONE.RESIDENTIAL;
+
+  return ZONE.GENERAL;
+}
+
+function collectZoneInfluencersFromTiles(tiles = []) {
+  const stationPoints = [];
+  const factoryPoints = [];
+  const schoolPoints = [];
+
+  tiles.forEach((tile) => {
+    if (!tile) return;
+
+    if (tile.feature === FEATURE.STATION) stationPoints.push({ x: tile.x, y: tile.y });
+    if (tile.feature === FEATURE.SCHOOL) schoolPoints.push({ x: tile.x, y: tile.y });
+    if (tile.feature === FEATURE.FACTORY || isIndustrialBuildingKey(tile.building)) {
+      factoryPoints.push({ x: tile.x, y: tile.y });
+    }
+  });
+
+  return { stationPoints, factoryPoints, schoolPoints };
+}
+
+function recalculateTileZonesByFacilities(tiles = []) {
+  const { stationPoints, factoryPoints, schoolPoints } = collectZoneInfluencersFromTiles(tiles);
+
+  return tiles.map((tile) => ({
+    ...tile,
+    zone: getZoneFromFacilityInfluencers(tile.x, tile.y, stationPoints, factoryPoints, schoolPoints),
+  }));
+}
+
+function getFacilityInfluenceZoneForTile(tile) {
+  if (!tile) return null;
+  if (tile.feature === FEATURE.STATION) return ZONE.COMMERCIAL;
+  if (tile.feature === FEATURE.SCHOOL) return ZONE.RESIDENTIAL;
+  if (tile.feature === FEATURE.FACTORY || isIndustrialBuildingKey(tile.building)) return ZONE.INDUSTRIAL;
+  return null;
+}
 
 
 function isBuildableTile(tile) {
@@ -10582,9 +10676,7 @@ function isRailTileForStationPlacement(tile) {
 function sanitizeMapForV138(mapData) {
   if (!mapData || !Array.isArray(mapData.tiles)) return mapData;
 
-  return {
-    ...mapData,
-    tiles: mapData.tiles.map((tile) => {
+  const cleanedTiles = mapData.tiles.map((tile) => {
       const invalidFacilityOnNonPlain =
         tile.terrain !== TERRAIN.PLAIN &&
         (tile.feature === FEATURE.STATION || tile.feature === FEATURE.FACTORY || tile.feature === FEATURE.SCHOOL);
@@ -10603,7 +10695,11 @@ function sanitizeMapForV138(mapData) {
         buildingMainId: null,
         rooms: [],
       };
-    }),
+    });
+
+  return {
+    ...mapData,
+    tiles: recalculateTileZonesByFacilities(cleanedTiles),
   };
 }
 
@@ -10641,15 +10737,13 @@ function calculateLandPrice(
   return Math.round(price);
 }
 function getZone(x, y, stationX, stationY, schoolX, schoolY, factoryX, factoryY) {
-  const stationDistance = getNearestPointDistance(x, y, stationX, stationX, stationY);
-  const schoolDistance = getNearestPointDistance(x, y, schoolX, schoolX, schoolY);
-  const factoryDistance = getDistance(x, y, factoryX, factoryY);
+  const stationPoints = Array.isArray(stationX) ? stationX : (stationX != null && stationY != null ? [{ x: stationX, y: stationY }] : []);
+  const schoolPoints = Array.isArray(schoolX) ? schoolX : (schoolX != null && schoolY != null ? [{ x: schoolX, y: schoolY }] : []);
+  const factoryPoints = Array.isArray(factoryX) ? factoryX : (factoryX != null && factoryY != null ? [{ x: factoryX, y: factoryY }] : []);
 
-  if (stationDistance <= 4) return ZONE.COMMERCIAL;
-  if (factoryDistance <= 4) return ZONE.INDUSTRIAL;
-  if (schoolDistance <= 5) return ZONE.RESIDENTIAL;
-
-  return ZONE.GENERAL;
+  // v234: 用途地域の影響範囲は、駅・学校・工場の施設マスから周囲2マスまでに固定。
+  // 学校のような2×2施設は、4マスそれぞれを起点にして2マスだけ住宅地域にする。
+  return getZoneFromFacilityInfluencers(x, y, stationPoints, factoryPoints, schoolPoints);
 }
 
 function createRooms(buildingKey, demand, currentMonth = 0) {
@@ -11257,7 +11351,7 @@ initialRivalCompanyIds.forEach((companyId, index) => {
 });
 
 return {
-  tiles,
+  tiles: recalculateTileZonesByFacilities(tiles),
   stationX,
   stationY,
   stationPositions,
@@ -13374,8 +13468,20 @@ const [titleVaultRarityFilter, setTitleVaultRarityFilter] = useState("ALL");
 const [titleVaultSortKey, setTitleVaultSortKey] = useState("power");
 const [titleVaultDetailEmployee, setTitleVaultDetailEmployee] = useState(null);
 const [titleHomeAkariTalkIndex, setTitleHomeAkariTalkIndex] = useState(0);
+const [titleHomeAkariPageIndex, setTitleHomeAkariPageIndex] = useState(0);
 const [titleHomeAkariExpression, setTitleHomeAkariExpression] = useState(null);
+const [titleHomeAkariRecentTalkIndexes, setTitleHomeAkariRecentTalkIndexes] = useState([]);
+const [homeAkariTalkMode, setHomeAkariTalkMode] = useState(() => {
+  if (typeof window === "undefined") return "general";
+  const savedMode = window.localStorage.getItem(HOME_AKARI_TALK_MODE_KEY);
+  return ["chat", "general", "knowledge"].includes(savedMode) ? savedMode : "general";
+});
 const [titleModal, setTitleModal] = useState(null);
+
+useEffect(() => {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(HOME_AKARI_TALK_MODE_KEY, homeAkariTalkMode);
+}, [homeAkariTalkMode]);
 
 useEffect(() => {
   writeLastNavigationState({
@@ -14012,11 +14118,15 @@ function getReachableOfficeTilesForTile(tile) {
   if (!hqPlaced) return [];
   if (!tile) return [];
 
-  return officeTiles.filter((officeTile) => {
+  const reachableOffices = officeTiles.filter((officeTile) => {
     const range = getOfficeActionRange(officeTile);
     if (range <= 0) return false;
     return getDistance(tile.x, tile.y, officeTile.x, officeTile.y) <= range;
   });
+
+  // v231: 活動範囲は本社・各支店それぞれ10マス。
+  // 範囲が重なっている土地は、重なっている拠点所属の社員をどちらも候補に出す。
+  return reachableOffices;
 }
 
 function getReachableOfficeIdsForTile(tile) {
@@ -14035,6 +14145,29 @@ function isTileInSelectedOfficeRange(tile) {
   const range = getOfficeActionRange(selectedOfficeTile);
 
   return getDistance(tile.x, tile.y, selectedOfficeTile.x, selectedOfficeTile.y) <= range;
+}
+
+function isTileInSelectedFacilityInfluenceRange(tile) {
+  if (!selectedTile || !tile) return false;
+
+  const selectedZone = getFacilityInfluenceZoneForTile(selectedTile);
+  if (!selectedZone) return false;
+
+  const selectedMainTile = getMainTile(selectedTile) ?? selectedTile;
+  const selectedBuildingInfo = selectedMainTile?.building ? BUILDINGS[selectedMainTile.building] : null;
+
+  if (selectedTile.feature === FEATURE.SCHOOL) {
+    const schoolBlockTiles = tiles.filter((candidate) => candidate.feature === FEATURE.SCHOOL && getDistance(candidate.x, candidate.y, selectedTile.x, selectedTile.y) <= 2);
+    return schoolBlockTiles.some((schoolTile) => getDistance(tile.x, tile.y, schoolTile.x, schoolTile.y) <= ZONE_INFLUENCE_RANGE);
+  }
+
+  if (selectedBuildingInfo && (selectedBuildingInfo.width > 1 || selectedBuildingInfo.height > 1)) {
+    const mainId = selectedMainTile.id;
+    const buildingTiles = tiles.filter((candidate) => candidate.id === mainId || candidate.buildingMainId === mainId);
+    return buildingTiles.some((buildingTile) => getDistance(tile.x, tile.y, buildingTile.x, buildingTile.y) <= ZONE_INFLUENCE_RANGE);
+  }
+
+  return getDistance(tile.x, tile.y, selectedTile.x, selectedTile.y) <= ZONE_INFLUENCE_RANGE;
 }
 
 function isTileInSelectedRivalOfficeRange(tile) {
@@ -14974,13 +15107,22 @@ function selectBuildingFromList(tileId) {
     }, 0);
   }
 function getOfficeName(officeId) {
-  if (officeId === "hq") return "本社";
+  if (!officeId || officeId === "hq") return "本社";
+  if (officeId === "storage" || officeId === "waiting") return "待機";
 
   const officeTile = officeTiles.find((tile) => {
     return (tile.officeId ?? "hq") === officeId;
   });
 
-  return officeTile?.officeName ?? officeTile?.hqName ?? "不明";
+  if (officeTile?.officeName || officeTile?.hqName) {
+    return officeTile.officeName ?? officeTile.hqName;
+  }
+
+  // v233: 用途地域影響範囲2マス統一版 / v232: 旧セーブや建設直後の支店IDでも、selectの表示が本社へ戻らないようにする。
+  const branchMatch = String(officeId).match(/branch[_-]?(\d+)?/i);
+  if (branchMatch) return branchMatch[1] ? `支店${branchMatch[1]}` : "支店";
+
+  return "支店";
 }
 
 function getBranchDisplayName(tile) {
@@ -15450,18 +15592,43 @@ function renderEmployeeNameButton(employee) {
 }
 
 function moveEmployee(employeeId, officeId) {
-  setEmployees(
-    employees.map((employee) => {
-      if (employee.id !== employeeId) return employee;
+  const targetOfficeId = officeId ?? "hq";
+  const currentEmployees = employeesRef.current.length > 0 ? employeesRef.current : employees;
+  const movingEmployee = currentEmployees.find((employee) => employee.id === employeeId);
 
-      return {
-        ...employee,
-        officeId,
-      };
-    })
-  );
+  if (!movingEmployee) {
+    alert("異動対象の社員が見つかりません。画面を更新してもう一度お試しください。");
+    return;
+  }
 
-  setLog("社員を異動しました。");
+  const targetOfficeExists = officeTiles.some((officeTile) => (officeTile.officeId ?? "hq") === targetOfficeId);
+  if (!targetOfficeExists) {
+    alert("異動先の本社・支店が見つかりません。");
+    return;
+  }
+
+  const assignedCount = currentEmployees.filter((employee) => {
+    if (employee.id === employeeId) return false;
+    return (employee.officeId ?? "hq") === targetOfficeId;
+  }).length;
+
+  if (assignedCount >= OFFICE_EMPLOYEE_ASSIGN_LIMIT) {
+    alert(`${getOfficeName(targetOfficeId)}の配属上限は${OFFICE_EMPLOYEE_ASSIGN_LIMIT}人です。`);
+    return;
+  }
+
+  const nextEmployees = currentEmployees.map((employee) => {
+    if (employee.id !== employeeId) return employee;
+
+    return {
+      ...employee,
+      officeId: targetOfficeId,
+    };
+  });
+
+  employeesRef.current = nextEmployees;
+  setEmployees(nextEmployees);
+  setLog(`${movingEmployee.name}を${getOfficeName(targetOfficeId)}へ異動しました。`);
 }
 
 
@@ -15568,12 +15735,12 @@ function getPlayerRankTicketRewards(fromRank, toRank) {
   const rewards = { rookie: 0, normal: 0, premium: 0 };
 
   for (let rank = Math.max(2, fromRank + 1); rank <= toRank; rank += 1) {
-    if (rank >= 2 && rank <= 4) {
-      rewards.rookie += 1;
-    } else if (rank === 5 || (rank >= 15 && rank % 5 === 0 && rank % 10 !== 0)) {
-      rewards.normal += 1;
-    } else if (rank >= 10 && rank % 10 === 0) {
+    if (rank % 10 === 0) {
       rewards.premium += 1;
+    } else if (rank % 5 === 0) {
+      rewards.normal += 1;
+    } else {
+      rewards.rookie += 1;
     }
   }
 
@@ -15582,9 +15749,9 @@ function getPlayerRankTicketRewards(fromRank, toRank) {
 
 function formatPlayerRankTicketRewardLog(rewards) {
   const messages = [];
-  if ((rewards.rookie ?? 0) > 0) messages.push(`ライト採用パス+${rewards.rookie}枚`);
-  if ((rewards.normal ?? 0) > 0) messages.push(`社員採用パス+${rewards.normal}枚`);
-  if ((rewards.premium ?? 0) > 0) messages.push(`プレミアム採用パス+${rewards.premium}枚`);
+  if ((rewards.rookie ?? 0) > 0) messages.push(`社員採用チケット+${rewards.rookie}枚`);
+  if ((rewards.normal ?? 0) > 0) messages.push(`レア社員採用チケット+${rewards.normal}枚`);
+  if ((rewards.premium ?? 0) > 0) messages.push(`プレミア社員採用チケット+${rewards.premium}枚`);
   return messages;
 }
 
@@ -15602,9 +15769,9 @@ function getTicketOddsText(ticketType) {
 
 const EMPLOYEE_RECRUITMENT_BRANDS = {
   rookie: {
-    ticketName: "ライト採用パス",
-    menuName: "ライト採用",
-    stageTitle: "ライト採用",
+    ticketName: "社員採用チケット",
+    menuName: "社員採用",
+    stageTitle: "社員採用",
     subtitle: "毎日使いやすい通常演出。白封筒中心で、まれにSR履歴書が届きます。",
     badge: "DAILY",
     icon: "📄",
@@ -15613,7 +15780,7 @@ const EMPLOYEE_RECRUITMENT_BRANDS = {
     borderColor: "#e8d08a",
   },
   normal: {
-    ticketName: "社員採用パス",
+    ticketName: "レア社員採用チケット",
     menuName: "社員採用",
     stageTitle: "社員採用",
     subtitle: "標準採用演出。NからURまで、すべての人材と出会える基本ルートです。",
@@ -15624,9 +15791,9 @@ const EMPLOYEE_RECRUITMENT_BRANDS = {
     borderColor: "#9cd4aa",
   },
   premium: {
-    ticketName: "プレミアム採用パス",
-    menuName: "プレミアム採用",
-    stageTitle: "プレミアム採用",
+    ticketName: "プレミア社員採用チケット",
+    menuName: "プレミア社員採用",
+    stageTitle: "プレミア社員採用",
     subtitle: "SR以上確定の特別演出。茶封筒以上だけが並ぶ、貴重な採用ルートです。",
     badge: "SR+ 確定",
     icon: "✨",
@@ -15696,9 +15863,10 @@ function getEmployeeSalary(employee) {
 }
 
 function getAkariSpecialGrowthTotal(employee) {
+  // v229: 七瀬灯里は主人公枠として、モードや章進行に関係なく常時成長補正を持つ。
+  // レベルアップごとに能力上昇合計を2〜4から等確率で選ぶ。
   if (Number(employee?.id) !== 122) return null;
-  if (!(String(currentGameMode ?? "").startsWith("story")) || hasClearedNagoyaChapter) return null;
-  return Math.random() < 0.55 ? 2 : 3;
+  return 2 + randomInt(0, 2);
 }
 
 function applyRandomStatGrowth(employee, totalGrowth) {
@@ -16128,7 +16296,7 @@ function grantEmployeesExp(employeeIds, gainedExp, reason) {
       resultMessages.push(
         isTutorialNoTicketReward
           ? `プレイヤーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。${unlockMessages.join(" / ")}`
-          : `プレイヤーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。${rewardMessages.join(" / ") || "採用パス報酬なし"}。${unlockMessages.join(" / ")}`
+          : `プレイヤーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。${rewardMessages.join(" / ") || "採用チケット報酬なし"}。${unlockMessages.join(" / ")}`
       );
     }
   }
@@ -16234,7 +16402,7 @@ function startEmployeeRecruitmentByTicket(ticketType) {
   const isRookie = ticketType === "rookie";
 
   if (isRookie && rookieEmployeeTickets < 1) {
-    alert("社員ライトチケットがありません。ライト採用にはライトチケット1枚が必要です。");
+    alert("社員ライトチケットがありません。社員採用にはライトチケット1枚が必要です。");
     return;
   }
 
@@ -16565,33 +16733,44 @@ function handleDeveloperCommand() {
 }
 
 function assignStoredEmployee(employee, officeId) {
-  const alreadyAssigned = employees.some((item) => item.id === employee.id);
+  const targetOfficeId = officeId ?? "hq";
+  const currentEmployees = employeesRef.current.length > 0 ? employeesRef.current : employees;
+  const alreadyAssigned = currentEmployees.some((item) => item.id === employee.id);
 
   if (alreadyAssigned) {
     alert("この社員はすでに配属されています");
     return;
   }
 
-  if (!hasOfficeEmployeeVacancy(officeId)) {
-    alert(`${getOfficeName(officeId)}の配属上限は${OFFICE_EMPLOYEE_ASSIGN_LIMIT}人です。先に社員を保管庫へ戻してください。`);
+  const targetOfficeExists = officeTiles.some((officeTile) => (officeTile.officeId ?? "hq") === targetOfficeId);
+  if (!targetOfficeExists) {
+    alert("配属先の本社・支店が見つかりません。");
     return;
   }
 
-  const officeName = getOfficeName(officeId);
+  const assignedCount = currentEmployees.filter((item) => (item.officeId ?? "hq") === targetOfficeId).length;
+  if (assignedCount >= OFFICE_EMPLOYEE_ASSIGN_LIMIT) {
+    alert(`${getOfficeName(targetOfficeId)}の配属上限は${OFFICE_EMPLOYEE_ASSIGN_LIMIT}人です。先に社員を保管庫へ戻してください。`);
+    return;
+  }
 
-  setEmployees([
-    ...employees,
+  const officeName = getOfficeName(targetOfficeId);
+  const nextEmployees = [
+    ...currentEmployees,
     {
       ...employee,
-      officeId,
+      officeId: targetOfficeId,
     },
-  ]);
+  ];
+
+  employeesRef.current = nextEmployees;
+  setEmployees(nextEmployees);
 
   setEmployeeStorage(
     employeeStorage.filter((item) => item.id !== employee.id)
   );
 
-  setLog(`${employee.name}を${officeName}へ配属しました。${officeName}の配属枠は${getEmployeeAssignedCountForOffice(officeId) + 1}/${OFFICE_EMPLOYEE_ASSIGN_LIMIT}人です。`);
+  setLog(`${employee.name}を${officeName}へ配属しました。${officeName}の配属枠は${assignedCount + 1}/${OFFICE_EMPLOYEE_ASSIGN_LIMIT}人です。`);
 }
 
 function unassignEmployee(employee) {
@@ -21303,7 +21482,12 @@ useEffect(() => {
   const hasPendingApplication = pendingLoanApplications.length > 0;
   const hasLoan = loans.some((loan) => (loan.remaining ?? 0) > 0);
   const hasBranchUnderConstruction = tiles.some((tile) => tile.feature === FEATURE.BRANCH && tile.branchUnderConstruction);
-  const hasActiveBranch = tiles.some((tile) => tile.feature === FEATURE.BRANCH && !tile.branchUnderConstruction && (tile.officeRange ?? 0) > 0);
+  const activeBranchOfficeIds = tiles
+    .filter((tile) => tile.feature === FEATURE.BRANCH && !tile.branchUnderConstruction && (tile.officeRange ?? 0) > 0)
+    .map((tile) => tile.officeId)
+    .filter(Boolean);
+  const hasActiveBranch = activeBranchOfficeIds.length > 0;
+  const hasEmployeeAssignedToActiveBranch = employees.some((employee) => activeBranchOfficeIds.includes(employee.officeId));
 
   if (nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.LOAN_CONSULT && hasPendingConsultation) {
     setNagoyaTutorialStep(STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_CONSULT);
@@ -21343,14 +21527,22 @@ useEffect(() => {
   }
 
   if (nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_BRANCH && hasActiveBranch) {
-    setNagoyaTutorialStep(STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE);
+    setNagoyaTutorialStep(STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE);
     setStoryEvent(STORY_NAGOYA_EVENTS.BRANCH_COMPLETE);
+    setActivePanel("employee");
+    setLog("支店が完成しました。社員配置で、支店へ社員を1人以上配属しましょう。");
+    return;
+  }
+
+  if (nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE && hasEmployeeAssignedToActiveBranch) {
+    setNagoyaTutorialStep(STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE);
+    setStoryEvent(STORY_NAGOYA_EVENTS.BRANCH_EMPLOYEE_ASSIGNED);
     setStorySequence(null);
     setStorySequenceIndex(0);
     setActivePanel("home");
-    setLog("支店が完成しました。名古屋編へ進む準備が整いました。");
+    setLog("支店への社員配属が完了しました。名古屋編へ進む準備が整いました。");
   }
-}, [currentGameMode, nagoyaTutorialStep, pendingLoanConsultations, loanConsultationReports, pendingLoanApplications, loans, tiles]);
+}, [currentGameMode, nagoyaTutorialStep, pendingLoanConsultations, loanConsultationReports, pendingLoanApplications, loans, tiles, employees]);
 
 function getCurrentAkariGuide() {
   if (currentGameMode === "story" && tutorialStep) {
@@ -21907,13 +22099,53 @@ function returnToTitleScreen() {
 }
 
 
-function getHomeTimeGreeting() {
-  const hour = new Date().getHours();
+function createAkariTalk(text, portrait = "normal", options = {}) {
+  const pages = Array.isArray(options.pages) && options.pages.length > 0 ? options.pages : null;
+  return {
+    text,
+    portrait: AKARI_PORTRAIT_PATHS[portrait] ? portrait : "normal",
+    category: options.category ?? "chat",
+    maturity: options.maturity ?? "all",
+    pages,
+    title: options.title ?? null,
+  };
+}
 
-  if (hour >= 5 && hour < 11) return "おはようございます、社長。今日も街を元気にしていきましょう！";
-  if (hour >= 11 && hour < 17) return "今日も頑張りましょう、社長。物件も社員も少しずつ育てていきましょう！";
-  if (hour >= 17 && hour < 23) return "遅くまでお疲れ様です、社長。今日の経営状況を確認しておきましょう。";
-  return "社長、そろそろ休んだ方が……。でも、少しだけなら私もお付き合いします。";
+function normalizeHomeAkariTalkItem(item) {
+  if (typeof item === "string") return createAkariTalk(item, "normal");
+  if (!item || typeof item !== "object") return createAkariTalk(getHomeTimeGreeting(), "normal");
+  return createAkariTalk(item.text ?? getHomeTimeGreeting(), item.portrait ?? "normal", {
+    category: item.category ?? "chat",
+    maturity: item.maturity ?? "all",
+    pages: item.pages,
+    title: item.title,
+  });
+}
+
+function getHomeTimeTone() {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 10) return "morning";
+  if (hour >= 10 && hour < 17) return "day";
+  if (hour >= 17 && hour < 22) return "evening";
+  return "night";
+}
+
+function getHomeWeatherTone() {
+  const now = new Date();
+  const dateSeed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+  return dateSeed % 20 < 3 ? "rain" : "clear";
+}
+
+function getHomeTimeGreeting() {
+  const tone = getHomeTimeTone();
+  const weather = getHomeWeatherTone();
+
+  if (tone === "night") return "遅くまでお疲れ様です、社長。無理しすぎないでくださいね。";
+  if (weather === "rain") return "雨ですね、社長。今日は内勤を進めるのも良さそうです。";
+  if (tone === "morning") return "ふわぁ……おはようございます、社長。今日もよろしくお願いします。";
+  if (tone === "day") return "今日も頑張りましょう、社長。物件も社員も少しずつ育てていきましょう！";
+  if (tone === "evening") return "今日もあと少しですね、社長。経営状況を整理しておきましょう。";
+  return "今日もよろしくお願いします、社長。";
 }
 
 function getAkariStoryPhase() {
@@ -21924,15 +22156,729 @@ function getAkariStoryPhase() {
   return "rookie";
 }
 
+function getAkariMaturityStage() {
+  const rank = titleAccountData.playerRank ?? 1;
+  if (rank <= 10) return "rookie";
+  if (rank <= 20) return "familiar";
+  return "leader";
+}
+
 function getAkariPhaseGreeting() {
   const phase = getAkariStoryPhase();
-  const hour = new Date().getHours();
+  const tone = getHomeTimeTone();
   if (phase === "notJoined") return "まだ誰もいない小さな事務所です。まずはストーリーを始めて、会社の第一歩を踏み出しましょう。";
-  if (phase === "rookie") return hour < 12 ? "お、おはようございます、社長。今日も一つずつ覚えていきます！" : "社長、私もまだ勉強中ですが、今日もよろしくお願いします！";
+  if (phase === "rookie") return tone === "morning" ? "お、おはようございます、社長。今日も一つずつ覚えていきます！" : "社長、私もまだ勉強中ですが、今日もよろしくお願いします！";
   if (phase === "gifu") return "社長、岐阜での仕事にも少しずつ慣れてきました。街が変わっていくのを見ると嬉しいですね。";
   if (phase === "nagoya") return "社長、名古屋は岐阜より競争が激しそうです。慎重に、でも前向きに進めましょう。";
   return "社長、今日もお疲れ様です。仕事の話も、少しだけ雑談も、いつでも聞きますよ。";
 }
+
+function getHomeTalkModeLabel(mode = homeAkariTalkMode) {
+  if (mode === "chat") return "会話";
+  if (mode === "knowledge") return "知識";
+  return "一般";
+}
+
+function getNextHomeAkariTalkMode(mode = homeAkariTalkMode) {
+  if (mode === "chat") return "general";
+  if (mode === "general") return "knowledge";
+  return "chat";
+}
+
+function changeHomeAkariTalkMode(event) {
+  event.stopPropagation();
+  const nextMode = getNextHomeAkariTalkMode();
+  setHomeAkariTalkMode(nextMode);
+  setTitleHomeAkariTalkIndex(0);
+  setTitleHomeAkariPageIndex(0);
+  setTitleHomeAkariExpression(null);
+  setTitleHomeAkariRecentTalkIndexes([]);
+}
+
+function getHomeTimeAkariTalkMessages() {
+  const tone = getHomeTimeTone();
+  const weather = getHomeWeatherTone();
+
+  if (weather === "rain" && tone !== "night") {
+    return [
+      createAkariTalk("雨ですね……今日は内見のお客様が少ないかもしれません。", "trouble", { category: "chat" }),
+      createAkariTalk("雨の日は、物件の雨漏りや排水の確認に向いています。普段見えない弱点が出やすいんです。", "think", { category: "knowledge" }),
+      createAkariTalk("こういう日は、社員配置や資金計画を見直す内勤日和かもしれませんね。", "normal_1", { category: "game" }),
+      createAkariTalk("雨音を聞いていると、少し落ち着きますね。温かいお茶でも入れましょうか。", "smile", { category: "chat" }),
+    ];
+  }
+
+  if (tone === "morning") {
+    return [
+      createAkariTalk("ふわぁ……おはようございます、社長……。今日もよろしくお願いします。", "sleepy", { category: "chat", maturity: "rookie" }),
+      createAkariTalk("おはようございます、社長。朝のうちに今日の方針を決めておきましょう。", "smile", { category: "chat" }),
+      createAkariTalk("朝は判断力が残っている時間です。大きな投資判断は、疲れる前に整理したいですね。", "think", { category: "knowledge" }),
+      createAkariTalk("今日はどんな物件に出会えるでしょうか。少し楽しみです。", "normal_1", { category: "chat" }),
+      createAkariTalk("資金、社員、物件状態。朝の確認項目はこの3つで十分です。", "serious", { category: "game" }),
+    ];
+  }
+
+  if (tone === "day") {
+    return [
+      createAkariTalk("お昼ですね、社長。午後も頑張りましょう！", "happy", { category: "chat" }),
+      createAkariTalk("物件確認には良い時間帯ですね。気になる土地があれば見てみましょう。", "normal_1", { category: "game" }),
+      createAkariTalk("日中の内見では、日当たりや騒音を確認しやすいですよ。", "think", { category: "knowledge" }),
+      createAkariTalk("社員さんたちの能力も見ながら、役割を整えていきましょう。", "think", { category: "game" }),
+      createAkariTalk("午後は少し眠くなりますね……でも社長が頑張るなら、私も頑張ります。", "sleepy_1", { category: "chat" }),
+    ];
+  }
+
+  if (tone === "evening") {
+    return [
+      createAkariTalk("今日の成果を整理しておきましょうか。入居や収支も確認しておきたいです。", "think", { category: "game" }),
+      createAkariTalk("夕方になると、少しだけ街の雰囲気が落ち着きますね。", "normal_2", { category: "chat" }),
+      createAkariTalk("夕方の物件確認では、帰宅時間帯の交通量や周辺の雰囲気も見えてきます。", "serious", { category: "knowledge" }),
+      createAkariTalk("今日もあと少しです、社長。無理のない範囲で進めましょう。", "happy_1", { category: "chat" }),
+    ];
+  }
+
+  return [
+    createAkariTalk("遅くまでお疲れ様です、社長。そろそろ休憩もしてくださいね。", "serious", { category: "chat" }),
+    createAkariTalk("夜の事務所って、少し静かすぎますね……。でも社長がいると安心します。", "shy", { category: "chat" }),
+    createAkariTalk("夜は数字を見直すのに向いています。収支、借入、固定費を確認しておきましょう。", "think", { category: "game" }),
+    createAkariTalk("不動産投資では、物件価格より毎月のキャッシュフローが大事になる場面もあります。", "serious_1", { category: "knowledge" }),
+    createAkariTalk("今日はここまでにしても大丈夫ですよ。続きは明日、一緒に頑張りましょう。", "sleepy_1", { category: "chat" }),
+  ];
+}
+
+function getHomeRankAkariTalkMessages() {
+  const rank = titleAccountData.playerRank ?? 1;
+  if (rank >= 50) {
+    return [
+      createAkariTalk("社長、ここまで会社を育てるなんて本当にすごいです！ 私も胸を張れます。", "laugh", { category: "chat", maturity: "leader" }),
+      createAkariTalk("もう立派な大企業ですね。最初の小さな事務所が懐かしいです。", "proud_1", { category: "chat", maturity: "leader" }),
+      createAkariTalk("規模が大きくなるほど、空室率と固定費の管理が重要になります。ここからは守りも大切です。", "serious_1", { category: "knowledge", maturity: "leader" }),
+    ];
+  }
+  if (rank >= 30) {
+    return [
+      createAkariTalk("ランク30ですか……社長、最初の頃とは全然違いますね。", "proud", { category: "chat", maturity: "leader" }),
+      createAkariTalk("私も、社長の隣に立つ社員としてもっと成長したいです。", "serious_1", { category: "chat", maturity: "leader" }),
+      createAkariTalk("支店が増えたら、拠点ごとに得意な社員を置くと効率が上がりますよ。", "think", { category: "game" }),
+    ];
+  }
+  if (rank >= 20) {
+    return [
+      createAkariTalk("社長も、もう立派な経営者ですね。私も負けていられません。", "proud", { category: "chat", maturity: "leader" }),
+      createAkariTalk("ランク20到達ですね。会社の土台がしっかりしてきた気がします。", "happy_2", { category: "chat" }),
+      createAkariTalk("融資は会社を伸ばす力ですが、返済予定まで含めて判断しましょう。", "serious", { category: "knowledge" }),
+    ];
+  }
+  if (rank >= 10) {
+    return [
+      createAkariTalk("ランク10おめでとうございます、社長！ 会社らしくなってきましたね。", "happy_3", { category: "chat", maturity: "familiar" }),
+      createAkariTalk("少しずつですが、社長の判断にも私、ついていけるようになってきました。", "normal_2", { category: "chat", maturity: "familiar" }),
+      createAkariTalk("購入、修繕、賃貸。まずはこの流れを安定させるのが経営の基本です。", "serious", { category: "game" }),
+    ];
+  }
+  return [
+    createAkariTalk("まだまだ勉強中ですけど、社長と一緒なら頑張れそうです。", "trouble", { category: "chat", maturity: "rookie" }),
+    createAkariTalk("まずは基礎を固めましょう。小さな成功を積み重ねるのが大事です。", "serious", { category: "game", maturity: "rookie" }),
+    createAkariTalk("宅建では、権利関係より宅建業法の方が得点源になりやすいと言われます。", "think", { category: "knowledge", maturity: "rookie" }),
+  ];
+}
+
+function getHomeConditionAkariTalkMessages() {
+  const ticketTotal = (titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0);
+  const vaultCount = titleAccountEmployeeVault.length;
+  const rank = titleAccountData.playerRank ?? 1;
+  const messages = [];
+
+  if (ticketTotal > 0) messages.push(createAkariTalk("採用チケットがありますね。新しい仲間が増えたら、もっと動きやすくなります。", "happy_1", { category: "game" }));
+  if (vaultCount >= 10) messages.push(createAkariTalk(`社員名簿には${vaultCount}名います。会社の層が厚くなってきましたね。`, "proud", { category: "game" }));
+  if (vaultCount >= 30) messages.push(createAkariTalk("社員さんがかなり増えてきました。配属と役割整理が大事になりそうです。", "think", { category: "game" }));
+  if (rank >= 15) messages.push(createAkariTalk("最近は、私も少し自信がついてきました。社長のおかげです。", "normal_3", { category: "chat", maturity: "familiar" }));
+
+  return messages;
+}
+
+function getHomeMaturityAkariTalkMessages() {
+  const stage = getAkariMaturityStage();
+  if (stage === "rookie") {
+    return [
+      createAkariTalk("えっと……この資料は、こちらで合ってますか？ まだ少し緊張します。", "trouble", { category: "chat", maturity: "rookie" }),
+      createAkariTalk("社長の判断を近くで見て、少しずつ覚えていきたいです。", "normal", { category: "chat", maturity: "rookie" }),
+      createAkariTalk("空き家を直して貸すだけじゃなくて、街を少しずつ明るくする仕事なんですね。", "think", { category: "chat", maturity: "rookie" }),
+      createAkariTalk("最初は小さな物件からで大丈夫です。無理のない投資が一番です。", "serious", { category: "game", maturity: "rookie" }),
+    ];
+  }
+  if (stage === "familiar") {
+    return [
+      createAkariTalk("最近、社長の考えていることが少し分かるようになってきました。", "smile", { category: "chat", maturity: "familiar" }),
+      createAkariTalk("最初の頃より、物件を見るのが楽しくなってきたんです。", "happy_1", { category: "chat", maturity: "familiar" }),
+      createAkariTalk("社長、次の投資は立地と修繕費をセットで見ましょう。私も確認します。", "think", { category: "game", maturity: "familiar" }),
+      createAkariTalk("賃貸経営では、満室にすることだけでなく、長く住んでもらうことも大切です。", "serious_1", { category: "knowledge", maturity: "familiar" }),
+    ];
+  }
+  return [
+    createAkariTalk("社長、今日は私から提案してもいいですか？ 次は支店の戦力整理をしたいです。", "proud", { category: "chat", maturity: "leader" }),
+    createAkariTalk("ここまで来たら、攻める地域と守る地域を分けて考えましょう。", "serious_1", { category: "game", maturity: "leader" }),
+    createAkariTalk("不動産経営は、買う力より持ち続ける力が問われる段階があります。", "think", { category: "knowledge", maturity: "leader" }),
+    createAkariTalk("社長、無理な拡大は止めますからね。私はもう新人ではありませんので。", "angry_1", { category: "chat", maturity: "leader" }),
+  ];
+}
+
+function getHomeGameAkariTalkMessages() {
+  return [
+    createAkariTalk("駅の周囲は商業地域になりやすいです。店舗系の建物と相性が良いですよ。", "think", { category: "game" }),
+    createAkariTalk("学校周辺は住宅需要を見込みやすいです。戸建やアパートを考えたいですね。", "normal_1", { category: "game" }),
+    createAkariTalk("工場周辺は工業地域です。倉庫や工場系の開発を意識しましょう。", "serious", { category: "game" }),
+    createAkariTalk("建物状態が悪いと退去や空室につながりやすいです。修繕も大事な投資です。", "trouble", { category: "game" }),
+    createAkariTalk("支店に社員を配属しないと、その支店エリアでは行動できません。配置確認を忘れないでくださいね。", "serious_1", { category: "game" }),
+    createAkariTalk("広いマップでは、本社だけでなく支店を増やすと動きやすくなります。", "happy_2", { category: "game" }),
+    createAkariTalk("社員の建築能力が高いと、工事の進行が安定しやすくなります。", "think", { category: "game" }),
+    createAkariTalk("営業が得意な社員は、購入や入居付けで頼りになりますね。", "smile", { category: "game" }),
+    createAkariTalk("管理が得意な社員は、物件を長く保つ会社の支えになります。", "normal_2", { category: "game" }),
+    createAkariTalk("行動範囲が重なる場所なら、本社社員と支店社員のどちらも候補になります。", "serious", { category: "game" }),
+  ];
+}
+
+function getHomeKnowledgeAkariTalkMessages() {
+  return [
+    createAkariTalk("【宅建】用途地域は、どんな建物を建てられるかに関わる重要分野です。\n住宅系、商業系、工業系に大きく分けて覚えると整理しやすいですよ。", "think", { category: "knowledge", title: "用途地域", pages: [
+      "【宅建】用途地域は、建てられる建物の種類を制限するルールです。\nまずは住宅系、商業系、工業系に分けて覚えましょう。",
+      "住居専用地域では、住環境を守るために大きな店舗や工場が制限されます。\n逆に商業地域では、店舗や事務所が建てやすくなります。",
+      "箱庭不動産でも、駅・学校・工場の周辺で用途地域が変わります。\n現実の考え方をゲームにも少し反映しています。"
+    ] }),
+    createAkariTalk("【宅建】重要事項説明は、宅建士が行う大切な業務です。\n契約前に、物件や取引条件を説明する役割があります。", "serious", { category: "knowledge", pages: [
+      "【宅建】重要事項説明は、契約前に買主や借主へ重要な内容を説明する制度です。",
+      "説明する人は宅建士である必要があります。\n宅建士証の提示も重要なポイントです。",
+      "試験では、誰が説明できるか、いつ説明するかが問われやすいですよ。"
+    ] }),
+    createAkariTalk("【税金】固定資産税は毎年1月1日時点の所有者に課税されます。", "think", { category: "knowledge", pages: [
+      "【税金】固定資産税は、毎年1月1日時点の所有者に課税されます。",
+      "年の途中で売買しても、納税義務者は1月1日の所有者です。\n実務では引渡日を基準に日割精算することが多いです。",
+      "箱庭不動産では、毎年6月に固定資産税が発生します。\n資金繰りに注意してくださいね。"
+    ] }),
+    createAkariTalk("【賃貸管理】原状回復は、借主が何でも新品に戻すという意味ではありません。", "serious_1", { category: "knowledge", pages: [
+      "【賃貸管理】原状回復は、借主が部屋を新品に戻すことではありません。",
+      "通常使用や経年劣化による損耗は、貸主負担とされることがあります。",
+      "契約内容、入居年数、損耗の原因を分けて考えることが大切です。"
+    ] }),
+    createAkariTalk("【投資】表面利回りだけで判断すると、修繕費や空室で想定が崩れることがあります。", "trouble", { category: "knowledge", pages: [
+      "【投資】表面利回りは、年間家賃収入を物件価格で割った数字です。",
+      "ただし、修繕費、税金、保険、空室期間は含まれていません。\n実際の収益はもっと低くなることがあります。",
+      "中古戸建では、購入価格より修繕費の見積もりが重要になる場面も多いです。"
+    ] }),
+    createAkariTalk("【建築】コーキングは外壁の継ぎ目を守る大切な部分です。", "normal_2", { category: "knowledge", pages: [
+      "【建築】コーキングは、外壁材の継ぎ目や窓まわりを防水する材料です。",
+      "一般的には10〜15年程度で劣化が進み、ひび割れや剥離が出ることがあります。",
+      "劣化を放置すると雨水が入り、外壁内部の傷みにつながることもあります。"
+    ] }),
+    createAkariTalk("【建築】外壁塗装は見た目だけでなく、建物を守る役割があります。", "serious", { category: "knowledge", pages: [
+      "【建築】外壁塗装は、建物の見た目を整えるだけではありません。",
+      "雨や紫外線から外壁材を守る、保護膜の役割もあります。",
+      "塗装の劣化が進むと、防水性が落ちて建物寿命に影響することがあります。"
+    ] }),
+    createAkariTalk("【融資】借入は悪いものではありません。返済できる計画があるかが大切です。", "think", { category: "knowledge", pages: [
+      "【融資】借入は、会社を成長させるための資金調達手段です。",
+      "大切なのは、借りられる金額ではなく返済できる金額を考えることです。",
+      "空室や修繕が重なっても返済できる余裕を残しておきたいですね。"
+    ] }),
+    createAkariTalk("【登記】土地と建物は、別々の不動産として登記されます。", "normal_1", { category: "knowledge", pages: [
+      "【登記】土地と建物は、法律上は別々の不動産として扱われます。",
+      "そのため、土地の登記簿と建物の登記簿は別に存在します。",
+      "中古物件では、未登記建物や増築部分がないか確認することもあります。"
+    ] }),
+    createAkariTalk("【空室対策】家賃を下げる前に、写真や募集条件を見直す方法もあります。", "happy_1", { category: "knowledge", pages: [
+      "【空室対策】空室が続くと、すぐ家賃を下げたくなりますよね。",
+      "でもその前に、写真、清掃、設備、募集条件を見直す方法もあります。",
+      "家賃を下げると長期収益に影響します。\nまず改善できる部分を探しましょう。"
+    ] }),
+    createAkariTalk("【出口戦略】不動産投資では、買う時から売る時のことも考えておくと安心です。", "think", { category: "knowledge", pages: [
+      "【出口戦略】不動産投資では、購入時から売却時を考えておくことが大切です。",
+      "将来売りやすい立地か、修繕履歴を残せるか、需要が続くかを見ます。",
+      "持ち続けるだけでなく、売る選択肢も経営判断の一つです。"
+    ] }),
+    createAkariTalk("【宅建】宅建業法は得点源になりやすい分野です。毎年しっかり対策したいですね。", "happy_2", { category: "knowledge" }),
+    createAkariTalk("【民法】契約不適合責任は、売買後のトラブルで重要になります。", "serious_1", { category: "knowledge" }),
+    createAkariTalk("【法令】建ぺい率は敷地に対して建築面積が占められる割合です。", "think", { category: "knowledge" }),
+    createAkariTalk("【法令】容積率は敷地面積に対する延べ床面積の割合です。", "think", { category: "knowledge" }),
+    createAkariTalk("【賃貸】敷金は、家賃滞納や原状回復費に備えて預かるお金です。", "normal_2", { category: "knowledge" }),
+    createAkariTalk("【管理】入居者対応はスピードも大切です。小さな不満が退去につながることがあります。", "serious", { category: "knowledge" }),
+    createAkariTalk("【投資】空室率を甘く見ると、想定利回りより大きく下がることがあります。", "trouble", { category: "knowledge" }),
+    createAkariTalk("【建築】屋根の割れやズレは、雨漏りの前兆になることがあります。", "serious_1", { category: "knowledge" }),
+    createAkariTalk("【実務】物件写真は明るさと広さの伝わり方で反響が変わることがあります。", "happy_1", { category: "knowledge" }),
+  ];
+}
+
+
+function getHomeExtraChatAkariTalkMessages() {
+  return [
+    createAkariTalk("社長、今日の予定を一緒に整理しましょう。\nまずは資金と空室の確認ですね。", "smile", { category: "chat" }),
+    createAkariTalk("この事務所、少し古いですけど……私はけっこう好きです。\n社長と始めた場所ですから。", "shy", { category: "chat", maturity: "familiar" }),
+    createAkariTalk("資料の山を見ると、最初は圧倒されました。\nでも今は少しだけ、頼もしく見えます。", "normal_2", { category: "chat", maturity: "familiar" }),
+    createAkariTalk("社長、たまには深呼吸しましょう。\n判断が続くと、頭も疲れますから。", "smile", { category: "chat" }),
+    createAkariTalk("不動産って、数字だけじゃなくて人の暮らしも見える仕事なんですね。", "think", { category: "chat" }),
+    createAkariTalk("朝の事務所は静かですね。\n今日も少しずつ、会社を前に進めましょう。", "normal_1", { category: "chat" }),
+    createAkariTalk("夕方になると、今日一日の成果が気になりますね。\nログも確認しておきましょうか。", "think", { category: "chat" }),
+    createAkariTalk("夜の事務所は少し眠くなります……。\nでも社長が頑張るなら、私ももう少しだけ。", "sleepy_1", { category: "chat" }),
+    createAkariTalk("新しい社員さんが増えると、事務所が少し賑やかになりますね。", "happy_1", { category: "chat" }),
+    createAkariTalk("社長、今日はどんな街にしていきましょうか。\n考えるだけで少し楽しいです。", "happy_2", { category: "chat" }),
+    createAkariTalk("最初は緊張してばかりでしたけど……今はこの仕事が好きになってきました。", "shy", { category: "chat", maturity: "familiar" }),
+    createAkariTalk("社長の判断、最近は少し先まで読めるようになってきました。\n……たぶん、ですけど。", "proud", { category: "chat", maturity: "leader" }),
+    createAkariTalk("今日は少し疲れていませんか？\n無理に進めるより、整理だけの日があってもいいと思います。", "trouble", { category: "chat" }),
+    createAkariTalk("この街に明かりが増えていくと、私まで嬉しくなります。", "happy_3", { category: "chat" }),
+    createAkariTalk("社長、物件資料って見慣れると面白いですね。\n同じ家でも、数字で見ると性格が違います。", "think", { category: "chat", maturity: "familiar" }),
+    createAkariTalk("今日は堅実にいきますか？\nそれとも少し攻めてみますか？", "normal_3", { category: "chat", maturity: "leader" }),
+    createAkariTalk("社長、ちゃんと休むのも経営判断です。\n体調を崩したら、会社も止まってしまいますから。", "angry_1", { category: "chat" }),
+    createAkariTalk("ふふっ、今日も社長室は通常運転ですね。\n書類は多いですけど、悪くないです。", "laugh", { category: "chat" }),
+    createAkariTalk("私も、いつか社長に安心して任せてもらえる社員になりたいです。", "serious", { category: "chat", maturity: "rookie" }),
+    createAkariTalk("もう、社長。\n見ているだけじゃなくて、ちゃんと指示してくださいね？", "shy_1", { category: "chat", maturity: "familiar" }),
+    createAkariTalk("会社が大きくなっても、最初の気持ちは忘れたくないですね。", "normal_2", { category: "chat", maturity: "leader" }),
+    createAkariTalk("今日は私、少し調子がいいかもしれません。\n資料整理なら任せてください！", "proud", { category: "chat" }),
+    createAkariTalk("雨の日の事務所って、集中しやすい気がします。\n外回りは大変ですけどね。", "normal_1", { category: "chat" }),
+    createAkariTalk("社長と一緒に仕事していると、毎日少しずつ発見があります。", "smile", { category: "chat" }),
+    createAkariTalk("あの……今日もよろしくお願いします。\n頼りないところもありますけど、頑張ります。", "shy", { category: "chat", maturity: "rookie" }),
+  ];
+}
+
+function getHomeExtraGameAkariTalkMessages() {
+  return [
+    createAkariTalk("空室が多い時は、家賃だけでなく建物状態も確認しましょう。\n状態が悪いと入居が決まりにくいです。", "serious", { category: "game" }),
+    createAkariTalk("支店を作ったら、社員配置も忘れないでください。\n社員がいない支店では行動できません。", "serious_1", { category: "game" }),
+    createAkariTalk("本社と支店の範囲が重なる場所なら、どちらの社員でも動けます。\n担当を選びやすいですね。", "think", { category: "game" }),
+    createAkariTalk("修繕は費用がかかりますが、長く稼ぐための投資でもあります。", "normal_2", { category: "game" }),
+    createAkariTalk("人口が増えると需要も伸びやすくなります。\n街づくりも経営の一部ですね。", "happy", { category: "game" }),
+    createAkariTalk("駅の周辺は商業向きです。\n店舗系の建物を考える時は候補になります。", "think", { category: "game" }),
+    createAkariTalk("学校周辺は住宅需要を意識したい場所です。\nファミリー向け物件と相性が良さそうです。", "smile", { category: "game" }),
+    createAkariTalk("工場周辺は工業系の用途になります。\n住宅を建てる場所とは分けて考えましょう。", "serious", { category: "game" }),
+    createAkariTalk("社員の能力は、参加する行動によって活き方が変わります。\n営業・建築・管理を見て選びましょう。", "think", { category: "game" }),
+    createAkariTalk("行動する前に、誰を担当にするか確認しましょう。\n経験値も参加者に入ります。", "normal_1", { category: "game" }),
+    createAkariTalk("融資で資金を増やせば展開は早くなります。\nでも返済額も忘れないでくださいね。", "trouble", { category: "game" }),
+    createAkariTalk("土地だけを先に買いすぎると、資金が寝てしまいます。\n建設予定もセットで考えたいです。", "serious", { category: "game" }),
+    createAkariTalk("古い建物は安く買えることがあります。\nただし修繕費まで含めて判断しましょう。", "think", { category: "game" }),
+    createAkariTalk("月送り前には、工事中・融資中・空室を確認しておくと安心です。", "normal_2", { category: "game" }),
+    createAkariTalk("社員が待機中なら給与は発生しません。\nただし行動には参加できないので注意です。", "serious_1", { category: "game" }),
+    createAkariTalk("配属上限は各拠点5人です。\n本社と支店で役割を分けると運営しやすくなります。", "think", { category: "game" }),
+    createAkariTalk("社員名簿で能力を見比べると、誰を育てるか決めやすいですよ。", "happy_1", { category: "game" }),
+    createAkariTalk("広いマップほど、支店の位置が重要になります。\n先に道路や駅との距離も見ておきましょう。", "serious", { category: "game" }),
+    createAkariTalk("資金に余裕がある時ほど、無駄遣いに注意です。\n大きい投資ほど失敗も大きくなります。", "serious_1", { category: "game" }),
+    createAkariTalk("修繕済みの物件は安定収入につながります。\n短期より長期で見たいですね。", "smile", { category: "game" }),
+    createAkariTalk("ライバル企業が近い時は、先に重要な土地を押さえる判断もあります。", "think", { category: "game" }),
+    createAkariTalk("固定資産税の月は資金が減ります。\n6月前には現金を残しておきましょう。", "trouble", { category: "game" }),
+    createAkariTalk("家賃収入が増えると安心しますね。\nでも管理費や修繕積立も忘れないようにしましょう。", "normal_1", { category: "game" }),
+    createAkariTalk("小さなマップでは、無理に拡大するより効率重視が良さそうです。", "think", { category: "game" }),
+    createAkariTalk("大きなマップでは、序盤に動きすぎると資金が薄くなります。\n段階的に広げましょう。", "serious", { category: "game" }),
+  ];
+}
+
+function getHomeExtraKnowledgeAkariTalkMessages() {
+  return [
+    createAkariTalk("【宅建】媒介契約には種類があります。\n一般・専任・専属専任の違いを整理しましょう。", "think", { category: "knowledge", pages: [
+      "【宅建】媒介契約は、不動産会社に売買や賃貸の仲介を依頼する契約です。",
+      "一般媒介は複数業者に依頼できます。\n専任媒介と専属専任媒介は、依頼できる業者が原則1社になります。",
+      "試験では、報告義務やレインズ登録期限の違いがよく問われます。"
+    ] }),
+    createAkariTalk("【宅建】35条書面は重要事項説明書、37条書面は契約書面と覚えると整理しやすいです。", "serious", { category: "knowledge", pages: [
+      "【宅建】35条書面は、契約前に重要事項を説明するための書面です。",
+      "37条書面は、契約成立後に交付する契約内容を示す書面です。",
+      "誰が記名するか、いつ交付するかが試験で狙われやすいですよ。"
+    ] }),
+    createAkariTalk("【宅建】クーリング・オフは、宅建業者が売主の場合に重要です。", "think", { category: "knowledge", pages: [
+      "【宅建】クーリング・オフは、一定条件で契約を解除できる制度です。",
+      "宅建業者が売主で、事務所等以外の場所で買受申込みをした場合などがポイントです。",
+      "買主を保護する制度なので、条件と期間をセットで覚えましょう。"
+    ] }),
+    createAkariTalk("【宅建】手付金は、契約解除や保全措置と一緒に出題されやすいです。", "serious_1", { category: "knowledge", pages: [
+      "【宅建】手付には、証約手付・解約手付・違約手付などの考え方があります。",
+      "宅建業者が売主の場合、手付金の額や保全措置に制限があります。",
+      "数字だけでなく、誰が売主かを必ず確認しましょう。"
+    ] }),
+    createAkariTalk("【法令】市街化区域は、すでに市街地か、優先的に市街化を進める区域です。", "think", { category: "knowledge", pages: [
+      "【法令】都市計画区域では、市街化区域と市街化調整区域に分けられることがあります。",
+      "市街化区域は市街化を進める区域です。\n用途地域も原則として定められます。",
+      "市街化調整区域は市街化を抑制する区域なので、建築制限が強くなります。"
+    ] }),
+    createAkariTalk("【法令】接道義務は建築基準法の重要ポイントです。", "serious", { category: "knowledge", pages: [
+      "【法令】建物を建てる敷地は、原則として道路に2m以上接している必要があります。",
+      "これを接道義務といいます。\n災害時の避難や消防活動のために重要です。",
+      "中古戸建を買う時も、再建築できるか確認したいですね。"
+    ] }),
+    createAkariTalk("【民法】抵当権は、借入の担保としてよく使われます。", "normal_2", { category: "knowledge", pages: [
+      "【民法】抵当権は、債務者が返済できない場合に不動産から優先的に弁済を受ける権利です。",
+      "住宅ローンや事業性融資でも、不動産に抵当権が設定されることがあります。",
+      "登記簿を見ると、抵当権の有無や債権額を確認できます。"
+    ] }),
+    createAkariTalk("【民法】賃貸借では、貸主と借主の義務を分けて考えると整理しやすいです。", "think", { category: "knowledge", pages: [
+      "【民法】貸主は、借主が使用収益できる状態を保つ義務があります。",
+      "借主は、賃料を支払い、善管注意義務をもって使用する必要があります。",
+      "修繕や原状回復の問題は、この義務の考え方とつながります。"
+    ] }),
+    createAkariTalk("【賃貸管理】善管注意義務は、借主が通常より注意して使う義務です。", "serious_1", { category: "knowledge", pages: [
+      "【賃貸管理】善管注意義務とは、善良な管理者として通常求められる注意義務です。",
+      "借主が不注意で壊した場合、原状回復費を負担することがあります。",
+      "通常損耗や経年劣化とは分けて考えるのが大切です。"
+    ] }),
+    createAkariTalk("【賃貸管理】敷金は預かり金です。\n貸主の売上ではありません。", "normal_1", { category: "knowledge", pages: [
+      "【賃貸管理】敷金は、家賃滞納や原状回復費に備えて預かるお金です。",
+      "退去時に精算し、残額があれば借主へ返還します。",
+      "預かり金なので、資金繰りでは別管理する意識が大切です。"
+    ] }),
+    createAkariTalk("【税金】不動産取得税は、不動産を取得した時にかかる税金です。", "think", { category: "knowledge", pages: [
+      "【税金】不動産取得税は、土地や建物を取得した時に課税されます。",
+      "売買だけでなく、贈与や新築でも対象になることがあります。",
+      "登録免許税や固定資産税とは別の税金なので、購入時の諸費用に注意です。"
+    ] }),
+    createAkariTalk("【税金】登録免許税は、登記をする時にかかる税金です。", "normal_2", { category: "knowledge", pages: [
+      "【税金】登録免許税は、所有権移転登記や抵当権設定登記などでかかります。",
+      "不動産を買う時は、登記費用の中に含まれていることが多いです。",
+      "取得費だけでなく、登記や司法書士報酬も資金計画に入れたいですね。"
+    ] }),
+    createAkariTalk("【融資】元利均等返済と元金均等返済は、返済額の動きが違います。", "think", { category: "knowledge", pages: [
+      "【融資】元利均等返済は、毎月返済額が一定になりやすい方式です。",
+      "元金均等返済は、元金部分が一定で、最初の返済額が大きくなりやすいです。",
+      "不動産経営では、毎月のキャッシュフローに合う返済方式を考えたいですね。"
+    ] }),
+    createAkariTalk("【融資】金利が少し違うだけでも、長期では総返済額が大きく変わります。", "serious", { category: "knowledge", pages: [
+      "【融資】金利差は小さく見えても、返済期間が長いほど影響が大きくなります。",
+      "毎月返済額だけでなく、総返済額も確認しましょう。",
+      "借入額・金利・期間の3つをセットで見るのが基本です。"
+    ] }),
+    createAkariTalk("【投資】実質利回りは、経費を差し引いて考える利回りです。", "serious_1", { category: "knowledge", pages: [
+      "【投資】表面利回りは、年間家賃収入を物件価格で割ったものです。",
+      "実質利回りは、税金、保険、管理費、修繕費などを考慮します。",
+      "経営判断では、表面利回りより実質利回りの方が現実に近いです。"
+    ] }),
+    createAkariTalk("【投資】キャッシュフローは、手元に残るお金の流れです。", "normal_3", { category: "knowledge", pages: [
+      "【投資】キャッシュフローは、収入から支出を引いた手元資金の動きです。",
+      "家賃収入があっても、返済や修繕で手元に残らない場合があります。",
+      "黒字倒産を避けるためにも、現金の流れは大切です。"
+    ] }),
+    createAkariTalk("【投資】出口戦略は、売却・保有・建替えなど将来の選択肢です。", "think", { category: "knowledge", pages: [
+      "【投資】出口戦略とは、物件を最終的にどうするかという考え方です。",
+      "売却するのか、保有し続けるのか、建替えるのかで判断が変わります。",
+      "買う時点で出口を考えておくと、失敗しにくくなります。"
+    ] }),
+    createAkariTalk("【建築】屋根材は種類によって耐久性や修繕方法が違います。", "serious", { category: "knowledge", pages: [
+      "【建築】屋根材には、瓦、スレート、金属屋根などがあります。",
+      "それぞれ耐久性、重さ、修繕方法、費用が違います。",
+      "中古物件では、屋根の種類と劣化状況を確認したいですね。"
+    ] }),
+    createAkariTalk("【建築】雨漏りは、見えた時には内部で進行していることがあります。", "trouble", { category: "knowledge", pages: [
+      "【建築】雨漏りは、天井にシミが出た時点で内部に水が回っていることがあります。",
+      "原因は屋根、外壁、窓まわり、ベランダ防水など様々です。",
+      "早めの点検と原因特定が、修繕費を抑えるポイントです。"
+    ] }),
+    createAkariTalk("【建築】外壁のチョーキングは、塗膜劣化のサインです。", "think", { category: "knowledge", pages: [
+      "【建築】外壁を触った時に白い粉が付く現象をチョーキングといいます。",
+      "塗膜が紫外線や雨で劣化しているサインの一つです。",
+      "すぐ雨漏りするとは限りませんが、塗装時期の目安になります。"
+    ] }),
+    createAkariTalk("【建築】ベランダ防水は、雨漏り防止で重要な場所です。", "serious_1", { category: "knowledge", pages: [
+      "【建築】ベランダやバルコニーは、雨を直接受ける場所です。",
+      "防水層が劣化すると、下階への雨漏りにつながることがあります。",
+      "排水口の詰まりやひび割れも、定期的に確認したいですね。"
+    ] }),
+    createAkariTalk("【空室対策】募集写真は、明るさと清潔感が大切です。", "happy_1", { category: "knowledge", pages: [
+      "【空室対策】募集写真は、第一印象を左右します。",
+      "暗い写真や散らかった写真では、内見前に候補から外れることがあります。",
+      "晴れた日、片付いた状態、広く見える角度を意識したいですね。"
+    ] }),
+    createAkariTalk("【空室対策】設備追加は、家賃を下げる前の選択肢になります。", "think", { category: "knowledge", pages: [
+      "【空室対策】家賃を下げる前に、設備の改善を検討する方法があります。",
+      "エアコン、照明、温水洗浄便座、モニターホンなどは反響に影響しやすいです。",
+      "費用対効果を見ながら、長く使える改善を選びたいですね。"
+    ] }),
+    createAkariTalk("【地域】岐阜は名古屋方面への通勤圏として見られる地域もあります。", "normal_1", { category: "knowledge", pages: [
+      "【地域】岐阜市周辺は、名古屋方面へのアクセスを意識されることがあります。",
+      "駅近や幹線道路沿いでは、通勤・通学需要も考えられます。",
+      "箱庭不動産でも、駅や道路の近さは街の伸び方に関わります。"
+    ] }),
+    createAkariTalk("【地域】各務原市は航空宇宙関連のイメージが強い街です。", "happy_2", { category: "knowledge", pages: [
+      "【地域】各務原市は、航空自衛隊岐阜基地や航空宇宙関連で知られています。",
+      "工業・製造業の雇用は、賃貸需要にも関係することがあります。",
+      "地域の産業を知ると、物件の見方も少し変わりますね。"
+    ] }),
+    createAkariTalk("【管理】長く住んでもらうことは、空室対策と同じくらい大切です。", "smile", { category: "knowledge", pages: [
+      "【管理】入居者さんに長く住んでもらえると、募集費用や空室損を抑えられます。",
+      "設備不良への対応や、清潔な共用部は満足度に関わります。",
+      "退去を減らすことも、立派な経営改善です。"
+    ] }),
+    createAkariTalk("【実務】現地確認では、昼と夜で印象が変わることがあります。", "think", { category: "knowledge", pages: [
+      "【実務】物件周辺は、昼と夜で雰囲気が変わることがあります。",
+      "交通量、街灯、人通り、騒音などは時間帯で違います。",
+      "気になる物件ほど、複数の時間帯で見ると安心です。"
+    ] }),
+  ];
+}
+
+function filterHomeAkariTalksByMaturity(messages) {
+  const stage = getAkariMaturityStage();
+  return messages.filter((message) => {
+    const maturity = message.maturity ?? "all";
+    return maturity === "all" || maturity === stage;
+  });
+}
+
+
+function getHomeDeepKnowledgeAkariTalkMessages() {
+  return [
+    createAkariTalk("【宅建】代理と媒介は似ていますが、法律上の立場が違います。", "think", { category: "knowledge", pages: [
+      "【宅建】媒介は、契約の成立を手助けする立場です。\n売主と買主、貸主と借主の間をつなぎます。",
+      "代理は、本人に代わって契約行為をする立場です。\n権限の範囲内なら、代理人の行為が本人に効果を及ぼします。",
+      "宅建試験では、媒介契約や代理権の範囲を混同しないことが大切です。"
+    ] }),
+    createAkariTalk("【宅建】自ら貸主の場合、宅建業に当たらない点はよく狙われます。", "serious", { category: "knowledge", pages: [
+      "【宅建】自分の物件を自分で貸すだけなら、原則として宅建業には当たりません。",
+      "一方で、他人の物件を仲介して報酬を得る場合は宅建業に当たる可能性があります。",
+      "売買・交換・賃貸のどれを、自己物件か他人物件かで整理すると覚えやすいです。"
+    ] }),
+    createAkariTalk("【宅建】建ぺい率は敷地に対して建築面積がどれくらいかを見る数字です。", "think", { category: "knowledge", pages: [
+      "【宅建】建ぺい率は、敷地面積に対する建築面積の割合です。",
+      "例えば100㎡の土地で建ぺい率60％なら、建築面積は原則60㎡までです。",
+      "容積率とセットで出やすいので、建ぺい率＝建物の建つ面積、容積率＝延べ床面積と分けて覚えましょう。"
+    ] }),
+    createAkariTalk("【宅建】容積率は、敷地に対して延べ床面積をどこまで取れるかの数字です。", "serious_1", { category: "knowledge", pages: [
+      "【宅建】容積率は、敷地面積に対する延べ床面積の割合です。",
+      "100㎡の土地で容積率200％なら、延べ床面積は原則200㎡までです。",
+      "前面道路の幅員による制限もあるので、数字だけでなく道路条件にも注意しましょう。"
+    ] }),
+    createAkariTalk("【賃貸管理】空室対策は家賃を下げる前に、写真と募集条件を見直すのも大切です。", "normal_2", { category: "knowledge", pages: [
+      "【賃貸管理】空室が続くと、すぐ家賃を下げたくなります。",
+      "でもその前に、写真・間取り図・募集コメント・初期費用を見直すだけで反響が変わることもあります。",
+      "家賃を下げると長期収益に響くので、下げる前の工夫も大切ですね。"
+    ] }),
+    createAkariTalk("【賃貸管理】退去後の原状回復は、経年劣化と故意過失を分けて考えます。", "think", { category: "knowledge", pages: [
+      "【賃貸管理】原状回復では、通常損耗や経年劣化は貸主負担になりやすいです。",
+      "一方で、借主の故意・過失による破損や汚損は借主負担になることがあります。",
+      "実務では国土交通省のガイドラインを確認すると整理しやすいですよ。"
+    ] }),
+    createAkariTalk("【不動産投資】表面利回りだけで判断すると危険です。", "serious", { category: "knowledge", pages: [
+      "【不動産投資】表面利回りは、年間家賃収入を物件価格で割った数字です。",
+      "ただし修繕費、固定資産税、保険、空室、管理費は含まれていません。",
+      "本当に見るべきなのは、手元に残るキャッシュフローです。"
+    ] }),
+    createAkariTalk("【不動産投資】築古戸建は安く買えても、修繕費の読み違いが大きなリスクです。", "trouble", { category: "knowledge", pages: [
+      "【不動産投資】築古戸建は購入価格が安く、利回りが高く見えやすいです。",
+      "でも屋根、外壁、水回り、シロアリ、残置物などで費用が膨らむことがあります。",
+      "買値よりも、総投資額と貸せる家賃で判断するのが大切です。"
+    ] }),
+    createAkariTalk("【建築】コーキングは外壁材のすき間を守る大切な部材です。", "think", { category: "knowledge", pages: [
+      "【建築】コーキングは外壁の目地やサッシ周りに使われます。",
+      "劣化するとひび割れや剥離が起き、雨水が入りやすくなります。",
+      "一般的には10～15年程度で点検や打ち替えを考えたいですね。"
+    ] }),
+    createAkariTalk("【建築】屋根や外壁は見た目だけでなく、建物を雨から守る役割があります。", "serious_1", { category: "knowledge", pages: [
+      "【建築】外壁塗装は色をきれいにするだけではありません。",
+      "塗膜で外壁材を保護し、雨水や紫外線による劣化を遅らせる役割があります。",
+      "雨漏りが出てからでは内部被害が進んでいることもあるので、早めの点検が大切です。"
+    ] }),
+    createAkariTalk("【税金】不動産取得税は、不動産を取得した時にかかる税金です。", "normal_1", { category: "knowledge", pages: [
+      "【税金】不動産取得税は、土地や建物を取得した時に一度だけかかる地方税です。",
+      "固定資産税のように毎年かかる税金とは違います。",
+      "軽減措置が使える場合もあるので、取得時には確認しておきたいですね。"
+    ] }),
+    createAkariTalk("【融資】金利だけでなく、期間と返済額を見ることが大切です。", "serious", { category: "knowledge", pages: [
+      "【融資】金利が低くても、期間が短いと毎月返済額は重くなります。",
+      "逆に期間が長いと毎月返済は軽くなりますが、総返済額は増えやすいです。",
+      "不動産投資では、返済後に手元資金が残るかを必ず確認しましょう。"
+    ] }),
+    createAkariTalk("【箱庭攻略】広いマップでは、支店と社員配置が経営の鍵になります。", "happy_1", { category: "game", pages: [
+      "【箱庭攻略】本社だけでは活動範囲に限界があります。",
+      "支店を作ると、その周辺でも購入・建設・修繕ができるようになります。",
+      "ただし支店に社員を配属しないと動けないので、社員配置も忘れないでくださいね。"
+    ] }),
+    createAkariTalk("【箱庭攻略】駅・学校・工場の周辺は用途地域に影響します。", "think", { category: "game", pages: [
+      "【箱庭攻略】駅の周辺は商業系、学校の周辺は住宅系、工場の周辺は工業系になりやすいです。",
+      "用途地域によって建てやすい建物が変わります。",
+      "土地を買う前に、周辺施設も確認しておくと失敗しにくいですよ。"
+    ] }),
+    createAkariTalk("【岐阜豆知識】岐阜は名古屋通勤圏として見られる地域もあります。", "normal_3", { category: "knowledge", pages: [
+      "【岐阜豆知識】岐阜市や各務原市、大垣市などは名古屋方面とのつながりもあります。",
+      "不動産では、地元需要だけでなく通勤圏としての見方も大切です。",
+      "ゲームでも、都市間の発展差を考えながら進めると面白いですね。"
+    ] }),
+    createAkariTalk("【名古屋豆知識】名古屋は中部圏最大級の不動産市場です。", "serious_1", { category: "knowledge", pages: [
+      "【名古屋豆知識】名古屋は商業、オフィス、住宅、工業が集まる大きな市場です。",
+      "駅周辺の再開発や交通利便性は、不動産価値に大きく関わります。",
+      "箱庭不動産でも、岐阜から名古屋へ進むと市場規模の違いを感じられるはずです。"
+    ] }),
+  ];
+}
+
+
+function applyHomeAkariTalkMode(messages) {
+  const filtered = filterHomeAkariTalksByMaturity(messages);
+  const chat = filtered.filter((message) => (message.category ?? "chat") === "chat");
+  const game = filtered.filter((message) => message.category === "game");
+  const knowledge = filtered.filter((message) => message.category === "knowledge");
+
+  if (homeAkariTalkMode === "chat") return chat.length > 0 ? chat : filtered;
+  if (homeAkariTalkMode === "knowledge") return knowledge.length > 0 ? knowledge : filtered;
+
+  const general = [
+    ...chat,
+    ...chat,
+    ...chat,
+    ...game,
+    ...knowledge,
+  ];
+  return general.length > 0 ? general : filtered;
+}
+
+
+function getHomeLevelBandAkariTalkMessages() {
+  const rank = titleAccountData.playerRank ?? 1;
+
+  if (rank >= 100) {
+    return [
+      createAkariTalk("社長、ランク100です。\nもう私たち、立派な不動産会社ですね。", "proud_1", { category: "chat", maturity: "leader" }),
+      createAkariTalk("ここまで来ると、私も新人とは言っていられません。\n社長の相棒として、もっと支えます。", "happy_4", { category: "chat", maturity: "leader" }),
+      createAkariTalk("大規模経営では、攻めより守りが大事になる場面もあります。\n空室率と返済負担を定期確認しましょう。", "serious_1", { category: "game", maturity: "leader" }),
+      createAkariTalk("【経営】会社が大きくなるほど、単純な売上より利益率と資金繰りが大切になります。", "think", { category: "knowledge", maturity: "leader", pages: [
+        "【経営】売上が増えても、固定費や返済が重いと手元資金は残りません。",
+        "不動産経営では、家賃収入、返済、修繕、税金をまとめて見る必要があります。",
+        "規模が大きい会社ほど、キャッシュフロー管理が経営の生命線になります。"
+      ] }),
+    ];
+  }
+
+  if (rank >= 50) {
+    return [
+      createAkariTalk("ランク50到達ですね、社長。\n私も少しは先生らしくなってきたでしょうか？", "shy", { category: "chat", maturity: "leader" }),
+      createAkariTalk("今なら、宅建の話も少しできます。\n一緒に不動産の勉強も進めましょう。", "smile", { category: "knowledge", maturity: "leader" }),
+      createAkariTalk("この規模になると、修繕計画を先に組むのが大事ですね。\n壊れてから直すと高くつきます。", "serious", { category: "game", maturity: "leader" }),
+      createAkariTalk("社長、ここまで来たら支店ごとの役割分担も考えたいです。\n営業向き、建築向き、管理向きで分けましょう。", "think", { category: "game", maturity: "leader" }),
+    ];
+  }
+
+  if (rank >= 21) {
+    return [
+      createAkariTalk("社長、最近は私からも提案できることが増えてきました。\n少しは頼れるようになりましたか？", "happy_2", { category: "chat", maturity: "leader" }),
+      createAkariTalk("この土地、周辺施設との相性も見た方が良さそうです。\n用途地域と需要を一緒に確認しましょう。", "think", { category: "game", maturity: "leader" }),
+      createAkariTalk("借入を使うなら、返済後の手残りを見たいです。\n表面利回りだけでは判断できません。", "serious_1", { category: "knowledge", maturity: "leader" }),
+      createAkariTalk("社長、会社が伸びてきた今こそ、社員育成も大切ですね。\n強い人材は長く会社を支えてくれます。", "proud", { category: "game", maturity: "leader" }),
+    ];
+  }
+
+  if (rank >= 11) {
+    return [
+      createAkariTalk("社長、少しずつ仕事にも慣れてきました。\n物件資料を見るのも前ほど怖くありません！", "happy_1", { category: "chat", maturity: "familiar" }),
+      createAkariTalk("最近、家賃や修繕費の数字を見るのが少し楽しくなってきました。", "smile", { category: "chat", maturity: "familiar" }),
+      createAkariTalk("社員さんが増えると、できることも増えますね。\nでも給与も増えるので、収支も見ておきましょう。", "think", { category: "game", maturity: "familiar" }),
+      createAkariTalk("宅建の勉強では、まず宅建業法を得点源にすると良いそうです。\n私も少しずつ覚えています。", "normal_2", { category: "knowledge", maturity: "familiar" }),
+    ];
+  }
+
+  return [
+    createAkariTalk("社長、私まだ新人ですけど……一生懸命ついていきます。", "trouble", { category: "chat", maturity: "rookie" }),
+    createAkariTalk("不動産って、覚えることが本当に多いですね。\nでも少しずつ頑張ります。", "think", { category: "chat", maturity: "rookie" }),
+    createAkariTalk("まずは買って、直して、貸す。\nこの基本の流れを覚えたいです。", "serious", { category: "game", maturity: "rookie" }),
+    createAkariTalk("宅建って難しそうです……。\nでも社長と一緒なら、少しずつ勉強できそうです。", "trouble", { category: "knowledge", maturity: "rookie" }),
+  ];
+}
+
+function getHomeMilestoneAkariTalkMessages() {
+  const vaultCount = Array.isArray(titleAccountEmployeeVault) ? titleAccountEmployeeVault.length : 0;
+  const rank = titleAccountData.playerRank ?? 1;
+  const ticketTotal = (titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0);
+  const branchCount = Array.isArray(tiles)
+    ? new Set(tiles.filter((tile) => typeof tile.officeId === "string" && tile.officeId.startsWith("branch")).map((tile) => tile.officeId)).size
+    : 0;
+  const playerOwnedCount = Array.isArray(tiles)
+    ? tiles.filter((tile) => tile.owner === OWNER.PLAYER && tile.building).length
+    : 0;
+  const saleCandidateCount = Array.isArray(tiles)
+    ? tiles.filter((tile) => tile.owner === OWNER.SALE).length
+    : 0;
+
+  const messages = [];
+
+  if (rank >= 10) messages.push(createAkariTalk("ランク10を超えると、会社としての形が見えてきますね。\nここからは投資判断も少しずつ大きくなります。", "happy_3", { category: "chat" }));
+  if (rank >= 30) messages.push(createAkariTalk("社長、ランク30です。\n最初の頃の小さな事務所から、ずいぶん遠くまで来ましたね。", "proud", { category: "chat" }));
+  if (rank >= 50) messages.push(createAkariTalk("ランク50の会社なら、もう地域でも存在感があります。\n次は安定経営を意識したいですね。", "serious_1", { category: "game" }));
+  if (vaultCount >= 10) messages.push(createAkariTalk("社員が10人を超えました。\n会社にいろんな個性が集まってきましたね！", "happy_2", { category: "chat" }));
+  if (vaultCount >= 30) messages.push(createAkariTalk("社員30人規模です。\n採用だけでなく、誰をどこで活かすかが大切になります。", "think", { category: "game" }));
+  if (vaultCount >= 50) messages.push(createAkariTalk("社員50人……すごいです、社長。\nもう人材管理も立派な経営課題ですね。", "surprise", { category: "chat" }));
+  if (branchCount >= 1) messages.push(createAkariTalk("支店があると、会社が一段階成長した感じがします。\n配属社員の確認も忘れないようにしましょう。", "happy_1", { category: "game" }));
+  if (branchCount >= 3) messages.push(createAkariTalk("支店が3つ以上になると、かなり広域展開ですね。\n支店ごとの担当エリアを意識したいです。", "proud", { category: "game" }));
+  if (branchCount >= 5) messages.push(createAkariTalk("支店5拠点ですか……。\nもう地域密着というより、広域企業ですね！", "laugh", { category: "chat" }));
+  if (playerOwnedCount >= 5) messages.push(createAkariTalk("自社物件が増えてきました。\n収益だけでなく、建物状態も定期的に見ておきましょう。", "think", { category: "game" }));
+  if (playerOwnedCount >= 20) messages.push(createAkariTalk("物件20件規模になると、修繕の先送りが大きなリスクになります。\n計画修繕を意識しましょう。", "serious", { category: "knowledge" }));
+  if (saleCandidateCount >= 10) messages.push(createAkariTalk("売り物件がまだ残っていますね。\n全部買う必要はありませんが、条件の良い土地は見逃したくないです。", "normal_2", { category: "game" }));
+  if (ticketTotal >= 1) messages.push(createAkariTalk("採用チケットがあります。\n今の戦力で足りない能力を考えてから採用すると良さそうです。", "think", { category: "game" }));
+  if (ticketTotal >= 5) messages.push(createAkariTalk("採用チケットがかなり貯まっていますね。\n一気に採用すると会社の雰囲気も変わりそうです！", "happy_4", { category: "chat" }));
+
+  messages.push(
+    createAkariTalk("資産が増えてきた時ほど、手元資金を残す意識が大切です。\n次の税金や修繕に備えましょう。", "serious_1", { category: "knowledge" }),
+    createAkariTalk("会社が大きくなると、攻める月と整える月を分けるのも一つの考え方です。", "think", { category: "game" }),
+    createAkariTalk("大きな投資の前には、翌月以降の返済と固定費を見ておきましょう。\n勢いだけだと少し怖いです。", "trouble", { category: "knowledge" })
+  );
+
+  return messages;
+}
+
+function getHomeMoreKnowledgeAkariTalkMessages() {
+  return [
+    createAkariTalk("【宅建】宅建業法は、勉強時間に対して点数につながりやすい分野です。", "smile", { category: "knowledge", pages: [
+      "【宅建】宅建業法は、宅建業者のルールを学ぶ分野です。",
+      "重要事項説明、37条書面、媒介契約、報酬額などがよく出ます。",
+      "満点を狙うより、まずは安定して得点できる状態を目指しましょう。"
+    ] }),
+    createAkariTalk("【宅建】権利関係は難しいですが、民法の基本を押さえると少しずつ見えてきます。", "think", { category: "knowledge", pages: [
+      "【宅建】権利関係では、民法や借地借家法、不動産登記法などが出ます。",
+      "最初は難しく感じますが、意思表示、代理、相続、賃貸借などは頻出です。",
+      "完璧を狙いすぎず、出やすいテーマから固めるのがおすすめです。"
+    ] }),
+    createAkariTalk("【宅建】法令上の制限は、用途地域や建ぺい率など数字が多い分野です。", "serious", { category: "knowledge", pages: [
+      "【宅建】法令上の制限では、都市計画法、建築基準法、国土利用計画法などが出ます。",
+      "用途地域、建ぺい率、容積率、開発許可は特に重要です。",
+      "数字を丸暗記するより、何を制限している制度なのかを理解すると覚えやすいです。"
+    ] }),
+    createAkariTalk("【宅建】借地借家法は、借主保護の考え方が中心です。", "normal_1", { category: "knowledge", pages: [
+      "【宅建】借地借家法は、土地や建物を借りる人を守るための法律です。",
+      "普通借家契約、定期借家契約、借地権などがよく問われます。",
+      "期間、更新、正当事由の考え方を整理しておきましょう。"
+    ] }),
+    createAkariTalk("【不動産投資】空室率は、利回りに直接影響します。", "serious_1", { category: "knowledge", pages: [
+      "【不動産投資】満室想定の利回りだけを見ると、実際より良く見えます。",
+      "空室が1部屋出るだけで、収入が大きく下がる物件もあります。",
+      "想定家賃だけでなく、現実的な空室率を入れて考えることが大切です。"
+    ] }),
+    createAkariTalk("【不動産投資】出口戦略は、買う前から考えておきたいテーマです。", "think", { category: "knowledge", pages: [
+      "【不動産投資】出口戦略とは、将来どう売るか、持ち続けるかの考え方です。",
+      "築年数が進むと、売却価格や融資の付きやすさが変わります。",
+      "買う時に安いだけでなく、将来誰が買う物件なのかも考えたいですね。"
+    ] }),
+    createAkariTalk("【建築】木造住宅は軽くて建てやすい一方、水やシロアリへの注意が必要です。", "think", { category: "knowledge", pages: [
+      "【建築】木造は戸建や小規模アパートで多く使われます。",
+      "比較的コストを抑えやすい反面、湿気、雨漏り、シロアリへの注意が必要です。",
+      "築古戸建を見る時は、床下や雨染みの確認も重要ですね。"
+    ] }),
+    createAkariTalk("【建築】鉄骨造は強度がありますが、サビや防水の状態も見たいです。", "serious", { category: "knowledge", pages: [
+      "【建築】鉄骨造は、アパートや店舗、工場などでも使われます。",
+      "構造としては強いですが、鉄部のサビや雨仕舞いに注意が必要です。",
+      "外壁や屋根、接合部の劣化を見落とさないようにしましょう。"
+    ] }),
+    createAkariTalk("【税金】減価償却は、建物の取得費を年数に分けて経費化する考え方です。", "normal_2", { category: "knowledge", pages: [
+      "【税金】減価償却は、建物などの資産を一度に経費にせず、耐用年数に応じて分ける制度です。",
+      "土地は劣化しない資産と考えられるため、原則として減価償却できません。",
+      "不動産投資では、建物価格と土地価格の分け方も重要になることがあります。"
+    ] }),
+    createAkariTalk("【税金】譲渡所得税は、不動産を売って利益が出た時に関係します。", "serious_1", { category: "knowledge", pages: [
+      "【税金】不動産を売却して利益が出ると、譲渡所得として課税されることがあります。",
+      "所有期間が5年を超えるかどうかで、税率が変わる点も重要です。",
+      "出口戦略を考える時は、売却価格だけでなく税金も見ておきたいですね。"
+    ] }),
+    createAkariTalk("【融資】担保評価は、銀行がどれくらい安全に貸せるかを見る材料です。", "think", { category: "knowledge", pages: [
+      "【融資】不動産融資では、物件の収益性だけでなく担保評価も見られます。",
+      "土地や建物にどれくらい価値があるか、売却して回収できるかが判断材料になります。",
+      "築古や地方物件は、収益性があっても担保評価が伸びにくいことがあります。"
+    ] }),
+    createAkariTalk("【融資】返済比率は、収入に対して返済が重すぎないかを見る目安です。", "serious", { category: "knowledge", pages: [
+      "【融資】返済比率は、家賃収入などに対して返済額がどれくらいあるかを見る考え方です。",
+      "返済比率が高すぎると、空室や修繕が出た時に資金繰りが苦しくなります。",
+      "余裕を持った借入は、長く経営を続けるために大切です。"
+    ] }),
+  ];
+}
+
 
 function getHomeAkariTalkMessages() {
   const phase = getAkariStoryPhase();
@@ -21942,77 +22888,96 @@ function getHomeAkariTalkMessages() {
 
   if (phase === "notJoined") {
     return [
-      "まだ誰もいない事務所です。まずはストーリーを始めましょう。",
-      "小さな不動産会社の第一歩は、ここから始まります。",
-      "ストーリーを開始すると、新しい社員との出会いが待っています。",
+      createAkariTalk("まだ誰もいない事務所です。まずはストーリーを始めましょう。", "normal", { category: "chat" }),
+      createAkariTalk("小さな不動産会社の第一歩は、ここから始まります。", "normal_1", { category: "chat" }),
+      createAkariTalk("ストーリーを開始すると、新しい社員との出会いが待っています。", "happy", { category: "chat" }),
     ];
   }
 
-  if (phase === "rookie") {
-    return [
-      getAkariPhaseGreeting(),
-      "社長、私まだ分からないことばかりですが……一つずつ覚えていきます。",
-      "空き家を直して、また人が住めるようにする。不動産の仕事って奥が深いですね。",
-      "まずは目の前の物件からですね。私も確認しながらお手伝いします。",
-      ticketTotal > 0 ? "採用パスがありますね。新しい仲間が増えたら、私も心強いです。" : "今は少人数ですが、できることから始めましょう。",
-    ];
-  }
-
-  if (phase === "gifu") {
-    return [
-      getAkariPhaseGreeting(),
-      "社長、最近少しだけ不動産のことが分かってきた気がします。",
-      "空き家が再生されると、街の雰囲気も変わっていくんですね。",
-      vaultCount > 0 ? `社員名簿には${vaultCount}名います。仲間が増えると会社らしくなってきますね。` : "まだまだこれからです。岐阜で実績を作っていきましょう。",
-      `現在のランクは${rank}です。社長の実績、ちゃんと積み上がっています。`,
-    ];
-  }
-
-  if (phase === "nagoya") {
-    return [
-      getAkariPhaseGreeting(),
-      "名古屋は市場も大きいですが、その分ライバルも手強そうです。",
-      "支店があると、会社が一段階大きくなった感じがしますね。",
-      "岐阜で学んだことは、名古屋でもきっと役に立ちます。焦らず進めましょう。",
-      ticketTotal > 0 ? "採用パスがあります。都市部の展開に向けて、人材も厚くしたいですね。" : "資金と人員、どちらも大事ですね。バランスを見ながら進めましょう。",
-    ];
-  }
-
-  return [
-    getAkariPhaseGreeting(),
-    "社長、最初は右も左も分からなかったのに……ここまで来ましたね。",
-    "今日も頑張りましょう。無理しすぎない範囲で、ですけどね。",
-    "そういえば社長、休日はどんなふうに過ごしているんですか？",
-    "最近、仕事の合間に飲むコーヒーが少し楽しみなんです。",
-    "街にもう一度、灯りを増やしていく。不動産会社の仕事って素敵ですね。",
+  const commonMessages = [
+    ...getHomeTimeAkariTalkMessages(),
+    ...getHomeRankAkariTalkMessages(),
+    ...getHomeLevelBandAkariTalkMessages(),
+    ...getHomeConditionAkariTalkMessages(),
+    ...getHomeMilestoneAkariTalkMessages(),
+    ...getHomeMaturityAkariTalkMessages(),
+    ...getHomeExtraChatAkariTalkMessages(),
+    ...getHomeGameAkariTalkMessages(),
+    ...getHomeExtraGameAkariTalkMessages(),
+    ...getHomeKnowledgeAkariTalkMessages(),
+    ...getHomeExtraKnowledgeAkariTalkMessages(),
+    ...getHomeDeepKnowledgeAkariTalkMessages(),
+    ...getHomeMoreKnowledgeAkariTalkMessages(),
   ];
+
+  let phaseMessages = [];
+  if (phase === "rookie") {
+    phaseMessages = [
+      createAkariTalk(getAkariPhaseGreeting(), "trouble", { category: "chat", maturity: "rookie" }),
+      createAkariTalk("社長、私まだ分からないことばかりですが……一つずつ覚えていきます。", "trouble", { category: "chat", maturity: "rookie" }),
+      createAkariTalk("空き家を直して、また人が住めるようにする。不動産の仕事って奥が深いですね。", "think", { category: "chat" }),
+      createAkariTalk("まずは目の前の物件からですね。私も確認しながらお手伝いします。", "serious", { category: "game" }),
+      ticketTotal > 0 ? createAkariTalk("採用チケットがありますね。新しい仲間が増えたら、私も心強いです。", "happy", { category: "game" }) : createAkariTalk("今は少人数ですが、できることから始めましょう。", "normal_1", { category: "chat" }),
+    ];
+  } else if (phase === "gifu") {
+    phaseMessages = [
+      createAkariTalk(getAkariPhaseGreeting(), "normal_2", { category: "chat" }),
+      createAkariTalk("社長、最近少しだけ不動産のことが分かってきた気がします。", "normal_3", { category: "chat", maturity: "familiar" }),
+      createAkariTalk("空き家が再生されると、街の雰囲気も変わっていくんですね。", "happy_1", { category: "chat" }),
+      vaultCount > 0 ? createAkariTalk(`社員名簿には${vaultCount}名います。仲間が増えると会社らしくなってきますね。`, "happy_2", { category: "game" }) : createAkariTalk("まだまだこれからです。岐阜で実績を作っていきましょう。", "serious", { category: "chat" }),
+      createAkariTalk(`現在のランクは${rank}です。社長の実績、ちゃんと積み上がっています。`, rank >= 10 ? "proud" : "normal", { category: "game" }),
+    ];
+  } else if (phase === "nagoya") {
+    phaseMessages = [
+      createAkariTalk(getAkariPhaseGreeting(), "serious_1", { category: "chat" }),
+      createAkariTalk("名古屋は市場も大きいですが、その分ライバルも手強そうです。", "serious", { category: "chat" }),
+      createAkariTalk("支店があると、会社が一段階大きくなった感じがしますね。", "happy_3", { category: "chat" }),
+      createAkariTalk("岐阜で学んだことは、名古屋でもきっと役に立ちます。焦らず進めましょう。", "normal_2", { category: "chat" }),
+      ticketTotal > 0 ? createAkariTalk("採用チケットがあります。都市部の展開に向けて、人材も厚くしたいですね。", "think", { category: "game" }) : createAkariTalk("資金と人員、どちらも大事ですね。バランスを見ながら進めましょう。", "serious", { category: "game" }),
+    ];
+  } else {
+    phaseMessages = [
+      createAkariTalk(getAkariPhaseGreeting(), "happy_2", { category: "chat" }),
+      createAkariTalk("社長、最初は右も左も分からなかったのに……ここまで来ましたね。", "proud_1", { category: "chat" }),
+      createAkariTalk("今日も頑張りましょう。無理しすぎない範囲で、ですけどね。", "normal_3", { category: "chat" }),
+      createAkariTalk("そういえば社長、休日はどんなふうに過ごしているんですか？", "shy", { category: "chat" }),
+      createAkariTalk("最近、仕事の合間に飲むコーヒーが少し楽しみなんです。", "happy_4", { category: "chat" }),
+      createAkariTalk("街にもう一度、灯りを増やしていく。不動産会社の仕事って素敵ですね。", "happy_1", { category: "chat" }),
+    ];
+  }
+
+  return applyHomeAkariTalkMode([...phaseMessages, ...commonMessages]);
 }
 
 function getHomeAkariMessage() {
   const messages = getHomeAkariTalkMessages();
-  return messages[titleHomeAkariTalkIndex % messages.length] ?? getHomeTimeGreeting();
-}
-
-
-function getHomeTimeTone() {
-  const hour = new Date().getHours();
-  if (hour >= 5 && hour < 10) return "morning";
-  if (hour >= 10 && hour < 17) return "day";
-  if (hour >= 17 && hour < 22) return "evening";
-  return "night";
+  const currentItem = normalizeHomeAkariTalkItem(messages[titleHomeAkariTalkIndex % messages.length]);
+  const pages = Array.isArray(currentItem.pages) && currentItem.pages.length > 0 ? currentItem.pages : [currentItem.text];
+  const pageIndex = Math.min(titleHomeAkariPageIndex, pages.length - 1);
+  const suffix = pageIndex < pages.length - 1 ? "\n\n▼ 続き" : "";
+  return `${pages[pageIndex]}${suffix}`;
 }
 
 function getHomeTimeToneLabel() {
   const tone = getHomeTimeTone();
+  const weather = getHomeWeatherTone();
+  if (tone === "night") return "夜の社長室";
+  if (weather === "rain") return "雨のオフィス";
   if (tone === "morning") return "朝の社長室";
   if (tone === "day") return "昼のオフィス";
   if (tone === "evening") return "夕方のオフィス";
-  return "夜の社長室";
+  return "昼のオフィス";
 }
 
 function getHomeTimeBackgroundStyle() {
   const tone = getHomeTimeTone();
+  const weather = getHomeWeatherTone();
   const styles = {
+    rain: {
+      overlay: "linear-gradient(180deg, rgba(120,158,190,0.18), rgba(7,18,26,0.52)), url(/backgrounds/office_startup_rain.png)",
+      aura: "radial-gradient(circle at 24% 18%, rgba(146,201,255,0.28), transparent 34%), radial-gradient(circle at 76% 20%, rgba(255,255,255,0.13), transparent 38%)",
+      shell: "radial-gradient(circle at 18% 18%, rgba(116,170,220,0.30), transparent 28%), linear-gradient(135deg, #071522 0%, #183552 52%, #284d58 100%)",
+    },
     morning: {
       overlay: "linear-gradient(180deg, rgba(255,241,198,0.18), rgba(12,42,35,0.32)), url(/backgrounds/office_startup.png)",
       aura: "radial-gradient(circle at 28% 20%, rgba(255,232,155,0.36), transparent 34%), radial-gradient(circle at 68% 18%, rgba(255,255,255,0.20), transparent 38%)",
@@ -22029,12 +22994,14 @@ function getHomeTimeBackgroundStyle() {
       shell: "radial-gradient(circle at 18% 18%, rgba(255,165,109,0.38), transparent 30%), linear-gradient(135deg, #2a1830 0%, #6a3734 48%, #f3c07e 100%)",
     },
     night: {
-      overlay: "linear-gradient(180deg, rgba(90,125,255,0.14), rgba(4,9,28,0.58)), url(/backgrounds/office_startup.png)",
+      overlay: "linear-gradient(180deg, rgba(90,125,255,0.14), rgba(4,9,28,0.58)), url(/backgrounds/office_startup_night.png)",
       aura: "radial-gradient(circle at 70% 16%, rgba(154,188,255,0.27), transparent 34%), radial-gradient(circle at 26% 24%, rgba(255,255,255,0.14), transparent 30%)",
       shell: "radial-gradient(circle at 18% 18%, rgba(133,167,255,0.30), transparent 28%), linear-gradient(135deg, #071022 0%, #12305a 52%, #35235c 100%)",
     },
   };
 
+  if (tone === "night") return styles.night;
+  if (weather === "rain") return styles.rain;
   return styles[tone] ?? styles.day;
 }
 
@@ -22052,6 +23019,10 @@ function getHomeSparkleElements() {
 function getHomeAkariPortraitKey() {
   if (titleHomeAkariExpression) return titleHomeAkariExpression;
 
+  const messages = getHomeAkariTalkMessages();
+  const currentItem = normalizeHomeAkariTalkItem(messages[titleHomeAkariTalkIndex % messages.length]);
+  if (currentItem.portrait) return currentItem.portrait;
+
   const ticketTotal = (titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0);
   if (ticketTotal > 0) return "happy";
   if (!titleStoryAkari) return "normal";
@@ -22060,12 +23031,40 @@ function getHomeAkariPortraitKey() {
 
 function handleHomeAkariTap() {
   if (!titleStoryAkari) return;
-  const expressions = ["normal", "happy", "serious", "surprise", "trouble"];
+  const messages = getHomeAkariTalkMessages();
+  const currentIndex = titleHomeAkariTalkIndex % messages.length;
+  const currentItem = normalizeHomeAkariTalkItem(messages[currentIndex]);
+  const currentPages = Array.isArray(currentItem.pages) && currentItem.pages.length > 0 ? currentItem.pages : null;
 
-  setTitleHomeAkariTalkIndex((currentIndex) => currentIndex + 1);
-  setTitleHomeAkariExpression(expressions[(titleHomeAkariTalkIndex + 1) % expressions.length]);
+  if (currentPages && titleHomeAkariPageIndex < currentPages.length - 1) {
+    setTitleHomeAkariPageIndex(titleHomeAkariPageIndex + 1);
+    setTitleHomeAkariExpression(currentItem.portrait);
+    return;
+  }
+
+  const recentSet = new Set(titleHomeAkariRecentTalkIndexes);
+  let candidateIndexes = messages
+    .map((_, index) => index)
+    .filter((index) => index !== currentIndex && !recentSet.has(index));
+
+  if (candidateIndexes.length === 0) {
+    candidateIndexes = messages
+      .map((_, index) => index)
+      .filter((index) => index !== currentIndex);
+  }
+
+  if (candidateIndexes.length === 0) {
+    candidateIndexes = [currentIndex];
+  }
+
+  const nextIndex = candidateIndexes[Math.floor(Math.random() * candidateIndexes.length)];
+  const nextItem = normalizeHomeAkariTalkItem(messages[nextIndex % messages.length]);
+
+  setTitleHomeAkariTalkIndex(nextIndex);
+  setTitleHomeAkariPageIndex(0);
+  setTitleHomeAkariExpression(nextItem.portrait);
+  setTitleHomeAkariRecentTalkIndexes((prev) => [nextIndex, currentIndex, ...prev].filter((value, index, array) => array.indexOf(value) === index).slice(0, 5));
 }
-
 function getHomeTopVaultEmployees(limit = 3) {
   return getFilteredSortedVaultEmployees(titleAccountEmployeeVault, {
     rarityFilter: "ALL",
@@ -22320,8 +23319,8 @@ function getHomeMissionItems() {
       id: "ticket_total_3",
       group: "採用",
       icon: "券",
-      title: "採用パスを合計3枚以上所持",
-      description: "ログインボーナスや報酬で採用パスを集める。",
+      title: "採用チケットを合計3枚以上所持",
+      description: "ログインボーナスや報酬で採用チケットを集める。",
       current: rookieEmployeeTickets + employeeTickets + premiumEmployeeTickets,
       target: 3,
       rewardExp: 25,
@@ -22331,7 +23330,7 @@ function getHomeMissionItems() {
       group: "ログイン",
       icon: "7",
       title: "ログインボーナスを累計7回受け取る",
-      description: "7日目のプレミアム採用パスを目指す。",
+      description: "7日目のプレミア社員採用チケットを目指す。",
       current: homeLoginBonusStatus.claimCount,
       target: 7,
       rewardExp: 70,
@@ -23514,6 +24513,9 @@ return (
       .employee-subnav-top-v221 { position: sticky; top: 0; z-index: 4; background: rgba(255,255,255,0.96); padding: 2px 0 6px; }
       .employee-assignment-summary-v221 { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; padding: 8px 10px; border-radius: 14px; background: #edf5ef; border: 1px solid #cfe2d3; font-size: 13px; }
       .employee-assignment-summary-v221 strong { font-size: 14px; }
+      .employee-assignment-compact-guide-v232 { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 7px 9px; border-radius: 12px; background: #edf5ef; border: 1px solid #cfe2d3; font-size: 12px; line-height: 1.35; }
+      .employee-assignment-compact-guide-v232 strong { font-size: 14px; white-space: nowrap; }
+      .employee-assignment-compact-guide-v232 span { opacity: 0.88; }
       .employee-salary-note.compact-v221 { margin: 0; padding: 8px 10px; font-size: 12px; line-height: 1.45; }
 
       .employee-assignment-page-v222 { display: grid; gap: 8px; }
@@ -23945,6 +24947,13 @@ return (
         }
       }
 
+        .facility-zone-influence-tile-v234 {
+          outline: 3px solid rgba(21,128,61,.9) !important;
+          outline-offset: -4px !important;
+          background: rgba(187,247,208,.75) !important;
+          box-shadow: inset 0 0 0 2px rgba(255,255,255,.65), 0 0 10px rgba(34,197,94,.38) !important;
+        }
+
     `}</style>
 
     <audio
@@ -24335,9 +25344,9 @@ return (
             }
           }
 
+
           .home-akari-portrait-v202 { animation: homeAkariBreathV202 3.8s ease-in-out infinite; transform-origin: 50% 100%; }
           .home-akari-stage-v202 { cursor: pointer; }
-          .home-akari-stage-v202::after { content: "タップで会話"; position: absolute; right: 12px; top: 12px; padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,0.84); color: #1d2b22; font-size: 11px; font-weight: 900; box-shadow: 0 6px 14px rgba(0,0,0,0.18); }
           @keyframes homeAkariBreathV202 {
             0%, 100% { transform: translateY(0) scale(1); }
             50% { transform: translateY(-7px) scale(1.018); }
@@ -24369,6 +25378,38 @@ return (
           @media (min-width: 901px) {
             .home-side-shortcuts-v209 { right: 10px !important; top: 12px !important; }
             .title-home-menu-panel-v201 { padding-right: 72px !important; }
+          }
+          @media (orientation: landscape) and (min-width: 901px) {
+            .title-home-overlay-v201 {
+              align-items: center !important;
+              justify-content: center !important;
+              padding: 8px 12px !important;
+              overflow: hidden !important;
+            }
+            .title-home-shell-v201 {
+              width: min(640px, calc(100vw - 36px)) !important;
+              max-width: min(640px, calc(100vw - 36px)) !important;
+              grid-template-columns: 1fr !important;
+              justify-items: center !important;
+              gap: 0 !important;
+              margin: 0 auto !important;
+              padding-bottom: 86px !important;
+            }
+            .title-home-character-panel-v201 {
+              width: min(640px, 100%) !important;
+              max-width: 640px !important;
+              justify-self: center !important;
+            }
+            .title-home-character-stage-v201 {
+              min-height: min(66dvh, 640px) !important;
+              align-items: end !important;
+            }
+            .home-akari-portrait-v201 {
+              width: 98% !important;
+              max-height: min(61dvh, 600px) !important;
+              justify-self: center !important;
+              margin-bottom: 10px !important;
+            }
           }
           @media (orientation: portrait), (max-width: 760px) {
             .title-home-overlay-v201 { align-items: flex-start !important; padding: 8px !important; overflow-y: auto !important; }
@@ -24456,6 +25497,31 @@ return (
                 alignItems: "end",
               }}
             >
+
+              <button
+                type="button"
+                onClick={changeHomeAkariTalkMode}
+                style={{
+                  position: "absolute",
+                  top: 8,
+                  right: 8,
+                  zIndex: 6,
+                  border: "1px solid rgba(255,255,255,0.48)",
+                  borderRadius: 999,
+                  padding: "3px 7px",
+                  minHeight: 22,
+                  lineHeight: 1.1,
+                  background: "rgba(255,255,255,0.84)",
+                  color: "#1d2b22",
+                  fontSize: 10,
+                  fontWeight: 900,
+                  boxShadow: "0 5px 12px rgba(0,0,0,0.16)",
+                  cursor: "pointer",
+                }}
+                aria-label="ホーム会話モード切替"
+              >
+                💬 {getHomeTalkModeLabel()}
+              </button>
               <div style={{ position: "absolute", inset: 0, background: getHomeTimeBackgroundStyle().aura }} />
               <div className="home-akari-spotlight-v208" />
               {titleStoryAkari ? (
@@ -24486,7 +25552,7 @@ return (
                 }}
               >
                 <strong style={{ color: "#7a4a00", fontSize: 12 }}>{titleStoryAkari ? "七瀬 灯里" : "社長室"}</strong>
-                <div style={{ fontWeight: 800, fontSize: 13, lineHeight: 1.55, marginTop: 2 }}>{getHomeAkariMessage()}</div>
+                <div style={{ fontWeight: 800, fontSize: 13, lineHeight: 1.55, marginTop: 2, whiteSpace: "pre-line" }}>{getHomeAkariMessage()}</div>
               </div>
             </div>
 
@@ -24538,7 +25604,7 @@ return (
             <div className="home-action-grid-v201 home-action-grid-v203 home-action-grid-v217" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
               {renderHomeMenuCard({ icon: "物", title: "ストーリー", sub: "第0章から物語を始める", accent: "#fff0bf", featured: true, onClick: continueStoryFromTitle })}
               {renderHomeMenuCard({ icon: "経", title: "フリー", sub: hasSaveData ? "保存中の会社へ戻る" : "自由経営を開始", accent: "#dff2e7", featured: true, onClick: continueFreeFromTitle })}
-              {renderHomeMenuCard({ icon: "採", title: "社員採用", sub: "採用パスで履歴書確認", accent: "#fff0bf", badge: ((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) > 0 ? "OK" : "", featured: true, onClick: () => setTitleModal("recruitHome") })}
+              {renderHomeMenuCard({ icon: "採", title: "社員採用", sub: "採用チケットで履歴書確認", accent: "#fff0bf", badge: ((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) > 0 ? "OK" : "", featured: true, onClick: () => setTitleModal("recruitHome") })}
               {renderHomeMenuCard({ icon: "社", title: "社員名簿", sub: `${titleAccountEmployeeVault.length}/${EMPLOYEE_POOL.length}名・図鑑/保管庫統合`, accent: "#e8f6ee", badge: titleAccountEmployeeVault.length > 0 ? `${titleAccountEmployeeVault.length}` : "", onClick: () => setTitleModal("accountVault") })}
               {renderHomeMenuCard({ icon: "🎁", title: "BOX", sub: homeLoginBonusStatus.canClaim ? "ログイン報酬あり" : "受取済み", accent: "#ffe8f0", badge: homeLoginBonusStatus.canClaim ? "NEW" : "", onClick: () => setTitleModal("presentBox") })}
               {renderHomeMenuCard({ icon: "任", title: "ミッション", sub: homeMissionClaimableCount > 0 ? `${homeMissionClaimableCount}件受取可能` : `${homeMissionCompletedCount}/${homeMissionItems.length}件達成`, accent: "#ffe7e7", badge: homeMissionClaimableCount > 0 ? "NEW" : "", onClick: () => setTitleModal("missions") })}
@@ -24764,7 +25830,7 @@ return (
                 <>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 8 }}>
                     <h2 style={{ margin: 0, fontSize: 20 }}>社員採用</h2>
-                    <span style={{ fontSize: 12, fontWeight: 900, color: "#31563f", background: "#edf5ef", border: "1px solid #cfe2d3", borderRadius: 999, padding: "4px 8px" }}>採用パスで履歴書確認</span>
+                    <span style={{ fontSize: 12, fontWeight: 900, color: "#31563f", background: "#edf5ef", border: "1px solid #cfe2d3", borderRadius: 999, padding: "4px 8px" }}>採用チケットで履歴書確認</span>
                   </div>
                   <div className="home-recruit-pass-grid-v2184" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 6, marginBottom: 8 }}>
                     {[
@@ -26256,8 +27322,8 @@ return (
                 ? "player-office-range-tile"
                 : ""
             } ${
-              false
-                ? ""
+              isTileInSelectedFacilityInfluenceRange(tile) && selectedId !== tile.id
+                ? "facility-zone-influence-tile-v234"
                 : ""
             } ${
               selectedRivalOfficeTile &&
@@ -26667,23 +27733,58 @@ return (
 )}
             {activePanel === "employee" && (
   <div className="detail-card employee-assignment-page-v222">
-    <div className="employee-assignment-summary-v221">
-      <strong>配属 {employeeCountText}</strong>
-      <span>保有 {ownedEmployeeCount}人 / 待機 {employeeStorage.length}人 / 月給 {employeeSalaryTotal}万円</span>
-    </div>
-    <p className="employee-salary-note compact-v221">※給与は本社・支店に配属中の社員だけ発生。待機社員は給与なし。</p>
-
     {(() => {
+      const assignedEmployeeById = new Map(
+        employees
+          .filter((employee) => employee.id !== 0)
+          .map((employee) => [employee.id, employee])
+      );
       const allAssignableEmployees = mergeEmployeeCollections([
         ...employees.filter((employee) => employee.id !== 0),
         ...employeeStorage,
-      ]);
+      ]).map((employee) => {
+        const assignedEmployee = assignedEmployeeById.get(employee.id);
+        if (!assignedEmployee) return employee;
+
+        return {
+          ...employee,
+          officeId: assignedEmployee.officeId ?? "hq",
+          busyUntilMonth: assignedEmployee.busyUntilMonth ?? null,
+          busyActionName: assignedEmployee.busyActionName ?? null,
+        };
+      });
       const filteredAssignableEmployees = getFilteredSortedVaultEmployees(allAssignableEmployees, {
         rarityFilter: titleVaultRarityFilter,
         sortKey: titleVaultSortKey,
       });
       const assignedIdSet = new Set(employees.map((employee) => employee.id));
-      const getCurrentOfficeValue = (employee) => assignedIdSet.has(employee.id) ? (employee.officeId ?? "hq") : "waiting";
+      const assignedOfficeIdSet = new Set(
+        employees
+          .filter((employee) => employee.id !== 0 && employee.officeId && employee.officeId !== "storage")
+          .map((employee) => employee.officeId)
+      );
+      const officeOptionMap = new Map();
+      officeTiles.forEach((officeTile) => {
+        const officeId = officeTile.officeId ?? "hq";
+        officeOptionMap.set(officeId, officeTile);
+      });
+      assignedOfficeIdSet.forEach((officeId) => {
+        if (!officeOptionMap.has(officeId)) {
+          officeOptionMap.set(officeId, { officeId, officeName: getOfficeName(officeId), feature: officeId === "hq" ? FEATURE.HQ : FEATURE.BRANCH });
+        }
+      });
+      const officeOptions = Array.from(officeOptionMap.values()).sort((a, b) => {
+        const aId = a.officeId ?? "hq";
+        const bId = b.officeId ?? "hq";
+        if (aId === "hq") return -1;
+        if (bId === "hq") return 1;
+        return String(getOfficeName(aId)).localeCompare(String(getOfficeName(bId)), "ja");
+      });
+      const getCurrentOfficeValue = (employee) => {
+        if (!assignedIdSet.has(employee.id)) return "waiting";
+        const assignedEmployee = assignedEmployeeById.get(employee.id);
+        return assignedEmployee?.officeId ?? employee.officeId ?? "hq";
+      };
       const handleAssignmentChange = (employee, nextOfficeId) => {
         const currentOfficeId = getCurrentOfficeValue(employee);
         if (nextOfficeId === currentOfficeId) return;
@@ -26706,6 +27807,10 @@ return (
 
       return (
         <>
+          <div className="employee-assignment-compact-guide-v232">
+            <strong>配属 {employeeCountText}</strong>
+            <span>保有{ownedEmployeeCount} / 待機{employeeStorage.length} / 月給{employeeSalaryTotal}万円。給与は本社・支店配属中のみ発生。</span>
+          </div>
           <div className="employee-assignment-list-title-v222">社員一覧</div>
           {renderVaultControls(true)}
           <div style={{ fontSize: 12, opacity: 0.72, marginBottom: 6 }}>表示中：{filteredAssignableEmployees.length}名</div>
@@ -26727,7 +27832,7 @@ return (
                       aria-label={`${employee.name}の配属先`}
                     >
                       <option value="waiting">待機</option>
-                      {officeTiles.map((officeTile) => {
+                      {officeOptions.map((officeTile) => {
                         const officeId = officeTile.officeId ?? "hq";
                         return (
                           <option key={officeId} value={officeId}>{getOfficeShortLabel(officeTile)}</option>
@@ -26748,7 +27853,7 @@ return (
                         <span className="employee-assignment-vault-tags-v222">
                           <span>{roleHint}</span>
                           <span>合計{abilityTotal}</span>
-                          <span className={currentOfficeId === "waiting" ? "waiting" : "assigned"}>{currentOfficeId === "waiting" ? "待機" : "配属中"}</span>
+                          <span className={currentOfficeId === "waiting" ? "waiting" : "assigned"}>{currentOfficeId === "waiting" ? "待機" : getOfficeShortLabel(officeOptionMap.get(currentOfficeId) ?? { officeId: currentOfficeId, officeName: getOfficeName(currentOfficeId) })}</span>
                         </span>
                         <span className="employee-assignment-vault-stats-v222">
                           <span>統{Number(employee.leadership) || 0}</span>
@@ -26779,7 +27884,7 @@ return (
         <h2>社員採用</h2>
         <p>ホームの社員採用と同じ履歴書・封筒演出で採用します。採用した社員は保管庫に入り、社員配置から本社・支店へ配属できます。</p>
       </div>
-      <span>採用パスで履歴書確認</span>
+      <span>採用チケットで履歴書確認</span>
     </div>
 
     <div className="employee-subnav-row">
@@ -26827,7 +27932,7 @@ return (
 
     {isDemoMode && (
       <div className="button-row ticket-button-row employee-recruit-demo-row-v220">
-        <button onClick={addRookieEmployeeTicketForDemo}>ライト採用券+1</button>
+        <button onClick={addRookieEmployeeTicketForDemo}>社員採用券+1</button>
         <button onClick={addEmployeeTicketForDemo}>採用券+1</button>
         <button onClick={addPremiumEmployeeTicketForDemo}>プラチナ採用券+1</button>
       </div>
