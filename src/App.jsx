@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 
 /*
   箱庭不動産経営シミュレーター
-  v243: 会話直近除外・採用名称統一・知識会話追加版 / v241: 七瀬会話大幅追加・時間帯背景切替・会話UI整理版 / v240: 七瀬ホーム会話モード・知識ページ分割・成長段階会話版 / v239: ホーム会話拡充版 / v231: 支店配属表示・拠点活動範囲再修正版 / v230: ランク採用チケット報酬ルール再整理版 / v229: 支店エリア担当制修正・社員異動修正・七瀬成長特別化版 / v228: 本社設置後採用遷移廃止・ランク報酬整理版 / v227: スマホタブ幅・PCホーム導線調整版 / v226: フリーマップ選択コンパクト化・本社建物NPC除外・ライバル数調整版 / v225: 社員配置横切れ解消・ホームメニュー導線追加版 / v223: 社員配置を通常全画面化・採用/名簿はホーム導線統合版 / v222: 社員配置を名簿型リスト化・社員名簿改名・全画面固定強化版 / v221: 社員ページ重複整理・配置カード化・創業メンバー全画面修正版 / v219.3: 名古屋背景整理・ポップアップ×修正・七瀬枠固定版 / v219.2: 閉じるUI×統一・ヘッダー圧縮版 / v219.1: 各種ポップアップ閉じる導線追加版 / v219: 新人七瀬・成長会話・チュートリアル成長補正版 / v218.10: 採用封筒四角化・ストーリー/フリー導線修正版 / v218.9: 採用画面5封筒表示・写真位置修正版 / v218.11: 採用特性説明復元・累計EXP表示・名古屋背景/七瀬服装整理版 / v218: 画面分離・不要情報削減・社員管理全画面版 / v218.1: ホーム整理・重複導線削減版 / v218.7: 土地情報ヘッダーアイコン集約版 / v218.6: 名簿均等配置・マップ情報削除・リロード復帰版 / v218.5: 名簿さらに圧縮・採用バグ修正版 / v218.4: 名簿・採用コンパクト化版 / v218.3: ページ遷移化・ホームHUD修正版 / v218.2: ホームロビー化・スマホ縦専用整理版 / v217: ホーム/経営分離・社員名簿統合版 / v216.2: ホーム横はみ出し・フルスクリーン再調整版 / v216: プレイ画面フルスクリーン最適化版 / v215: 配属上限5人・採用時自動配属版 / v214: 街演出・マップ視覚刷新版 / v213: プレイ画面イベント演出強化版 / v212: プレイ画面UI第一世代・スマホゲームHUD刷新版 / v210: ログインボーナス・ミッション・プレゼントBOX本格調整版 / v209: ホームメニュー第三世代UI版 / v208: ホーム背景・七瀬演出強化版 / v207: 社員名簿・社員保管庫スマホUI整理版 / v206: 社員採用演出・採用名称統一版 / v201: 縦横レスポンシブ・キャラ中心ホームUI版 / v200: スマホゲーム風ホーム画面リニューアル版 / v199: 社員保管庫上書き保護・社員採用券追加版 / v198: 能力成長表示・給与表示整理版 / v197: 社員詳細・創業メンバー選択UI仕上げ版 / v196: 社員保管庫能力合計ソート修正版 / v195: 社員保管庫カード画像＋詳細表示版 / v194: 社員保管庫・創業メンバー選択UI強化版 / v193: 創業メンバー配属・行動可能判定修正版 / v192: 社員保管庫UI改善・ソート絞り込み版 / v191: アカウント情報・社員保管庫確認強化版 / v190: 創業メンバー選択（七瀬固定＋自由2名）版 / v189: 社員保管庫・プレイヤーランク共通保存基盤版 / v188: 名古屋編クリア演出・第1部完結版 / v183: 岐阜固定本社・名古屋拡張マップ調整・0章修繕短縮版 / v182: 岐阜名古屋固定マップ調整版 / v181: 0章購入ボタン再表示修正版 / v180: 名古屋編ストーリーOKボタン修正版 / v179: 名古屋編チュートリアル誘導赤枠版 / v178: 名古屋編準備・銀行融資と支店建設チュートリアル版 / v177: チュートリアル進行不能対策・固定レベルアップ・岐阜15x15版 / v176: 岐阜編クリア条件・七瀬ガイド圧縮版 / v175: 岐阜編開始・七瀬ページガイド追加版 / v174: チュートリアル発光パルス・建築ロック・チケット抑制版 / v173: 建設完了判定修正版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル強調赤枠・行動制限強化版 / v170: チュートリアル行動制限・七瀬ナビ追加版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル指定マス赤枠強化版 / v170: チュートリアル会話追加版 / v169: ストーリー第0章チュートリアル固定マップ追加版 / v168: モード選択追加版 / v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
+  v243: 会話直近除外・採用名称統一・知識会話追加版 / v241: 七瀬会話大幅追加・時間帯背景切替・会話UI整理版 / v240: 七瀬ホーム会話モード・知識ページ分割・成長段階会話版 / v239: ホーム会話拡充版 / v231: 支店配属表示・拠点活動範囲再修正版 / v230: ランク採用チケット報酬ルール再整理版 / v229: 支店エリア担当制修正・社員異動修正・七瀬成長特別化版 / v228: 本社設置後採用遷移廃止・ランク報酬整理版 / v227: スマホタブ幅・PCホーム導線調整版 / v226: フリーマップ選択コンパクト化・本社建物NPC除外・ライバル数調整版 / v225: 社員配置横切れ解消・ホームメニュー導線追加版 / v223: 社員配置を通常全画面化・採用/名簿はホーム導線統合版 / v222: 社員配置を名簿型リスト化・社員名簿改名・全画面固定強化版 / v221: 社員ページ重複整理・配置カード化・創業メンバー全画面修正版 / v219.3: 名古屋背景整理・ポップアップ×修正・七瀬枠固定版 / v219.2: 閉じるUI×統一・ヘッダー圧縮版 / v219.1: 各種ポップアップ閉じる導線追加版 / v219: 新人七瀬・成長会話・チュートリアル成長補正版 / v218.10: 採用封筒四角化・ストーリー/フリー導線修正版 / v218.9: 採用画面5封筒表示・写真位置修正版 / v218.11: 採用特性説明復元・累計EXP表示・名古屋背景/七瀬服装整理版 / v218: 画面分離・不要情報削減・社員管理全画面版 / v218.1: ホーム整理・重複導線削減版 / v218.7: 土地情報ヘッダーアイコン集約版 / v218.6: 名簿均等配置・マップ情報削除・リロード復帰版 / v218.5: 名簿さらに圧縮・採用バグ修正版 / v218.4: 名簿・採用コンパクト化版 / v218.3: ページ遷移化・ホームHUD修正版 / v218.2: ホームロビー化・スマホ縦専用整理版 / v217: ホーム/経営分離・社員名簿統合版 / v216.2: ホーム横はみ出し・フルスクリーン再調整版 / v216: プレイ画面フルスクリーン最適化版 / v215: 配属上限5人・採用時自動配属版 / v214: 街演出・マップ視覚刷新版 / v213: プレイ画面イベント演出強化版 / v212: プレイ画面UI第一世代・スマホゲームHUD刷新版 / v210: ログインボーナス・ミッション・プレゼントBOX本格調整版 / v209: ホームメニュー第三世代UI版 / v208: ホーム背景・七瀬演出強化版 / v207: 社員名簿・社員保管庫スマホUI整理版 / v206: 社員採用演出・採用名称統一版 / v201: 縦横レスポンシブ・キャラ中心ホームUI版 / v200: スマホゲーム風ホーム画面リニューアル版 / v199: 社員保管庫上書き保護・社員採用券追加版 / v198: 能力成長表示・給与表示整理版 / v197: 社員詳細・創業メンバー選択UI仕上げ版 / v196: 社員保管庫能力合計ソート修正版 / v195: 社員保管庫カード画像＋詳細表示版 / v194: 社員保管庫・創業メンバー選択UI強化版 / v193: 創業メンバー配属・行動可能判定修正版 / v192: 社員保管庫UI改善・ソート絞り込み版 / v191: アカウント情報・社員保管庫確認強化版 / v190: 創業メンバー選択（七瀬固定＋自由2名）版 / v189: 社員保管庫・プレイヤーランク共通保存基盤版 / v188: 名古屋編クリア演出・第1部完結版 / v183: 岐阜固定本社・名古屋拡張マップ調整・1-1章修繕短縮版 / v182: 岐阜名古屋固定マップ調整版 / v181: 1-1章購入ボタン再表示修正版 / v180: 名古屋編ストーリーOKボタン修正版 / v179: 名古屋編チュートリアル誘導赤枠版 / v178: 名古屋編準備・銀行融資と支店建設チュートリアル版 / v177: チュートリアル進行不能対策・固定レベルアップ・岐阜15x15版 / v176: 岐阜編クリア条件・七瀬ガイド圧縮版 / v175: 岐阜編開始・七瀬ページガイド追加版 / v174: チュートリアル発光パルス・建築ロック・チケット抑制版 / v173: 建設完了判定修正版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル強調赤枠・行動制限強化版 / v170: チュートリアル行動制限・七瀬ナビ追加版 / v172: チュートリアル誘導強化・平屋建築版 / v171: チュートリアル指定マス赤枠強化版 / v170: チュートリアル会話追加版 / v169: ストーリー1-1章チュートリアル固定マップ追加版 / v168: モード選択追加版 / v167: プロローグ演出追加版 / v166: 165ベース・社員募集封筒スマホ全表示版 / v165: 本社設置ヘッダー統合・社員募集UI整理版 / v164: 品質最高能力・速度合計能力・給与新ルール版 / v162: 土地情報座標統合・表コンパクト版 / v160: JSX内CSS外出し整理版 / v140: スマホ表示最適化・社員募集画面レスポンシブ修正
   PC・スマホ両対応版 / v133 配属上限撤廃・役職補正強化・拠点表示整理
   v131：特殊能力効果拡張（入居・家賃・融資・採用対応）
 
@@ -20,7 +20,7 @@ const MAP_SIZE = 70;
 const FREE_MAP_OPTIONS = [
   { key: "free_15", label: "岐阜 15×15", size: 15, description: "軽量。スマホ確認向けの小型マップ。" },
   { key: "free_30", label: "名古屋 30×30", size: 30, description: "標準。スマホでも遊びやすい広さ。" },
-  { key: "free_50", label: "名古屋県域 50×50", size: 50, description: "中規模。広めに開発したい方向け。" },
+  { key: "free_50", label: "中京圏域 50×50", size: 50, description: "中規模。広めに開発したい方向け。" },
   { key: "free_70", label: "首都圏 70×70", size: 70, description: "最大規模。長期プレイ向け。" },
 ];
 
@@ -44,16 +44,40 @@ function getFreeModeSaveKey(slot, mapKey) {
 const SAVE_SLOT_COUNT = 3;
 const DEFAULT_COMPANY_NAME = "";
 const DEFAULT_SAVE_SLOT = 1;
-const GAME_VERSION = "v247";
+const GAME_VERSION = "v274";
 // v244 roadmap: 七瀬レベル帯会話 / イベント会話 / 資産到達会話 / 支店到達会話 / 社員人数会話
 // v245 roadmap: 宅建講座 / 不動産投資講座 / 建築講座 / 税金講座 / 続き付き知識会話強化
 // v247: 七瀬レベル帯・資産/支店/社員イベント会話・知識会話実装版
+// v248: 季節・曜日・講座会話大量追加版
+// v249: 会話ページ表示改善版（続き/終わりとページ数表示）
+// v250: 初回ホーム導線・ログボ・シルバーシート/ゴールドシート・ショップ実装版
+// v251: 下部メニュー7個1行固定版
+// v252: ホーム上部ステータス4項目1行固定版
+// v253: 設定リセット・開発者隠しコマンド強化版
+// v254: 七瀬初期能力・採用排出率・採用チケット名称統一版
+// v255: 特殊能力マスター再整理・新規設計系スキル追加版
+// v256: 覚醒固定加算化・七瀬専用成長スキル/成長イベント実装版
+// v257: 経験値計算再設計・金額基準EXP/人数補正実装版
+// v258: 修繕費率見直し版
+// v259: 工業施設の住宅/商業/工業需要補正・物流倉庫名称変更版
+// v260: 需要補正カテゴリ混入修正・ホーム軽点検版
+// v260a: 七瀬成長定数の初期化順修正版
+// v261: ホーム下部メニュー自動非表示・モーダル閉じるボタン改善版
+// v262: 閉じるボタン表記化・ホーム下部メニュースクロール連動版
+// v263: ホーム下部メニュー0.5秒自動非表示・タップ再表示版
+// v264: ホーム装飾・下部メニュー豪華化版
+// v265: ホーム会話枠調整・マップUI統一強化版
+// v269: マップHUD簡略化・ズーム統合・下部メニュー余白調整版
+// v272.2: マップ下部メニュー復帰・0.8秒自動非表示・タップ/スクロール再表示版
+// v273: 融資相談の配属社員判定修正・マップ社員採用UI統一・CSS構文修正版
+// v268: マップ下部メニュー整理・上部HUD表示専用化版
+// v264: ホーム演出グレードアップ・下部メニュー装飾強化版
+// v272.15: 名古屋編チュートリアル制限・七瀬本社配属補正
+// v272.16: ストーリー章選択・マップやり直し・章表記整理
 const BASE_EMPLOYEE_SALARY = 15;
 const EMPLOYEE_SALARY_GROWTH_RATE = 1.05;
-const GIFU_CLEAR_POPULATION = 500;
-const GIFU_CLEAR_TOTAL_ASSETS = 30000;
-const NAGOYA_CLEAR_POPULATION = 1000;
-const NAGOYA_CLEAR_TOTAL_ASSETS = 50000;
+const GIFU_CLEAR_BUILDING_COUNT = 3;
+const NAGOYA_CLEAR_MONTHLY_PROFIT = 50;
 const ACCOUNT_DATA_KEY = "realEstateGameAccountData_v1";
 const OFFICE_EMPLOYEE_ASSIGN_LIMIT = 5;
 
@@ -98,12 +122,12 @@ function writeLastNavigationState(navigationState) {
 
 const LOGIN_BONUS_REWARDS = [
   { day: 1, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
-  { day: 2, type: "money", name: "運転資金", count: 100, icon: "💰", text: "運転資金 100万円" },
+  { day: 2, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
   { day: 3, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
-  { day: 4, type: "employeeTicket", name: "レア社員採用チケット", count: 1, icon: "📨", text: "レア社員採用チケット ×1" },
-  { day: 5, type: "money", name: "成長支援金", count: 200, icon: "💎", text: "成長支援金 200万円" },
-  { day: 6, type: "rookieTicket", name: "社員採用チケット", count: 2, icon: "✉", text: "社員採用チケット ×2" },
-  { day: 7, type: "premiumTicket", name: "プレミア社員採用チケット", count: 1, icon: "黒", text: "プレミア社員採用チケット ×1" },
+  { day: 4, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
+  { day: 5, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
+  { day: 6, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
+  { day: 7, type: "employeeTicket", name: "レア社員採用チケット", count: 1, icon: "📨", text: "レア社員採用チケット ×1" },
 ];
 
 function getLoginBonusRewardByCount(claimCount = 0) {
@@ -466,7 +490,7 @@ const STORY_TUTORIAL_STEPS = {
 const STORY_TUTORIAL_EVENTS = {
   START: {
     portrait: "normal",
-    title: "第0章 創業編",
+    title: "1-1章 創業チュートリアル",
     text: "社長、まずは赤く点滅している古い戸建を見てみましょう。私もまだ勉強中ですが、売り物件を選択して購入ボタンを押すところから始めるみたいです。",
   },
   PURCHASED_OLD_HOUSE: {
@@ -519,18 +543,18 @@ const STORY_TUTORIAL_EVENTS = {
 const STORY_GIFU_EVENTS = {
   INTRO: {
     portrait: "serious",
-    title: "第1章 岐阜編",
-    text: "社長、いよいよ本格的な経営の始まりですね。\n第0章で学んだ『買う』『直す』『建てる』を、ここ岐阜の街で実践していきましょう。\n岐阜駅の南側に小さな本社を構えました。第0章で学んだ操作を使って、ここ岐阜で実際に経営を進めていきましょう。",
+    title: "1-2章 岐阜編",
+    text: "社長、いよいよ本格的な経営の始まりですね。\n1-1章で学んだ『買う』『直す』『建てる』を、ここ岐阜の街で実践していきましょう。\n岐阜駅の南側に小さな本社を構えました。1-1章で学んだ操作を使って、ここ岐阜で実際に経営を進めていきましょう。",
   },
   HQ_PLACED: {
     portrait: "happy",
     title: "岐阜支社の第一歩",
-    text: "本社の設置が完了しました！\nここからは通常の経営プレイに入ります。社員チケットも使えるようになりました。\n社員を採用したり、物件を購入したりしながら会社を大きくしていきましょう！\n岐阜編の目標は、人口500人以上、総資産3億円以上です。",
+    text: "本社の設置が完了しました！\nここからは通常の経営プレイに入ります。社員採用チケットも使えるようになりました。\n社員を採用したり、物件を購入したりしながら会社を大きくしていきましょう！\n岐阜編の目標は、完成済みの自社建物を3棟所有することです。工事開始ではなく、竣工した建物だけがカウントされます。",
   },
   CLEAR: {
     portrait: "serious",
     title: "岐阜編クリア",
-    text: "社長！岐阜での経営目標を達成しました！\n人口500人以上、総資産3億円以上。小さな不動産会社だった私たちも、ここまで成長できたんですね。\n次の舞台へ進む準備が整いました！",
+    text: "社長！岐阜での経営目標を達成しました！\n完成済みの自社建物3棟を達成です。小さな不動産会社だった私たちも、少しずつ形になってきましたね。\n次の舞台へ進む準備が整いました！",
   },
 };
 
@@ -551,7 +575,7 @@ const STORY_NAGOYA_EVENTS = {
   INTRO: {
     background: NAGOYA_PROLOGUE_BACKGROUND,
     portrait: "serious",
-    title: "第2章 名古屋編・進出準備",
+    title: "1-3章 名古屋準備編",
     text: "社長、岐阜での実績が認められました！ 次はいよいよ名古屋方面への進出です。少し緊張しますが、今度は私も少しはお役に立てると思います。まずは銀行融資の流れを確認しましょう。",
   },
   LOAN_CONSULT_STARTED: {
@@ -582,7 +606,7 @@ const STORY_NAGOYA_EVENTS = {
   BRANCH_COMPLETE: {
     portrait: "happy",
     title: "支店完成",
-    text: "支店が完成しました！ 次は社員配置を開いて、誰か1人以上を支店へ配属しましょう。支店に社員がいないと、そのエリアでは購入・建設・修繕などの行動ができません。",
+    text: "支店が完成しました！ 次は社員を支店へ配属しましょう。配属できる社員が足りない場合は、下部メニューの『社員』から社員採用を行い、その後に社員配属で支店へ1人以上置いてください。",
   },
   BRANCH_EMPLOYEE_ASSIGNED: {
     portrait: "happy",
@@ -593,13 +617,13 @@ const STORY_NAGOYA_EVENTS = {
 
 const NAGOYA_PROLOGUE_SCENES = [
   {
-    background: "/backgrounds/city_rural_evening.png",
+    background: "/backgrounds/city_gihu.png",
     speaker: "七瀬 灯里",
     portrait: "happy",
     text: "社長、岐阜での経営目標を達成できましたね。最初は私も何も分からなかったのに、会社として確かな実績になりました。",
   },
   {
-    background: "/backgrounds/city_rural_evening.png",
+    background: "/backgrounds/city_gihu.png",
     speaker: "七瀬 灯里",
     portrait: "serious",
     text: "でも、名古屋へ進出するには資金も拠点も必要です。今度は私も少しはお役に立てると思います。銀行融資で資金を確保して、支店を作る流れを確認しておきましょう。",
@@ -631,7 +655,7 @@ function getStoryNagoyaGoalText(step) {
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_APPLICATION) return "翌月へ進めて、融資審査結果を待ちましょう。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH) return "資金を使って支店を建設しましょう。自社の空き地が必要です。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_BRANCH) return "翌月へ進めて、支店完成を待ちましょう。";
-  if (step === STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE) return "社員配置で、社員を1人以上支店へ配属しましょう。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE) return "社員を採用し、社員配属で支店へ1人以上配属しましょう。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE) return "名古屋編への進出準備が整いました。";
   return "銀行融資と支店建設の流れを確認しましょう。";
 }
@@ -643,7 +667,7 @@ function getStoryNagoyaAdviceText(step) {
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_APPLICATION) return "融資審査中です。翌月へ進めて結果を待ちましょう。承認されたら、条件を確認して借入を実行してください。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH) return "次は支店です。名古屋マップ上に用意された自社の空き地を使って、支店建設を体験しましょう。建設メニューの「支店」を選び、赤枠で案内される操作に進んでください。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_BRANCH) return "支店を建設中です。完成すると、その周辺が新しい活動範囲になります。翌月へ進めて完成を待ちましょう。";
-  if (step === STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE) return "社員配置を開き、配属先のプルダウンから完成した支店を選んでください。支店に社員を置くことで、その支店エリアの購入・建設・修繕が可能になります。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE) return "支店に配属できる社員が足りない場合は、下部メニューの『社員』から社員採用を行ってください。社員を採用したら、社員配属で完成した支店へ1人以上配属しましょう。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE) return "銀行融資で資金を作り、支店で活動範囲を広げ、社員を支店へ配属する流れまで確認できました。いよいよ名古屋編の本格スタートです。";
   return "銀行融資と支店建設を順番に体験しましょう。";
 }
@@ -724,7 +748,7 @@ function getStoryTutorialGoalText(step) {
   }
 
   if (step === STORY_TUTORIAL_STEPS.COMPLETE) {
-    return "第0章の基本操作は完了です。次は岐阜編へ進みましょう。";
+    return "1-1章の基本操作は完了です。次は岐阜編へ進みましょう。";
   }
 
   return "";
@@ -748,7 +772,7 @@ function getStoryTutorialAkariAdviceText(step) {
   }
 
   if (step === STORY_TUTORIAL_STEPS.COMPLETE) {
-    return "第0章の基本操作は完了です。中古を買って直す流れと、土地を買って建てる流れを、私も一緒に学べました！";
+    return "1-1章の基本操作は完了です。中古を買って直す流れと、土地を買って建てる流れを、私も一緒に学べました！";
   }
 
   return "赤く点滅しているマスを選んで、表示されている目標を進めましょう。";
@@ -1500,18 +1524,18 @@ function readSaveSlot(slot) {
 
 function readAccountData() {
   if (typeof window === "undefined") {
-    return { playerRank: 1, playerExp: 0, employeeVault: [], unlockedStoryAkari: false, rookieEmployeeTickets: 0, employeeTickets: 1, premiumEmployeeTickets: 0, updatedAt: "" };
+    return { playerRank: 1, playerExp: 0, employeeVault: [], unlockedStoryAkari: false, rookieEmployeeTickets: 0, employeeTickets: 0, premiumEmployeeTickets: 0, silverSheets: 0, goldSheets: 0, usedSecretCommands: {}, updatedAt: "" };
   }
 
   try {
     const rawAccountData = window.localStorage.getItem(ACCOUNT_DATA_KEY);
     if (!rawAccountData) {
-      return { playerRank: 1, playerExp: 0, employeeVault: [], unlockedStoryAkari: false, rookieEmployeeTickets: 0, employeeTickets: 1, premiumEmployeeTickets: 0, updatedAt: "" };
+      return { playerRank: 1, playerExp: 0, employeeVault: [], unlockedStoryAkari: false, rookieEmployeeTickets: 0, employeeTickets: 0, premiumEmployeeTickets: 0, silverSheets: 0, goldSheets: 0, usedSecretCommands: {}, updatedAt: "" };
     }
 
     const parsedAccountData = JSON.parse(rawAccountData);
     if (!parsedAccountData || typeof parsedAccountData !== "object") {
-      return { playerRank: 1, playerExp: 0, employeeVault: [], unlockedStoryAkari: false, rookieEmployeeTickets: 0, employeeTickets: 1, premiumEmployeeTickets: 0, updatedAt: "" };
+      return { playerRank: 1, playerExp: 0, employeeVault: [], unlockedStoryAkari: false, rookieEmployeeTickets: 0, employeeTickets: 0, premiumEmployeeTickets: 0, silverSheets: 0, goldSheets: 0, usedSecretCommands: {}, updatedAt: "" };
     }
 
     return {
@@ -1520,13 +1544,16 @@ function readAccountData() {
       employeeVault: Array.isArray(parsedAccountData.employeeVault) ? parsedAccountData.employeeVault : [],
       unlockedStoryAkari: parsedAccountData.unlockedStoryAkari === true,
       rookieEmployeeTickets: Math.max(0, Math.round(Number(parsedAccountData.rookieEmployeeTickets) || 0)),
-      employeeTickets: Math.max(0, Math.round(Number(parsedAccountData.employeeTickets ?? 1) || 0)),
+      employeeTickets: Math.max(0, Math.round(Number(parsedAccountData.employeeTickets ?? 0) || 0)),
       premiumEmployeeTickets: Math.max(0, Math.round(Number(parsedAccountData.premiumEmployeeTickets) || 0)),
+      silverSheets: Math.max(0, Math.round(Number(parsedAccountData.silverSheets ?? parsedAccountData.silverSheet ?? 0) || 0)),
+      goldSheets: Math.max(0, Math.round(Number(parsedAccountData.goldSheets ?? parsedAccountData.goldSheet ?? 0) || 0)),
+      usedSecretCommands: parsedAccountData.usedSecretCommands && typeof parsedAccountData.usedSecretCommands === "object" ? parsedAccountData.usedSecretCommands : {},
       updatedAt: parsedAccountData.updatedAt ?? "",
     };
   } catch (error) {
     console.warn("Account data could not be loaded.", error);
-    return { playerRank: 1, playerExp: 0, employeeVault: [], unlockedStoryAkari: false, rookieEmployeeTickets: 0, employeeTickets: 1, premiumEmployeeTickets: 0, updatedAt: "" };
+    return { playerRank: 1, playerExp: 0, employeeVault: [], unlockedStoryAkari: false, rookieEmployeeTickets: 0, employeeTickets: 0, premiumEmployeeTickets: 0, silverSheets: 0, goldSheets: 0, usedSecretCommands: {}, updatedAt: "" };
   }
 }
 
@@ -1551,7 +1578,7 @@ function getAccountTicketCounts(accountData = {}, fallbackSaveData = {}) {
       hasAccountTicketData ? accountData.rookieEmployeeTickets : fallbackSaveData.rookieEmployeeTickets
     ) || 0)),
     employeeTickets: Math.max(0, Math.round(Number(
-      hasAccountTicketData ? accountData.employeeTickets : (fallbackSaveData.employeeTickets ?? 1)
+      hasAccountTicketData ? accountData.employeeTickets : (fallbackSaveData.employeeTickets ?? 0)
     ) || 0)),
     premiumEmployeeTickets: Math.max(0, Math.round(Number(
       hasAccountTicketData ? accountData.premiumEmployeeTickets : fallbackSaveData.premiumEmployeeTickets
@@ -1669,6 +1696,8 @@ function mergeAccountDataWithGame(accountData, gameData = {}) {
     rookieEmployeeTickets: Math.max(0, Math.round(Number(gameData.rookieEmployeeTickets ?? currentTickets.rookieEmployeeTickets) || 0)),
     employeeTickets: Math.max(0, Math.round(Number(gameData.employeeTickets ?? currentTickets.employeeTickets) || 0)),
     premiumEmployeeTickets: Math.max(0, Math.round(Number(gameData.premiumEmployeeTickets ?? currentTickets.premiumEmployeeTickets) || 0)),
+    silverSheets: Math.max(0, Math.round(Number(accountData?.silverSheets ?? accountData?.silverSheet ?? 0) || 0)),
+    goldSheets: Math.max(0, Math.round(Number(accountData?.goldSheets ?? accountData?.goldSheet ?? 0) || 0)),
     updatedAt: new Date().toISOString(),
   };
 }
@@ -2229,7 +2258,7 @@ const BUILDINGS = {
     lifeYears: 47,
     short: "大商",
     cost: 50000,
-    baseRent: 550,
+    baseRent: 300,
     rooms: 3,
     buildMonths: 12,
     width: 3,
@@ -2319,7 +2348,7 @@ warehouse: {
   structure: "鉄骨造",
   lifeYears: 34,
 
-  name: "倉庫",
+  name: "物流倉庫",
   short: "倉",
 
   cost: 12000,
@@ -2356,6 +2385,64 @@ logistics_center: {
   allowedTenants: ["SHOP"],
 },
 };
+
+const BUILDING_DEMAND_BOOSTS = {
+  small_factory: {
+    housing: 200,
+    commercial: 0,
+    industrial: 200,
+  },
+  medium_factory: {
+    housing: 1200,
+    commercial: 0,
+    industrial: 1200,
+  },
+  large_factory: {
+    housing: 2000,
+    commercial: 0,
+    industrial: 2000,
+  },
+  warehouse: {
+    housing: 300,
+    commercial: 100,
+    industrial: 300,
+  },
+  logistics_center: {
+    housing: 1800,
+    commercial: 1000,
+    industrial: 1800,
+  },
+};
+
+const DEMAND_BOOST_RADIUS = 8;
+const DEMAND_BOOST_SCORE_DIVISOR = 100;
+
+function getBuildingDemandBoost(buildingKey, demandKey) {
+  const boost = BUILDING_DEMAND_BOOSTS[buildingKey];
+  if (!boost) return 0;
+  return Math.max(0, Math.round(Number(boost[demandKey]) || 0));
+}
+
+function getNearbyDemandBoostScore(targetTile, demandKey, tileList = []) {
+  if (!targetTile || !Array.isArray(tileList)) return 0;
+
+  const totalBoost = tileList.reduce((sum, tile) => {
+    if (!tile || !tile.building || tile.buildingMainId) return sum;
+
+    const rawBoost = getBuildingDemandBoost(tile.building, demandKey);
+    if (rawBoost <= 0) return sum;
+
+    const distance = getDistance(targetTile.x, targetTile.y, tile.x, tile.y);
+    if (distance > DEMAND_BOOST_RADIUS) return sum;
+
+    const distanceRate = (DEMAND_BOOST_RADIUS + 1 - distance) / (DEMAND_BOOST_RADIUS + 1);
+    return sum + rawBoost * distanceRate;
+  }, 0);
+
+  return Math.max(0, Math.round(totalBoost / DEMAND_BOOST_SCORE_DIVISOR));
+}
+
+
 const HQ_TYPES = {
   normal: {
     name: "本社",
@@ -2381,428 +2468,426 @@ const BUILDING_CATEGORIES = [
 ];
 
 const SPECIAL_SKILLS = {
+  RISING_STAR: {
+    id: "RISING_STAR",
+    name: "期待の新入社員",
+    description: "まだ未熟だが大きな可能性を秘めている。レベルアップ時の能力上昇量が大幅に増加する。",
+    effects: {
+      akariGrowthBonus: 1
+    },
+  },
+  AKARI_GROWTH_STOCK: {
+    id: "AKARI_GROWTH_STOCK",
+    name: "成長株",
+    description: "努力を重ね、着実に力を伸ばしている。レベルアップ時の能力上昇量が大幅に増加する。",
+    effects: {
+      akariGrowthBonus: 1
+    },
+  },
+  AKARI_RIGHT_HAND: {
+    id: "AKARI_RIGHT_HAND",
+    name: "頼れる右腕",
+    description: "会社を支える存在へと成長した。同じ事務所の社員能力を1％上げる。",
+    effects: {
+      officeAllStatsRateBonus: 0.01
+    },
+  },
+  AKARI_NEXT_LEADER: {
+    id: "AKARI_NEXT_LEADER",
+    name: "次世代リーダー",
+    description: "社員の成長を支えるリーダー候補。同じ事務所の社員の獲得経験値を3％上げる。",
+    effects: {
+      officeExpBonusRate: 0.03
+    },
+  },
+  AKARI_FUTURE_EXECUTIVE: {
+    id: "AKARI_FUTURE_EXECUTIVE",
+    name: "未来の経営者",
+    description: "会社の未来を担う経営者候補。全能力を5％上げる。",
+    effects: {
+      allStatsRateBonus: 0.05
+    },
+  },
+  AKARI_SUCCESSOR: {
+    id: "AKARI_SUCCESSOR",
+    name: "創業の継承者",
+    description: "創業の意思を受け継ぐ存在。全能力を10％上げ、同じ事務所の社員能力を5％上げる。",
+    effects: {
+      allStatsRateBonus: 0.10,
+      officeAllStatsRateBonus: 0.05
+    },
+  },
+  DESIGN_LEADER: {
+    id: "DESIGN_LEADER",
+    name: "設計リーダー",
+    description: "建築費が5％下がる。",
+    effects: {
+      buildCostDiscountRate: 0.05
+    },
+  },
+  QUICK_DESIGNER: {
+    id: "QUICK_DESIGNER",
+    name: "早業設計士",
+    description: "建築工期が20％短縮。",
+    effects: {
+      buildMonthReductionRate: 0.2
+    },
+  },
+  DESIGN_GOD: {
+    id: "DESIGN_GOD",
+    name: "設計の神様",
+    description: "建築工期、建築費が20％下がる。",
+    effects: {
+      buildMonthReductionRate: 0.2,
+      buildCostDiscountRate: 0.2
+    },
+  },
   DIY_CRAFTSMAN: {
     id: "DIY_CRAFTSMAN",
     name: "DIY職人",
-    description: "軽修繕費を50％下げる。",
-    addedByAi: false,
-    extractedCount: 3,
+    description: "修繕費を10％下げる。",
     effects: {
-      "lightRepairCostDiscountRate": 0.5
+      repairCostDiscountRate: 0.1
     },
   },
   CUSTOMER_FIRST: {
     id: "CUSTOMER_FIRST",
     name: "お客様第一",
-    description: "退去率を10％下げる。",
-    addedByAi: false,
-    extractedCount: 14,
+    description: "退去率を5％下げる。",
     effects: {
-      "moveOutRateReductionRate": 0.1
+      moveOutRateReductionRate: 0.05
     },
   },
   CHARISMA_SALES: {
     id: "CHARISMA_SALES",
     name: "カリスマ営業",
-    description: "営業能力を10上げる。",
-    addedByAi: false,
-    extractedCount: 9,
+    description: "営業能力を5上げる。",
     effects: {
-      "salesBonusFlat": 10
+      salesBonusFlat: 5
     },
   },
   CHARISMA_MANAGER: {
     id: "CHARISMA_MANAGER",
     name: "カリスマ所長",
-    description: "同じ支店の社員能力を10％上げる。",
-    addedByAi: false,
-    extractedCount: 9,
+    description: "同じ事務所の社員能力を3％上げる。",
     effects: {
-      "officeAllStatsRateBonus": 0.1
+      officeAllStatsRateBonus: 0.03
     },
   },
   CLAIM_HANDLER: {
     id: "CLAIM_HANDLER",
     name: "クレーム対応力",
-    description: "入居者満足度を10上げる。",
-    addedByAi: false,
-    extractedCount: 8,
+    description: "入居者満足度を3上げる。",
     effects: {
-      "tenantSatisfactionBonus": 10
+      tenantSatisfactionBonus: 3
     },
   },
   HEADHUNTER: {
     id: "HEADHUNTER",
     name: "ヘッドハンター",
     description: "社員募集時の募集人数を1人増やす。",
-    addedByAi: false,
-    extractedCount: 10,
     effects: {
-      "recruitApplicantBonus": 1
+      recruitApplicantBonus: 1
     },
   },
   VETERAN_CARPENTER: {
     id: "VETERAN_CARPENTER",
-    name: "ベテラン大工",
+    name: "大工頭",
     description: "工期を15％短縮する。",
-    addedByAi: false,
-    extractedCount: 7,
     effects: {
-      "buildMonthReductionRate": 0.15
+      buildMonthReductionRate: 0.15
     },
   },
   LEADER: {
     id: "LEADER",
     name: "リーダー",
-    description: "同じ支店の社員能力を3％上げる。",
-    addedByAi: false,
-    extractedCount: 7,
+    description: "同じ事務所の社員能力を1％上げる。",
     effects: {
-      "officeAllStatsRateBonus": 0.03
+      officeAllStatsRateBonus: 0.01
     },
   },
   CLUMSY: {
     id: "CLUMSY",
     name: "不器用",
-    description: "建築能力が10下がる。",
-    addedByAi: false,
-    extractedCount: 10,
+    description: "建築能力が5下がる。",
     effects: {
-      "constructionBonusFlat": -10
+      constructionBonusFlat: -5
     },
   },
   NEGOTIATION_GOOD: {
     id: "NEGOTIATION_GOOD",
     name: "交渉上手",
     description: "土地購入価格を3％下げる。",
-    addedByAi: false,
-    extractedCount: 11,
     effects: {
-      "landPurchaseDiscountRate": 0.03
+      landPurchaseDiscountRate: 0.03
     },
   },
   QUALITY_FIRST: {
     id: "QUALITY_FIRST",
     name: "品質第一",
     description: "建物状態を10上げる。",
-    addedByAi: false,
-    extractedCount: 6,
     effects: {
-      "buildingConditionBonusFlat": 10
+      buildingConditionBonusFlat: 10
     },
   },
   SPENDER: {
     id: "SPENDER",
     name: "浪費家",
-    description: "成果評価がやや不安定。給与新ルールでは初任給に影響しない。",
-    addedByAi: false,
-    extractedCount: 9,
-    effects: {},
+    description: "土地購入費、建築費、修繕費、解体費が10％上がる。",
+    effects: {
+      landPurchaseDiscountRate: -0.1,
+      buildCostDiscountRate: -0.1,
+      repairCostDiscountRate: -0.1,
+      demolitionCostDiscountRate: -0.1
+    },
   },
   PASSIONATE_BOSS: {
     id: "PASSIONATE_BOSS",
     name: "熱血上司",
     description: "獲得経験値を20％上げる。",
-    addedByAi: false,
-    extractedCount: 8,
     effects: {
-      "expBonusRate": 0.2
+      expBonusRate: 0.2
     },
   },
   MANAGEMENT_MASTER: {
     id: "MANAGEMENT_MASTER",
     name: "管理の達人",
     description: "空室率を5％改善する。",
-    addedByAi: false,
-    extractedCount: 11,
     effects: {
-      "vacancyRateReductionRate": 0.05
+      vacancyRateReductionRate: 0.05
     },
   },
   BARGAIN_BUYER: {
     id: "BARGAIN_BUYER",
     name: "買い叩き",
     description: "土地購入価格を8％下げる。",
-    addedByAi: false,
-    extractedCount: 11,
     effects: {
-      "landPurchaseDiscountRate": 0.08
+      landPurchaseDiscountRate: 0.08
     },
   },
   LATE_COMER: {
     id: "LATE_COMER",
     name: "遅刻魔",
     description: "行動成功率を5％下げる。",
-    addedByAi: false,
-    extractedCount: 20,
     effects: {
-      "actionSuccessRateBonus": -0.05
+      actionSuccessRateBonus: -0.05
     },
   },
   LAZY: {
     id: "LAZY",
     name: "面倒くさがり",
-    description: "管理能力が10下がる。",
-    addedByAi: false,
-    extractedCount: 30,
+    description: "管理能力が5下がる。",
     effects: {
-      "managementBonusFlat": -10
+      managementBonusFlat: -5
     },
   },
   FIRST_CLASS_ARCHITECT: {
     id: "FIRST_CLASS_ARCHITECT",
     name: "一級建築士",
-    description: "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
-    addedByAi: true,
-    extractedCount: 7,
+    description: "建築能力を10上げ、工期を1ヶ月短縮しやすくする。",
     effects: {
-      "constructionBonusFlat": 15,
-      "buildMonthReductionFlat": 1
+      constructionBonusFlat: 10,
+      buildMonthReductionFlat: 1
     },
   },
   REAL_ESTATE_INVESTOR: {
     id: "REAL_ESTATE_INVESTOR",
     name: "不動産投資家",
     description: "購入判断成功率を8％上げ、家賃収入を2％上げる。",
-    addedByAi: true,
-    extractedCount: 1,
     effects: {
-      "propertyEvaluationSuccessRateBonus": 0.08,
-      "rentIncomeBonusRate": 0.02
+      propertyEvaluationSuccessRateBonus: 0.08,
+      rentIncomeBonusRate: 0.02
     },
   },
   REAL_ESTATE_GOD: {
     id: "REAL_ESTATE_GOD",
     name: "不動産神",
     description: "全能力を10％上げ、家賃収入を5％上げる。",
-    addedByAi: true,
-    extractedCount: 7,
     effects: {
-      "allStatsRateBonus": 0.1,
-      "rentIncomeBonusRate": 0.05
+      allStatsRateBonus: 0.1,
+      rentIncomeBonusRate: 0.05
     },
   },
   REAL_ESTATE_APPRAISER: {
     id: "REAL_ESTATE_APPRAISER",
     name: "不動産鑑定士",
     description: "物件調査・査定精度が上がり、購入判断成功率を8％上げる。",
-    addedByAi: true,
-    extractedCount: 6,
     effects: {
-      "propertyEvaluationSuccessRateBonus": 0.08
+      propertyEvaluationSuccessRateBonus: 0.08
     },
   },
   NETWORK_KING: {
     id: "NETWORK_KING",
     name: "人脈王",
-    description: "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
-    addedByAi: true,
-    extractedCount: 8,
+    description: "社員募集時の候補人数を1人増やし、融資相談成功率を8％上げる。",
     effects: {
-      "recruitApplicantBonus": 1,
-      "loanConsultSuccessRateBonus": 0.05
+      recruitApplicantBonus: 1,
+      loanConsultSuccessRateBonus: 0.08
     },
   },
   LEGENDARY_RENOVATION_KING: {
     id: "LEGENDARY_RENOVATION_KING",
     name: "伝説の再生王",
-    description: "修繕費を20％下げ、築古物件の入居率を8％上げる。",
-    addedByAi: true,
-    extractedCount: 2,
+    description: "修繕費を50％下げ、築古物件の入居率を8％上げる。",
     effects: {
-      "repairCostDiscountRate": 0.2,
-      "oldPropertyOccupancyBonus": 0.08
+      repairCostDiscountRate: 0.5,
+      oldPropertyOccupancyBonus: 0.08
     },
   },
   LEGENDARY_SALESPERSON: {
     id: "LEGENDARY_SALESPERSON",
     name: "伝説の営業マン",
     description: "営業能力を20上げ、入居率を5％上げる。",
-    addedByAi: true,
-    extractedCount: 4,
     effects: {
-      "salesBonusFlat": 20,
-      "occupancyBonus": 0.05
+      salesBonusFlat: 20,
+      occupancyBonus: 0.05
     },
   },
   REPAIR_MASTER: {
     id: "REPAIR_MASTER",
     name: "修繕の匠",
     description: "修繕費を15％下げ、建物状態の回復量を10上げる。",
-    addedByAi: true,
-    extractedCount: 4,
     effects: {
-      "repairCostDiscountRate": 0.15,
-      "repairConditionBonusFlat": 10
+      repairCostDiscountRate: 0.15,
+      repairConditionBonusFlat: 10
     },
   },
   RENOVATOR: {
     id: "RENOVATOR",
     name: "再生屋",
     description: "築古物件の修繕費を10％下げ、建物状態の回復量を15上げる。",
-    addedByAi: true,
-    extractedCount: 2,
     effects: {
-      "oldPropertyRepairCostDiscountRate": 0.1,
-      "repairConditionBonusFlat": 15
+      oldPropertyRepairCostDiscountRate: 0.1,
+      repairConditionBonusFlat: 15
     },
   },
   ACE_NEGOTIATOR: {
     id: "ACE_NEGOTIATOR",
     name: "凄腕交渉人",
     description: "土地購入価格を10％下げる。",
-    addedByAi: true,
-    extractedCount: 3,
     effects: {
-      "landPurchaseDiscountRate": 0.1
+      landPurchaseDiscountRate: 0.1
     },
   },
   GREAT_COMMANDER: {
     id: "GREAT_COMMANDER",
     name: "名将",
-    description: "同じ事務所の社員能力を8％上げる。",
-    addedByAi: true,
-    extractedCount: 8,
+    description: "同じ事務所の社員能力を5％上げる。",
     effects: {
-      "officeAllStatsRateBonus": 0.08
+      officeAllStatsRateBonus: 0.05
     },
   },
   LAND_PRICE_PROPHET: {
     id: "LAND_PRICE_PROPHET",
     name: "地価予言者",
     description: "地価上昇イベントの察知率を上げ、購入判断成功率を10％上げる。",
-    addedByAi: true,
-    extractedCount: 1,
     effects: {
-      "landPriceForecastBonus": 0.1,
-      "propertyEvaluationSuccessRateBonus": 0.1
+      landPriceForecastBonus: 0.1,
+      propertyEvaluationSuccessRateBonus: 0.1
     },
   },
   REGIONAL_REVITALIZER: {
     id: "REGIONAL_REVITALIZER",
     name: "地方創生",
     description: "郊外・地方エリアの入居率を5％上げる。",
-    addedByAi: true,
-    extractedCount: 3,
     effects: {
-      "regionalOccupancyBonus": 0.05
+      regionalOccupancyBonus: 0.05
     },
   },
   RENT_COLLECTOR: {
     id: "RENT_COLLECTOR",
     name: "家賃回収人",
     description: "家賃回収率を5％上げ、滞納発生率を10％下げる。",
-    addedByAi: true,
-    extractedCount: 3,
     effects: {
-      "rentCollectionRateBonus": 0.05,
-      "delinquencyRateReductionRate": 0.1
+      rentCollectionRateBonus: 0.05,
+      delinquencyRateReductionRate: 0.1
     },
   },
   INSPECTION_MASTER: {
     id: "INSPECTION_MASTER",
     name: "巡回名人",
-    description: "管理能力を15上げ、退去率を5％下げる。",
-    addedByAi: true,
-    extractedCount: 8,
+    description: "管理能力を7上げ、退去率を5％下げる。",
     effects: {
-      "managementBonusFlat": 15,
-      "moveOutRateReductionRate": 0.05
+      managementBonusFlat: 7,
+      moveOutRateReductionRate: 0.05
     },
   },
   MENTOR: {
     id: "MENTOR",
     name: "教育係",
-    description: "同じ事務所の社員の獲得経験値を10％上げる。",
-    addedByAi: true,
-    extractedCount: 3,
+    description: "同じ事務所の社員の獲得経験値を3％上げる。",
     effects: {
-      "officeExpBonusRate": 0.1
+      officeExpBonusRate: 0.03
     },
   },
   SITE_SUPERVISOR: {
     id: "SITE_SUPERVISOR",
     name: "現場監督",
-    description: "建築能力を10上げ、建築費を5％下げる。",
-    addedByAi: true,
-    extractedCount: 2,
+    description: "建築能力を7上げ、建築費を5％下げる。",
     effects: {
-      "constructionBonusFlat": 10,
-      "buildCostDiscountRate": 0.05
+      constructionBonusFlat: 7,
+      buildCostDiscountRate: 0.05
     },
   },
   VETERAN_STRATEGIST: {
     id: "VETERAN_STRATEGIST",
     name: "百戦錬磨",
     description: "行動成功率を10％上げる。",
-    addedByAi: true,
-    extractedCount: 3,
     effects: {
-      "actionSuccessRateBonus": 0.1
+      actionSuccessRateBonus: 0.1
     },
   },
   SAVER: {
     id: "SAVER",
     name: "節約家",
     description: "維持費を10％下げる。",
-    addedByAi: true,
-    extractedCount: 2,
     effects: {
-      "maintenanceReductionRate": 0.1
+      maintenanceReductionRate: 0.1
     },
   },
   DEMOLITION_EXPERT: {
     id: "DEMOLITION_EXPERT",
     name: "解体屋",
     description: "解体費を20％下げる。",
-    addedByAi: true,
-    extractedCount: 1,
     effects: {
-      "demolitionCostDiscountRate": 0.2
+      demolitionCostDiscountRate: 0.2
     },
   },
   RENTAL_KING: {
     id: "RENTAL_KING",
     name: "賃貸王",
     description: "入居率を10％上げ、家賃収入を3％上げる。",
-    addedByAi: true,
-    extractedCount: 5,
     effects: {
-      "occupancyBonus": 0.1,
-      "rentIncomeBonusRate": 0.03
+      occupancyBonus: 0.1,
+      rentIncomeBonusRate: 0.03
     },
   },
   STRATEGIST: {
     id: "STRATEGIST",
     name: "軍師",
     description: "同じ事務所の社員能力を5％上げ、行動成功率を5％上げる。",
-    addedByAi: true,
-    extractedCount: 3,
     effects: {
-      "officeAllStatsRateBonus": 0.05,
-      "actionSuccessRateBonus": 0.05
+      officeAllStatsRateBonus: 0.05,
+      actionSuccessRateBonus: 0.05
     },
   },
-  NOGUCHI_CORP_FOUNDER: {
-    id: "NOGUCHI_CORP_FOUNDER",
-    name: "野口コーポレーション創業者",
-    description: "全能力を15％上げ、同じ事務所の社員能力を5％上げる。",
-    addedByAi: true,
-    extractedCount: 2,
+  FOUNDER: {
+    id: "FOUNDER",
+    name: "創業者",
+    description: "全能力を8％上げ、同じ事務所の社員能力を5％上げる。",
     effects: {
-      "allStatsRateBonus": 0.15,
-      "officeAllStatsRateBonus": 0.05
+      allStatsRateBonus: 0.08,
+      officeAllStatsRateBonus: 0.05
     },
   },
-  NOGUCHI_METHOD: {
-    id: "NOGUCHI_METHOD",
-    name: "野口メソッド",
-    description: "築古再生の成功率を15％上げ、修繕費を10％下げる。",
-    addedByAi: true,
-    extractedCount: 2,
+  FOUNDER_METHOD: {
+    id: "FOUNDER_METHOD",
+    name: "創業者精神",
+    description: "土地購入費、建築費を20％下げ、全能力を8％上げる。",
     effects: {
-      "renovationSuccessRateBonus": 0.15,
-      "repairCostDiscountRate": 0.1
+      landPurchaseDiscountRate: 0.2,
+      buildCostDiscountRate: 0.2,
+      allStatsRateBonus: 0.08
     },
   },
 };
@@ -2905,7 +2990,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -3047,7 +3132,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -3189,7 +3274,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -3331,7 +3416,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -3473,7 +3558,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -3615,7 +3700,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -3757,7 +3842,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -3899,7 +3984,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -4041,7 +4126,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -4183,7 +4268,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -4325,7 +4410,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -4467,7 +4552,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -4609,7 +4694,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -4751,7 +4836,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -4893,7 +4978,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -5035,7 +5120,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -5177,7 +5262,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -5319,7 +5404,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -5461,7 +5546,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -5603,7 +5688,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -5686,10 +5771,10 @@ export const employeeMaster = [
   exp: 0,
   awakening: 0,
   awakeningMax: 0,
-  leadership: 40,
-  sales: 45,
-  construction: 27,
-  management: 58,
+  leadership: 45,
+  sales: 48,
+  construction: 39,
+  management: 56,
   salary: calculateEmployeeSalaryByLevel(1),
   officeId: "storage",
   graphicCode: "R001",
@@ -5761,7 +5846,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -5790,7 +5875,7 @@ export const employeeMaster = [
       "CHARISMA_SALES",
     ],
     specialDescriptions: [
-      "営業能力を10上げる。",
+      "営業能力を5上げる。",
     ],
   },
   {
@@ -5819,7 +5904,7 @@ export const employeeMaster = [
       "SPENDER",
     ],
     specialDescriptions: [
-      "給与が20％上がる。",
+      "土地購入費、建築費、修繕費、解体費が10％上がる。",
     ],
   },
   {
@@ -5877,7 +5962,7 @@ export const employeeMaster = [
       "CLUMSY",
     ],
     specialDescriptions: [
-      "建築能力が10下がる。",
+      "建築能力が5下がる。",
     ],
   },
   {
@@ -5897,7 +5982,7 @@ export const employeeMaster = [
     officeId: "storage",
     graphicCode: null,
     specialNames: [
-      "ベテラン大工",
+      "大工頭",
     ],
     skillIds: [
       "VETERAN_CARPENTER",
@@ -5935,7 +6020,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -5993,7 +6078,7 @@ export const employeeMaster = [
       "SPENDER",
     ],
     specialDescriptions: [
-      "給与が20％上がる。",
+      "土地購入費、建築費、修繕費、解体費が10％上がる。",
     ],
   },
   {
@@ -6022,7 +6107,7 @@ export const employeeMaster = [
       "DIY_CRAFTSMAN",
     ],
     specialDescriptions: [
-      "軽修繕費を50％下げる。",
+      "修繕費を10％下げる。",
     ],
   },
   {
@@ -6051,7 +6136,7 @@ export const employeeMaster = [
       "CLUMSY",
     ],
     specialDescriptions: [
-      "建築能力が10下がる。",
+      "建築能力が5下がる。",
     ],
   },
   {
@@ -6109,7 +6194,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -6138,7 +6223,7 @@ export const employeeMaster = [
       "CUSTOMER_FIRST",
     ],
     specialDescriptions: [
-      "退去率を10％下げる。",
+      "退去率を5％下げる。",
     ],
   },
   {
@@ -6167,7 +6252,7 @@ export const employeeMaster = [
       "SPENDER",
     ],
     specialDescriptions: [
-      "給与が20％上がる。",
+      "土地購入費、建築費、修繕費、解体費が10％上がる。",
     ],
   },
   {
@@ -6196,7 +6281,7 @@ export const employeeMaster = [
       "CLAIM_HANDLER",
     ],
     specialDescriptions: [
-      "入居者満足度を10上げる。",
+      "入居者満足度を3上げる。",
     ],
   },
   {
@@ -6225,7 +6310,7 @@ export const employeeMaster = [
       "CLUMSY",
     ],
     specialDescriptions: [
-      "建築能力が10下がる。",
+      "建築能力が5下がる。",
     ],
   },
   {
@@ -6254,7 +6339,7 @@ export const employeeMaster = [
       "LEADER",
     ],
     specialDescriptions: [
-      "同じ支店の社員能力を3％上げる。",
+      "同じ事務所の社員能力を1％上げる。",
     ],
   },
   {
@@ -6283,7 +6368,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -6312,7 +6397,7 @@ export const employeeMaster = [
       "CHARISMA_MANAGER",
     ],
     specialDescriptions: [
-      "同じ支店の社員能力を10％上げる。",
+      "同じ事務所の社員能力を3％上げる。",
     ],
   },
   {
@@ -6341,7 +6426,7 @@ export const employeeMaster = [
       "SPENDER",
     ],
     specialDescriptions: [
-      "給与が20％上がる。",
+      "土地購入費、建築費、修繕費、解体費が10％上がる。",
     ],
   },
   {
@@ -6399,7 +6484,7 @@ export const employeeMaster = [
       "CLUMSY",
     ],
     specialDescriptions: [
-      "建築能力が10下がる。",
+      "建築能力が5下がる。",
     ],
   },
   {
@@ -6457,7 +6542,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -6515,7 +6600,7 @@ export const employeeMaster = [
       "SPENDER",
     ],
     specialDescriptions: [
-      "給与が20％上がる。",
+      "土地購入費、建築費、修繕費、解体費が10％上がる。",
     ],
   },
   {
@@ -6544,7 +6629,7 @@ export const employeeMaster = [
       "CHARISMA_SALES",
     ],
     specialDescriptions: [
-      "営業能力を10上げる。",
+      "営業能力を5上げる。",
     ],
   },
   {
@@ -6573,7 +6658,7 @@ export const employeeMaster = [
       "CLUMSY",
     ],
     specialDescriptions: [
-      "建築能力が10下がる。",
+      "建築能力が5下がる。",
     ],
   },
   {
@@ -6631,7 +6716,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -6651,7 +6736,7 @@ export const employeeMaster = [
     officeId: "storage",
     graphicCode: null,
     specialNames: [
-      "ベテラン大工",
+      "大工頭",
     ],
     skillIds: [
       "VETERAN_CARPENTER",
@@ -6689,7 +6774,7 @@ export const employeeMaster = [
       "SPENDER",
     ],
     specialDescriptions: [
-      "給与が20％上がる。",
+      "土地購入費、建築費、修繕費、解体費が10％上がる。",
     ],
   },
   {
@@ -6747,7 +6832,7 @@ export const employeeMaster = [
       "CLUMSY",
     ],
     specialDescriptions: [
-      "建築能力が10下がる。",
+      "建築能力が5下がる。",
     ],
   },
   {
@@ -6776,7 +6861,7 @@ export const employeeMaster = [
       "DIY_CRAFTSMAN",
     ],
     specialDescriptions: [
-      "軽修繕費を50％下げる。",
+      "修繕費を10％下げる。",
     ],
   },
   {
@@ -6805,7 +6890,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -6863,7 +6948,7 @@ export const employeeMaster = [
       "SPENDER",
     ],
     specialDescriptions: [
-      "給与が20％上がる。",
+      "土地購入費、建築費、修繕費、解体費が10％上がる。",
     ],
   },
   {
@@ -6892,7 +6977,7 @@ export const employeeMaster = [
       "CUSTOMER_FIRST",
     ],
     specialDescriptions: [
-      "退去率を10％下げる。",
+      "退去率を5％下げる。",
     ],
   },
   {
@@ -6921,7 +7006,7 @@ export const employeeMaster = [
       "CLUMSY",
     ],
     specialDescriptions: [
-      "建築能力が10下がる。",
+      "建築能力が5下がる。",
     ],
   },
   {
@@ -6950,7 +7035,7 @@ export const employeeMaster = [
       "CLAIM_HANDLER",
     ],
     specialDescriptions: [
-      "入居者満足度を10上げる。",
+      "入居者満足度を3上げる。",
     ],
   },
   {
@@ -6979,7 +7064,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -7008,7 +7093,7 @@ export const employeeMaster = [
       "LEADER",
     ],
     specialDescriptions: [
-      "同じ支店の社員能力を3％上げる。",
+      "同じ事務所の社員能力を1％上げる。",
     ],
   },
   {
@@ -7037,7 +7122,7 @@ export const employeeMaster = [
       "SPENDER",
     ],
     specialDescriptions: [
-      "給与が20％上がる。",
+      "土地購入費、建築費、修繕費、解体費が10％上がる。",
     ],
   },
   {
@@ -7066,7 +7151,7 @@ export const employeeMaster = [
       "CHARISMA_MANAGER",
     ],
     specialDescriptions: [
-      "同じ支店の社員能力を10％上げる。",
+      "同じ事務所の社員能力を3％上げる。",
     ],
   },
   {
@@ -7095,7 +7180,7 @@ export const employeeMaster = [
       "CLUMSY",
     ],
     specialDescriptions: [
-      "建築能力が10下がる。",
+      "建築能力が5下がる。",
     ],
   },
   {
@@ -7153,7 +7238,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -7211,7 +7296,7 @@ export const employeeMaster = [
       "SPENDER",
     ],
     specialDescriptions: [
-      "給与が20％上がる。",
+      "土地購入費、建築費、修繕費、解体費が10％上がる。",
     ],
   },
   {
@@ -7269,7 +7354,7 @@ export const employeeMaster = [
       "CLUMSY",
     ],
     specialDescriptions: [
-      "建築能力が10下がる。",
+      "建築能力が5下がる。",
     ],
   },
   {
@@ -7298,7 +7383,7 @@ export const employeeMaster = [
       "CHARISMA_SALES",
     ],
     specialDescriptions: [
-      "営業能力を10上げる。",
+      "営業能力を5上げる。",
     ],
   },
   {
@@ -7327,7 +7412,7 @@ export const employeeMaster = [
       "LAZY",
     ],
     specialDescriptions: [
-      "管理能力が10下がる。",
+      "管理能力が5下がる。",
     ],
   },
   {
@@ -7385,7 +7470,7 @@ export const employeeMaster = [
       "CUSTOMER_FIRST",
     ],
     specialDescriptions: [
-      "退去率を10％下げる。",
+      "退去率を5％下げる。",
     ],
   },
   {
@@ -7443,7 +7528,7 @@ export const employeeMaster = [
       "GREAT_COMMANDER",
     ],
     specialDescriptions: [
-      "同じ事務所の社員能力を8％上げる。",
+      "同じ事務所の社員能力を5％上げる。",
     ],
   },
   {
@@ -7472,7 +7557,7 @@ export const employeeMaster = [
       "INSPECTION_MASTER",
     ],
     specialDescriptions: [
-      "管理能力を15上げ、退去率を5％下げる。",
+      "管理能力を7上げ、退去率を5％下げる。",
     ],
   },
   {
@@ -7704,7 +7789,7 @@ export const employeeMaster = [
       "CUSTOMER_FIRST",
     ],
     specialDescriptions: [
-      "退去率を10％下げる。",
+      "退去率を5％下げる。",
     ],
   },
   {
@@ -7724,7 +7809,7 @@ export const employeeMaster = [
     officeId: "storage",
     graphicCode: "HR013",
     specialNames: [
-      "ベテラン大工",
+      "大工頭",
     ],
     skillIds: [
       "VETERAN_CARPENTER",
@@ -7762,7 +7847,7 @@ export const employeeMaster = [
       "CUSTOMER_FIRST",
     ],
     specialDescriptions: [
-      "退去率を10％下げる。",
+      "退去率を5％下げる。",
     ],
   },
   {
@@ -7791,7 +7876,7 @@ export const employeeMaster = [
       "CUSTOMER_FIRST",
     ],
     specialDescriptions: [
-      "退去率を10％下げる。",
+      "退去率を5％下げる。",
     ],
   },
   {
@@ -7820,7 +7905,7 @@ export const employeeMaster = [
       "CHARISMA_MANAGER",
     ],
     specialDescriptions: [
-      "同じ支店の社員能力を10％上げる。",
+      "同じ事務所の社員能力を3％上げる。",
     ],
   },
   {
@@ -7907,7 +7992,7 @@ export const employeeMaster = [
       "FIRST_CLASS_ARCHITECT",
     ],
     specialDescriptions: [
-      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
+      "建築能力を10上げ、工期を1ヶ月短縮しやすくする。",
     ],
   },
   {
@@ -7965,7 +8050,7 @@ export const employeeMaster = [
       "CLAIM_HANDLER",
     ],
     specialDescriptions: [
-      "入居者満足度を10上げる。",
+      "入居者満足度を3上げる。",
     ],
   },
   {
@@ -8072,7 +8157,7 @@ export const employeeMaster = [
     officeId: "storage",
     graphicCode: "HR025",
     specialNames: [
-      "ベテラン大工",
+      "大工頭",
     ],
     skillIds: [
       "VETERAN_CARPENTER",
@@ -8168,7 +8253,7 @@ export const employeeMaster = [
       "CHARISMA_MANAGER",
     ],
     specialDescriptions: [
-      "同じ支店の社員能力を10％上げる。",
+      "同じ事務所の社員能力を3％上げる。",
     ],
   },
   {
@@ -8197,7 +8282,7 @@ export const employeeMaster = [
       "CUSTOMER_FIRST",
     ],
     specialDescriptions: [
-      "退去率を10％下げる。",
+      "退去率を5％下げる。",
     ],
   },
   {
@@ -8226,7 +8311,7 @@ export const employeeMaster = [
       "MENTOR",
     ],
     specialDescriptions: [
-      "同じ事務所の社員の獲得経験値を10％上げる。",
+      "同じ事務所の社員の獲得経験値を3％上げる。",
     ],
   },
   {
@@ -8255,7 +8340,7 @@ export const employeeMaster = [
       "CLAIM_HANDLER",
     ],
     specialDescriptions: [
-      "入居者満足度を10上げる。",
+      "入居者満足度を3上げる。",
     ],
   },
   {
@@ -8284,7 +8369,7 @@ export const employeeMaster = [
       "INSPECTION_MASTER",
     ],
     specialDescriptions: [
-      "管理能力を15上げ、退去率を5％下げる。",
+      "管理能力を7上げ、退去率を5％下げる。",
     ],
   },
   {
@@ -8342,7 +8427,7 @@ export const employeeMaster = [
       "INSPECTION_MASTER",
     ],
     specialDescriptions: [
-      "管理能力を15上げ、退去率を5％下げる。",
+      "管理能力を7上げ、退去率を5％下げる。",
     ],
   },
   {
@@ -8371,7 +8456,7 @@ export const employeeMaster = [
       "NETWORK_KING",
     ],
     specialDescriptions: [
-      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
+      "社員募集時の候補人数を1人増やし、融資相談成功率を8％上げる。",
     ],
   },
   {
@@ -8400,7 +8485,7 @@ export const employeeMaster = [
       "CUSTOMER_FIRST",
     ],
     specialDescriptions: [
-      "退去率を10％下げる。",
+      "退去率を5％下げる。",
     ],
   },
   {
@@ -8458,7 +8543,7 @@ export const employeeMaster = [
       "CHARISMA_MANAGER",
     ],
     specialDescriptions: [
-      "同じ支店の社員能力を10％上げる。",
+      "同じ事務所の社員能力を3％上げる。",
     ],
   },
   {
@@ -8487,7 +8572,7 @@ export const employeeMaster = [
       "MENTOR",
     ],
     specialDescriptions: [
-      "同じ事務所の社員の獲得経験値を10％上げる。",
+      "同じ事務所の社員の獲得経験値を3％上げる。",
     ],
   },
   {
@@ -8516,7 +8601,7 @@ export const employeeMaster = [
       "FIRST_CLASS_ARCHITECT",
     ],
     specialDescriptions: [
-      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
+      "建築能力を10上げ、工期を1ヶ月短縮しやすくする。",
     ],
   },
   {
@@ -8536,7 +8621,7 @@ export const employeeMaster = [
     officeId: "storage",
     graphicCode: "HR041",
     specialNames: [
-      "ベテラン大工",
+      "大工頭",
     ],
     skillIds: [
       "VETERAN_CARPENTER",
@@ -8603,7 +8688,7 @@ export const employeeMaster = [
       "DIY_CRAFTSMAN",
     ],
     specialDescriptions: [
-      "軽修繕費を50％下げる。",
+      "修繕費を10％下げる。",
     ],
   },
   {
@@ -8690,7 +8775,7 @@ export const employeeMaster = [
       "CHARISMA_MANAGER",
     ],
     specialDescriptions: [
-      "同じ支店の社員能力を10％上げる。",
+      "同じ事務所の社員能力を3％上げる。",
     ],
   },
   {
@@ -8777,7 +8862,7 @@ export const employeeMaster = [
       "NETWORK_KING",
     ],
     specialDescriptions: [
-      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
+      "社員募集時の候補人数を1人増やし、融資相談成功率を8％上げる。",
     ],
   },
   {
@@ -8838,7 +8923,7 @@ export const employeeMaster = [
       "LEGENDARY_SALESPERSON",
     ],
     specialDescriptions: [
-      "同じ支店の社員能力を3％上げる。",
+      "同じ事務所の社員能力を1％上げる。",
       "営業能力を20上げ、入居率を5％上げる。",
     ],
   },
@@ -8871,7 +8956,7 @@ export const employeeMaster = [
       "REPAIR_MASTER",
     ],
     specialDescriptions: [
-      "建築能力を10上げ、建築費を5％下げる。",
+      "建築能力を7上げ、建築費を5％下げる。",
       "修繕費を15％下げ、建物状態の回復量を10上げる。",
     ],
   },
@@ -8904,7 +8989,7 @@ export const employeeMaster = [
       "NEGOTIATION_GOOD",
     ],
     specialDescriptions: [
-      "同じ事務所の社員能力を8％上げる。",
+      "同じ事務所の社員能力を5％上げる。",
       "土地購入価格を3％下げる。",
     ],
   },
@@ -8970,8 +9055,8 @@ export const employeeMaster = [
       "INSPECTION_MASTER",
     ],
     specialDescriptions: [
-      "入居者満足度を10上げる。",
-      "管理能力を15上げ、退去率を5％下げる。",
+      "入居者満足度を3上げる。",
+      "管理能力を7上げ、退去率を5％下げる。",
     ],
   },
   {
@@ -9003,7 +9088,7 @@ export const employeeMaster = [
       "BARGAIN_BUYER",
     ],
     specialDescriptions: [
-      "入居者満足度を10上げる。",
+      "入居者満足度を3上げる。",
       "土地購入価格を8％下げる。",
     ],
   },
@@ -9037,7 +9122,7 @@ export const employeeMaster = [
     ],
     specialDescriptions: [
       "修繕費を15％下げ、建物状態の回復量を10上げる。",
-      "同じ支店の社員能力を3％上げる。",
+      "同じ事務所の社員能力を1％上げる。",
     ],
   },
   {
@@ -9069,8 +9154,8 @@ export const employeeMaster = [
       "FIRST_CLASS_ARCHITECT",
     ],
     specialDescriptions: [
-      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
-      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
+      "社員募集時の候補人数を1人増やし、融資相談成功率を8％上げる。",
+      "建築能力を10上げ、工期を1ヶ月短縮しやすくする。",
     ],
   },
   {
@@ -9202,7 +9287,7 @@ export const employeeMaster = [
     ],
     specialDescriptions: [
       "社員募集時の募集人数を1人増やす。",
-      "同じ支店の社員能力を10％上げる。",
+      "同じ事務所の社員能力を3％上げる。",
     ],
   },
   {
@@ -9223,7 +9308,7 @@ export const employeeMaster = [
     graphicCode: "SR013",
     specialNames: [
       "クレーム対応力",
-      "ベテラン大工",
+      "大工頭",
     ],
     skillIds: [
       "CLAIM_HANDLER",
@@ -9234,7 +9319,7 @@ export const employeeMaster = [
       "VETERAN_CARPENTER",
     ],
     specialDescriptions: [
-      "入居者満足度を10上げる。",
+      "入居者満足度を3上げる。",
       "工期を15％短縮する。",
     ],
   },
@@ -9268,7 +9353,7 @@ export const employeeMaster = [
     ],
     specialDescriptions: [
       "入居率を10％上げ、家賃収入を3％上げる。",
-      "退去率を10％下げる。",
+      "退去率を5％下げる。",
     ],
   },
   {
@@ -9300,7 +9385,7 @@ export const employeeMaster = [
       "NEGOTIATION_GOOD",
     ],
     specialDescriptions: [
-      "同じ支店の社員能力を3％上げる。",
+      "同じ事務所の社員能力を1％上げる。",
       "土地購入価格を3％下げる。",
     ],
   },
@@ -9333,8 +9418,8 @@ export const employeeMaster = [
       "CUSTOMER_FIRST",
     ],
     specialDescriptions: [
-      "営業能力を10上げる。",
-      "退去率を10％下げる。",
+      "営業能力を5上げる。",
+      "退去率を5％下げる。",
     ],
   },
   {
@@ -9366,8 +9451,8 @@ export const employeeMaster = [
       "GREAT_COMMANDER",
     ],
     specialDescriptions: [
-      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
-      "同じ事務所の社員能力を8％上げる。",
+      "建築能力を10上げ、工期を1ヶ月短縮しやすくする。",
+      "同じ事務所の社員能力を5％上げる。",
     ],
   },
   {
@@ -9388,7 +9473,7 @@ export const employeeMaster = [
     graphicCode: "SR018",
     specialNames: [
       "凄腕交渉人",
-      "ベテラン大工",
+      "大工頭",
     ],
     skillIds: [
       "ACE_NEGOTIATOR",
@@ -9465,8 +9550,8 @@ export const employeeMaster = [
       "CHARISMA_SALES",
     ],
     specialDescriptions: [
-      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
-      "営業能力を10上げる。",
+      "社員募集時の候補人数を1人増やし、融資相談成功率を8％上げる。",
+      "営業能力を5上げる。",
     ],
   },
   {
@@ -9498,7 +9583,7 @@ export const employeeMaster = [
       "RENTAL_KING",
     ],
     specialDescriptions: [
-      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
+      "社員募集時の候補人数を1人増やし、融資相談成功率を8％上げる。",
       "入居率を10％上げ、家賃収入を3％上げる。",
     ],
   },
@@ -9531,8 +9616,8 @@ export const employeeMaster = [
       "CHARISMA_MANAGER",
     ],
     specialDescriptions: [
-      "同じ事務所の社員能力を8％上げる。",
-      "同じ支店の社員能力を10％上げる。",
+      "同じ事務所の社員能力を5％上げる。",
+      "同じ事務所の社員能力を3％上げる。",
     ],
   },
   {
@@ -9630,7 +9715,7 @@ export const employeeMaster = [
       "SAVER",
     ],
     specialDescriptions: [
-      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
+      "社員募集時の候補人数を1人増やし、融資相談成功率を8％上げる。",
       "維持費を10％下げる。",
     ],
   },
@@ -9663,8 +9748,8 @@ export const employeeMaster = [
       "NETWORK_KING",
     ],
     specialDescriptions: [
-      "入居者満足度を10上げる。",
-      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
+      "入居者満足度を3上げる。",
+      "社員募集時の候補人数を1人増やし、融資相談成功率を8％上げる。",
     ],
   },
   {
@@ -9697,7 +9782,7 @@ export const employeeMaster = [
     ],
     specialDescriptions: [
       "空室率を5％改善する。",
-      "営業能力を10上げる。",
+      "営業能力を5上げる。",
     ],
   },
   {
@@ -9762,7 +9847,7 @@ export const employeeMaster = [
       "STRATEGIST",
     ],
     specialDescriptions: [
-      "管理能力を15上げ、退去率を5％下げる。",
+      "管理能力を7上げ、退去率を5％下げる。",
       "同じ事務所の社員能力を5％上げ、行動成功率を5％上げる。",
     ],
   },
@@ -9818,22 +9903,22 @@ export const employeeMaster = [
     specialNames: [
       "管理の達人",
       "人脈王",
-      "野口メソッド",
+      "創業者精神",
     ],
     skillIds: [
       "MANAGEMENT_MASTER",
       "NETWORK_KING",
-      "NOGUCHI_METHOD",
+      "FOUNDER_METHOD",
     ],
     specialCodes: [
       "MANAGEMENT_MASTER",
       "NETWORK_KING",
-      "NOGUCHI_METHOD",
+      "FOUNDER_METHOD",
     ],
     specialDescriptions: [
       "空室率を5％改善する。",
-      "社員募集時の候補人数を1人増やし、融資相談成功率を5％上げる。",
-      "築古再生の成功率を15％上げ、修繕費を10％下げる。",
+      "社員募集時の候補人数を1人増やし、融資相談成功率を8％上げる。",
+      "土地購入費、建築費を20％下げ、全能力を8％上げる。",
     ],
   },
   {
@@ -9869,7 +9954,7 @@ export const employeeMaster = [
     ],
     specialDescriptions: [
       "同じ事務所の社員能力を5％上げ、行動成功率を5％上げる。",
-      "退去率を10％下げる。",
+      "退去率を5％下げる。",
       "郊外・地方エリアの入居率を5％上げる。",
     ],
   },
@@ -9942,7 +10027,7 @@ export const employeeMaster = [
       "REAL_ESTATE_GOD",
     ],
     specialDescriptions: [
-      "同じ事務所の社員の獲得経験値を10％上げる。",
+      "同じ事務所の社員の獲得経験値を3％上げる。",
       "土地購入価格を8％下げる。",
       "全能力を10％上げ、家賃収入を5％上げる。",
     ],
@@ -9979,8 +10064,8 @@ export const employeeMaster = [
       "VETERAN_STRATEGIST",
     ],
     specialDescriptions: [
-      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
-      "建築能力を10上げ、建築費を5％下げる。",
+      "建築能力を10上げ、工期を1ヶ月短縮しやすくする。",
+      "建築能力を7上げ、建築費を5％下げる。",
       "行動成功率を10％上げる。",
     ],
   },
@@ -10016,7 +10101,7 @@ export const employeeMaster = [
       "VETERAN_STRATEGIST",
     ],
     specialDescriptions: [
-      "管理能力を15上げ、退去率を5％下げる。",
+      "管理能力を7上げ、退去率を5％下げる。",
       "営業能力を20上げ、入居率を5％上げる。",
       "行動成功率を10％上げる。",
     ],
@@ -10077,22 +10162,22 @@ export const employeeMaster = [
     specialNames: [
       "お客様第一",
       "カリスマ営業",
-      "野口メソッド",
+      "創業者精神",
     ],
     skillIds: [
       "CUSTOMER_FIRST",
       "CHARISMA_SALES",
-      "NOGUCHI_METHOD",
+      "FOUNDER_METHOD",
     ],
     specialCodes: [
       "CUSTOMER_FIRST",
       "CHARISMA_SALES",
-      "NOGUCHI_METHOD",
+      "FOUNDER_METHOD",
     ],
     specialDescriptions: [
-      "退去率を10％下げる。",
-      "営業能力を10上げる。",
-      "築古再生の成功率を15％上げ、修繕費を10％下げる。",
+      "退去率を5％下げる。",
+      "営業能力を5上げる。",
+      "土地購入費、建築費を20％下げ、全能力を8％上げる。",
     ],
   },
   {
@@ -10127,8 +10212,8 @@ export const employeeMaster = [
       "REAL_ESTATE_GOD",
     ],
     specialDescriptions: [
-      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
-      "営業能力を10上げる。",
+      "建築能力を10上げ、工期を1ヶ月短縮しやすくする。",
+      "営業能力を5上げる。",
       "全能力を10％上げ、家賃収入を5％上げる。",
     ],
   },
@@ -10165,7 +10250,7 @@ export const employeeMaster = [
     ],
     specialDescriptions: [
       "社員募集時の募集人数を1人増やす。",
-      "同じ事務所の社員能力を8％上げる。",
+      "同じ事務所の社員能力を5％上げる。",
       "全能力を10％上げ、家賃収入を5％上げる。",
     ],
   },
@@ -10202,7 +10287,7 @@ export const employeeMaster = [
     ],
     specialDescriptions: [
       "土地購入価格を8％下げる。",
-      "同じ事務所の社員能力を8％上げる。",
+      "同じ事務所の社員能力を5％上げる。",
       "全能力を10％上げ、家賃収入を5％上げる。",
     ],
   },
@@ -10238,8 +10323,8 @@ export const employeeMaster = [
       "REAL_ESTATE_GOD",
     ],
     specialDescriptions: [
-      "退去率を10％下げる。",
-      "同じ事務所の社員能力を8％上げる。",
+      "退去率を5％下げる。",
+      "同じ事務所の社員能力を5％上げる。",
       "全能力を10％上げ、家賃収入を5％上げる。",
     ],
   },
@@ -10275,8 +10360,8 @@ export const employeeMaster = [
       "REAL_ESTATE_GOD",
     ],
     specialDescriptions: [
-      "同じ事務所の社員能力を8％上げる。",
-      "退去率を10％下げる。",
+      "同じ事務所の社員能力を5％上げる。",
+      "退去率を5％下げる。",
       "全能力を10％上げ、家賃収入を5％上げる。",
     ],
   },
@@ -10389,8 +10474,8 @@ export const employeeMaster = [
       "LAND_PRICE_PROPHET",
     ],
     specialDescriptions: [
-      "管理能力を15上げ、退去率を5％下げる。",
-      "同じ支店の社員能力を3％上げる。",
+      "管理能力を7上げ、退去率を5％下げる。",
+      "同じ事務所の社員能力を1％上げる。",
       "修繕費を15％下げ、建物状態の回復量を10上げる。",
       "地価上昇イベントの察知率を上げ、購入判断成功率を10％上げる。",
     ],
@@ -10415,25 +10500,25 @@ export const employeeMaster = [
       "家賃回収人",
       "お客様第一",
       "品質第一",
-      "野口コーポレーション創業者",
+      "創業者",
     ],
     skillIds: [
       "RENT_COLLECTOR",
       "CUSTOMER_FIRST",
       "QUALITY_FIRST",
-      "NOGUCHI_CORP_FOUNDER",
+      "FOUNDER",
     ],
     specialCodes: [
       "RENT_COLLECTOR",
       "CUSTOMER_FIRST",
       "QUALITY_FIRST",
-      "NOGUCHI_CORP_FOUNDER",
+      "FOUNDER",
     ],
     specialDescriptions: [
       "家賃回収率を5％上げ、滞納発生率を10％下げる。",
-      "退去率を10％下げる。",
+      "退去率を5％下げる。",
       "建物状態を10上げる。",
-      "全能力を15％上げ、同じ事務所の社員能力を5％上げる。",
+      "全能力を8％上げ、同じ事務所の社員能力を5％上げる。",
     ],
   },
   {
@@ -10472,9 +10557,9 @@ export const employeeMaster = [
     ],
     specialDescriptions: [
       "建物状態を10上げる。",
-      "営業能力を10上げる。",
-      "建築能力を15上げ、工期を1ヶ月短縮しやすくする。",
-      "修繕費を20％下げ、築古物件の入居率を8％上げる。",
+      "営業能力を5上げる。",
+      "建築能力を10上げ、工期を1ヶ月短縮しやすくする。",
+      "修繕費を50％下げ、築古物件の入居率を8％上げる。",
     ],
   },
   {
@@ -10514,8 +10599,8 @@ export const employeeMaster = [
     specialDescriptions: [
       "獲得経験値を20％上げる。",
       "建物状態を10上げる。",
-      "同じ支店の社員能力を10％上げる。",
-      "修繕費を20％下げ、築古物件の入居率を8％上げる。",
+      "同じ事務所の社員能力を3％上げる。",
+      "修繕費を50％下げ、築古物件の入居率を8％上げる。",
     ],
   },
   {
@@ -10538,26 +10623,25 @@ export const employeeMaster = [
       "リーダー",
       "巡回名人",
       "賃貸王",
-      "野口コーポレーション創業者",
+      "創業者",
     ],
     skillIds: [
       "LEADER",
       "INSPECTION_MASTER",
       "RENTAL_KING",
-      "NOGUCHI_CORP_FOUNDER",
+      "FOUNDER",
     ],
     specialCodes: [
       "LEADER",
       "INSPECTION_MASTER",
       "RENTAL_KING",
-      "NOGUCHI_CORP_FOUNDER",
+      "FOUNDER",
     ],
     specialDescriptions: [
-      "同じ支店の社員能力を3％上げる。",
-      "管理能力を15上げ、退去率を5％下げる。",
+      "同じ事務所の社員能力を1％上げる。",
+      "管理能力を7上げ、退去率を5％下げる。",
       "入居率を10％上げ、家賃収入を3％上げる。",
-      "全能力を15％上げ、同じ事務所の社員能力を5％上げる。",
-
+      "全能力を8％上げ、同じ事務所の社員能力を5％上げる。",
     ],
   }
 ];
@@ -11579,6 +11663,110 @@ function loadSavedGameSafely() {
   }
 }
 
+const AKARI_EMPLOYEE_ID = 122;
+
+const AKARI_GROWTH_MILESTONES = [
+  {
+    level: 1,
+    skillId: "RISING_STAR",
+    name: "期待の新入社員",
+    description: "まだ未熟だが大きな可能性を秘めている。レベルアップ時の能力上昇量が大幅に増加する。",
+    eventTitle: "期待の新入社員",
+    eventText: "社長、まだ分からないことばかりですが……私、もっと成長してみせます！",
+  },
+  {
+    level: 20,
+    skillId: "AKARI_GROWTH_STOCK",
+    name: "成長株",
+    description: "努力を重ね、着実に力を伸ばしている。レベルアップ時の能力上昇量が大幅に増加する。",
+    eventTitle: "成長株",
+    eventText: "社長……私、少しはお役に立てるようになったでしょうか？ ここからもっと頑張ります。",
+  },
+  {
+    level: 40,
+    skillId: "AKARI_RIGHT_HAND",
+    name: "頼れる右腕",
+    description: "会社を支える存在へと成長した。同じ事務所の社員能力を1％上げる。",
+    eventTitle: "頼れる右腕",
+    eventText: "社長、不動産の仕事が少しずつ分かってきました。これからは、私も会社を支える側になります。",
+  },
+  {
+    level: 60,
+    skillId: "AKARI_NEXT_LEADER",
+    name: "次世代リーダー",
+    description: "社員の成長を支えるリーダー候補。同じ事務所の社員の獲得経験値を3％上げる。",
+    eventTitle: "次世代リーダー",
+    eventText: "社長。次の支店は、私にも任せてください。後輩たちを育てられる存在になりたいんです。",
+  },
+  {
+    level: 80,
+    skillId: "AKARI_FUTURE_EXECUTIVE",
+    name: "未来の経営者",
+    description: "会社の未来を担う経営者候補。全能力を5％上げる。",
+    eventTitle: "未来の経営者",
+    eventText: "この会社を、もっと大きくしたいです。地方から全国へ、私たちの仕事を広げていきましょう。",
+  },
+  {
+    level: 100,
+    skillId: "AKARI_SUCCESSOR",
+    name: "創業の継承者",
+    description: "創業の意思を受け継ぐ存在。全能力を10％上げ、同じ事務所の社員能力を5％上げる。",
+    eventTitle: "創業の継承者",
+    eventText: "社長。私をここまで育ててくれて、本当にありがとうございました。これからも、この会社の未来を一緒に作らせてください。",
+  },
+];
+
+function isAkariEmployee(employee) {
+  return Number(employee?.id) === AKARI_EMPLOYEE_ID;
+}
+
+function getAkariGrowthMilestone(level) {
+  const safeLevel = Math.max(1, Math.round(Number(level) || 1));
+  return AKARI_GROWTH_MILESTONES
+    .filter((milestone) => safeLevel >= milestone.level)
+    .slice(-1)[0] ?? AKARI_GROWTH_MILESTONES[0];
+}
+
+function getAkariGrowthReachedMilestones(fromLevel, toLevel) {
+  const safeFromLevel = Math.max(1, Math.round(Number(fromLevel) || 1));
+  const safeToLevel = Math.max(1, Math.round(Number(toLevel) || 1));
+  return AKARI_GROWTH_MILESTONES.filter((milestone) => milestone.level > safeFromLevel && milestone.level <= safeToLevel);
+}
+
+function applyAkariGrowthSkill(employee, level = employee?.level) {
+  if (!isAkariEmployee(employee)) return employee;
+
+  const milestone = getAkariGrowthMilestone(level);
+  const existingSkillIds = Array.isArray(employee.skillIds) ? employee.skillIds : [];
+  const existingSpecialCodes = Array.isArray(employee.specialCodes) ? employee.specialCodes : existingSkillIds;
+  const existingSpecialNames = Array.isArray(employee.specialNames) ? employee.specialNames : [];
+  const existingSpecialDescriptions = Array.isArray(employee.specialDescriptions) ? employee.specialDescriptions : [];
+
+  const akariSkillIds = AKARI_GROWTH_MILESTONES.map((item) => item.skillId);
+  const filteredSkillIds = existingSkillIds.filter((skillId) => !akariSkillIds.includes(skillId));
+  const filteredSpecialCodes = existingSpecialCodes.filter((skillId) => !akariSkillIds.includes(skillId));
+  const filteredSpecialNames = existingSpecialNames.filter((name) => !AKARI_GROWTH_MILESTONES.some((item) => item.name === name));
+  const filteredSpecialDescriptions = existingSpecialDescriptions.filter((description) => !AKARI_GROWTH_MILESTONES.some((item) => item.description === description));
+
+  return {
+    ...employee,
+    skillIds: [milestone.skillId, ...filteredSkillIds],
+    specialCodes: [milestone.skillId, ...filteredSpecialCodes],
+    specialNames: [milestone.name, ...filteredSpecialNames],
+    specialDescriptions: [milestone.description, ...filteredSpecialDescriptions],
+    akariGrowthStage: milestone.level,
+  };
+}
+
+function getAkariSpecialGrowthTotal(employee) {
+  // v256: 七瀬灯里は主人公枠として、内部仕様で通常社員より大きく成長する。
+  // 表示文には具体値を出さず、特殊能力「期待の新入社員」系で表現する。
+  if (!isAkariEmployee(employee)) return null;
+  return 3 + randomInt(0, 2);
+}
+
+
+
 export default function App() {
 
   useEffect(() => {
@@ -11754,7 +11942,7 @@ export default function App() {
           position: relative;
           z-index: 2;
           display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
+          grid-template-columns: repeat(4, minmax(0, 1fr)) 46px;
           gap: 8px;
           margin: 9px 0 10px;
         }
@@ -11866,7 +12054,7 @@ export default function App() {
         }
         .playfield-v216 .playfield-hud-v212 {
           flex: 0 0 auto;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr) minmax(0, 1.16fr) minmax(0, 1.06fr) 46px;
           gap: clamp(5px, 1vw, 8px);
           margin: 0 0 8px;
         }
@@ -12929,6 +13117,121 @@ export default function App() {
             top: 86px !important;
             max-height: calc(100vh - 100px) !important;
           }
+
+
+        /* v265: ホームとマップの世界観を統一。マップ側もスマホゲーム風のガラスHUDへ寄せる */
+        .app {
+          background: radial-gradient(circle at 50% 0%, rgba(28, 96, 66, 0.14), transparent 42%), #edf4ed;
+        }
+        .bottom-menu.compact-command-menu.icon-command-menu.v72-top-command-bar.v73-top-command-bar {
+          border-radius: 24px !important;
+          background: linear-gradient(180deg, rgba(19,45,38,0.96), rgba(6,20,18,0.94)) !important;
+          border: 1px solid rgba(255,255,255,0.28) !important;
+          box-shadow: 0 12px 34px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.18) !important;
+          backdrop-filter: blur(14px);
+        }
+        .v72-top-command-bar .top-icon-button,
+        .v73-top-command-bar .top-icon-button,
+        .app .top-icon-button {
+          border-radius: 17px !important;
+          background: linear-gradient(180deg, rgba(255,255,255,0.30), rgba(255,255,255,0.10)) !important;
+          border: 1px solid rgba(255,255,255,0.22) !important;
+          color: #fff !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.26), 0 6px 13px rgba(0,0,0,0.16) !important;
+          transition: transform 0.12s ease, filter 0.16s ease, box-shadow 0.16s ease !important;
+        }
+        .v72-top-command-bar .top-icon-button:active,
+        .v73-top-command-bar .top-icon-button:active,
+        .app .top-icon-button:active {
+          transform: translateY(2px) scale(0.96) !important;
+          filter: brightness(1.12) !important;
+        }
+        .v72-top-command-bar .top-icon-button.active,
+        .v73-top-command-bar .top-icon-button.active,
+        .app .top-icon-button.active {
+          background: linear-gradient(180deg, rgba(255,231,150,0.44), rgba(255,255,255,0.13)) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.36), 0 0 18px rgba(255,218,107,0.22), 0 8px 16px rgba(0,0,0,0.20) !important;
+        }
+        .top-compact-stat,
+        .map-compact-stat,
+        .playfield-hud-chip-v212 {
+          border-radius: 999px !important;
+          background: rgba(255,255,255,0.15) !important;
+          color: #fff !important;
+          border: 1px solid rgba(255,255,255,0.23) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.20), 0 8px 18px rgba(0,0,0,0.14) !important;
+          backdrop-filter: blur(10px);
+        }
+        .map-section.playfield-v212.playfield-v214.playfield-v216 {
+          border-radius: 26px !important;
+          background:
+            radial-gradient(circle at 20% 0%, rgba(255,231,150,0.22), transparent 32%),
+            radial-gradient(circle at 85% 8%, rgba(119,221,179,0.18), transparent 35%),
+            linear-gradient(135deg, #123326 0%, #174734 48%, #0b2a24 100%) !important;
+          border: 1px solid rgba(255,255,255,0.24) !important;
+          box-shadow: 0 20px 58px rgba(0,0,0,0.24) !important;
+        }
+        .map-section.playfield-v212 .panel-title-row.map-title-row {
+          position: relative;
+          z-index: 3;
+          padding: 8px !important;
+          border-radius: 22px !important;
+          background: rgba(7, 25, 21, 0.54) !important;
+          border: 1px solid rgba(255,255,255,0.18) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 10px 24px rgba(0,0,0,0.16);
+          backdrop-filter: blur(12px);
+        }
+        .playfield-selection-card-v212 {
+          background: linear-gradient(135deg, rgba(255,253,247,0.90), rgba(226,242,232,0.82)) !important;
+          color: #1d2b22 !important;
+          border-color: rgba(255,255,255,0.62) !important;
+          box-shadow: 0 14px 30px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.75) !important;
+        }
+        .playfield-selection-tags-v212 span {
+          color: #173427 !important;
+          background: rgba(29,92,58,0.12) !important;
+          border-color: rgba(29,92,58,0.18) !important;
+        }
+        .playfield-v212 .map-scroll {
+          border-radius: 22px !important;
+          background: rgba(255,255,255,0.88) !important;
+          border: 1px solid rgba(255,255,255,0.50) !important;
+          box-shadow: inset 0 0 0 1px rgba(16,48,36,0.08), 0 18px 42px rgba(0,0,0,0.22) !important;
+        }
+        .side-section,
+        .side-section.floating-panel {
+          border-radius: 24px !important;
+          background: linear-gradient(180deg, rgba(255,253,247,0.96), rgba(238,247,241,0.94)) !important;
+          border: 1px solid rgba(255,255,255,0.72) !important;
+          box-shadow: 0 18px 44px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.75) !important;
+          backdrop-filter: blur(10px);
+        }
+        @media (max-width: 760px) {
+          .playfield-hud-v212 {
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+            gap: 5px !important;
+          }
+          .playfield-hud-chip-v212 {
+            min-height: 38px !important;
+            padding: 5px 4px !important;
+            grid-template-columns: 1fr !important;
+            justify-items: center !important;
+            text-align: center !important;
+          }
+          .playfield-hud-chip-v212 .hud-icon-v212 { font-size: 15px !important; }
+          .playfield-hud-chip-v212 small { display: none !important; }
+          .playfield-hud-chip-v212 strong { font-size: 10px !important; margin-top: 0 !important; }
+          .playfield-selection-card-v212 {
+            grid-template-columns: auto 1fr !important;
+            gap: 8px !important;
+            padding: 8px 10px !important;
+            border-radius: 18px !important;
+          }
+          .playfield-selection-tags-v212 {
+            grid-column: 1 / -1;
+            justify-content: flex-start !important;
+          }
+        }
         }
         }
 
@@ -13192,7 +13495,7 @@ useEffect(() => {
     setTutorialStep(STORY_TUTORIAL_STEPS.COMPLETE);
     setActivePanel("home");
     setStoryEvent(STORY_TUTORIAL_EVENTS.BUILT_APARTMENT);
-    setLog("建物って自分で建てられるんですね。第0章の基本操作は完了です。");
+    setLog("建物って自分で建てられるんですね。1-1章の基本操作は完了です。");
   }
 }, [currentGameMode, tutorialStep, tiles]);
 
@@ -13282,7 +13585,7 @@ const [playerCompanyName, setPlayerCompanyName] = useState(savedGame?.playerComp
 const [activeSaveSlot, setActiveSaveSlot] = useState(savedGame?.activeSaveSlot ?? getCurrentSaveSlot());
 const [saveSlotRefreshKey, setSaveSlotRefreshKey] = useState(0);
 const [newCompanyNameInput, setNewCompanyNameInput] = useState(savedGame?.playerCompanyName ?? DEFAULT_COMPANY_NAME);
-const [usedSecretCommands, setUsedSecretCommands] = useState(savedGame?.usedSecretCommands ?? {});
+const [usedSecretCommands, setUsedSecretCommands] = useState(() => ({ ...(readAccountData().usedSecretCommands ?? {}), ...(savedGame?.usedSecretCommands ?? {}) }));
 const [showDeveloperCommand, setShowDeveloperCommand] = useState(false);
 const [developerCommandInput, setDeveloperCommandInput] = useState("");
 const [playerRankUpResult, setPlayerRankUpResult] = useState(null);
@@ -13460,6 +13763,7 @@ const floatingPanelDragRef = useRef(null);
 const floatingPanelResizeRef = useRef(null);
 const [showOptions, setShowOptions] = useState(false);
 const [showTitleScreen, setShowTitleScreen] = useState(() => readLastNavigationState().screen !== "game");
+const currentScreen = showTitleScreen ? "home" : "game";
 const [showPrologue, setShowPrologue] = useState(false);
 const [prologueIndex, setPrologueIndex] = useState(0);
 const [pendingNewGame, setPendingNewGame] = useState(null);
@@ -13471,17 +13775,179 @@ const [titleHomeAkariTalkIndex, setTitleHomeAkariTalkIndex] = useState(0);
 const [titleHomeAkariPageIndex, setTitleHomeAkariPageIndex] = useState(0);
 const [titleHomeAkariExpression, setTitleHomeAkariExpression] = useState(null);
 const [titleHomeAkariRecentTalkIndexes, setTitleHomeAkariRecentTalkIndexes] = useState([]);
+const [isHomeAkariMessageVisible, setIsHomeAkariMessageVisible] = useState(true);
+const [homeTimeRefreshKey, setHomeTimeRefreshKey] = useState(() => Date.now());
 const [homeAkariTalkMode, setHomeAkariTalkMode] = useState(() => {
   if (typeof window === "undefined") return "general";
   const savedMode = window.localStorage.getItem(HOME_AKARI_TALK_MODE_KEY);
   return ["chat", "general", "knowledge"].includes(savedMode) ? savedMode : "general";
 });
 const [titleModal, setTitleModal] = useState(null);
+const [homeMissionFilter, setHomeMissionFilter] = useState("claimable");
+const [isHomeBottomNavVisible, setIsHomeBottomNavVisible] = useState(false);
+const homeBottomNavHideTimerRef = useRef(null);
+const [isMapBottomNavVisible, setIsMapBottomNavVisible] = useState(true);
+const [isMapInfoMenuOpen, setIsMapInfoMenuOpen] = useState(false);
+const [isMapEmployeeMenuOpen, setIsMapEmployeeMenuOpen] = useState(false);
+const [employeeRecruitReturnPanel, setEmployeeRecruitReturnPanel] = useState("home");
+const mapBottomNavHideTimerRef = useRef(null);
+
+const hideHomeBottomNavSoon = useCallback(() => {
+  if (homeBottomNavHideTimerRef.current) {
+    window.clearTimeout(homeBottomNavHideTimerRef.current);
+  }
+
+  homeBottomNavHideTimerRef.current = window.setTimeout(() => {
+    setIsHomeBottomNavVisible(false);
+  }, 1500);
+}, []);
+
+const showHomeBottomNavTemporarily = useCallback(() => {
+  setIsHomeBottomNavVisible(true);
+  hideHomeBottomNavSoon();
+}, [hideHomeBottomNavSoon]);
+
+useEffect(() => {
+  if (currentScreen !== "home") {
+    setIsHomeBottomNavVisible(true);
+    return undefined;
+  }
+
+  const handleHomeInteraction = () => {
+    showHomeBottomNavTemporarily();
+  };
+
+  window.addEventListener("pointerdown", handleHomeInteraction, { passive: true });
+  window.addEventListener("touchstart", handleHomeInteraction, { passive: true });
+  window.addEventListener("scroll", handleHomeInteraction, { passive: true, capture: true });
+  window.addEventListener("wheel", handleHomeInteraction, { passive: true });
+  document.addEventListener("scroll", handleHomeInteraction, { passive: true, capture: true });
+
+  hideHomeBottomNavSoon();
+
+  return () => {
+    window.removeEventListener("pointerdown", handleHomeInteraction);
+    window.removeEventListener("touchstart", handleHomeInteraction);
+    window.removeEventListener("scroll", handleHomeInteraction, true);
+    window.removeEventListener("wheel", handleHomeInteraction);
+    document.removeEventListener("scroll", handleHomeInteraction, true);
+
+    if (homeBottomNavHideTimerRef.current) {
+      window.clearTimeout(homeBottomNavHideTimerRef.current);
+    }
+  };
+}, [currentScreen, showHomeBottomNavTemporarily, hideHomeBottomNavSoon]);
+
+useEffect(() => {
+  if (homeBottomNavHideTimerRef.current) {
+    window.clearTimeout(homeBottomNavHideTimerRef.current);
+    homeBottomNavHideTimerRef.current = null;
+  }
+
+  setIsHomeBottomNavVisible(true);
+
+  if (titleModal) {
+    homeBottomNavHideTimerRef.current = window.setTimeout(() => {
+      setIsHomeBottomNavVisible(false);
+    }, 1500);
+  }
+
+  return () => {
+    if (homeBottomNavHideTimerRef.current) {
+      window.clearTimeout(homeBottomNavHideTimerRef.current);
+      homeBottomNavHideTimerRef.current = null;
+    }
+  };
+}, [titleModal]);
+
+
+const hideMapBottomNavSoon = useCallback(() => {
+  if (mapBottomNavHideTimerRef.current) {
+    window.clearTimeout(mapBottomNavHideTimerRef.current);
+  }
+  mapBottomNavHideTimerRef.current = window.setTimeout(() => {
+    if (!isMainMenuOpen && !isMapInfoMenuOpen && !isMapEmployeeMenuOpen) {
+      setIsMapBottomNavVisible(false);
+    }
+  }, 1500);
+}, [isMainMenuOpen, isMapInfoMenuOpen, isMapEmployeeMenuOpen]);
+
+const showMapBottomNavTemporarily = useCallback(() => {
+  setIsMapBottomNavVisible(true);
+  hideMapBottomNavSoon();
+}, [hideMapBottomNavSoon]);
+
+useEffect(() => {
+  if (currentScreen !== "game") {
+    setIsMapBottomNavVisible(true);
+    return undefined;
+  }
+
+  const handleMapInteraction = () => {
+    showMapBottomNavTemporarily();
+  };
+
+  window.addEventListener("pointerdown", handleMapInteraction, { passive: true });
+  window.addEventListener("touchstart", handleMapInteraction, { passive: true });
+  window.addEventListener("scroll", handleMapInteraction, { passive: true, capture: true });
+  window.addEventListener("wheel", handleMapInteraction, { passive: true });
+  document.addEventListener("scroll", handleMapInteraction, { passive: true, capture: true });
+
+  hideMapBottomNavSoon();
+
+  return () => {
+    window.removeEventListener("pointerdown", handleMapInteraction);
+    window.removeEventListener("touchstart", handleMapInteraction);
+    window.removeEventListener("scroll", handleMapInteraction, true);
+    window.removeEventListener("wheel", handleMapInteraction);
+    document.removeEventListener("scroll", handleMapInteraction, true);
+    if (mapBottomNavHideTimerRef.current) {
+      window.clearTimeout(mapBottomNavHideTimerRef.current);
+      mapBottomNavHideTimerRef.current = null;
+    }
+  };
+}, [currentScreen, showMapBottomNavTemporarily, hideMapBottomNavSoon]);
+
+useEffect(() => {
+  if (isMainMenuOpen || isMapInfoMenuOpen || isMapEmployeeMenuOpen) {
+    setIsMapBottomNavVisible(true);
+    if (mapBottomNavHideTimerRef.current) {
+      window.clearTimeout(mapBottomNavHideTimerRef.current);
+      mapBottomNavHideTimerRef.current = null;
+    }
+  } else if (currentScreen === "game") {
+    hideMapBottomNavSoon();
+  }
+}, [isMainMenuOpen, isMapInfoMenuOpen, isMapEmployeeMenuOpen, currentScreen, hideMapBottomNavSoon]);
+
+const [homeAccountRefreshKey, setHomeAccountRefreshKey] = useState(0);
 
 useEffect(() => {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(HOME_AKARI_TALK_MODE_KEY, homeAkariTalkMode);
 }, [homeAkariTalkMode]);
+
+useEffect(() => {
+  if (typeof window === "undefined") return undefined;
+
+  const refreshHomeTime = () => {
+    setHomeTimeRefreshKey(Date.now());
+  };
+
+  refreshHomeTime();
+  const homeTimeTimer = window.setInterval(refreshHomeTime, 60 * 1000);
+
+  const handleVisibilityChange = () => {
+    if (!document.hidden) refreshHomeTime();
+  };
+
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+
+  return () => {
+    window.clearInterval(homeTimeTimer);
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+  };
+}, []);
 
 useEffect(() => {
   writeLastNavigationState({
@@ -14652,12 +15118,14 @@ if (
   demand += Math.floor(
     (demandByCategory.housing - 50) / 2
   );
+  demand += getNearbyDemandBoostScore(targetTile, "housing", tiles);
 }
 
 if (building.category === "商業") {
   demand += Math.floor(
     (demandByCategory.commercial - 50) / 2
   );
+  demand += getNearbyDemandBoostScore(targetTile, "commercial", tiles);
 }
 
 if (
@@ -14666,6 +15134,7 @@ if (
   demand += Math.floor(
     (demandByCategory.industrial - 50) / 2
   );
+  demand += getNearbyDemandBoostScore(targetTile, "industrial", tiles);
 }
 
 // 全体需要
@@ -15172,10 +15641,11 @@ function drawPremiumRecruitRarity() {
 function drawRookieRecruitRarity() {
   const roll = Math.random() * 100;
 
-  if (roll < 72) return "N";
-  if (roll < 94) return "R";
-  if (roll < 99) return "HR";
-  return "SR";
+  if (roll < 71.9) return "N";
+  if (roll < 93.9) return "R";
+  if (roll < 98.9) return "HR";
+  if (roll < 99.9) return "SR";
+  return "SSR";
 }
 
 function pickRecruitEmployee(availableEmployees, pickedEmployees, ticketType = "normal") {
@@ -15195,7 +15665,7 @@ function pickRecruitEmployee(availableEmployees, pickedEmployees, ticketType = "
 
   const fallbackEmployees = availableEmployees.filter((employee) => {
     if (isPremium) return ["SR", "SSR", "UR"].includes(employee.rarity);
-    if (isRookie) return ["N", "R", "HR", "SR"].includes(employee.rarity);
+    if (isRookie) return ["N", "R", "HR", "SR", "SSR"].includes(employee.rarity);
     return true;
   });
 
@@ -15683,8 +16153,7 @@ function applyPlayerRankExp(currentRank, currentExp, gainedExp) {
 
 function normalizeEmployeeGrowthBase(employee) {
   const level = Math.max(1, Math.round(Number(employee?.level) || 1));
-
-  return {
+  const normalizedEmployee = {
     ...employee,
     level,
     exp: employee.exp ?? 0,
@@ -15696,6 +16165,8 @@ function normalizeEmployeeGrowthBase(employee) {
     baseSalary: BASE_EMPLOYEE_SALARY,
     salary: calculateEmployeeSalaryByLevel(level),
   };
+
+  return applyAkariGrowthSkill(normalizedEmployee, level);
 }
 
 function getEmployeeGrowthLimit(employee) {
@@ -15761,7 +16232,7 @@ function getTicketOddsText(ticketType) {
   }
 
   if (ticketType === "rookie") {
-    return "N 72.0% / R 22.0% / HR 5.0% / SR 1.0%";
+    return "N 71.9% / R 22.0% / HR 5.0% / SR 1.0% / SSR 0.1%";
   }
 
   return "N 61.7% / R 22.0% / HR 10.0% / SR 5.0% / SSR 1.0% / UR 0.3%";
@@ -15772,7 +16243,7 @@ const EMPLOYEE_RECRUITMENT_BRANDS = {
     ticketName: "社員採用チケット",
     menuName: "社員採用",
     stageTitle: "社員採用",
-    subtitle: "毎日使いやすい通常演出。白封筒中心で、まれにSR履歴書が届きます。",
+    subtitle: "毎日使いやすい通常演出。白封筒中心で、まれにSR以上の履歴書が届きます。",
     badge: "DAILY",
     icon: "📄",
     className: "recruit-stage-rookie",
@@ -15781,9 +16252,9 @@ const EMPLOYEE_RECRUITMENT_BRANDS = {
   },
   normal: {
     ticketName: "レア社員採用チケット",
-    menuName: "社員採用",
-    stageTitle: "社員採用",
-    subtitle: "標準採用演出。NからURまで、すべての人材と出会える基本ルートです。",
+    menuName: "レア社員採用",
+    stageTitle: "レア社員採用",
+    subtitle: "レア採用演出。NからURまで、すべての人材と出会える上位ルートです。",
     badge: "STANDARD",
     icon: "🎫",
     className: "recruit-stage-normal",
@@ -15839,7 +16310,9 @@ function normalizeCommandText(text) {
   return String(text ?? "")
     .trim()
     .replace(/\s+/g, "")
-    .replace(/[０-９]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0xFEE0));
+    .replace(/[０-９]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0xFEE0))
+    .replace(/[Ａ-Ｚａ-ｚ]/g, (char) => String.fromCharCode(char.charCodeAt(0) - 0xFEE0))
+    .toUpperCase();
 }
 
 function renderEmployeeStatValue(employee, statKey, baseKey) {
@@ -15860,13 +16333,6 @@ function renderEmployeeStatValue(employee, statKey, baseKey) {
 
 function getEmployeeSalary(employee) {
   return calculateEmployeeSalaryByLevel(employee?.level ?? 1);
-}
-
-function getAkariSpecialGrowthTotal(employee) {
-  // v229: 七瀬灯里は主人公枠として、モードや章進行に関係なく常時成長補正を持つ。
-  // レベルアップごとに能力上昇合計を2〜4から等確率で選ぶ。
-  if (Number(employee?.id) !== 122) return null;
-  return 2 + randomInt(0, 2);
 }
 
 function applyRandomStatGrowth(employee, totalGrowth) {
@@ -15910,9 +16376,11 @@ function applyEmployeeLevelUps(employee, gainedExp) {
   let exp = (updatedEmployee.exp ?? 0) + gainedExp;
   let level = updatedEmployee.level ?? 1;
   const levelUpMessages = [];
+  const startLevel = level;
 
   while (exp >= getEmployeeRequiredExp(level)) {
     exp -= getEmployeeRequiredExp(level);
+    const previousLevel = level;
     level += 1;
 
     const specialGrowthTotal = getAkariSpecialGrowthTotal(updatedEmployee);
@@ -15925,11 +16393,24 @@ function applyEmployeeLevelUps(employee, gainedExp) {
     const nextSalary = calculateEmployeeSalaryByLevel(level);
     updatedEmployee = {
       ...updatedEmployee,
+      level,
       salary: nextSalary,
     };
 
+    if (isAkariEmployee(updatedEmployee)) {
+      const reachedMilestones = getAkariGrowthReachedMilestones(previousLevel, level);
+      reachedMilestones.forEach((milestone) => {
+        updatedEmployee = applyAkariGrowthSkill(updatedEmployee, level);
+        levelUpMessages.push(`七瀬成長イベント「${milestone.eventTitle}」: ${milestone.eventText}`);
+      });
+    }
+
     const salaryMessage = `月給${previousSalary}万円→${nextSalary}万円（+${nextSalary - previousSalary}万円）`;
     levelUpMessages.push(`Lv${level} ${growthMessages.join(" / ")} / ${salaryMessage}`);
+  }
+
+  if (isAkariEmployee(updatedEmployee)) {
+    updatedEmployee = applyAkariGrowthSkill(updatedEmployee, level);
   }
 
   return {
@@ -15942,20 +16423,64 @@ function applyEmployeeLevelUps(employee, gainedExp) {
   };
 }
 
-const EMPLOYEE_EXP_MULTIPLIER = 3;
+const ACTION_EXP_BASE = 50;
 
-function calculateLandActionExp(price) {
-  if (!price || price <= 0) return 5 * EMPLOYEE_EXP_MULTIPLIER;
-  return Math.max(5, Math.round(10 * Math.sqrt(price / 1000))) * EMPLOYEE_EXP_MULTIPLIER;
+function calculateAmountUnitExp(amount, unitAmount = 100, unitExp = 1, baseExp = ACTION_EXP_BASE) {
+  const safeAmount = Math.max(0, Math.round(Number(amount) || 0));
+  const safeUnitAmount = Math.max(1, Math.round(Number(unitAmount) || 1));
+  const safeUnitExp = Math.max(0, Math.round(Number(unitExp) || 0));
+  return Math.max(0, Math.round(baseExp + Math.floor(safeAmount / safeUnitAmount) * safeUnitExp));
 }
 
-function calculateMoneyActionExp(price) {
-  if (!price || price <= 0) return 5 * EMPLOYEE_EXP_MULTIPLIER;
-  return Math.max(5, Math.round(8 * Math.sqrt(price / 1000))) * EMPLOYEE_EXP_MULTIPLIER;
+function calculateLandActionExp(price) {
+  // 土地・中古物件購入：基礎50 + 購入価格100万円ごとに+1
+  return calculateAmountUnitExp(price, 100, 1, ACTION_EXP_BASE);
+}
+
+function calculateBuildActionExp(cost) {
+  // 建物建築・支店建設：基礎50 + 建築費100万円ごとに+2
+  return calculateAmountUnitExp(cost, 100, 2, ACTION_EXP_BASE);
+}
+
+function calculateRepairActionExp(cost) {
+  // 修繕：基礎50 + 修繕費100万円ごとに+3
+  return calculateAmountUnitExp(cost, 100, 3, ACTION_EXP_BASE);
+}
+
+function calculateDemolitionActionExp(cost) {
+  // 解体：基礎50 + 解体費100万円ごとに+3
+  return calculateAmountUnitExp(cost, 100, 3, ACTION_EXP_BASE);
+}
+
+function calculateLoanConsultationExp() {
+  return 50;
+}
+
+function calculateLoanDeniedExp() {
+  return 50;
+}
+
+function calculateLoanApprovalExp(approvedAmount) {
+  // 融資承認：基礎100 + 承認額1000万円ごとに+10
+  return calculateAmountUnitExp(approvedAmount, 1000, 10, 100);
+}
+
+function getEmployeeExpParticipantRate(participantCount) {
+  const count = Math.max(1, Math.round(Number(participantCount) || 1));
+  if (count <= 1) return 1;
+  if (count === 2) return 0.8;
+  if (count === 3) return 0.7;
+  return 0.6;
 }
 
 function calculateMonthActionExp(months) {
-  return Math.max(5, (months || 1) * 10) * EMPLOYEE_EXP_MULTIPLIER;
+  // 互換用。新規の建築・修繕・支店経験値は金額基準を使う。
+  return calculateAmountUnitExp((months || 1) * 100, 100, 1, ACTION_EXP_BASE);
+}
+
+function calculateMoneyActionExp(price) {
+  // 互換用。売却など、専用分類がない金額行動に使う。
+  return calculateLandActionExp(price);
 }
 
 function getEmployeeStatAverage(actionEmployees, statKey) {
@@ -16002,7 +16527,7 @@ function getEmployeeActionSpeedStat(actionEmployees, statKey) {
   原則としてこの共通計算を必ず使う。
 
   ・品質や交渉結果は参加社員の最高能力で評価し、工期や期間短縮は参加社員の合計能力で評価する。
-  ・経験値は案件ごとの総経験値を参加社員数で割って配分する。
+  ・経験値は案件ごとの総経験値に人数補正をかけ、参加社員ごとに付与する。
   ・新しい建物や工事メニューを追加する場合も、個別の固定計算を作らず、
     estimateActionMonths / calculateActionCost / grantEmployeesExp を使うこと。
   ・支店だけ、修繕だけ、追加建物だけが別計算にならないようにする。
@@ -16114,17 +16639,55 @@ function renderEmployeeRarityStars(rarity) {
   ));
 }
 
+function getCurrentEmployeesForAction() {
+  // v273.1: 行動選択は画面に表示されている最新の社員stateを正とする。
+  // employeesRefだけを見ると、社員配属画面では本社配属なのに、融資相談では候補に出ないことがあった。
+  const employeeById = new Map();
+  (Array.isArray(employeesRef.current) ? employeesRef.current : []).forEach((employee) => {
+    if (employee && employee.id !== 0) employeeById.set(employee.id, employee);
+  });
+  (Array.isArray(employees) ? employees : []).forEach((employee) => {
+    if (employee && employee.id !== 0) employeeById.set(employee.id, employee);
+  });
+  return Array.from(employeeById.values());
+}
+
+function isEmployeeActuallyBusy(employeeId) {
+  const id = Number(employeeId);
+  if (!Number.isFinite(id)) return false;
+  const isInIds = (ids) => Array.isArray(ids) && ids.map(Number).includes(id);
+
+  if (pendingLoanConsultations.some((consultation) => Number(consultation.employeeId) === id)) return true;
+  if (pendingLoanApplications.some((application) => isInIds(application.employeeIds))) return true;
+
+  return tiles.some((tile) => {
+    if (!tile) return false;
+    if (tile.purchaseStatus && isInIds(tile.purchaseEmployeeIds)) return true;
+    if (tile.branchUnderConstruction && isInIds(tile.branchEmployeeIds)) return true;
+    if (tile.buildingStatus === "constructing" && isInIds(tile.buildEmployeeIds)) return true;
+    if (tile.repairStatus === "repairing" && isInIds(tile.repairEmployeeIds)) return true;
+    return false;
+  });
+}
+
 function getAvailableActionEmployees(options = {}) {
   const reachableOfficeIds = options.targetTile
     ? getReachableOfficeIdsForTile(options.targetTile)
     : null;
 
-  return employees.filter((employee) => {
+  const currentEmployeesForAction = getCurrentEmployeesForAction();
+
+  return currentEmployeesForAction.filter((employee) => {
     if (employee.id === 0) return false;
-    if (employee.busyUntilMonth && employee.busyUntilMonth > month) return false;
+
+    const assignedOfficeId = employee.officeId ?? "hq";
+    if (assignedOfficeId === "storage" || assignedOfficeId === "waiting") return false;
+
+    const busyUntilMonth = Math.max(0, Number(employee.busyUntilMonth) || 0);
+    if (busyUntilMonth > month && isEmployeeActuallyBusy(employee.id)) return false;
 
     if (reachableOfficeIds) {
-      return reachableOfficeIds.has(employee.officeId ?? "hq");
+      return reachableOfficeIds.has(assignedOfficeId);
     }
 
     return true;
@@ -16195,9 +16758,10 @@ function grantEmployeesExp(employeeIds, gainedExp, reason) {
     return;
   }
 
-  const uniqueEmployeeIds = [...new Set(employeeIds)];
+  const uniqueEmployeeIds = [...new Set(employeeIds)].slice(0, 4);
   const ids = new Set(uniqueEmployeeIds);
-  const baseEachExp = Math.max(1, Math.round(gainedExp / uniqueEmployeeIds.length));
+  const participantRate = getEmployeeExpParticipantRate(uniqueEmployeeIds.length);
+  const baseEachExp = Math.max(1, Math.round(gainedExp * participantRate));
   let totalPlayerGainedExp = 0;
   const levelUpResults = [];
   const resultMessages = [];
@@ -16269,7 +16833,7 @@ function grantEmployeesExp(employeeIds, gainedExp, reason) {
     setPlayerRank(playerResult.rank);
     setPlayerExp(playerResult.exp);
 
-    resultMessages.push(`プレイヤーEXP +${totalPlayerGainedExp} / 現在EXP ${playerResult.exp}/${getPlayerRequiredExp(playerResult.rank)}`);
+    resultMessages.push(`シルバーシート +${totalPlayerGainedExp} / 現在EXP ${playerResult.exp}/${getPlayerRequiredExp(playerResult.rank)}`);
 
     if (playerResult.rankUpCount > 0) {
       const unlockMessages = getPlayerRankUnlockSummary(beforePlayerRank, playerResult.rank);
@@ -16361,7 +16925,7 @@ function createRecruitmentApplicants(ticketType) {
   const isRookie = ticketType === "rookie";
   const availableEmployees = EMPLOYEE_POOL.filter((employee) => {
     if (isPremium) return ["SR", "SSR", "UR"].includes(employee.rarity);
-    if (isRookie) return ["N", "R", "HR", "SR"].includes(employee.rarity);
+    if (isRookie) return ["N", "R", "HR", "SR", "SSR"].includes(employee.rarity);
     return true;
   });
 
@@ -16402,17 +16966,17 @@ function startEmployeeRecruitmentByTicket(ticketType) {
   const isRookie = ticketType === "rookie";
 
   if (isRookie && rookieEmployeeTickets < 1) {
-    alert("社員ライトチケットがありません。社員採用にはライトチケット1枚が必要です。");
+    alert("社員採用チケットがありません。社員採用には社員採用チケット1枚が必要です。");
     return;
   }
 
   if (!isPremium && !isRookie && employeeTickets < 1) {
-    alert("社員チケットがありません。社員募集には社員チケット1枚が必要です。");
+    alert("レア社員採用チケットがありません。レア社員採用にはレア社員採用チケット1枚が必要です。");
     return;
   }
 
   if (isPremium && premiumEmployeeTickets < 1) {
-    alert("社員プレミアムチケットがありません。SR以上確定の社員募集にはプレミアムチケット1枚が必要です。");
+    alert("プレミア社員採用チケットがありません。プレミア社員採用にはプレミア社員採用チケット1枚が必要です。");
     return;
   }
 
@@ -16460,15 +17024,30 @@ function openRecruitEnvelope(envelopeId) {
   });
 }
 
+function returnAfterEmployeeRecruitment() {
+  if (employeeRecruitmentOffer?.source === "map") {
+    setShowTitleScreen(false);
+    setTitleModal(null);
+    setTitleVaultDetailEmployee(null);
+    setActivePanel(employeeRecruitReturnPanel || "employee");
+    return;
+  }
+
+  if (activePanel === "employeeRecruit") {
+    setActivePanel("home");
+  }
+}
+
 function cancelEmployeeRecruitmentOffer() {
   const ok = window.confirm(
-    "今回届いた履歴書を閉じますか？\n\n社員チケットは使用済みのため戻りません。"
+    "今回届いた履歴書を閉じますか？\n\n採用チケットは使用済みのため戻りません。"
   );
 
   if (!ok) return;
 
   setEmployeeRecruitmentOffer(null);
-  setLog("社員募集を終了しました。今回は採用を見送りました。");
+  returnAfterEmployeeRecruitment();
+  setLog("社員採用を終了しました。今回は採用を見送りました。");
 }
 
 function findOwnedEmployeeById(employeeId) {
@@ -16510,7 +17089,7 @@ function awakenEmployee(employee) {
 
   statKeys.forEach((stat) => {
     const currentValue = updatedEmployee[stat.key] ?? 0;
-    const increase = Math.max(1, Math.ceil(currentValue * 0.1));
+    const increase = 5;
     updatedEmployee = {
       ...updatedEmployee,
       [stat.key]: currentValue + increase,
@@ -16566,6 +17145,7 @@ function confirmRecruitApplicant(applicant) {
 
     setEmployeeRecruitmentOffer(null);
     setEmployeeGachaResult(null);
+    returnAfterEmployeeRecruitment();
     setLog(
       `${applicant.name}がダブりました。覚醒+${awakeningPreview.afterAwakening}になりました。${awakeningPreview.statMessages.join(" / ")}`
     );
@@ -16616,6 +17196,7 @@ function confirmRecruitApplicant(applicant) {
 
   setEmployeeRecruitmentOffer(null);
   setEmployeeGachaResult(null);
+  returnAfterEmployeeRecruitment();
 
   setLog(
     targetOffice
@@ -16626,17 +17207,17 @@ function confirmRecruitApplicant(applicant) {
 
 function addRookieEmployeeTicketForDemo() {
   setRookieEmployeeTickets(rookieEmployeeTickets + 1);
-  setLog("デモ用に社員ライトチケットを1枚追加しました。");
+  setLog("デモ用に社員採用チケットを1枚追加しました。");
 }
 
 function addEmployeeTicketForDemo() {
   setEmployeeTickets(employeeTickets + 1);
-  setLog("デモ用に社員チケットを1枚追加しました。");
+  setLog("デモ用にレア社員採用チケットを1枚追加しました。");
 }
 
 function addPremiumEmployeeTicketForDemo() {
   setPremiumEmployeeTickets(premiumEmployeeTickets + 1);
-  setLog("デモ用に社員プレミアムチケットを1枚追加しました。SR以上確定です。");
+  setLog("デモ用にプレミア社員採用チケットを1枚追加しました。SR以上確定です。");
 }
 
 function addDemoMoney100m() {
@@ -16677,6 +17258,92 @@ function grantTicketReward(ticketType, count, reason, showPopup = true) {
   setLog(`${reason}：${getTicketName(ticketType)}を${amount}枚獲得しました。`);
 }
 
+
+function resetLocalStorageForFreshStart() {
+  if (typeof window === "undefined") return;
+  Object.keys(window.localStorage)
+    .filter((key) => key.startsWith("realEstateGame"))
+    .forEach((key) => window.localStorage.removeItem(key));
+}
+
+function buildInitialAccountData(overrides = {}) {
+  return {
+    playerRank: 1,
+    playerExp: 0,
+    employeeVault: [],
+    unlockedStoryAkari: false,
+    rookieEmployeeTickets: 0,
+    employeeTickets: 0,
+    premiumEmployeeTickets: 0,
+    silverSheets: 0,
+    goldSheets: 0,
+    usedSecretCommands: {},
+    updatedAt: new Date().toISOString(),
+    ...overrides,
+  };
+}
+
+function resetAllGameDataFromSettings() {
+  const ok = window.confirm("完全初期化しますか？\n\n社員・ランク・経験値・チケット・シルバーシート/ゴールドシート・マップ・セーブデータをすべて削除し、インストール直後の状態に戻します。");
+  if (!ok) return;
+
+  const finalOk = window.confirm("本当に完全初期化しますか？\nこの操作は元に戻せません。");
+  if (!finalOk) return;
+
+  resetLocalStorageForFreshStart();
+  writeAccountData(buildInitialAccountData());
+  window.location.reload();
+}
+
+function resetGameDataKeepingEmployeesFromSettings() {
+  const ok = window.confirm("社員だけ残して初期化しますか？\n\n社員名簿の社員だけ残し、ランク・経験値・チケット・シルバーシート/ゴールドシート・マップ・セーブデータを初期化します。");
+  if (!ok) return;
+
+  const accountData = readAccountData();
+  const employeeVault = mergeEmployeeCollections(accountData.employeeVault ?? []);
+  const keepAkariUnlocked = employeeVault.some((employee) => Number(employee?.id) === 122);
+  resetLocalStorageForFreshStart();
+  writeAccountData(buildInitialAccountData({
+    employeeVault,
+    unlockedStoryAkari: keepAkariUnlocked,
+  }));
+  window.location.reload();
+}
+
+function persistSecretCommandUsage(nextUsedCommands) {
+  const accountData = readAccountData();
+  writeAccountData({
+    ...accountData,
+    usedSecretCommands: nextUsedCommands,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+function markSecretCommandUsed(commandKey) {
+  const nextUsedCommands = { ...usedSecretCommands, [commandKey]: true };
+  setUsedSecretCommands(nextUsedCommands);
+  persistSecretCommandUsage(nextUsedCommands);
+}
+
+function grantSheetReward(sheetType, amount, reason) {
+  const safeAmount = Math.max(1, Math.round(Number(amount) || 1));
+  const accountData = readAccountData();
+  const currentSilver = Math.max(0, Math.round(Number(accountData.silverSheets ?? accountData.silverSheet ?? 0) || 0));
+  const currentGold = Math.max(0, Math.round(Number(accountData.goldSheets ?? accountData.goldSheet ?? 0) || 0));
+  const nextAccountData = {
+    ...accountData,
+    silverSheets: sheetType === "silver" ? currentSilver + safeAmount : currentSilver,
+    goldSheets: sheetType === "gold" ? currentGold + safeAmount : currentGold,
+    updatedAt: new Date().toISOString(),
+  };
+
+  writeAccountData(nextAccountData);
+  setHomeAccountRefreshKey((current) => current + 1);
+  setLog(`${reason}：${sheetType === "gold" ? "ゴールドシート" : "シルバーシート"}を${safeAmount}枚獲得しました。`);
+  alert(`${sheetType === "gold" ? "ゴールドシート" : "シルバーシート"}を${safeAmount}枚獲得しました。`);
+}
+
+
 function handleDeveloperCommand() {
   const command = normalizeCommandText(developerCommandInput);
 
@@ -16692,37 +17359,49 @@ function handleDeveloperCommand() {
     return;
   }
 
-  if (command === "岐阜" || command === "ギフ") {
+  if (["岐阜", "ぎふ", "ギフ"].map(normalizeCommandText).includes(command)) {
     if (usedSecretCommands.gifu) {
       alert("このコマンドはすでに使用済みです。使用できるのは1回だけです。");
       return;
     }
 
-    setUsedSecretCommands((current) => ({ ...current, gifu: true }));
+    markSecretCommandUsed("gifu");
     grantTicketReward("normal", 1, "隠しコマンド", true);
     setDeveloperCommandInput("");
     return;
   }
 
-  if (command === "瑞穂" || command === "ミズホ") {
+  if (["瑞穂", "みずほ", "ミズホ"].map(normalizeCommandText).includes(command)) {
     if (usedSecretCommands.mizuho) {
       alert("このコマンドはすでに使用済みです。使用できるのは1回だけです。");
       return;
     }
 
-    setUsedSecretCommands((current) => ({ ...current, mizuho: true }));
+    markSecretCommandUsed("mizuho");
     grantTicketReward("premium", 1, "隠しコマンド", true);
     setDeveloperCommandInput("");
     return;
   }
 
-  if (command === "一億円" || command === "1億円"|| command === "１億円") {
+  if (["SS", "ＳＳ", "ss", "えすえす", "エスエス", "シルバーシート", "シルバーシート"].map(normalizeCommandText).includes(command)) {
+    grantSheetReward("silver", 100, "隠しコマンド");
+    setDeveloperCommandInput("");
+    return;
+  }
+
+  if (["GS", "ＧＳ", "gs", "じーえす", "ジーエス", "ゴールドシート", "ゴールドシート"].map(normalizeCommandText).includes(command)) {
+    grantSheetReward("gold", 100, "隠しコマンド");
+    setDeveloperCommandInput("");
+    return;
+  }
+
+  if (command === normalizeCommandText("一億円") || command === normalizeCommandText("1億円") || command === normalizeCommandText("１億円")) {
     if (usedSecretCommands.money100m) {
       alert("このコマンドはすでに使用済みです。使用できるのは1回だけです。");
       return;
     }
 
-    setUsedSecretCommands((current) => ({ ...current, money100m: true }));
+    markSecretCommandUsed("money100m");
     setMoney((current) => current + 10000);
     setLog("隠しコマンド：所持金が1億円増えました。");
     setDeveloperCommandInput("");
@@ -16852,6 +17531,12 @@ async function startBuildPlacement(buildingKey) {
     return;
   }
 
+  if (isNagoyaBridgeTutorialActive()) {
+    showNagoyaTutorialBlockedMessage("名古屋編準備中は、通常建物の建設はできません。まずは銀行融資、その後に指定された支店建設だけ進めましょう。");
+    alert("名古屋編準備中は通常建物の建設はできません。");
+    return;
+  }
+
   if (isStoryTutorialActive()) {
     if (tutorialStep !== STORY_TUTORIAL_STEPS.BUILD_APARTMENT) {
       showStoryTutorialBlockedMessage();
@@ -16897,6 +17582,12 @@ function startBranchPlacement() {
     return;
   }
 
+  if (currentGameMode === "story_nagoya_bridge" && nagoyaTutorialStep !== STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH) {
+    showNagoyaTutorialBlockedMessage("支店建設は、銀行融資の流れを終えてから進めます。今は表示されている目標だけ進めましょう。");
+    alert("今は支店建設の手順ではありません。");
+    return;
+  }
+
   if (!hqPlaced) {
     alert("先に本社を設置してください");
     return;
@@ -16917,6 +17608,11 @@ async function buyLand() {
   alert("先に本社を設置してください");
   return;
 }
+  if (isNagoyaBridgeTutorialActive()) {
+    showNagoyaTutorialBlockedMessage("名古屋編準備中は土地購入はできません。銀行融資と指定支店建設の手順だけ進めましょう。");
+    alert("名古屋編準備中は土地購入できません。");
+    return;
+  }
   if (!selectedTile) return;
 
   const mainTile = getMainTile(selectedTile);
@@ -17154,13 +17850,19 @@ function placeHQ(hqTypeKey) {
   }
 
   setLog(
-    `${hqType.name}を設置しました。土地代${tile.landPrice}万円、本社建設費${hqType.cost}万円を支払いました。${currentGameMode === "story_gifu" ? " 社員チケットを1枚獲得しました。" : ""}`
+    `${hqType.name}を設置しました。土地代${tile.landPrice}万円、本社建設費${hqType.cost}万円を支払いました。${currentGameMode === "story_gifu" ? " レア社員採用チケットを1枚獲得しました。" : ""}`
   );
 }
 async function placeBranch(targetTile = selectedTile) {
   if (isStoryTutorialActive()) {
     showStoryTutorialBlockedMessage();
     alert("チュートリアル中は支店開設はできません。まずは表示されている目標を進めましょう。");
+    return false;
+  }
+
+  if (currentGameMode === "story_nagoya_bridge" && nagoyaTutorialStep !== STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH) {
+    showNagoyaTutorialBlockedMessage("支店建設は、銀行融資の流れを終えてから進めます。今は表示されている目標だけ進めましょう。");
+    alert("今は支店建設の手順ではありません。");
     return false;
   }
 
@@ -17296,6 +17998,11 @@ async function placeBranch(targetTile = selectedTile) {
   alert("先に本社を設置してください");
   return false;
 }
+    if (isNagoyaBridgeTutorialActive()) {
+      showNagoyaTutorialBlockedMessage("名古屋編準備中は通常建物の建設はできません。まずは銀行融資、その後に指定された支店建設だけ進めましょう。");
+      alert("名古屋編準備中は通常建物の建設はできません。");
+      return false;
+    }
     const clickedBuildTargetTile = targetTile;
 
     if (!clickedBuildTargetTile) return false;
@@ -17477,6 +18184,12 @@ leaseCycleStartMonth: month,
   }
 
 async function demolish() {
+  if (isNagoyaBridgeTutorialActive()) {
+    showNagoyaTutorialBlockedMessage("名古屋編準備中は解体できません。表示されている目標だけ進めましょう。");
+    alert("名古屋編準備中は解体できません。");
+    return;
+  }
+
   if (isStoryTutorialActive()) {
     showStoryTutorialBlockedMessage();
     alert("チュートリアル中は解体できません。表示されている目標だけ進めましょう。");
@@ -17538,7 +18251,7 @@ async function demolish() {
   );
   grantEmployeeExp(
     actionEmployee.id,
-    calculateMoneyActionExp(demolishCost),
+    calculateDemolitionActionExp(demolishCost),
     "取り壊し"
   );
   setLog(`${building.name}を取り壊しました。担当:${actionEmployee.name}`);
@@ -17668,19 +18381,19 @@ async function sellProperty() {
 const REPAIR_OPTIONS = {
   light: {
     name: "軽修繕",
-    costRate: 0.03,
+    costRate: 0.05,
     conditionUp: 15,
     months: 1,
   },
   exterior: {
     name: "外装工事",
-    costRate: 0.05,
+    costRate: 0.10,
     conditionUp: 30,
     months: 2,
   },
   major: {
     name: "大規模修繕",
-    costRate: 0.12,
+    costRate: 0.25,
     conditionUp: 60,
     months: 4,
   },
@@ -18184,7 +18897,7 @@ workingTiles = workingTiles.map((tile) => {
   const standardCost = tile.branchStandardCost ?? BRANCH_OFFICE_COST;
   const actualCost = tile.branchActualCost ?? standardCost;
   eventLog.push(`${tile.officeName ?? "支店"}が完成しました。工期:${standardMonths}ヶ月→${actualMonths}ヶ月 / 費用:${standardCost}万円→${actualCost}万円 / 担当:${employeeNames}`);
-  grantEmployeesExp(employeeIds, calculateMonthActionExp(actualMonths), "支店完成");
+  grantEmployeesExp(employeeIds, calculateBuildActionExp(actualCost), "支店完成");
 
   return {
     ...tile,
@@ -18224,7 +18937,7 @@ workingTiles = workingTiles.map((tile) => {
 
     grantEmployeesExp(
       Array.isArray(tile.repairEmployeeIds) ? tile.repairEmployeeIds : [],
-      calculateMonthActionExp(tile.repairActualMonths ?? tile.repairStandardMonths ?? 1),
+      calculateRepairActionExp(tile.repairActualCost ?? tile.repairStandardCost ?? 0),
       "修繕完了"
     );
 
@@ -18266,7 +18979,7 @@ if (tile.buildingStatus === "constructing") {
     const employeeNames = Array.isArray(tile.buildEmployeeNames) ? tile.buildEmployeeNames.join("・") : "-";
     const employeeIds = Array.isArray(tile.buildEmployeeIds) ? tile.buildEmployeeIds : [];
     eventLog.push(`${building.name}が完成しました。工期:${standardMonths}ヶ月→${actualMonths}ヶ月 / 費用:${standardCost}万円→${actualCost}万円 / 担当:${employeeNames}`);
-    grantEmployeesExp(employeeIds, calculateMonthActionExp(actualMonths), "建設完成");
+    grantEmployeesExp(employeeIds, calculateBuildActionExp(actualCost), "建設完成");
   const completedDemand = getDemand(tile, tile.building);
   const completedRooms = createRooms(tile.building, completedDemand, nextProcessingMonth);
 return {
@@ -19105,7 +19818,7 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
       officeId: `${companyId}_hq`,
     });
     nextRivalSixMonthTicketGranted = true;
-    logs.push(`${company.name}が設立6ヶ月の社員チケットを使用し、${newEmployee.name}（${newEmployee.rarity}）を採用しました。`);
+    logs.push(`${company.name}が設立6ヶ月のレア社員採用チケットを使用し、${newEmployee.name}（${newEmployee.rarity}）を採用しました。`);
   }
 
   const previousRivalRank = Math.max(1, hqTileForCompany?.rivalRank ?? 1);
@@ -19123,7 +19836,7 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
         ...newEmployee,
         officeId: `rival_${companyId}_hq`,
       });
-      logs.push(`${company.name}がランク${previousRivalRank + i + 1}到達の社員チケットを使用し、${newEmployee.name}（${newEmployee.rarity}）を採用しました。`);
+      logs.push(`${company.name}がランク${previousRivalRank + i + 1}到達のレア社員採用チケットを使用し、${newEmployee.name}（${newEmployee.rarity}）を採用しました。`);
     }
   }
 
@@ -19654,7 +20367,7 @@ const nextPendingLoanConsultations = pendingLoanConsultations.map((consultation)
 }).filter(Boolean);
 
 let loanApprovalTotal = 0;
-const completedLoanEmployeeIds = [];
+const completedLoanExpAwards = [];
 let reviewedLoans = nextLoans;
 const nextPendingLoanApplications = pendingLoanApplications.map((application) => {
   const nextMonthsLeft = Math.max(0, (application.monthsLeft ?? 1) - 1);
@@ -19668,9 +20381,15 @@ const nextPendingLoanApplications = pendingLoanApplications.map((application) =>
   }
 
   const result = calculateLoanReviewResult(application, reviewedLoans);
-  completedLoanEmployeeIds.push(...(application.employeeIds ?? []));
 
   if (!result.approved) {
+    if (Array.isArray(application.employeeIds) && application.employeeIds.length > 0) {
+      completedLoanExpAwards.push({
+        employeeIds: application.employeeIds,
+        exp: calculateLoanDeniedExp(),
+        reason: "融資否決対応",
+      });
+    }
     eventLog.push(`${application.bankName}の融資審査は否決されました。理由:${result.reason} / 担当:${(application.employeeNames ?? []).join("・") || "-"}`);
     return null;
   }
@@ -19709,6 +20428,14 @@ const nextPendingLoanApplications = pendingLoanApplications.map((application) =>
   reviewedLoans = [approvedLoan, ...reviewedLoans];
   loanApprovalTotal += result.approvedAmount;
 
+  if (Array.isArray(application.employeeIds) && application.employeeIds.length > 0) {
+    completedLoanExpAwards.push({
+      employeeIds: application.employeeIds,
+      exp: calculateLoanApprovalExp(result.approvedAmount),
+      reason: "融資承認対応",
+    });
+  }
+
   eventLog.push(
     `${application.bankName}の融資審査が${result.reduced ? "減額承認" : "承認"}され、借入を実行しました。希望額${(application.requestedAmount ?? 0).toLocaleString()}万円 → 承認額${result.approvedAmount.toLocaleString()}万円 / 金利${(result.annualRate * 100).toFixed(2)}% / 月返済${result.monthlyPayment.toLocaleString()}万円 / 担当:${(application.employeeNames ?? []).join("・") || "-"}`
   );
@@ -19718,12 +20445,12 @@ const nextPendingLoanApplications = pendingLoanApplications.map((application) =>
 
 nextLoans = reviewedLoans;
 
-if (completedLoanEmployeeIds.length > 0) {
-  grantEmployeesExp(completedLoanEmployeeIds, 24, "融資審査対応");
-}
+completedLoanExpAwards.forEach((award) => {
+  grantEmployeesExp(award.employeeIds, award.exp, award.reason);
+});
 
 if (completedLoanConsultationEmployeeIds.length > 0) {
-  grantEmployeesExp(completedLoanConsultationEmployeeIds, 12, "融資相談");
+  grantEmployeesExp(completedLoanConsultationEmployeeIds, calculateLoanConsultationExp(), "融資相談");
 }
 
 let corporateTax = 0;
@@ -19838,7 +20565,7 @@ setLogHistory((prev) => [monthLog, ...prev].slice(0, 200));
 
 function newGame() {
   const ok = window.confirm(
-    "マップだけをリセットしますか？\n\n社員・社員保管庫・社員チケットは残ります。"
+    "マップだけをリセットしますか？\n\n社員・社員保管庫・採用チケットは残ります。"
   );
   if (!ok) return;
 
@@ -19874,7 +20601,7 @@ function newGame() {
 
 function fullResetGame() {
   const ok = window.confirm(
-    "全データを削除して最初から始めますか？\n\nマップ・社員・社員保管庫・社員チケット・ログがすべて消えます。"
+    "全データを削除して最初から始めますか？\n\nマップ・社員・社員保管庫・採用チケット・ログがすべて消えます。"
   );
   if (!ok) return;
 
@@ -20089,6 +20816,12 @@ async function startLoanConsultation(bankId) {
     return;
   }
 
+  if (currentGameMode === "story_nagoya_bridge" && nagoyaTutorialStep !== STORY_NAGOYA_TUTORIAL_STEPS.LOAN_CONSULT) {
+    showNagoyaTutorialBlockedMessage("今は融資相談の手順ではありません。七瀬の案内に沿って、表示されている目標だけ進めましょう。");
+    alert("名古屋編準備中は、現在の目標以外の融資相談はできません。");
+    return;
+  }
+
   const bank = BANKS[bankId];
   if (!bank) return;
 
@@ -20147,6 +20880,12 @@ async function borrowFromBank(bankId, overrideAmount = null, consultationReport 
   if (isStoryTutorialActive()) {
     showStoryTutorialBlockedMessage();
     alert("チュートリアル中は借入申請はできません。まずは表示されている目標を進めましょう。");
+    return;
+  }
+
+  if (currentGameMode === "story_nagoya_bridge" && nagoyaTutorialStep !== STORY_NAGOYA_TUTORIAL_STEPS.LOAN_APPLICATION) {
+    showNagoyaTutorialBlockedMessage("今は融資申請の手順ではありません。七瀬の案内に沿って、表示されている目標だけ進めましょう。");
+    alert("名古屋編準備中は、現在の目標以外の融資申請はできません。");
     return;
   }
 
@@ -20565,8 +21304,9 @@ const nearbyHousingBuildings = tiles.filter((t) => {
 
 score += Math.min(12, nearbyHousingBuildings * 2);
   score += Math.min(10, tile.landPrice / 1500);
+score += getNearbyDemandBoostScore(tile, "housing", tiles);
 
-return Math.max(30, Math.min(140, Math.round(score)));
+  return Math.max(30, Math.min(140, Math.round(score)));
 }
 
 function getCommercialDemandColor(score) {
@@ -20654,6 +21394,8 @@ score += Math.min(10, nearbyIndustrialBuildings * 2);
 
 score += Math.min(10, tile.landPrice / 1800);
 
+score += getNearbyDemandBoostScore(tile, "commercial", tiles);
+
   return Math.max(30, Math.min(140, Math.round(score)));
 }
 function getIndustrialDemandColor(score) {
@@ -20736,6 +21478,8 @@ score += Math.min(18, nearbyIndustrialBuildings * 4);
 
 score += Math.min(8, tile.landPrice / 2500);
 
+score += getNearbyDemandBoostScore(tile, "industrial", tiles);
+
   return Math.max(30, Math.min(140, Math.round(score)));
 }
 function selectNPCBuildingByDemand(tile) {
@@ -20779,8 +21523,8 @@ const candidates = [
   "small_factory",
   "medium_factory",
   "warehouse",
-  "apt_2f_single",
-  "convenience",
+  "logistics_center",
+  "large_factory",
 ];
 
   return candidates[randomInt(0, candidates.length - 1)];
@@ -21309,7 +22053,7 @@ function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode
   setSaveLoadModal(null);
   setIsMainMenuOpen(false);
   setLog(isStoryTutorial
-    ? "第0章 創業編を開始しました。赤く光っている売り物件を選択して、2階建戸建を購入しましょう。"
+    ? "1-1章 創業チュートリアルを開始しました。赤く光っている売り物件を選択して、2階建戸建を購入しましょう。"
     : `${companyName}として${freeMapOption.label}のフリーモードを開始しました。最初に本社を設置してください。`);
 }
 
@@ -21387,22 +22131,36 @@ function startGifuChapter() {
   setPendingLoanApplications([]);
   setPendingLoanConsultations([]);
   setLoanConsultationReports([]);
-  setLog("第1章 岐阜編を開始しました。岐阜駅南側の本社から経営を始めましょう。");
+  setLog("1-2章 岐阜編を開始しました。岐阜駅南側の本社から経営を始めましょう。");
 }
 
-const gifuTotalAssets = Math.max(0, Math.round(money + assetValue));
+const gifuOwnedBuildingCount = tiles.filter((tile) => {
+  if (tile.owner !== OWNER.PLAYER) return false;
+
+  const isCompletedNormalBuilding =
+    Boolean(tile.building) &&
+    !tile.buildingMainId &&
+    tile.feature !== FEATURE.HQ &&
+    tile.feature !== FEATURE.BRANCH &&
+    tile.buildingStatus !== "constructing";
+
+  const isCompletedBranchBuilding =
+    tile.feature === FEATURE.BRANCH &&
+    !tile.branchUnderConstruction;
+
+  return isCompletedNormalBuilding || isCompletedBranchBuilding;
+}).length;
 const isGifuChapterClearConditionMet =
   currentGameMode === "story_gifu" &&
   hqPlaced &&
-  totalPopulation >= GIFU_CLEAR_POPULATION &&
-  gifuTotalAssets >= GIFU_CLEAR_TOTAL_ASSETS;
+  gifuOwnedBuildingCount >= GIFU_CLEAR_BUILDING_COUNT;
 
 useEffect(() => {
   if (!isGifuChapterClearConditionMet || hasClearedGifuChapter) return;
 
   setHasClearedGifuChapter(true);
   setStoryEvent(STORY_GIFU_EVENTS.CLEAR);
-  setLog("岐阜編の目標を達成しました。人口500人以上、総資産3億円以上を達成です。");
+  setLog("岐阜編の目標を達成しました。完成済みの自社建物3棟を達成です。");
 }, [isGifuChapterClearConditionMet, hasClearedGifuChapter]);
 
 function startNagoyaBridgeChapter() {
@@ -21423,7 +22181,17 @@ function startNagoyaBridgeChapter() {
   setPendingBuildKey(null);
   setSelectedBuildCategory(null);
   setSelectedHousingType(null);
-  setLog("第2章 名古屋編の準備を開始しました。岐阜マップを南へ拡張した30×30マップで、まずは銀行融資を確認しましょう。");
+
+  const currentEmployees = employeesRef.current.length > 0 ? employeesRef.current : employees;
+  const normalizedEmployees = currentEmployees.map((employee) => {
+    const currentOfficeId = employee.officeId ?? "hq";
+    const shouldForceHq = employee.id === 122 || currentOfficeId === "storage" || currentOfficeId === "待機" || currentOfficeId === "";
+    return shouldForceHq ? { ...employee, officeId: "hq" } : employee;
+  });
+  employeesRef.current = normalizedEmployees;
+  setEmployees(normalizedEmployees);
+
+  setLog("1-4章 名古屋編の準備を開始しました。岐阜マップを南へ拡張した30×30マップで、まずは銀行融資を確認しましょう。");
 }
 
 function finishNagoyaBridgeChapter() {
@@ -21431,19 +22199,17 @@ function finishNagoyaBridgeChapter() {
   setStoryEvent({
     background: null,
     portrait: "happy",
-    title: "第2章 名古屋編",
-    text: "社長、銀行融資と支店建設の流れを確認できましたね。ここからは名古屋方面への本格進出です。名古屋編の目標は、人口1,000人以上、総資産5億円以上です。社員を支店へ配属しながら、より広いエリアで経営していきましょう！",
+    title: "1-4章 名古屋編",
+    text: "社長、銀行融資と支店建設の流れを確認できましたね。ここからは名古屋方面への本格進出です。名古屋編の目標は、実質月利益50万円以上です。社員を支店へ配属しながら、より広いエリアで経営していきましょう！",
   });
   setActivePanel("home");
-  setLog("第2章 名古屋編を開始しました。岐阜から名古屋へ広がる30×30マップで、支店を活用して経営範囲を広げましょう。");
+  setLog("1-4章 名古屋編を開始しました。岐阜から名古屋へ広がる30×30マップで、支店を活用して経営範囲を広げましょう。");
 }
 
 
-const nagoyaTotalAssets = Math.max(0, Math.round(money + assetValue));
 const isNagoyaChapterClearConditionMet =
   currentGameMode === "story_nagoya" &&
-  totalPopulation >= NAGOYA_CLEAR_POPULATION &&
-  nagoyaTotalAssets >= NAGOYA_CLEAR_TOTAL_ASSETS;
+  actualMonthlyProfit >= NAGOYA_CLEAR_MONTHLY_PROFIT;
 
 useEffect(() => {
   if (!isNagoyaChapterClearConditionMet || hasClearedNagoyaChapter) return;
@@ -21452,9 +22218,9 @@ useEffect(() => {
   setStoryEvent({
     portrait: "happy",
     title: "名古屋編クリア",
-    text: "社長、本当にここまで来ましたね。\n\n最初は空き家一軒から始まった会社でしたけど、\n今では名古屋へ進出する企業になりました。\n\n私も入社したばかりで、\n右も左も分からなかったのに、\nたくさんの経験をさせてもらいました。\n\nまだまだ未熟ですけど、\nこれからも社長と一緒に頑張っていきたいです。\n\n━━━━━━━━━━━━\nストーリーモード 第1部 完\n創業編 ～ 名古屋進出編\n━━━━━━━━━━━━",
+    text: "社長、名古屋編の目標だった実質月利益50万円以上を達成しました！\n\n最初は空き家一軒から始まった会社でしたけど、\n今では名古屋でも安定して利益を出せる会社になりましたね。\n\n私も入社したばかりで、\n右も左も分からなかったのに、\nたくさんの経験をさせてもらいました。\n\nまだまだ未熟ですけど、\nこれからも社長と一緒に頑張っていきたいです。\n\n━━━━━━━━━━━━\nストーリーモード 第1部 完\n1-1章 創業チュートリアル ～ 1-4章 名古屋編\n━━━━━━━━━━━━",
   });
-  setLog("名古屋編の目標を達成しました。ストーリーモード第1部を完了しました。");
+  setLog("名古屋編の目標を達成しました。実質月利益50万円以上を達成です。ストーリーモード第1部を完了しました。");
 }, [isNagoyaChapterClearConditionMet, hasClearedNagoyaChapter]);
 
 function continueAfterStoryFirstPart() {
@@ -21530,7 +22296,7 @@ useEffect(() => {
     setNagoyaTutorialStep(STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE);
     setStoryEvent(STORY_NAGOYA_EVENTS.BRANCH_COMPLETE);
     setActivePanel("employee");
-    setLog("支店が完成しました。社員配置で、支店へ社員を1人以上配属しましょう。");
+    setLog("支店が完成しました。社員が足りない場合は、下部メニューの『社員』→『社員採用』で採用し、その後『社員配属』で支店へ配属しましょう。");
     return;
   }
 
@@ -21548,7 +22314,7 @@ function getCurrentAkariGuide() {
   if (currentGameMode === "story" && tutorialStep) {
     return {
       portrait: "normal",
-      title: "第0章 創業編",
+      title: "1-1章 創業チュートリアル",
       goal: getStoryTutorialGoalText(tutorialStep),
       text: getStoryTutorialAkariAdviceText(tutorialStep),
       nextMonthGuide: shouldShowStoryTutorialNextMonthGuide(),
@@ -21558,7 +22324,7 @@ function getCurrentAkariGuide() {
   if (currentGameMode === "story_nagoya_bridge" && nagoyaTutorialStep) {
     return {
       portrait: "serious",
-      title: "第2章 名古屋編：進出準備",
+      title: "1-4章 名古屋編：進出準備",
       goal: getStoryNagoyaGoalText(nagoyaTutorialStep),
       text: getStoryNagoyaAdviceText(nagoyaTutorialStep),
       nextMonthGuide: nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_CONSULT ||
@@ -21570,8 +22336,8 @@ function getCurrentAkariGuide() {
   if (currentGameMode === "story_nagoya") {
     return {
       portrait: "serious",
-      title: "第2章 名古屋編",
-      goal: `人口${NAGOYA_CLEAR_POPULATION.toLocaleString()}人以上、総資産${Math.round(NAGOYA_CLEAR_TOTAL_ASSETS / 10000)}億円以上を目指しましょう。`,
+      title: "1-4章 名古屋編",
+      goal: `実質月利益${NAGOYA_CLEAR_MONTHLY_PROFIT.toLocaleString()}万円以上を目指しましょう。`,
       text: "名古屋編では、支店を使って活動範囲を広げます。社員画面で社員を本社・支店へ配属変更できるので、支店にも担当社員を置いてから購入・建設・修繕を進めましょう。",
       nextMonthGuide: false,
     };
@@ -21580,7 +22346,7 @@ function getCurrentAkariGuide() {
   if (currentGameMode === "story_gifu" && !hqPlaced) {
     return {
       portrait: "serious",
-      title: "第1章 岐阜編：本社設置",
+      title: "1-2章 岐阜編：本社設置",
       goal: "本社を設置する土地を選びましょう。",
       text: "普通の本社は初期費用を抑えられます。アパート付き本社は費用が高い代わりに、最初から賃貸収入を狙えます。どちらを選んでも大丈夫です。",
     };
@@ -21588,7 +22354,7 @@ function getCurrentAkariGuide() {
 
   const guide = AKARI_PAGE_GUIDES[activePanel] ?? AKARI_PAGE_GUIDES.home;
   const gifuGoalText = currentGameMode === "story_gifu"
-    ? `岐阜編目標：人口${totalPopulation.toLocaleString()} / ${GIFU_CLEAR_POPULATION.toLocaleString()}人、総資産${gifuTotalAssets.toLocaleString()} / ${GIFU_CLEAR_TOTAL_ASSETS.toLocaleString()}万円`
+    ? `岐阜編目標：完成済み自社建物${gifuOwnedBuildingCount.toLocaleString()} / ${GIFU_CLEAR_BUILDING_COUNT.toLocaleString()}棟`
     : null;
 
   return {
@@ -21607,13 +22373,82 @@ const hasSaveData = Boolean(savedGame) || hasAnySaveSlot;
 const titleSavedMode = savedGame?.currentGameMode ?? currentGameMode ?? "free";
 const titleHasStorySave = Boolean(savedGame) && String(titleSavedMode).startsWith("story");
 const titleHasFreeSave = Boolean(savedGame) && isFreeModeKey(titleSavedMode);
+function getStoryChapterProgressLevel() {
+  if (hasClearedNagoyaChapter || currentGameMode === "story_cleared" || currentGameMode === "free_30") return 4;
+  if (currentGameMode === "story_nagoya") return 4;
+  if (currentGameMode === "story_nagoya_bridge") return 3;
+  if (hasClearedGifuChapter) return 3;
+  if (currentGameMode === "story_gifu") return 2;
+  if (titleAccountData.unlockedStoryAkari || currentGameMode === "story_tutorial") return 1;
+  return 1;
+}
+
 function continueStoryFromTitle() {
+  setTitleModal("storySelect");
+}
+
+function openLatestStoryFromTitle() {
   if (titleHasStorySave) {
     openGameFromTitle();
     return;
   }
-
   startNewGameFromTitle(activeSaveSlot, "story");
+}
+
+function startNagoyaChapterFromSelect() {
+  const nagoyaMap = createNagoyaStoryMap(tiles);
+  setCurrentGameMode("story_nagoya");
+  setNagoyaTutorialStep(null);
+  setStoryEvent({
+    portrait: "happy",
+    title: "1-4章 名古屋編",
+    text: "社長、ここからは名古屋方面への本格進出です。名古屋編の目標は、実質月利益50万円以上です。支店を活用して経営範囲を広げましょう！",
+  });
+  setStorySequence(null);
+  setStorySequenceIndex(0);
+  setTiles(nagoyaMap.tiles);
+  setSelectedId(null);
+  setHqPlaced(true);
+  setActivePanel("home");
+  setPendingBuildKey(null);
+  setPendingBranchPlacement(false);
+  setSelectedBuildCategory(null);
+  setSelectedHousingType(null);
+  setShowTitleScreen(false);
+  setTitleModal(null);
+  setLog("1-4章 名古屋編を開始しました。目標は実質月利益50万円以上です。");
+}
+
+function startStoryChapterFromTitle(chapterKey) {
+  const progress = getStoryChapterProgressLevel();
+  if (chapterKey === "chapter_1_1") {
+    startNewGameFromTitle(activeSaveSlot, "story");
+    return;
+  }
+  if (chapterKey === "chapter_1_2") {
+    if (progress < 2 && !titleAccountData.unlockedStoryAkari) { alert("1-1章をクリアすると解放されます。"); return; }
+    const ok = window.confirm("1-2章 岐阜編を最初から始めますか？\n※最新の進行データだけを保存対象にするため、戻って遊ぶ章の途中保存は残しません。");
+    if (!ok) return;
+    startGifuChapter();
+    setShowTitleScreen(false);
+    setTitleModal(null);
+    return;
+  }
+  if (chapterKey === "chapter_1_3") {
+    if (progress < 3) { alert("1-2章 岐阜編をクリアすると解放されます。"); return; }
+    const ok = window.confirm("1-3章 名古屋準備編を最初から始めますか？\n※戻って遊ぶ章の途中保存は残しません。");
+    if (!ok) return;
+    startNagoyaBridgeChapter();
+    setShowTitleScreen(false);
+    setTitleModal(null);
+    return;
+  }
+  if (chapterKey === "chapter_1_4") {
+    if (progress < 4) { alert("1-3章 名古屋準備編をクリアすると解放されます。"); return; }
+    const ok = window.confirm("1-4章 名古屋編を最初から始めますか？\n※戻って遊ぶ章の途中保存は残しません。");
+    if (!ok) return;
+    startNagoyaChapterFromSelect();
+  }
 }
 
 function getFreeModeSavedData(mapKey) {
@@ -21654,21 +22489,31 @@ const titleTotalAssets = money + tiles.reduce((sum, tile) => {
   const buildingValue = tile.building ? Math.round((BUILDINGS[tile.building]?.cost ?? 0) * 0.65) : 0;
   return sum + (tile.landPrice ?? 0) + buildingValue;
 }, 0);
-const titleAccountData = readAccountData();
+const titleAccountData = useMemo(() => readAccountData(), [homeAccountRefreshKey, playerRank, playerExp, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets]);
 const titleAccountEmployeeVault = mergeEmployeeCollections(titleAccountData.employeeVault ?? []);
 const titleFounderSelectableEmployees = getFounderSelectableEmployees(titleAccountData);
 const titleStoryAkari = getStoryAkariForFounder(titleAccountData);
 const titleDateLabel = getGameDate(month).label;
 const titleFreeStatusText = "15×15 / 30×30 / 50×50 / 70×70 から選択";
-const titleStoryStatusText = currentGameMode === "story_nagoya"
-  ? "名古屋編 進行中"
-  : currentGameMode === "story_gifu"
-    ? "岐阜編 進行中"
-    : currentGameMode === "story_tutorial"
-      ? "第0章 創業編"
-      : titleAccountData.unlockedStoryAkari
-        ? "岐阜編から再開できます"
-        : "第0章から開始";
+function getStoryStatusTextByMode(mode) {
+  if (mode === "story_nagoya") return "1-4章 名古屋編 進行中";
+  if (mode === "story_nagoya_bridge") return "1-3章 名古屋準備編 進行中";
+  if (mode === "story_gifu") return "1-2章 岐阜編 進行中";
+  if (mode === "story" || mode === "story_tutorial") return "1-1章 創業チュートリアル 進行中";
+  if (hasClearedNagoyaChapter || mode === "story_cleared") return "1-4章 名古屋編クリア済み";
+  if (hasClearedGifuChapter) return "1-3章 名古屋準備編から再開できます";
+  if (titleAccountData.unlockedStoryAkari) return "1-2章 岐阜編から再開できます";
+  return "1-1章から開始";
+}
+const titleStoryStatusMode = titleHasStorySave ? titleSavedMode : currentGameMode;
+const titleStoryStatusText = getStoryStatusTextByMode(titleStoryStatusMode);
+const homeCoreFeaturesUnlocked = Boolean(titleAccountData.unlockedStoryAkari) && (currentGameMode !== "story_tutorial" || tutorialStep === STORY_TUTORIAL_STEPS.COMPLETE);
+const titleSilverSheet = Math.max(0, Math.round(Number(titleAccountData.silverSheets ?? titleAccountData.silverSheet ?? 0) || 0));
+const titleGoldSheet = Math.max(0, Math.round(Number(titleAccountData.goldSheets ?? titleAccountData.goldSheet ?? 0) || 0));
+
+function openLockedHomeFeatureNotice() {
+  alert("1-1章 創業チュートリアルを完了すると解放されます。まずはストーリーを始めましょう。");
+}
 const titleEmployeeTotalCount = EMPLOYEE_POOL.length;
 const titleEmployeeCollectedCount = titleAccountEmployeeVault.length;
 const titleEmployeeCompletionRate = titleEmployeeTotalCount > 0
@@ -22099,6 +22944,45 @@ function returnToTitleScreen() {
 }
 
 
+function resetCurrentMapToChapterStart() {
+  const ok = window.confirm("現在のマップを章の最初の状態に戻しますか？\n建設済み建物・進行中工事・選択状態はリセットされます。");
+  if (!ok) return;
+
+  if (currentGameMode === "story" || currentGameMode === "story_tutorial") {
+    resetGameFromTitle(activeSaveSlot, playerCompanyName || DEFAULT_COMPANY_NAME, "story", []);
+    return;
+  }
+
+  if (currentGameMode === "story_gifu") {
+    startGifuChapter();
+    setShowTitleScreen(false);
+    setTitleModal("settings");
+    return;
+  }
+
+  if (currentGameMode === "story_nagoya_bridge") {
+    startNagoyaBridgeChapter();
+    setShowTitleScreen(false);
+    setTitleModal("settings");
+    return;
+  }
+
+  if (currentGameMode === "story_nagoya") {
+    startNagoyaChapterFromSelect();
+    setShowTitleScreen(false);
+    setTitleModal("settings");
+    return;
+  }
+
+  if (isFreeModeKey(currentGameMode)) {
+    resetGameFromTitle(activeSaveSlot, playerCompanyName || DEFAULT_COMPANY_NAME, normalizeFreeModeKey(currentGameMode), []);
+    return;
+  }
+
+  alert("現在のモードではマップやり直しを実行できません。");
+}
+
+
 function createAkariTalk(text, portrait = "normal", options = {}) {
   const pages = Array.isArray(options.pages) && options.pages.length > 0 ? options.pages : null;
   return {
@@ -22123,15 +23007,15 @@ function normalizeHomeAkariTalkItem(item) {
 }
 
 function getHomeTimeTone() {
-  const hour = new Date().getHours();
+  const hour = new Date(homeTimeRefreshKey).getHours();
   if (hour >= 5 && hour < 10) return "morning";
   if (hour >= 10 && hour < 17) return "day";
-  if (hour >= 17 && hour < 22) return "evening";
+  if (hour >= 17 && hour < 19) return "evening";
   return "night";
 }
 
 function getHomeWeatherTone() {
-  const now = new Date();
+  const now = new Date(homeTimeRefreshKey);
   const dateSeed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
   return dateSeed % 20 < 3 ? "rain" : "clear";
 }
@@ -22880,6 +23764,221 @@ function getHomeMoreKnowledgeAkariTalkMessages() {
 }
 
 
+
+function getHomeSeasonAkariTalkMessages() {
+  const month = new Date().getMonth() + 1;
+  if (month >= 3 && month <= 5) {
+    return [
+      createAkariTalk("春ですね、社長。\n新生活の時期は、住まい探しの動きも出やすいです。", "smile", { category: "chat" }),
+      createAkariTalk("桜の季節になると、街の印象も少し明るく見えますね。", "happy_1", { category: "chat" }),
+      createAkariTalk("春は引っ越し需要が動きやすい時期です。\n空室対策を早めに整えておきたいですね。", "think", { category: "knowledge" }),
+      createAkariTalk("新年度は社員さんの配置も見直しやすい時期ですね。\n得意分野に合わせて整えましょう。", "serious", { category: "game" }),
+      createAkariTalk("花粉の時期ですね……。\n内見前の換気や清掃も、印象に関わりそうです。", "trouble", { category: "knowledge" }),
+    ];
+  }
+
+  if (month >= 6 && month <= 8) {
+    return [
+      createAkariTalk("暑くなってきましたね、社長。\n無理せず水分補給してください。", "trouble", { category: "chat" }),
+      createAkariTalk("夏はエアコンの有無が入居判断に影響しやすいです。\n設備の確認をしておきましょう。", "think", { category: "knowledge" }),
+      createAkariTalk("梅雨や台風の時期は、雨漏りや排水の確認が大切です。", "serious_1", { category: "knowledge", pages: [
+        "梅雨や台風の時期は、屋根・外壁・ベランダ・雨樋の弱点が出やすくなります。",
+        "雨漏りは発見された時点で、内部では被害が進んでいることもあります。",
+        "早めの点検と小さな修繕が、大きな出費を防ぐことにつながります。"
+      ] }),
+      createAkariTalk("夏場の空室は、内見時の暑さも印象に残ります。\n換気や清掃を意識したいですね。", "normal_2", { category: "game" }),
+      createAkariTalk("こんな日は、社長室で数字の確認をするのも悪くないですね。", "smile", { category: "chat" }),
+    ];
+  }
+
+  if (month >= 9 && month <= 11) {
+    return [
+      createAkariTalk("秋は過ごしやすいですね。\n落ち着いて経営を見直すには良い季節です。", "normal_1", { category: "chat" }),
+      createAkariTalk("秋は台風後の点検も大切です。\n屋根や外壁に傷みがないか確認したいですね。", "serious", { category: "knowledge" }),
+      createAkariTalk("年末に向けて、資金繰りと修繕予定を整理しておきましょう。", "think", { category: "game" }),
+      createAkariTalk("紅葉の時期ですね。\n街並みがきれいだと、物件の印象も少し良く見えます。", "happy_2", { category: "chat" }),
+      createAkariTalk("繁忙期前の準備として、募集条件や写真を見直すのも良さそうです。", "serious_1", { category: "knowledge" }),
+    ];
+  }
+
+  return [
+    createAkariTalk("寒くなってきましたね、社長。\n暖かくして作業してください。", "sleepy_1", { category: "chat" }),
+    createAkariTalk("冬は給湯器や水道管のトラブルにも注意したい季節です。", "serious", { category: "knowledge" }),
+    createAkariTalk("年末年始は資金の出入りが乱れやすいです。\n固定費と返済予定を確認しておきましょう。", "think", { category: "game" }),
+    createAkariTalk("朝は布団から出るのが大変です……。\nでも社長が頑張るなら、私も頑張ります。", "sleepy", { category: "chat" }),
+    createAkariTalk("冬の内見では、日当たりや室内の寒さも印象に残りやすいです。", "normal_2", { category: "knowledge" }),
+  ];
+}
+
+function getHomeWeekdayAkariTalkMessages() {
+  const day = new Date().getDay();
+  const weekdayMessages = {
+    0: [
+      createAkariTalk("日曜日ですね、社長。\n今日は少しゆっくり進めてもいいと思います。", "smile", { category: "chat" }),
+      createAkariTalk("休日の内見は、お客様が動きやすい時間帯でもあります。", "think", { category: "knowledge" }),
+      createAkariTalk("明日からに備えて、資金と社員配置を軽く確認しておきましょう。", "normal_1", { category: "game" }),
+    ],
+    1: [
+      createAkariTalk("月曜日です。\n今週の方針を決めるところから始めましょう。", "serious", { category: "chat" }),
+      createAkariTalk("週の初めは、空室・修繕・借入の3つを確認すると整理しやすいです。", "think", { category: "game" }),
+      createAkariTalk("月曜の朝は少し緊張しますね……。\nでも一緒に頑張りましょう。", "trouble", { category: "chat" }),
+    ],
+    2: [
+      createAkariTalk("火曜日ですね。\n週の流れが少し見えてくる頃です。", "normal_2", { category: "chat" }),
+      createAkariTalk("購入候補を見比べる時は、価格だけでなく修繕費も並べて考えましょう。", "think", { category: "knowledge" }),
+      createAkariTalk("今日は社員さんの育成状況も見ておきませんか？", "happy_1", { category: "game" }),
+    ],
+    3: [
+      createAkariTalk("水曜日です。\n週の真ん中、少し休憩も入れましょう。", "smile", { category: "chat" }),
+      createAkariTalk("経営は短距離走ではなく長距離走です。\n無理のない判断が大切ですね。", "serious_1", { category: "knowledge" }),
+      createAkariTalk("支店がある場合は、エリアごとの行動範囲も見直したいです。", "think", { category: "game" }),
+    ],
+    4: [
+      createAkariTalk("木曜日ですね。\n今週の成果が少しずつ見えてきました。", "happy_2", { category: "chat" }),
+      createAkariTalk("週後半は、月送り前の確認をしておくと安心です。", "normal_1", { category: "game" }),
+      createAkariTalk("修繕を後回しにしすぎると、入居率にも影響しやすいです。", "serious", { category: "knowledge" }),
+    ],
+    5: [
+      createAkariTalk("金曜日です、社長。\n今週もお疲れ様でした！", "happy_3", { category: "chat" }),
+      createAkariTalk("週末前に、空室と募集状況を確認しておきましょう。", "think", { category: "game" }),
+      createAkariTalk("金曜の夜は少し気が緩みますね。\nでも大きな投資判断は慎重に、です。", "shy", { category: "knowledge" }),
+    ],
+    6: [
+      createAkariTalk("土曜日ですね。\n今日は少しじっくり物件を見られそうです。", "smile", { category: "chat" }),
+      createAkariTalk("休日は内見需要が出やすい一方、管理会社や銀行が休みの場合もあります。", "think", { category: "knowledge" }),
+      createAkariTalk("時間がある時に、社員名簿や採用も見直しておきましょう。", "happy_1", { category: "game" }),
+    ],
+  };
+  return weekdayMessages[day] ?? weekdayMessages[1];
+}
+
+function getHomeRegionalAkariTalkMessages() {
+  const mode = currentGameMode ?? "";
+  const currentMapSize = Array.isArray(tiles) ? Math.sqrt(tiles.length) : 0;
+  const messages = [];
+
+  if (mode.includes("gifu") || currentMapSize <= 15) {
+    messages.push(
+      createAkariTalk("岐阜のマップは小さい分、一手一手の影響が見えやすいですね。", "normal_1", { category: "game" }),
+      createAkariTalk("岐阜では、まず堅実に空き家再生の流れを覚えるのが良さそうです。", "serious", { category: "game" }),
+      createAkariTalk("地方の不動産では、人口動向と駐車場の有無がかなり大事になります。", "think", { category: "knowledge", pages: [
+        "地方の住宅需要では、駅距離だけでなく車での移動しやすさも重要です。",
+        "戸建賃貸では駐車場の有無が、入居の決め手になることもあります。",
+        "箱庭不動産でも、地域の広さや施設配置を見ながら投資判断していきましょう。"
+      ] })
+    );
+  }
+
+  if (mode.includes("nagoya") || (currentMapSize > 15 && currentMapSize <= 50)) {
+    messages.push(
+      createAkariTalk("名古屋圏は市場が大きい分、競争も激しそうです。", "serious_1", { category: "chat" }),
+      createAkariTalk("名古屋では、駅周辺の商業地と住宅地の使い分けが重要になりそうです。", "think", { category: "game" }),
+      createAkariTalk("都市部では地価が高くなりやすいので、利回りだけでなく出口も考えたいです。", "serious", { category: "knowledge" })
+    );
+  }
+
+  if (currentMapSize >= 70) {
+    messages.push(
+      createAkariTalk("首都圏規模のマップは、支店戦略がほぼ必須ですね。", "serious", { category: "game" }),
+      createAkariTalk("広い市場では、全部を一度に見るよりエリアを絞る方が判断しやすいです。", "think", { category: "knowledge" }),
+      createAkariTalk("社長、ここまで広いと本当に大企業みたいです……！", "surprise", { category: "chat" })
+    );
+  }
+
+  messages.push(
+    createAkariTalk("地域によって、同じ建物でも需要は変わります。\n場所を見る力も不動産の力ですね。", "think", { category: "knowledge" }),
+    createAkariTalk("駅、学校、工場。\n周辺施設を見ると、その土地の性格が少し見えてきます。", "normal_2", { category: "game" })
+  );
+
+  return messages;
+}
+
+function getHomeCourseAkariTalkMessages() {
+  return [
+    createAkariTalk("【宅建講座 1】宅建は、不動産取引の基本ルールを学ぶ資格です。", "formal", { category: "knowledge", pages: [
+      "【宅建講座 1】宅建は、不動産取引の重要なルールを学ぶ国家資格です。",
+      "試験では、宅建業法、権利関係、法令上の制限、税その他が出題されます。",
+      "まずは得点源になりやすい宅建業法から固めるのがおすすめです。"
+    ] }),
+    createAkariTalk("【宅建講座 2】重要事項説明は、契約前に大事な情報を説明する制度です。", "serious", { category: "knowledge", pages: [
+      "【宅建講座 2】重要事項説明は、買主や借主が契約前に判断できるように行います。",
+      "説明できるのは宅建士です。\n宅建士証を提示する点も試験で狙われます。",
+      "35条書面、37条書面とセットで覚えましょう。"
+    ] }),
+    createAkariTalk("【宅建講座 3】媒介契約は、不動産会社に仲介を依頼する契約です。", "think", { category: "knowledge", pages: [
+      "【宅建講座 3】媒介契約には、一般媒介、専任媒介、専属専任媒介があります。",
+      "専任・専属専任では、レインズ登録や業務報告のルールがあります。",
+      "試験では、それぞれの期限や依頼者側の制限がよく問われます。"
+    ] }),
+    createAkariTalk("【宅建講座 4】用途地域は13種類あります。", "think", { category: "knowledge", pages: [
+      "【宅建講座 4】用途地域は、建てられる建物の種類を制限する制度です。",
+      "住宅系、商業系、工業系に分けると整理しやすいです。",
+      "箱庭不動産でも、駅・学校・工場の周辺で地域の性格が変わります。"
+    ] }),
+    createAkariTalk("【不動産投資講座 1】表面利回りは入口の数字です。", "serious_1", { category: "knowledge", pages: [
+      "【不動産投資講座 1】表面利回りは、年間家賃収入を物件価格で割った数字です。",
+      "ただし、修繕費、税金、保険、空室、管理費は入っていません。",
+      "購入判断では、実際に手元に残るお金を見る必要があります。"
+    ] }),
+    createAkariTalk("【不動産投資講座 2】実質利回りは、経費を考えた現実に近い数字です。", "think", { category: "knowledge", pages: [
+      "【不動産投資講座 2】実質利回りは、家賃収入から経費を引いて考えます。",
+      "固定資産税、管理費、保険、修繕、空室損を考えると数字は下がります。",
+      "高利回りに見える物件ほど、経費の確認が大切ですね。"
+    ] }),
+    createAkariTalk("【不動産投資講座 3】キャッシュフローは、毎月手元に残るお金です。", "normal_1", { category: "knowledge", pages: [
+      "【不動産投資講座 3】キャッシュフローは、家賃収入から返済や経費を引いた後に残るお金です。",
+      "黒字に見えても、修繕や税金で手元資金が減ることがあります。",
+      "長く続けるには、毎月の手残りと予備資金が大切です。"
+    ] }),
+    createAkariTalk("【建築講座 1】外壁塗装は見た目だけでなく、建物を守る役割があります。", "serious", { category: "knowledge", pages: [
+      "【建築講座 1】外壁塗装は、外壁材を雨や紫外線から守るために行います。",
+      "塗膜が劣化すると、防水性が落ちて外壁材そのものが傷みやすくなります。",
+      "築古物件では、外壁とコーキングをセットで確認したいですね。"
+    ] }),
+    createAkariTalk("【建築講座 2】屋根は雨漏りリスクに直結します。", "serious_1", { category: "knowledge", pages: [
+      "【建築講座 2】屋根は建物を雨から守る最前線です。",
+      "ひび割れ、ズレ、サビ、棟板金の浮きなどは雨漏りの原因になることがあります。",
+      "内見では見えにくい場所なので、築古では点検の価値が高いです。"
+    ] }),
+    createAkariTalk("【建築講座 3】コーキングは小さく見えても重要です。", "think", { category: "knowledge", pages: [
+      "【建築講座 3】コーキングは外壁の継ぎ目やサッシ周りを埋める材料です。",
+      "劣化すると、すき間から雨水が入りやすくなります。",
+      "打ち替え時期の目安は一般的に10〜15年程度ですが、環境によって変わります。"
+    ] }),
+    createAkariTalk("【税金講座 1】固定資産税は毎年かかる代表的な不動産税です。", "normal_2", { category: "knowledge", pages: [
+      "【税金講座 1】固定資産税は、毎年1月1日時点の所有者に課税されます。",
+      "土地や建物を持っている限り、毎年発生する固定費です。",
+      "箱庭不動産でも、物件を増やすほど税金への備えが大切になります。"
+    ] }),
+    createAkariTalk("【税金講座 2】都市計画税は、地域によって固定資産税と一緒にかかることがあります。", "think", { category: "knowledge", pages: [
+      "【税金講座 2】都市計画税は、都市計画区域内の一部不動産にかかる税金です。",
+      "固定資産税と一緒に通知されることが多いです。",
+      "不動産経営では、毎年の保有コストとして見込んでおきたいですね。"
+    ] }),
+    createAkariTalk("【税金講座 3】登録免許税は、登記をする時に関係する税金です。", "formal", { category: "knowledge", pages: [
+      "【税金講座 3】不動産を買うと、所有権移転登記などが必要になります。",
+      "その登記の時にかかる税金が登録免許税です。",
+      "購入時の諸費用として、仲介手数料や登記費用と一緒に見ておきましょう。"
+    ] }),
+  ];
+}
+
+
+function isHomeTalkMessageAllowedForCurrentTime(message) {
+  const tone = getHomeTimeTone();
+  const text = `${message?.title ?? ""} ${message?.text ?? ""} ${(message?.pages ?? []).join(" ")}`;
+
+  if (tone !== "morning" && /(朝|おはよう|午前中|月曜の朝)/.test(text)) return false;
+  if (tone !== "day" && /(お昼|昼ですね|日中|午後)/.test(text)) return false;
+  if (tone !== "evening" && /(夕方|日暮れ|黄昏)/.test(text)) return false;
+
+  return true;
+}
+
+function filterHomeTalkMessagesByCurrentTime(messages) {
+  return messages.filter(isHomeTalkMessageAllowedForCurrentTime);
+}
+
 function getHomeAkariTalkMessages() {
   const phase = getAkariStoryPhase();
   const ticketTotal = (titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0);
@@ -22908,7 +24007,11 @@ function getHomeAkariTalkMessages() {
     ...getHomeExtraKnowledgeAkariTalkMessages(),
     ...getHomeDeepKnowledgeAkariTalkMessages(),
     ...getHomeMoreKnowledgeAkariTalkMessages(),
-  ];
+    ...getHomeSeasonAkariTalkMessages(),
+    ...getHomeWeekdayAkariTalkMessages(),
+    ...getHomeRegionalAkariTalkMessages(),
+    ...getHomeCourseAkariTalkMessages(),
+  ].filter(isHomeTalkMessageAllowedForCurrentTime);
 
   let phaseMessages = [];
   if (phase === "rookie") {
@@ -22949,13 +24052,25 @@ function getHomeAkariTalkMessages() {
   return applyHomeAkariTalkMode([...phaseMessages, ...commonMessages]);
 }
 
-function getHomeAkariMessage() {
+function getHomeAkariMessageParts() {
   const messages = getHomeAkariTalkMessages();
   const currentItem = normalizeHomeAkariTalkItem(messages[titleHomeAkariTalkIndex % messages.length]);
   const pages = Array.isArray(currentItem.pages) && currentItem.pages.length > 0 ? currentItem.pages : [currentItem.text];
   const pageIndex = Math.min(titleHomeAkariPageIndex, pages.length - 1);
-  const suffix = pageIndex < pages.length - 1 ? "\n\n▼ 続き" : "";
-  return `${pages[pageIndex]}${suffix}`;
+  const totalPages = pages.length;
+  const pageText = pages[pageIndex] ?? "";
+  const suffix = totalPages <= 1
+    ? ""
+    : pageIndex < totalPages - 1
+      ? `▶ 続き ${pageIndex + 1}/${totalPages}`
+      : `▲ 終わり ${totalPages}/${totalPages}`;
+
+  return { pageText, suffix, pageIndex, totalPages };
+}
+
+function getHomeAkariMessage() {
+  const { pageText, suffix } = getHomeAkariMessageParts();
+  return suffix ? `${pageText}\n${suffix}` : pageText;
 }
 
 function getHomeTimeToneLabel() {
@@ -23031,6 +24146,11 @@ function getHomeAkariPortraitKey() {
 
 function handleHomeAkariTap() {
   if (!titleStoryAkari) return;
+
+  if (!isHomeAkariMessageVisible) {
+    setIsHomeAkariMessageVisible(true);
+    return;
+  }
   const messages = getHomeAkariTalkMessages();
   const currentIndex = titleHomeAkariTalkIndex % messages.length;
   const currentItem = normalizeHomeAkariTalkItem(messages[currentIndex]);
@@ -23134,22 +24254,22 @@ function renderHomeMenuCard({ icon, title, sub, onClick, accent = "#ffffff", dis
   );
 }
 
-function startHomeEmployeeRecruitmentByTicket(ticketType) {
+function startHomeEmployeeRecruitmentByTicket(ticketType, source = "home") {
   const accountData = readAccountData();
   const tickets = getAccountTicketCounts(accountData);
   const isPremium = ticketType === "premium";
   const isRookie = ticketType === "rookie";
 
   if (isRookie && tickets.rookieEmployeeTickets < 1) {
-    alert("社員ライトチケットがありません。");
+    alert("社員採用チケットがありません。");
     return;
   }
   if (!isPremium && !isRookie && tickets.employeeTickets < 1) {
-    alert("社員チケットがありません。");
+    alert("レア社員採用チケットがありません。");
     return;
   }
   if (isPremium && tickets.premiumEmployeeTickets < 1) {
-    alert("社員プレミアムチケットがありません。");
+    alert("プレミア社員採用チケットがありません。");
     return;
   }
 
@@ -23180,10 +24300,21 @@ function startHomeEmployeeRecruitmentByTicket(ticketType) {
     ticketType,
     applicants,
     selectedEnvelopeId: null,
+    source,
   });
-  setTitleModal(null);
-  setTitleVaultDetailEmployee(null);
-  setLog(`ホームで${getTicketName(ticketType)}1枚を使い、履歴書が${applicants.length}通届きました。`);
+  if (source === "map") {
+    setShowTitleScreen(true);
+    setTitleModal(null);
+    setTitleVaultDetailEmployee(null);
+    setIsMapEmployeeMenuOpen(false);
+    setIsMainMenuOpen(false);
+    setIsMapInfoMenuOpen(false);
+  } else {
+    setEmployeeRecruitReturnPanel("home");
+    setTitleModal(null);
+    setTitleVaultDetailEmployee(null);
+  }
+  setLog(`${source === "map" ? "マップ" : "ホーム"}で${getTicketName(ticketType)}1枚を使い、履歴書が${applicants.length}通届きました。`);
 }
 
 
@@ -23290,7 +24421,7 @@ function getHomeMissionItems() {
       group: "ストーリー",
       icon: "岐",
       title: "岐阜編をクリアする",
-      description: "岐阜で経営目標を達成する。",
+      description: "岐阜で完成済みの自社建物3棟の目標を達成する。",
       current: hasClearedGifuChapter ? 1 : 0,
       target: 1,
       rewardExp: 80,
@@ -23330,10 +24461,438 @@ function getHomeMissionItems() {
       group: "ログイン",
       icon: "7",
       title: "ログインボーナスを累計7回受け取る",
-      description: "7日目のプレミア社員採用チケットを目指す。",
+      description: "7日目のレア社員採用チケットを目指す。",
       current: homeLoginBonusStatus.claimCount,
       target: 7,
       rewardExp: 70,
+    },
+    {
+      id: "login_14_total",
+      group: "ログイン",
+      icon: "14",
+      title: "ログインボーナスを累計14回受け取る",
+      description: "2週間続けて会社を見守る。",
+      current: homeLoginBonusStatus.claimCount,
+      target: 14,
+      rewardExp: 80,
+    },
+    {
+      id: "login_30_total",
+      group: "ログイン",
+      icon: "30",
+      title: "ログインボーナスを累計30回受け取る",
+      description: "1ヶ月続けて経営を継続する。",
+      current: homeLoginBonusStatus.claimCount,
+      target: 30,
+      rewardExp: 100,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "login_60_total",
+      group: "ログイン",
+      icon: "60",
+      title: "ログインボーナスを累計60回受け取る",
+      description: "長期経営の習慣を作る。",
+      current: homeLoginBonusStatus.claimCount,
+      target: 60,
+      rewardExp: 120,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "login_100_total",
+      group: "ログイン",
+      icon: "100",
+      title: "ログインボーナスを累計100回受け取る",
+      description: "100日分の経営記録を積み重ねる。",
+      current: homeLoginBonusStatus.claimCount,
+      target: 100,
+      rewardExp: 150,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "month_12",
+      group: "経営年数",
+      icon: "年",
+      title: "創業1年を迎える",
+      description: "ゲーム内で12ヶ月以上経営する。",
+      current: month,
+      target: 12,
+      rewardExp: 40,
+    },
+    {
+      id: "month_36",
+      group: "経営年数",
+      icon: "3年",
+      title: "創業3年を迎える",
+      description: "ゲーム内で36ヶ月以上経営する。",
+      current: month,
+      target: 36,
+      rewardExp: 80,
+    },
+    {
+      id: "month_120",
+      group: "経営年数",
+      icon: "10年",
+      title: "創業10年を迎える",
+      description: "ゲーム内で10年分の経営を続ける。",
+      current: month,
+      target: 120,
+      rewardExp: 150,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "building_3",
+      group: "建設",
+      icon: "🏘",
+      title: "自社建物を3棟所有する",
+      description: "竣工済みの自社建物を3棟以上にする。",
+      current: ownedBuildingCountForTitle,
+      target: 3,
+      rewardExp: 40,
+    },
+    {
+      id: "building_10",
+      group: "建設",
+      icon: "🏙",
+      title: "自社建物を10棟所有する",
+      description: "地域に複数の物件を展開する。",
+      current: ownedBuildingCountForTitle,
+      target: 10,
+      rewardExp: 80,
+    },
+    {
+      id: "building_30",
+      group: "建設",
+      icon: "🏗",
+      title: "自社建物を30棟所有する",
+      description: "街の景色を変える規模まで成長する。",
+      current: ownedBuildingCountForTitle,
+      target: 30,
+      rewardExp: 120,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "building_100",
+      group: "建設",
+      icon: "王",
+      title: "自社建物を100棟所有する",
+      description: "箱庭不動産を代表する大企業へ育てる。",
+      current: ownedBuildingCountForTitle,
+      target: 100,
+      rewardExp: 200,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "population_100",
+      group: "街づくり",
+      icon: "人",
+      title: "人口100人を達成",
+      description: "街に人の流れを作る。",
+      current: totalPopulation,
+      target: 100,
+      rewardExp: 25,
+    },
+    {
+      id: "population_500",
+      group: "街づくり",
+      icon: "町",
+      title: "人口500人を達成",
+      description: "地方都市としての土台を作る。",
+      current: totalPopulation,
+      target: 500,
+      rewardExp: 50,
+    },
+    {
+      id: "population_1000",
+      group: "街づくり",
+      icon: "市",
+      title: "人口1,000人を達成",
+      description: "人が集まる街へ育てる。",
+      current: totalPopulation,
+      target: 1000,
+      rewardExp: 80,
+    },
+    {
+      id: "population_5000",
+      group: "街づくり",
+      icon: "都",
+      title: "人口5,000人を達成",
+      description: "中核都市級の人口規模を目指す。",
+      current: totalPopulation,
+      target: 5000,
+      rewardExp: 120,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "monthly_profit_10",
+      group: "収益",
+      icon: "黒",
+      title: "実質月利益10万円以上",
+      description: "返済後でも黒字になる経営を作る。",
+      current: Math.max(0, actualMonthlyProfit),
+      target: 10,
+      rewardExp: 25,
+    },
+    {
+      id: "monthly_profit_50",
+      group: "収益",
+      icon: "益",
+      title: "実質月利益50万円以上",
+      description: "安定した家賃収入を確保する。",
+      current: Math.max(0, actualMonthlyProfit),
+      target: 50,
+      rewardExp: 50,
+    },
+    {
+      id: "monthly_profit_100",
+      group: "収益",
+      icon: "優",
+      title: "実質月利益100万円以上",
+      description: "優良企業レベルの月次利益を達成する。",
+      current: Math.max(0, actualMonthlyProfit),
+      target: 100,
+      rewardExp: 80,
+    },
+    {
+      id: "monthly_profit_1000",
+      group: "収益",
+      icon: "億",
+      title: "実質月利益1,000万円以上",
+      description: "大規模経営の入口へ到達する。",
+      current: Math.max(0, actualMonthlyProfit),
+      target: 1000,
+      rewardExp: 150,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "annual_profit_100",
+      group: "決算",
+      icon: "決",
+      title: "年間差引100万円以上",
+      description: "年間決算で黒字を積み上げる。",
+      current: Math.max(0, annualStats.net ?? 0),
+      target: 100,
+      rewardExp: 40,
+    },
+    {
+      id: "annual_profit_1000",
+      group: "決算",
+      icon: "算",
+      title: "年間差引1,000万円以上",
+      description: "一年を通して強い収益力を示す。",
+      current: Math.max(0, annualStats.net ?? 0),
+      target: 1000,
+      rewardExp: 100,
+    },
+    {
+      id: "asset_50000",
+      group: "資産",
+      icon: "5億",
+      title: "総資産5億円以上",
+      description: "地方不動産会社として存在感を高める。",
+      current: titleTotalAssets,
+      target: 50000,
+      rewardExp: 90,
+    },
+    {
+      id: "asset_100000",
+      group: "資産",
+      icon: "10億",
+      title: "総資産10億円以上",
+      description: "大きな資産基盤を持つ会社へ成長する。",
+      current: titleTotalAssets,
+      target: 100000,
+      rewardExp: 120,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "asset_1000000",
+      group: "資産",
+      icon: "財",
+      title: "総資産100億円以上",
+      description: "地域を代表する財閥級の会社を目指す。",
+      current: titleTotalAssets,
+      target: 1000000,
+      rewardExp: 200,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "loan_first",
+      group: "融資",
+      icon: "銀",
+      title: "初めて融資を受ける",
+      description: "銀行から資金調達を行う。",
+      current: loans.length > 0 || totalLoanRemaining > 0 ? 1 : 0,
+      target: 1,
+      rewardExp: 40,
+    },
+    {
+      id: "loan_balance_5000",
+      group: "融資",
+      icon: "借",
+      title: "借入残高5,000万円以上",
+      description: "信用を使って事業拡大する。",
+      current: totalLoanRemaining,
+      target: 5000,
+      rewardExp: 60,
+    },
+    {
+      id: "loan_balance_10000",
+      group: "融資",
+      icon: "信",
+      title: "借入残高1億円以上",
+      description: "銀行から大きな信用を得る。",
+      current: totalLoanRemaining,
+      target: 10000,
+      rewardExp: 100,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "employee_3",
+      group: "社員",
+      icon: "社",
+      title: "社員を3名以上保有する",
+      description: "七瀬さん以外の仲間も増やす。",
+      current: titleAccountEmployeeVault.length,
+      target: 3,
+      rewardExp: 35,
+    },
+    {
+      id: "employee_20",
+      group: "社員",
+      icon: "人",
+      title: "社員を20名以上保有する",
+      description: "会社を支える人材層を厚くする。",
+      current: titleAccountEmployeeVault.length,
+      target: 20,
+      rewardExp: 90,
+    },
+    {
+      id: "employee_50",
+      group: "社員",
+      icon: "部",
+      title: "社員を50名以上保有する",
+      description: "大企業らしい人員体制を整える。",
+      current: titleAccountEmployeeVault.length,
+      target: 50,
+      rewardExp: 130,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "rarity_sr_1",
+      group: "社員図鑑",
+      icon: "SR",
+      title: "SR社員を1名以上獲得",
+      description: "優秀な社員を迎える。",
+      current: titleVaultRarityCounts.SR ?? 0,
+      target: 1,
+      rewardExp: 40,
+    },
+    {
+      id: "rarity_ssr_1",
+      group: "社員図鑑",
+      icon: "SSR",
+      title: "SSR社員を1名以上獲得",
+      description: "最高レアリティの社員を迎える。",
+      current: titleVaultRarityCounts.SSR ?? 0,
+      target: 1,
+      rewardExp: 80,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "rarity_ssr_5",
+      group: "社員図鑑",
+      icon: "SSR",
+      title: "SSR社員を5名以上獲得",
+      description: "会社の顔になるスター社員を集める。",
+      current: titleVaultRarityCounts.SSR ?? 0,
+      target: 5,
+      rewardExp: 150,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "ticket_total_10",
+      group: "採用",
+      icon: "券",
+      title: "採用チケットを合計10枚以上所持",
+      description: "次の採用に備えてチケットを集める。",
+      current: rookieEmployeeTickets + employeeTickets + premiumEmployeeTickets,
+      target: 10,
+      rewardExp: 50,
+    },
+    {
+      id: "rank_5",
+      group: "ランク",
+      icon: "R5",
+      title: "プレイヤーランク5到達",
+      description: "会社経営の経験を積む。",
+      current: titleAccountData.playerRank ?? 1,
+      target: 5,
+      rewardExp: 60,
+    },
+    {
+      id: "rank_10",
+      group: "ランク",
+      icon: "R10",
+      title: "プレイヤーランク10到達",
+      description: "社長として一段上の成長を見せる。",
+      current: titleAccountData.playerRank ?? 1,
+      target: 10,
+      rewardExp: 100,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "rank_30",
+      group: "ランク",
+      icon: "R30",
+      title: "プレイヤーランク30到達",
+      description: "長期経営で経験を積み重ねる。",
+      current: titleAccountData.playerRank ?? 1,
+      target: 30,
+      rewardExp: 180,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "story_11_clear",
+      group: "ストーリー",
+      icon: "1-1",
+      title: "1-1章 創業チュートリアルを完了",
+      description: "中古購入・修繕・建築の基本を学ぶ。",
+      current: titleAccountData.unlockedStoryAkari ? 1 : 0,
+      target: 1,
+      rewardExp: 50,
+    },
+    {
+      id: "story_14_clear",
+      group: "ストーリー",
+      icon: "1-4",
+      title: "1-4章 名古屋編をクリア",
+      description: "名古屋で実質月利益50万円以上を達成する。",
+      current: hasClearedNagoyaChapter ? 1 : 0,
+      target: 1,
+      rewardExp: 150,
+      rewardGoldSheets: 1,
+    },
+    {
+      id: "vacant_rooms_10",
+      group: "ネタ実績",
+      icon: "空",
+      title: "空室10室を抱える",
+      description: "空室対策の重要性を学ぶ。",
+      current: playerMainBuildings.reduce((sum, tile) => sum + ((tile.rooms ?? []).filter((room) => !room.occupied).length), 0),
+      target: 10,
+      rewardExp: 30,
+    },
+    {
+      id: "debt_50000",
+      group: "ネタ実績",
+      icon: "借",
+      title: "借入残高5億円以上",
+      description: "攻めの経営には返済計画も大切です。",
+      current: totalLoanRemaining,
+      target: 50000,
+      rewardExp: 120,
+      rewardGoldSheets: 1,
     },
   ];
 
@@ -23354,13 +24913,25 @@ function getHomeMissionItems() {
   });
 }
 
-const homeMissionItems = getHomeMissionItems();
+const homeMissionItems = homeCoreFeaturesUnlocked ? getHomeMissionItems().filter((mission) => !mission.claimed) : [];
 const homeMissionClaimableCount = homeMissionItems.filter((mission) => mission.completed && !mission.claimed).length;
 const homeMissionCompletedCount = homeMissionItems.filter((mission) => mission.completed).length;
+const sortedHomeMissionItems = [...homeMissionItems].sort((a, b) => {
+  const aClaimable = a.completed && !a.claimed ? 1 : 0;
+  const bClaimable = b.completed && !b.claimed ? 1 : 0;
+  if (aClaimable !== bClaimable) return bClaimable - aClaimable;
+  if (a.completed !== b.completed) return Number(b.completed) - Number(a.completed);
+  if ((a.group ?? "") !== (b.group ?? "")) return String(a.group ?? "").localeCompare(String(b.group ?? ""), "ja");
+  return (b.progressRate ?? 0) - (a.progressRate ?? 0);
+});
+const visibleHomeMissionItems = sortedHomeMissionItems.filter((mission) => {
+  if (homeMissionFilter === "claimable") return mission.completed && !mission.claimed;
+  if (homeMissionFilter === "completed") return mission.completed;
+  return true;
+});
 const homePresentBoxHistory = readPresentBoxHistory();
-const homePresentNoticeCount = (homeLoginBonusStatus.canClaim ? 1 : 0) + homeMissionClaimableCount;
-const titleFullPageModal = ["founderSelect", "recruitHome", "accountVault", "presentBox", "missions", "settings"].includes(titleModal);
-const titleRainbowPaper = Math.max(0, Math.round(Number(titleAccountData.rainbowPaper ?? titleAccountData.rainbowPapers ?? 0) || 0));
+const homePresentNoticeCount = homeCoreFeaturesUnlocked ? ((homeLoginBonusStatus.canClaim ? 1 : 0) + homeMissionClaimableCount) : 0;
+const titleFullPageModal = ["founderSelect", "recruitHome", "accountVault", "presentBox", "missions", "shop", "settings"].includes(titleModal);
 
 function claimHomeMissionReward(missionId) {
   const mission = getHomeMissionItems().find((item) => item.id === missionId);
@@ -23374,21 +24945,175 @@ function claimHomeMissionReward(missionId) {
   });
 
   const accountData = readAccountData();
-  const rankResult = applyPlayerRankExp(accountData.playerRank ?? 1, accountData.playerExp ?? 0, mission.rewardExp);
+  const rewardSilverSheets = Math.max(0, Math.round(Number(mission.rewardExp) || 0));
+  const rewardGoldSheets = Math.max(0, Math.round(Number(mission.rewardGoldSheets) || 0));
   const nextAccountData = {
     ...accountData,
-    playerRank: rankResult.rank,
-    playerExp: rankResult.exp,
+    silverSheets: Math.max(0, Math.round(Number(accountData.silverSheets ?? accountData.silverSheet ?? 0) || 0)) + rewardSilverSheets,
+    goldSheets: Math.max(0, Math.round(Number(accountData.goldSheets ?? accountData.goldSheet ?? 0) || 0)) + rewardGoldSheets,
     updatedAt: new Date().toISOString(),
   };
 
   writeAccountData(nextAccountData);
-  setPlayerRank(rankResult.rank);
-  setPlayerExp(rankResult.exp);
-  playerRankRef.current = rankResult.rank;
-  playerExpRef.current = rankResult.exp;
-  setLog(`任務「${mission.title}」を達成しました。プレイヤーEXP +${mission.rewardExp}`);
+  setHomeAccountRefreshKey((current) => current + 1);
+  const rewardText = [`シルバーシート +${rewardSilverSheets}`, rewardGoldSheets > 0 ? `ゴールドシート +${rewardGoldSheets}` : ""].filter(Boolean).join(" / ");
+  setLog(`任務「${mission.title}」を達成しました。${rewardText}`);
 }
+
+function claimAllHomeMissionRewards() {
+  const claimableMissions = getHomeMissionItems().filter((mission) => mission.completed && !mission.claimed);
+  if (claimableMissions.length <= 0) {
+    alert("受け取れる任務報酬はありません。");
+    return;
+  }
+
+  const nextClaimedMissionIds = Array.from(new Set([
+    ...(homeMissionData.claimedMissionIds ?? []),
+    ...claimableMissions.map((mission) => mission.id),
+  ]));
+  const rewardSilverSheets = claimableMissions.reduce((sum, mission) => sum + Math.max(0, Math.round(Number(mission.rewardExp) || 0)), 0);
+  const rewardGoldSheets = claimableMissions.reduce((sum, mission) => sum + Math.max(0, Math.round(Number(mission.rewardGoldSheets) || 0)), 0);
+
+  writeHomeMissionData({
+    claimedMissionIds: nextClaimedMissionIds,
+    updatedAt: new Date().toISOString(),
+  });
+
+  const accountData = readAccountData();
+  const nextAccountData = {
+    ...accountData,
+    silverSheets: Math.max(0, Math.round(Number(accountData.silverSheets ?? accountData.silverSheet ?? 0) || 0)) + rewardSilverSheets,
+    goldSheets: Math.max(0, Math.round(Number(accountData.goldSheets ?? accountData.goldSheet ?? 0) || 0)) + rewardGoldSheets,
+    updatedAt: new Date().toISOString(),
+  };
+
+  writeAccountData(nextAccountData);
+  setHomeAccountRefreshKey((current) => current + 1);
+  setHomeMissionFilter("claimable");
+  const rewardText = [`シルバーシート +${rewardSilverSheets}`, rewardGoldSheets > 0 ? `ゴールドシート +${rewardGoldSheets}` : ""].filter(Boolean).join(" / ");
+  setLog(`任務報酬を${claimableMissions.length}件まとめて受け取りました。${rewardText}`);
+}
+
+
+const HOME_SHOP_ITEMS = [
+  {
+    id: "normal_ticket_from_silver",
+    icon: "✉",
+    name: "社員採用チケット",
+    description: "N〜SSRまで排出される基本の採用チケットです。",
+    costSilver: 100,
+    costGold: 0,
+    rewardType: "rookieTicket",
+    rewardCount: 1,
+  },
+  {
+    id: "rare_ticket_from_gold",
+    icon: "📨",
+    name: "レア社員採用チケット",
+    description: "N〜URまで排出される上位採用チケットです。",
+    costSilver: 0,
+    costGold: 10,
+    rewardType: "employeeTicket",
+    rewardCount: 1,
+  },
+  {
+    id: "premium_ticket_from_gold",
+    icon: "✨",
+    name: "プレミア社員採用チケット",
+    description: "SR以上確定のプレミア採用チケットです。",
+    costSilver: 0,
+    costGold: 50,
+    rewardType: "premiumTicket",
+    rewardCount: 1,
+  },
+];
+
+function exchangeHomeShopItem(itemId) {
+  if (!homeCoreFeaturesUnlocked) {
+    openLockedHomeFeatureNotice();
+    return;
+  }
+
+  const item = HOME_SHOP_ITEMS.find((shopItem) => shopItem.id === itemId);
+  if (!item) return;
+
+  const accountData = readAccountData();
+  const currentSilver = Math.max(0, Math.round(Number(accountData.silverSheets ?? accountData.silverSheet ?? 0) || 0));
+  const currentGold = Math.max(0, Math.round(Number(accountData.goldSheets ?? accountData.goldSheet ?? 0) || 0));
+
+  if (currentSilver < item.costSilver || currentGold < item.costGold) {
+    alert("シルバーシートまたはゴールドシートが足りません。");
+    return;
+  }
+
+  const tickets = getAccountTicketCounts(accountData);
+  const nextAccountData = {
+    ...accountData,
+    silverSheets: currentSilver - item.costSilver,
+    goldSheets: currentGold - item.costGold,
+    rookieEmployeeTickets: tickets.rookieEmployeeTickets + (item.rewardType === "rookieTicket" ? item.rewardCount : 0),
+    employeeTickets: tickets.employeeTickets + (item.rewardType === "employeeTicket" ? item.rewardCount : 0),
+    premiumEmployeeTickets: tickets.premiumEmployeeTickets + (item.rewardType === "premiumTicket" ? item.rewardCount : 0),
+    updatedAt: new Date().toISOString(),
+  };
+
+  writeAccountData(nextAccountData);
+  setRookieEmployeeTickets(nextAccountData.rookieEmployeeTickets);
+  setEmployeeTickets(nextAccountData.employeeTickets);
+  setPremiumEmployeeTickets(nextAccountData.premiumEmployeeTickets);
+  setHomeAccountRefreshKey((current) => current + 1);
+  addPresentBoxHistoryItem({
+    source: "交換所",
+    icon: item.icon,
+    name: item.name,
+    text: `${item.name} ×${item.rewardCount}`,
+  });
+  setLog(`交換所で${item.name}を交換しました。`);
+}
+
+function renderHomeShopModal() {
+  return (
+    <>
+      <h2 style={{ marginTop: 0 }}>交換所</h2>
+      <p style={{ fontSize: 13, lineHeight: 1.7, marginTop: 0 }}>
+        任務で集めたシルバーシート・ゴールドシートを、採用チケットなどの報酬に交換できます。今後は育成アイテムや資金補助アイテムも追加予定です。
+      </p>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 12 }}>
+        <div style={{ padding: 10, borderRadius: 14, background: "#f3f6f1", border: "1px solid #cfd8cf", textAlign: "center" }}>
+          <div style={{ fontSize: 11, fontWeight: 900, color: "#59645d" }}>シルバーシート</div>
+          <strong>{titleSilverSheet.toLocaleString()}枚</strong>
+        </div>
+        <div style={{ padding: 10, borderRadius: 14, background: "#fff7df", border: "1px solid #e8d08a", textAlign: "center" }}>
+          <div style={{ fontSize: 11, fontWeight: 900, color: "#8a5a00" }}>ゴールドシート</div>
+          <strong>{titleGoldSheet.toLocaleString()}枚</strong>
+        </div>
+      </div>
+      <div style={{ display: "grid", gap: 10 }}>
+        {HOME_SHOP_ITEMS.map((item) => {
+          const canExchange = titleSilverSheet >= item.costSilver && titleGoldSheet >= item.costGold;
+          const costText = [
+            item.costSilver > 0 ? `シルバーシート ${item.costSilver}` : null,
+            item.costGold > 0 ? `ゴールドシート ${item.costGold}` : null,
+          ].filter(Boolean).join(" / ");
+          return (
+            <div key={item.id} style={{ padding: 12, borderRadius: 16, background: "#ffffff", border: "1px solid #d8e0d8", display: "grid", gridTemplateColumns: "42px 1fr auto", gap: 10, alignItems: "center" }}>
+              <span style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: "#fff7df", fontSize: 20, fontWeight: 900 }}>{item.icon}</span>
+              <span>
+                <strong style={{ display: "block", fontSize: 14 }}>{item.name}</strong>
+                <small style={{ display: "block", color: "#61705f", marginTop: 2 }}>{item.description}</small>
+                <small style={{ display: "block", color: "#8a5a00", marginTop: 4, fontWeight: 900 }}>必要：{costText}</small>
+              </span>
+              <button type="button" disabled={!canExchange} onClick={() => exchangeHomeShopItem(item.id)} style={{ padding: "8px 10px", borderRadius: 999, border: "none", background: canExchange ? "linear-gradient(145deg,#ffb02e,#ff5a3d)" : "#b8c7b9", color: "#ffffff", fontWeight: 900, cursor: canExchange ? "pointer" : "not-allowed" }}>
+                交換
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
 
 function renderHomeMissionCard(mission) {
   const isClaimable = mission.completed && !mission.claimed;
@@ -23399,7 +25124,7 @@ function renderHomeMissionCard(mission) {
         <span style={{ width: 38, height: 38, borderRadius: 14, display: "grid", placeItems: "center", background: "#ffffff", boxShadow: "0 5px 12px rgba(0,0,0,0.12)", fontWeight: 900 }}>{mission.icon}</span>
         <span style={{ minWidth: 0 }}>
           <strong style={{ display: "block", fontSize: 14 }}>{mission.title}</strong>
-          <span style={{ display: "block", fontSize: 10, opacity: 0.72, marginTop: 2 }}>{mission.group} / EXP +{mission.rewardExp}</span>
+          <span style={{ display: "block", fontSize: 10, opacity: 0.72, marginTop: 2 }}>{mission.group} / シルバーシート +{mission.rewardExp}{mission.rewardGoldSheets ? ` / ゴールドシート +${mission.rewardGoldSheets}` : ""}</span>
         </span>
         <span style={{ padding: "4px 8px", borderRadius: 999, background: mission.claimed ? "#7a8a7a" : isClaimable ? "#ff4d5d" : "#b8c7b9", color: "#ffffff", fontSize: 10, fontWeight: 900 }}>
           {mission.claimed ? "受取済" : isClaimable ? "達成" : `${mission.progressRate}%`}
@@ -23420,6 +25145,11 @@ function renderHomeMissionCard(mission) {
 }
 
 function claimHomeDailyLoginBonus() {
+  if (!homeCoreFeaturesUnlocked) {
+    openLockedHomeFeatureNotice();
+    return;
+  }
+
   const currentStatus = getDailyLoginBonusStatus();
 
   if (!currentStatus.canClaim) {
@@ -23453,6 +25183,7 @@ function claimHomeDailyLoginBonus() {
   };
 
   writeAccountData(nextAccountData);
+  setHomeAccountRefreshKey((current) => current + 1);
   writeDailyLoginBonusData({
     lastClaimDate: currentStatus.todayKey,
     claimCount: currentStatus.claimCount + 1,
@@ -23593,12 +25324,47 @@ function getNagoyaTutorialGuideClass(guideTarget) {
     return "story-ui-target-guide";
   }
 
+  if (guideTarget === "employee-menu" &&
+    nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE
+  ) {
+    return "story-ui-target-guide";
+  }
+
+  if (guideTarget === "employee-recruit" &&
+    nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE &&
+    activePanel !== "employeeRecruit"
+  ) {
+    return "story-ui-target-guide";
+  }
+
+  if (guideTarget === "employee-assignment" &&
+    nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE &&
+    activePanel !== "employee"
+  ) {
+    return "story-ui-target-guide";
+  }
+
   return "";
 }
 
 function showStoryTutorialBlockedMessage() {
   setStoryEvent(STORY_TUTORIAL_EVENTS.BLOCKED);
   setLog("今はチュートリアル中です。赤く点滅している目標だけ進めましょう。");
+}
+
+function isNagoyaBridgeTutorialActive() {
+  return currentGameMode === "story_nagoya_bridge" &&
+    nagoyaTutorialStep &&
+    nagoyaTutorialStep !== STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE;
+}
+
+function showNagoyaTutorialBlockedMessage(message = "名古屋編準備中は、七瀬の案内に沿った操作だけ進めましょう。") {
+  setStoryEvent({
+    portrait: "serious",
+    title: "名古屋編準備中です",
+    text: message,
+  });
+  setLog(message);
 }
 
 function forceStoryAkariLevel(targetLevel, reasonText) {
@@ -23792,6 +25558,355 @@ function isStoryTutorialTargetTile(tile) {
 return (
   <>
     <style>{`
+
+      /* v268: map screen is map-first. Top is display-only, operations live in the lower menu. */
+      .map-top-hud-v268 {
+        position: sticky;
+        top: 0;
+        z-index: 35;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) 42px;
+        gap: 4px;
+        padding: 4px 6px;
+        margin: 0 0 4px;
+        border-radius: 0 0 16px 16px;
+        background: linear-gradient(180deg, rgba(17, 54, 45, 0.96), rgba(7, 29, 25, 0.92));
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: 0 8px 22px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.16);
+        backdrop-filter: blur(12px);
+        overflow: visible;
+      }
+      .map-top-hud-chip-v268 {
+        min-width: 0;
+        appearance: none;
+        border: 1px solid rgba(255,255,255,0.16);
+        cursor: pointer;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        column-gap: 3px;
+        align-items: center;
+        min-height: 38px;
+        padding: 2px 4px;
+        border-radius: 12px;
+        color: #fff;
+        background: rgba(255,255,255,0.10);
+        overflow: hidden;
+        transition: transform 0.1s ease, filter 0.15s ease;
+      }
+      .map-top-hud-chip-v268:active { transform: scale(0.96); }
+      .map-top-hud-chip-v268 > span { font-size: 15px; line-height: 1; }
+      .map-top-hud-chip-v268 > strong { min-width: 0; font-size: clamp(9px, 2.65vw, 11px); line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: clip; letter-spacing: -0.08em; }
+      .map-top-hud-chip-v268 > small { display: none !important; }
+      .map-top-hud-chip-v268.active { background: linear-gradient(180deg, rgba(255,226,132,0.95), rgba(204,142,35,0.92)); color: #2c2107; }
+      .map-top-hud-chip-v268.active strong { color: #2c2107; }
+      .map-top-hud-chip-v268.zoom-chip-v269 { display: flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; }
+      .map-top-hud-chip-v268.zoom-chip-v269 span { font-size: 18px; }
+      .map-top-hud-chip-v268.zoom-chip-v269:active { transform: scale(0.94); }
+      .map-top-hud-chip-v268.positive strong { color: inherit; }
+      .map-top-hud-chip-v268.negative strong { color: #d32f2f; }
+
+      .map-top-hud-popup-v270 {
+        grid-column: 1 / -1;
+        margin-top: 4px;
+        padding: 8px;
+        border-radius: 15px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(238,248,241,0.96));
+        color: #153428;
+        border: 1px solid rgba(32, 93, 65, 0.22);
+        box-shadow: 0 14px 30px rgba(0,0,0,0.22);
+      }
+      .map-top-hud-popup-title-v270 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-weight: 900;
+        font-size: 13px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid rgba(30,70,55,0.14);
+      }
+      .map-top-hud-popup-title-v270 button {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        border: 1px solid rgba(0,0,0,0.12);
+        background: rgba(255,255,255,0.82);
+        font-weight: 900;
+      }
+      .map-top-hud-popup-grid-v270 {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0;
+        margin-top: 8px;
+      }
+      .map-top-hud-popup-grid-v270 span,
+      .map-top-hud-popup-grid-v270 strong {
+        padding: 4px 0;
+        border-bottom: 1px solid rgba(30,70,55,0.12);
+        font-size: 11px;
+      }
+      .map-top-hud-popup-grid-v270 span { color: #536678; font-weight: 800; }
+      .map-top-hud-popup-grid-v270 strong { color: #111; text-align: right; font-weight: 900; }
+      .map-view-dropdown-hud-v270 {
+        position: absolute;
+        left: 8px;
+        top: calc(100% + 6px);
+        z-index: 80;
+        width: min(184px, calc(100vw - 28px));
+        display: grid;
+        gap: 5px;
+        padding: 7px;
+        border-radius: 13px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(238,248,241,0.97));
+        border: 1px solid rgba(26, 83, 56, 0.28);
+        box-shadow: 0 16px 34px rgba(0,0,0,0.26);
+      }
+      .map-view-dropdown-hud-v270::before {
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: 26px;
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-bottom: 9px solid rgba(255,255,255,0.98);
+      }
+      .map-view-dropdown-hud-v270 button {
+        min-height: 34px;
+        border-radius: 10px;
+        border: 1px solid rgba(30,70,55,0.16);
+        background: rgba(255,255,255,0.85);
+        color: #18352b;
+        white-space: nowrap;
+        font-weight: 900;
+        font-size: 12px;
+      }
+      .map-view-dropdown-hud-v270 button.active {
+        background: linear-gradient(180deg, #0f5d3b, #083521);
+        color: #fff;
+      }
+
+
+      .playfield-v216 .panel-title-row.map-title-row,
+      .playfield-v216 .panel-title-row.map-title-row.v153-map-control-row,
+      .playfield-v216 .map-title-status,
+      .playfield-v216 .map-title-status.v153-map-title-status,
+      .playfield-v216 .playfield-hud-v212,
+      .playfield-v216 .playfield-selection-card-v212,
+      .playfield-v216 .legend { display: none !important; height: 0 !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; border: 0 !important; }
+      .playfield-v216 .map-section { padding-bottom: 0 !important; }
+      .panel-title-row.map-title-row.v153-map-control-row,
+      .playfield-v216 .panel-title-row.map-title-row.v153-map-control-row,
+      .playfield-v216 .map-title-status,
+      .playfield-v216 .zoom-controls,
+      .zoom-controls.v153-zoom-controls,
+      .map-title-status.v153-map-title-status { display: none !important; }
+      .main-layout { padding-bottom: 0 !important; }
+      .main-layout.full-panel { padding-bottom: 0 !important; }
+      .side-panel, .full-panel > section { margin-bottom: 0 !important; }
+
+      .playfield-v216 .map-section { padding-bottom: 0 !important; margin-bottom: 0 !important; }
+      .playfield-v216 .map-scroll { margin-top: 4px !important; margin-bottom: 0 !important; border-radius: 18px !important; border: 2px solid rgba(12, 68, 49, 0.86) !important; box-shadow: 0 12px 26px rgba(0,0,0,0.18) !important; overscroll-behavior: contain !important; }
+      .playfield-v216 .map-section::after { display: none !important; content: none !important; }
+
+      .map-bottom-menu-v268 {
+        position: fixed;
+        left: 8px;
+        right: 8px;
+        bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+        z-index: 75;
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 5px;
+        padding: 7px;
+        border-radius: 26px;
+        background: linear-gradient(180deg, rgba(19, 55, 46, 0.96), rgba(5, 24, 21, 0.94));
+        border: 1px solid rgba(255,255,255,0.28);
+        box-shadow: 0 -12px 34px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.16);
+        backdrop-filter: blur(14px);
+        overflow: visible;
+        transform: translateY(0);
+        opacity: 1;
+        transition: transform 0.22s ease, opacity 0.22s ease;
+      }
+      .map-bottom-menu-v268.auto-hidden-v272 {
+        transform: translateY(calc(100% + 16px));
+        opacity: 0;
+        pointer-events: none;
+      }
+      .map-bottom-menu-v268 button {
+        position: relative;
+        min-width: 0;
+        height: 56px;
+        border: 0;
+        border-radius: 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        background: linear-gradient(180deg, rgba(255,255,255,0.17), rgba(255,255,255,0.06));
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 4px 10px rgba(0,0,0,0.16);
+        overflow: visible;
+        transition: transform 0.1s ease, filter 0.15s ease, background 0.15s ease;
+      }
+      .map-bottom-menu-v268 button:active { transform: scale(0.94); }
+      .map-bottom-menu-v268 button.active { background: linear-gradient(180deg, rgba(255,226,132,0.92), rgba(219,151,39,0.92)); color: #2c2107; }
+      .map-bottom-menu-v268 button:disabled { opacity: 0.45; filter: grayscale(0.45); }
+      .map-bottom-menu-icon-v268 { font-size: 19px; line-height: 1; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.22)); }
+      .map-bottom-menu-item-wrap-v268 { position: relative; min-width: 0; }
+      .map-bottom-menu-item-wrap-v268 > button { width: 100%; }
+      .map-employee-popup-v268 {
+        min-width: 156px;
+        width: 172px;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+      }
+      .map-bottom-popup-v268 {
+        position: absolute;
+        right: 0;
+        bottom: calc(100% + 10px);
+        width: min(240px, calc(100vw - 24px));
+        display: grid;
+        gap: 7px;
+        padding: 10px;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(250,255,246,0.98), rgba(229,246,235,0.96));
+        border: 1px solid rgba(35, 91, 62, 0.22);
+        box-shadow: 0 16px 36px rgba(0,0,0,0.28);
+      }
+      .map-bottom-popup-v268 button {
+        height: auto;
+        min-height: 42px;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 10px 12px;
+        border-radius: 14px;
+        color: #18352b;
+        background: rgba(255,255,255,0.82);
+        font-size: 13px;
+        letter-spacing: 0;
+        text-align: left;
+      }
+      .map-info-popup-v268 { right: -64px; }
+      .map-system-popup-v268 { right: 0; }
+      @media (min-width: 901px) {
+        .map-bottom-menu-v268 { left: 50%; right: auto; transform: translateX(-50%) translateY(0); width: min(860px, calc(100vw - 32px)); }
+        .map-bottom-menu-v268.auto-hidden-v272 { transform: translateX(-50%) translateY(calc(100% + 16px)); }
+        .playfield-v216 .map-section { padding-bottom: 0 !important; }
+      }
+      @media (max-width: 390px) {
+        .map-bottom-menu-v268 { gap: 3px; padding: 5px; }
+        .map-bottom-menu-v268 button { height: 50px; font-size: 8px; border-radius: 14px; }
+        .map-bottom-menu-icon-v268 { font-size: 17px; }
+        .map-top-hud-v268 { gap: 3px; padding: 3px 4px; grid-template-columns: repeat(4, minmax(0, 1fr)) 36px; }
+        .map-top-hud-chip-v268 { column-gap: 2px; min-height: 34px; padding-left: 3px; padding-right: 3px; }
+        .map-top-hud-chip-v268 > span { font-size: 13px; }
+        .map-top-hud-chip-v268 > strong { font-size: 9px; }
+        .map-top-hud-chip-v268.zoom-chip-v269 span { font-size: 16px; }
+      }
+
+
+      /* v272.6: 七瀬ガイドの欠け対策＋マップ上部ステータス行をさらに圧縮 */
+      .akari-page-guide {
+        position: relative !important;
+        z-index: 42 !important;
+        margin: 4px 8px 5px !important;
+        padding: 0 !important;
+        flex: 0 0 auto !important;
+        overflow: visible !important;
+      }
+      .akari-page-guide-inner {
+        display: grid !important;
+        grid-template-columns: 34px minmax(0, 1fr) !important;
+        align-items: center !important;
+        gap: 7px !important;
+        min-height: 0 !important;
+        padding: 6px 8px !important;
+        border-radius: 13px !important;
+        overflow: visible !important;
+      }
+      .akari-page-guide-portrait {
+        width: 34px !important;
+        height: 34px !important;
+        min-width: 34px !important;
+        border-radius: 999px !important;
+        object-fit: cover !important;
+      }
+      .akari-page-guide-body {
+        min-width: 0 !important;
+        display: block !important;
+        overflow: visible !important;
+      }
+      .akari-page-guide-name {
+        display: none !important;
+      }
+      .akari-page-guide-title {
+        display: inline !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 13px !important;
+        line-height: 1.25 !important;
+        font-weight: 950 !important;
+      }
+      .akari-page-guide-main-title::after {
+        content: "：";
+      }
+      .akari-page-guide-text {
+        display: inline !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 13px !important;
+        line-height: 1.25 !important;
+        font-weight: 900 !important;
+        overflow: visible !important;
+      }
+      .akari-page-guide-subtext {
+        margin-top: 3px !important;
+        font-size: 11px !important;
+        line-height: 1.2 !important;
+      }
+      .map-top-hud-v268 {
+        gap: 3px !important;
+        padding: 3px 4px !important;
+        margin-bottom: 3px !important;
+        border-radius: 0 0 12px 12px !important;
+      }
+      .map-top-hud-chip-v268 {
+        min-height: 31px !important;
+        padding: 1px 3px !important;
+        border-radius: 10px !important;
+        column-gap: 2px !important;
+      }
+      .map-top-hud-chip-v268 > span {
+        font-size: 12px !important;
+      }
+      .map-top-hud-chip-v268 > strong {
+        font-size: clamp(8.5px, 2.35vw, 10px) !important;
+        line-height: 1 !important;
+        letter-spacing: -0.08em !important;
+      }
+      .map-top-hud-chip-v268.zoom-chip-v269 span {
+        font-size: 15px !important;
+      }
+      @media (max-width: 390px) {
+        .akari-page-guide { margin: 3px 6px 4px !important; }
+        .akari-page-guide-inner { grid-template-columns: 30px minmax(0, 1fr) !important; gap: 6px !important; padding: 5px 7px !important; }
+        .akari-page-guide-portrait { width: 30px !important; height: 30px !important; min-width: 30px !important; }
+        .akari-page-guide-title,
+        .akari-page-guide-text { font-size: 12px !important; line-height: 1.22 !important; }
+        .map-top-hud-v268 { grid-template-columns: repeat(4, minmax(0, 1fr)) 32px !important; gap: 2px !important; padding: 2px 3px !important; }
+        .map-top-hud-chip-v268 { min-height: 29px !important; padding-left: 2px !important; padding-right: 2px !important; }
+        .map-top-hud-chip-v268 > span { font-size: 11px !important; }
+        .map-top-hud-chip-v268 > strong { font-size: 8.5px !important; }
+      }
+
       .story-next-month-guide {
         outline: 3px solid #ff1744 !important;
         animation: storyNextMonthPulse 0.8s infinite alternate;
@@ -24828,6 +26943,7 @@ return (
 
       .playfield-v216 .map-scroll {
         min-height: calc(100dvh - 330px) !important;
+        max-height: calc(100dvh - 178px) !important;
       }
 
       .playfield-v216 .map-grid {
@@ -24872,6 +26988,19 @@ return (
       }
 
       @media (max-width: 760px) {
+        .main-layout,
+        .main-layout.full-panel {
+          padding-bottom: 0 !important;
+        }
+
+        .side-panel,
+        .full-panel > section,
+        .playfield-v216 .map-section,
+        .playfield-v216 .map-scroll {
+          margin-bottom: 0 !important;
+          padding-bottom: 0 !important;
+        }
+
         .akari-page-guide-box {
           margin-bottom: 6px !important;
         }
@@ -24901,6 +27030,7 @@ return (
 
         .playfield-v216 .map-scroll {
           min-height: calc(100dvh - 318px) !important;
+          max-height: calc(100dvh - 170px) !important;
         }
 
         .playfield-v216 .coord-header,
@@ -24910,6 +27040,56 @@ return (
           min-height: 28px !important;
           font-size: 10px !important;
           color: #111827 !important;
+        }
+      }
+
+
+
+      /* v272.5: マップ本体は表示したまま、下スクロール時の緑色の伸び余白だけ消す */
+      @media (max-width: 760px) {
+        .map-section.playfield-v212.playfield-v214.playfield-v216 {
+          background: transparent !important;
+          padding-bottom: 0 !important;
+          margin-bottom: 0 !important;
+          border-bottom-left-radius: 0 !important;
+          border-bottom-right-radius: 0 !important;
+          box-shadow: none !important;
+          overflow: visible !important;
+        }
+
+        .map-section.playfield-v212.playfield-v214.playfield-v216::before,
+        .map-section.playfield-v212.playfield-v214.playfield-v216::after {
+          display: none !important;
+          content: none !important;
+        }
+
+        .map-section.playfield-v212.playfield-v214.playfield-v216 .map-scroll {
+          display: block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          height: calc(100dvh - 170px) !important;
+          min-height: 360px !important;
+          max-height: calc(100dvh - 170px) !important;
+          margin: 4px 0 0 !important;
+          padding: 0 !important;
+          background: transparent !important;
+          border: 0 !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
+          overflow: auto !important;
+          overscroll-behavior: none !important;
+          -webkit-overflow-scrolling: auto !important;
+        }
+
+        .map-section.playfield-v212.playfield-v214.playfield-v216 .map-grid {
+          display: grid !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          margin: 0 !important;
+          padding: 4px !important;
+          background: transparent !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
         }
       }
 
@@ -25221,17 +27401,51 @@ return (
           .title-home-menu-panel-v201 { display: none !important; }
           .title-home-shell-v201 { padding-bottom: 86px !important; }
           .title-home-character-panel-v201 { width: min(520px, calc(100vw - 18px)); justify-self: center; }
-          .title-home-character-stage-v201 { min-height: min(64dvh, 620px) !important; }
-          .home-akari-portrait-v201 { max-height: min(58dvh, 560px) !important; width: 88% !important; }
+          .title-home-character-stage-v201 { min-height: min(68dvh, 650px) !important; }
+          .home-akari-portrait-v201 { max-height: min(63dvh, 610px) !important; width: 94% !important; filter: drop-shadow(0 18px 26px rgba(0,0,0,0.34)); }
           .home-stat-grid-v217 { display: none !important; }
           .home-lobby-top-status-v2182 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
           .home-lobby-status-pill-v2182 { padding: 6px 8px; border-radius: 999px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); color: #fff; font-size: 11px; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
           .home-lobby-banner-v2182 { position: absolute; left: 14px; right: 14px; bottom: 82px; z-index: 5; padding: 9px 12px; border-radius: 17px; background: linear-gradient(145deg, rgba(255,247,223,0.94), rgba(255,225,140,0.9)); color: #213125; border: 1px solid rgba(255,255,255,0.72); box-shadow: 0 12px 26px rgba(0,0,0,0.22); display: flex; align-items: center; justify-content: space-between; gap: 8px; font-weight: 900; }
-          .home-lobby-bottom-nav-v2182 { position: absolute; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 60; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; padding: 7px; border-radius: 24px; background: rgba(10, 25, 22, 0.86); border: 1px solid rgba(255,255,255,0.22); box-shadow: 0 -8px 28px rgba(0,0,0,0.30); backdrop-filter: blur(12px); }
-          .home-lobby-nav-button-v2182 { position: relative; min-width: 0; border: none; border-radius: 17px; padding: 6px 3px; min-height: 57px; background: linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0.12)); color: #fff; display: grid; place-items: center; gap: 1px; font-weight: 900; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,0.28); }
-          .home-lobby-nav-icon-v2182 { width: 31px; height: 31px; border-radius: 13px; display: grid; place-items: center; background: rgba(255,255,255,0.92); color: #123524; font-size: 17px; }
-          .home-lobby-nav-label-v2182 { font-size: 10px; line-height: 1.05; white-space: nowrap; }
-          .home-lobby-nav-badge-v2182 { position: absolute; top: -4px; right: -2px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; display: grid; place-items: center; background: linear-gradient(145deg,#ff4d5d,#c40022); color: #fff; font-size: 10px; box-shadow: 0 5px 12px rgba(0,0,0,0.28); }
+          
+          .popup-close-button,
+          .employee-detail-close-button,
+          .panel-close-button {
+            min-width: 72px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1.1;
+          }
+
+.home-lobby-bottom-nav-v2182 { position: absolute; left: 8px; right: 8px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 60; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: clamp(3px, 1vw, 7px); padding: clamp(5px, 1.4vw, 8px); border-radius: 28px; background: linear-gradient(180deg, rgba(19, 45, 38, 0.94), rgba(6, 20, 18, 0.93)); border: 1px solid rgba(255,255,255,0.30); box-shadow: 0 -10px 34px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.18); backdrop-filter: blur(14px); overflow: visible; transition: transform 0.28s ease, opacity 0.28s ease; }
+          .home-lobby-bottom-nav-v2182::before { content: ""; position: absolute; inset: 4px; border-radius: 24px; pointer-events: none; background: linear-gradient(90deg, rgba(255,255,255,0.12), transparent 28%, rgba(255,232,150,0.12) 50%, transparent 72%, rgba(255,255,255,0.10)); opacity: 0.75; }
+          .home-lobby-bottom-nav-hidden-v261 { opacity: 0; transform: translateY(calc(100% + 34px)); pointer-events: none; }
+          .home-lobby-bottom-nav-visible-v261 { opacity: 1; transform: translateY(0); }
+
+          .home-lobby-screen-v262 {
+            padding-bottom: calc(108px + env(safe-area-inset-bottom, 0px));
+          }
+
+
+          .home-lobby-nav-button-v2182 { position: relative; min-width: 0; width: 100%; border: 1px solid rgba(255,255,255,0.20); border-radius: clamp(14px, 4vw, 19px); padding: clamp(4px, 1.2vw, 6px) 1px; min-height: clamp(51px, 14vw, 60px); background: linear-gradient(180deg, rgba(255,255,255,0.31), rgba(255,255,255,0.10)); color: #fff; display: grid; place-items: center; gap: 1px; font-weight: 900; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,0.32), 0 7px 14px rgba(0,0,0,0.18); overflow: visible; transform: translateZ(0); transition: transform 0.12s ease, filter 0.18s ease, box-shadow 0.18s ease; }
+          .home-lobby-nav-button-v2182::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.46), transparent 42%); opacity: 0.72; pointer-events: none; }
+          .home-lobby-nav-button-v2182::after { content: ""; position: absolute; left: -55%; top: -35%; width: 48%; height: 170%; transform: rotate(24deg); background: linear-gradient(90deg, transparent, rgba(255,255,255,0.36), transparent); opacity: 0; pointer-events: none; }
+          .home-lobby-nav-button-v2182:active { transform: translateY(2px) scale(0.96); filter: brightness(1.12); }
+          .home-lobby-nav-button-v2182:hover::after { animation: homeNavShineV264 0.72s ease; }
+          .home-lobby-nav-button-v2182.nav-recruit-v264, .home-lobby-nav-button-v2182.nav-box-v264, .home-lobby-nav-button-v2182.nav-mission-v264 { box-shadow: inset 0 1px 0 rgba(255,255,255,0.36), 0 8px 16px rgba(0,0,0,0.20), 0 0 16px rgba(255,220,120,0.08); }
+          .home-lobby-nav-button-v2182.nav-recruit-v264 { background: linear-gradient(180deg, rgba(255,230,150,0.40), rgba(255,255,255,0.10)); }
+          .home-lobby-nav-button-v2182.nav-box-v264 { background: linear-gradient(180deg, rgba(255,185,215,0.40), rgba(255,255,255,0.10)); }
+          .home-lobby-nav-button-v2182.nav-mission-v264 { background: linear-gradient(180deg, rgba(255,165,165,0.38), rgba(255,255,255,0.10)); }
+          .home-lobby-nav-icon-v2182 { position: relative; z-index: 1; width: clamp(28px, 7.9vw, 34px); height: clamp(28px, 7.9vw, 34px); border-radius: clamp(11px, 3.1vw, 14px); display: grid; place-items: center; background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(232,242,235,0.92)); color: #123524; font-size: clamp(15px, 4.4vw, 18px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 5px 11px rgba(0,0,0,0.22); text-shadow: 0 1px 0 rgba(255,255,255,0.55); }
+          .home-lobby-nav-label-v2182 { position: relative; z-index: 1; font-size: clamp(8px, 2.65vw, 10px); line-height: 1.05; white-space: nowrap; text-shadow: 0 1px 2px rgba(0,0,0,0.40); }
+          
+          .home-lobby-top-status-v2182 { margin-top: 8px; display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: clamp(3px, 1vw, 6px) !important; width: 100%; overflow: hidden; }
+          .home-lobby-status-pill-v2182 { min-width: 0 !important; padding: clamp(4px, 1.1vw, 5px) clamp(3px, 1.4vw, 8px) !important; border-radius: 999px; font-size: clamp(9px, 2.6vw, 11px) !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; text-align: center !important; }
+.home-lobby-nav-badge-v2182 { position: absolute; top: -8px; right: -7px; z-index: 30; min-width: 19px; height: 19px; padding: 0 5px; border-radius: 999px; display: grid; place-items: center; background: linear-gradient(145deg,#ff5a68,#c40022); color: #fff; font-size: 10px; box-shadow: 0 5px 12px rgba(0,0,0,0.28), 0 0 0 2px rgba(255,255,255,0.34); animation: homeNavBadgePulseV264 1.55s ease-in-out infinite; }
+          @keyframes homeNavBadgePulseV264 { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.16); filter: brightness(1.14); } }
+          @keyframes homeNavShineV264 { 0% { opacity: 0; transform: translateX(0) rotate(24deg); } 18% { opacity: 0.75; } 100% { opacity: 0; transform: translateX(320%) rotate(24deg); } }
           .home-page-modal-v2182 { position: absolute; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center; padding: 12px; background: #f7faf7; }
           .employee-vault-rarity-row-v2182 { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 9px; }
           .employee-vault-rarity-chip-v2182 { padding: 4px 8px; border-radius: 999px; background: #edf5ef; border: 1px solid #cfe2d3; font-size: 11px; font-weight: 900; color: #1d2b22; }
@@ -25334,6 +27548,12 @@ return (
               max-width: 780px !important;
               transform: translateX(-50%) !important;
               bottom: 12px !important;
+              grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+            }
+            .home-lobby-bottom-nav-v2182.home-lobby-bottom-nav-hidden-v261 {
+              opacity: 0.08 !important;
+              transform: translateX(-50%) translateY(calc(100% + 18px)) !important;
+              pointer-events: none !important;
             }
             .home-recruit-pass-grid-v206 {
               grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
@@ -25345,6 +27565,19 @@ return (
           }
 
 
+
+          .home-akari-message-page-v265 {
+            margin-top: 1px;
+            text-align: right;
+            color: #8a5a00;
+            font-size: 11px;
+            line-height: 1.15;
+            font-weight: 950;
+            letter-spacing: 0.02em;
+          }
+          .home-akari-message-v201.home-akari-message-v208 {
+            transform: translateY(6px);
+          }
           .home-akari-portrait-v202 { animation: homeAkariBreathV202 3.8s ease-in-out infinite; transform-origin: 50% 100%; }
           .home-akari-stage-v202 { cursor: pointer; }
           @keyframes homeAkariBreathV202 {
@@ -25437,6 +27670,21 @@ return (
             .home-company-input-v201, .home-save-slots-v201 { display: none !important; }
             .home-bottom-buttons-v201 { grid-template-columns: 1fr 1fr !important; gap: 7px !important; }
           }
+      .employee-recruit-home-style-page-v27219 { min-height: calc(100dvh - 92px); padding: 16px 12px 24px; background: #ffffff; color: #1d2b22; box-sizing: border-box; }
+      .employee-recruit-home-style-header-v27219 { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+      .employee-recruit-home-style-header-v27219 h2 { margin: 0; font-size: 24px; line-height: 1.2; font-weight: 900; }
+      .employee-recruit-home-style-header-v27219 span { padding: 5px 10px; border-radius: 999px; background: #edf5ef; border: 1px solid #cfe2d3; color: #31563f; font-size: 13px; font-weight: 900; white-space: nowrap; }
+      .employee-recruit-home-style-grid-v27219 { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 8px !important; margin-bottom: 12px !important; }
+      .employee-recruit-home-style-grid-v27219 .home-recruit-pass-button-v2184 { min-height: 112px; }
+      .employee-recruit-home-style-odds-v27219 { margin-bottom: 22px; }
+      .employee-recruit-home-style-close-v27219 { width: 100%; padding: 14px 16px; border-radius: 999px; border: none; background: linear-gradient(145deg,#1f7147,#0d4d2f); color: #fff; font-size: 18px; font-weight: 900; cursor: pointer; }
+      @media (max-width: 520px) {
+        .employee-recruit-home-style-page-v27219 { padding: 14px 10px 22px; }
+        .employee-recruit-home-style-header-v27219 h2 { font-size: 22px; }
+        .employee-recruit-home-style-header-v27219 span { font-size: 12px; padding: 4px 8px; }
+        .employee-recruit-home-style-grid-v27219 { gap: 7px !important; }
+        .employee-recruit-home-style-grid-v27219 .home-recruit-pass-button-v2184 { min-height: 106px; padding: 10px 6px !important; }
+      }
         `}</style>
 
         {!titleFullPageModal && (
@@ -25467,9 +27715,10 @@ return (
             <div className="home-title-brand-v201">
               <h1 style={{ margin: 0, fontSize: 22, lineHeight: 1.1, whiteSpace: "nowrap" }}>箱庭不動産ホーム <span style={{ fontSize: 12, opacity: 0.82 }}>{GAME_VERSION}</span></h1>
               <div className="home-lobby-top-status-v2182" style={{ marginTop: 8 }}>
-                <span className="home-lobby-status-pill-v2182">RANK {titleAccountData.playerRank ?? 1}</span>
-                <span className="home-lobby-status-pill-v2182">累計EXP {getPlayerTotalExp(titleAccountData.playerRank ?? 1, titleAccountData.playerExp ?? 0).toLocaleString()}</span>
-                <span className="home-lobby-status-pill-v2182">🌈 虹紙 {titleRainbowPaper.toLocaleString()}</span>
+                <span className="home-lobby-status-pill-v2182">🏆 RANK {titleAccountData.playerRank ?? 1}</span>
+                <span className="home-lobby-status-pill-v2182">⭐ EXP {getPlayerTotalExp(titleAccountData.playerRank ?? 1, titleAccountData.playerExp ?? 0).toLocaleString()}</span>
+                <span className="home-lobby-status-pill-v2182">🥈 {titleSilverSheet.toLocaleString()}</span>
+                <span className="home-lobby-status-pill-v2182">🥇 {titleGoldSheet.toLocaleString()}</span>
               </div>
             </div>
 
@@ -25533,30 +27782,97 @@ return (
                 />
               ) : (
                 <div style={{ position: "relative", alignSelf: "center", justifySelf: "center", width: "88%", minHeight: "min(42dvh, 420px)", display: "grid", placeItems: "center", borderRadius: 24, border: "1px dashed rgba(255,255,255,0.35)", background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.88)", fontWeight: 900, textAlign: "center", lineHeight: 1.7 }}>
-                  <span>社長ひとりの小さな事務所<br />物語はこれから始まります</span>
+                  <span>社長ひとりの小さな事務所<br />物語はこれから始まります<br />
+                    <button type="button" onClick={(event) => { event.stopPropagation(); continueStoryFromTitle(); }} style={{ marginTop: 12, padding: "10px 16px", borderRadius: 999, border: "none", background: "linear-gradient(145deg,#fff7df,#ffcf6a)", color: "#1d2b22", fontWeight: 900, cursor: "pointer", boxShadow: "0 8px 18px rgba(0,0,0,0.22)" }}>📖 ストーリーを始める</button>
+                  </span>
                 </div>
               )}
+              {isHomeAkariMessageVisible ? (
               <div
                 className="home-akari-message-v201 home-akari-message-v208"
                 style={{
                   position: "absolute",
                   left: 12,
                   right: 12,
-                  bottom: 12,
-                  padding: "10px 12px",
+                  bottom: 4,
+                  padding: "8px 11px 7px 11px",
                   borderRadius: 16,
-                  background: "rgba(255, 253, 247, 0.94)",
+                  background: "rgba(255, 253, 247, 0.88)",
                   color: "#1d2b22",
-                  boxShadow: "0 10px 24px rgba(0,0,0,0.22)",
+                  boxShadow: "0 14px 30px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.82)",
+                  border: "1px solid rgba(255,255,255,0.68)",
+                  backdropFilter: "blur(8px)",
                   textAlign: "left",
                 }}
               >
-                <strong style={{ color: "#7a4a00", fontSize: 12 }}>{titleStoryAkari ? "七瀬 灯里" : "社長室"}</strong>
-                <div style={{ fontWeight: 800, fontSize: 13, lineHeight: 1.55, marginTop: 2, whiteSpace: "pre-line" }}>{getHomeAkariMessage()}</div>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setIsHomeAkariMessageVisible(false);
+                  }}
+                  aria-label="会話を閉じる"
+                  title="閉じる"
+                  style={{
+                    position: "absolute",
+                    top: 9,
+                    right: 12,
+                    width: 32,
+                    minWidth: 32,
+                    maxWidth: 32,
+                    height: 20,
+                    minHeight: 20,
+                    maxHeight: 20,
+                    padding: 0,
+                    margin: 0,
+                    borderRadius: 999,
+                    border: "1px solid rgba(29,43,34,0.18)",
+                    background: "rgba(255,255,255,0.9)",
+                    color: "#1d2b22",
+                    fontSize: 13,
+                    fontWeight: 950,
+                    lineHeight: "20px",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    boxShadow: "0 3px 8px rgba(0,0,0,0.14)",
+                    appearance: "none",
+                    WebkitAppearance: "none",
+                    zIndex: 2,
+                  }}
+                >
+                  ×
+                </button>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
+                    marginBottom: 2,
+                    paddingRight: 42,
+                    minHeight: 20,
+                  }}
+                >
+                  <strong style={{ color: "#7a4a00", fontSize: 12, lineHeight: 1.2 }}>{titleStoryAkari ? "七瀬 灯里" : "社長室"}</strong>
+                </div>
+                {(() => {
+                  const messageParts = getHomeAkariMessageParts();
+                  return (
+                    <div style={{ fontWeight: 800, fontSize: 13, lineHeight: 1.46, marginTop: 2 }}>
+                      <div style={{ whiteSpace: "pre-line" }}>{messageParts.pageText}</div>
+                      {messageParts.suffix ? (
+                        <div className="home-akari-message-page-v265">{messageParts.suffix}</div>
+                      ) : null}
+                    </div>
+                  );
+                })()}
               </div>
+              ) : null}
             </div>
 
-            {homeLoginBonusStatus.canClaim && (
+            {homeCoreFeaturesUnlocked && homeLoginBonusStatus.canClaim && (
               <div className="home-lobby-banner-v2182">
                 <span>🎁 {homeLoginBonusStatus.rewardText}</span>
                 <button type="button" onClick={claimHomeDailyLoginBonus} style={{ border: "none", borderRadius: 999, padding: "6px 10px", background: "#1d5c3a", color: "#fff", fontWeight: 900, cursor: "pointer" }}>受け取る</button>
@@ -25588,11 +27904,11 @@ return (
 
             <div className="home-ticket-grid-v201" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
               <div className="home-ticket-card-v201" style={{ padding: 10, borderRadius: 16, background: "linear-gradient(145deg,#fff7df,#ffe5a3)", border: "1px solid #e8d08a", color: "#2e2410", boxShadow: "0 8px 16px rgba(0,0,0,0.16)" }}>
-                <div style={{ fontSize: 11, color: "#8a5a00", fontWeight: 800 }}>📄 ライト</div>
+                <div style={{ fontSize: 11, color: "#8a5a00", fontWeight: 800 }}>📄 社員</div>
                 <strong>{titleAccountData.rookieEmployeeTickets ?? 0}枚</strong>
               </div>
               <div className="home-ticket-card-v201" style={{ padding: 10, borderRadius: 16, background: "linear-gradient(145deg,#edf5ef,#ccebd7)", border: "1px solid #cfe2d3", color: "#183323", boxShadow: "0 8px 16px rgba(0,0,0,0.16)" }}>
-                <div style={{ fontSize: 11, color: "#31563f", fontWeight: 800 }}>🎫 社員</div>
+                <div style={{ fontSize: 11, color: "#31563f", fontWeight: 800 }}>🎫 レア</div>
                 <strong>{titleAccountData.employeeTickets ?? 0}枚</strong>
               </div>
               <div className="home-ticket-card-v201" style={{ padding: 10, borderRadius: 16, background: "linear-gradient(145deg,#f3edff,#dfccff)", border: "1px solid #d8c8ff", color: "#2d204d", boxShadow: "0 8px 16px rgba(0,0,0,0.16)" }}>
@@ -25602,12 +27918,13 @@ return (
             </div>
 
             <div className="home-action-grid-v201 home-action-grid-v203 home-action-grid-v217" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
-              {renderHomeMenuCard({ icon: "物", title: "ストーリー", sub: "第0章から物語を始める", accent: "#fff0bf", featured: true, onClick: continueStoryFromTitle })}
+              {renderHomeMenuCard({ icon: "物", title: "ストーリー", sub: homeCoreFeaturesUnlocked ? "物語を進める" : "まずは1-1章から開始", accent: "#fff0bf", featured: true, badge: !homeCoreFeaturesUnlocked ? "START" : "", onClick: continueStoryFromTitle })}
               {renderHomeMenuCard({ icon: "経", title: "フリー", sub: hasSaveData ? "保存中の会社へ戻る" : "自由経営を開始", accent: "#dff2e7", featured: true, onClick: continueFreeFromTitle })}
-              {renderHomeMenuCard({ icon: "採", title: "社員採用", sub: "採用チケットで履歴書確認", accent: "#fff0bf", badge: ((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) > 0 ? "OK" : "", featured: true, onClick: () => setTitleModal("recruitHome") })}
-              {renderHomeMenuCard({ icon: "社", title: "社員名簿", sub: `${titleAccountEmployeeVault.length}/${EMPLOYEE_POOL.length}名・図鑑/保管庫統合`, accent: "#e8f6ee", badge: titleAccountEmployeeVault.length > 0 ? `${titleAccountEmployeeVault.length}` : "", onClick: () => setTitleModal("accountVault") })}
-              {renderHomeMenuCard({ icon: "🎁", title: "BOX", sub: homeLoginBonusStatus.canClaim ? "ログイン報酬あり" : "受取済み", accent: "#ffe8f0", badge: homeLoginBonusStatus.canClaim ? "NEW" : "", onClick: () => setTitleModal("presentBox") })}
-              {renderHomeMenuCard({ icon: "任", title: "ミッション", sub: homeMissionClaimableCount > 0 ? `${homeMissionClaimableCount}件受取可能` : `${homeMissionCompletedCount}/${homeMissionItems.length}件達成`, accent: "#ffe7e7", badge: homeMissionClaimableCount > 0 ? "NEW" : "", onClick: () => setTitleModal("missions") })}
+              {renderHomeMenuCard({ icon: "採", title: "社員採用", sub: homeCoreFeaturesUnlocked ? "採用チケットで履歴書確認" : "1-1章完了後に解放", accent: "#fff0bf", badge: homeCoreFeaturesUnlocked && ((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) > 0 ? "OK" : "🔒", featured: homeCoreFeaturesUnlocked, onClick: homeCoreFeaturesUnlocked ? () => { setEmployeeRecruitReturnPanel("home"); setTitleModal("recruitHome"); } : openLockedHomeFeatureNotice })}
+              {renderHomeMenuCard({ icon: "社", title: "社員名簿", sub: homeCoreFeaturesUnlocked ? `${titleAccountEmployeeVault.length}/${EMPLOYEE_POOL.length}名・図鑑/保管庫統合` : "1-1章完了後に解放", accent: "#e8f6ee", badge: homeCoreFeaturesUnlocked && titleAccountEmployeeVault.length > 0 ? `${titleAccountEmployeeVault.length}` : "🔒", onClick: homeCoreFeaturesUnlocked ? () => setTitleModal("accountVault") : openLockedHomeFeatureNotice })}
+              {renderHomeMenuCard({ icon: "店", title: "交換所", sub: homeCoreFeaturesUnlocked ? "シルバーシート・ゴールドシートを交換" : "1-1章完了後に解放", accent: "#fff7df", badge: homeCoreFeaturesUnlocked ? "" : "🔒", onClick: homeCoreFeaturesUnlocked ? () => setTitleModal("shop") : openLockedHomeFeatureNotice })}
+              {renderHomeMenuCard({ icon: "🎁", title: "BOX", sub: homeCoreFeaturesUnlocked ? (homeLoginBonusStatus.canClaim ? "ログイン報酬あり" : "受取済み") : "1-1章完了後に解放", accent: "#ffe8f0", badge: homeCoreFeaturesUnlocked && homeLoginBonusStatus.canClaim ? "NEW" : "🔒", onClick: homeCoreFeaturesUnlocked ? () => setTitleModal("presentBox") : openLockedHomeFeatureNotice })}
+              {renderHomeMenuCard({ icon: "任", title: "ミッション", sub: homeCoreFeaturesUnlocked ? (homeMissionClaimableCount > 0 ? `${homeMissionClaimableCount}件受取可能` : `${homeMissionCompletedCount}/${homeMissionItems.length}件達成`) : "1-1章完了後に解放", accent: "#ffe7e7", badge: homeCoreFeaturesUnlocked && homeMissionClaimableCount > 0 ? "NEW" : "🔒", onClick: homeCoreFeaturesUnlocked ? () => setTitleModal("missions") : openLockedHomeFeatureNotice })}
               {renderHomeMenuCard({ icon: "設", title: "設定", sub: "設定・クレジット", accent: "#eeeeee", onClick: () => setTitleModal("settings") })}
             </div>
 
@@ -25638,16 +27955,17 @@ return (
         </div>
         )}
 
-        <div className="home-lobby-bottom-nav-v2182">
+        <div className={`home-lobby-bottom-nav-v2182 ${isHomeBottomNavVisible ? "home-lobby-bottom-nav-visible-v261" : "home-lobby-bottom-nav-hidden-v261"}`}>
           {[
-            { icon: "仕", label: "仕事", badge: "", action: () => setTitleModal("workSelect") },
-            { icon: "採", label: "採用", badge: ((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) > 0 ? String((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) : "", action: () => setTitleModal("recruitHome") },
-            { icon: "名", label: "名簿", badge: "", action: () => setTitleModal("accountVault") },
-            { icon: "🎁", label: "BOX", badge: homeLoginBonusStatus.canClaim ? "!" : "", action: () => setTitleModal("presentBox") },
-            { icon: "任", label: "任務", badge: homeMissionClaimableCount > 0 ? String(homeMissionClaimableCount) : "", action: () => setTitleModal("missions") },
-            { icon: "⚙", label: "設定", badge: "", action: () => setTitleModal("settings") },
+            { icon: "仕", label: "仕事", badge: !homeCoreFeaturesUnlocked ? "!" : "", variant: "work", action: () => setTitleModal("workSelect") },
+            { icon: "採", label: "採用", badge: homeCoreFeaturesUnlocked && ((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) > 0 ? String((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) : "", variant: "recruit", action: homeCoreFeaturesUnlocked ? () => { setEmployeeRecruitReturnPanel("home"); setTitleModal("recruitHome"); } : openLockedHomeFeatureNotice },
+            { icon: "名", label: "名簿", badge: "", variant: "vault", action: homeCoreFeaturesUnlocked ? () => setTitleModal("accountVault") : openLockedHomeFeatureNotice },
+            { icon: "店", label: "交換", badge: "", variant: "shop", action: homeCoreFeaturesUnlocked ? () => setTitleModal("shop") : openLockedHomeFeatureNotice },
+            { icon: "🎁", label: "BOX", badge: homeCoreFeaturesUnlocked && homeLoginBonusStatus.canClaim ? "!" : "", variant: "box", action: homeCoreFeaturesUnlocked ? () => setTitleModal("presentBox") : openLockedHomeFeatureNotice },
+            { icon: "任", label: "任務", badge: homeCoreFeaturesUnlocked && homeMissionClaimableCount > 0 ? String(homeMissionClaimableCount) : "", variant: "mission", action: homeCoreFeaturesUnlocked ? () => setTitleModal("missions") : openLockedHomeFeatureNotice },
+            { icon: "⚙", label: "設定", badge: "", variant: "settings", action: () => setTitleModal("settings") },
           ].map((item) => (
-            <button key={item.label} type="button" className="home-lobby-nav-button-v2182" onClick={item.action}>
+            <button key={item.label} type="button" className={`home-lobby-nav-button-v2182 nav-${item.variant}-v264`} onClick={item.action}>
               {item.badge ? <span className="home-lobby-nav-badge-v2182">{item.badge}</span> : null}
               <span className="home-lobby-nav-icon-v2182">{item.icon}</span>
               <span className="home-lobby-nav-label-v2182">{item.label}</span>
@@ -25657,6 +27975,10 @@ return (
 
         {titleModal && (
           <div
+            onPointerMove={showHomeBottomNavTemporarily}
+            onPointerDown={showHomeBottomNavTemporarily}
+            onTouchMove={showHomeBottomNavTemporarily}
+            onWheel={showHomeBottomNavTemporarily}
             style={{
               position: "absolute",
               inset: 0,
@@ -25702,6 +28024,34 @@ return (
                   <button type="button" onClick={() => startNewGameFromTitle((pendingNewGame?.slot ?? activeSaveSlot), "story")} style={{width:"100%",padding:12,marginBottom:8}}>ストーリーモード</button>
                   <button type="button" onClick={() => setTitleModal("freeMapSelect")} style={{width:"100%",padding:12}}>フリーモード</button>
                 </>
+              ) : titleModal === "storySelect" ? (
+                (() => {
+                  const progress = getStoryChapterProgressLevel();
+                  const chapters = [
+                    { key: "chapter_1_1", title: "1-1章 創業チュートリアル", sub: "空き家購入・修繕・土地購入・建築をもう一度確認します。", unlocked: true },
+                    { key: "chapter_1_2", title: "1-2章 岐阜編", sub: "完成済み自社建物3棟を目指します。", unlocked: progress >= 2 || titleAccountData.unlockedStoryAkari },
+                    { key: "chapter_1_3", title: "1-3章 名古屋準備編", sub: "銀行融資・支店建設・社員配属を確認します。", unlocked: progress >= 3 },
+                    { key: "chapter_1_4", title: "1-4章 名古屋編", sub: "実質月利益50万円以上を目指します。", unlocked: progress >= 4 },
+                  ];
+                  return (
+                    <>
+                      <h2 style={{ margin: "0 0 10px", fontSize: 22 }}>ストーリー選択</h2>
+                      <button type="button" onClick={openLatestStoryFromTitle} style={{ width: "100%", padding: "11px 12px", borderRadius: 16, border: "1px solid #e3c867", background: "linear-gradient(145deg,#fff7df,#ffe7a3)", color: "#1d2b22", textAlign: "left", fontWeight: 900, cursor: "pointer", marginBottom: 10 }}>
+                        <div style={{ fontSize: 16 }}>▶ 最新の続きから</div>
+                        <div style={{ fontSize: 11, opacity: 0.75, marginTop: 3 }}>{titleStoryStatusText}</div>
+                      </button>
+                      <div style={{ display: "grid", gap: 8 }}>
+                        {chapters.map((chapter) => (
+                          <button key={chapter.key} type="button" disabled={!chapter.unlocked} onClick={() => startStoryChapterFromTitle(chapter.key)} style={{ padding: "10px 12px", borderRadius: 16, border: "1px solid #cfe2d3", background: chapter.unlocked ? "#ffffff" : "#eef0ed", color: chapter.unlocked ? "#1d2b22" : "#7c877d", textAlign: "left", fontWeight: 900, cursor: chapter.unlocked ? "pointer" : "not-allowed", opacity: chapter.unlocked ? 1 : 0.65 }}>
+                            <div style={{ fontSize: 15, lineHeight: 1.2 }}>{chapter.unlocked ? "📖" : "🔒"} {chapter.title}</div>
+                            <div style={{ fontSize: 11, marginTop: 3, opacity: 0.75, lineHeight: 1.35 }}>{chapter.sub}</div>
+                          </button>
+                        ))}
+                      </div>
+                      <p style={{ fontSize: 11, lineHeight: 1.55, color: "#6b5a22", marginTop: 10 }}>クリア済みの章までは戻って遊べます。ただし戻った章の途中保存は残さず、最新到達地点の続きデータを優先します。</p>
+                    </>
+                  );
+                })()
               ) : titleModal === "freeMapSelect" ? (
                 <>
                   <h2 style={{ margin: "0 0 10px", fontSize: 24, lineHeight: 1.15, whiteSpace: "nowrap" }}>フリーマップ選択</h2>
@@ -25846,7 +28196,7 @@ return (
                           type="button"
                           className={`home-recruit-pass-button-v206 home-recruit-pass-button-v2184 ${brand.className}`}
                           disabled={disabled}
-                          onClick={() => startHomeEmployeeRecruitmentByTicket(ticketType)}
+                          onClick={() => startHomeEmployeeRecruitmentByTicket(ticketType, employeeRecruitReturnPanel && employeeRecruitReturnPanel !== "home" ? "map" : "home")}
                           style={{
                             border: `1px solid ${brand.borderColor}`,
                             background: brand.buttonGradient,
@@ -25868,6 +28218,8 @@ return (
                     <span><strong>{getRecruitmentMenuName("premium")}:</strong> {getTicketOddsText("premium")}</span>
                   </div>
                 </>
+              ) : titleModal === "shop" ? (
+                renderHomeShopModal()
               ) : titleModal === "presentBox" ? (
                 <>
                   <h2 style={{ marginTop: 0 }}>🎁 プレゼントBOX</h2>
@@ -25930,27 +28282,34 @@ return (
                     v210では、デイリー・採用・経営・ストーリーの導線を整理し、ホームから報酬を受け取りやすくしました。受取可能な任務は発光します。
                   </p>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
-                    <div style={{ padding: 10, borderRadius: 14, background: "#fff7df", border: "1px solid #e8d08a", textAlign: "center" }}>
+                    <button type="button" onClick={() => setHomeMissionFilter("claimable")} style={{ padding: 10, borderRadius: 14, background: homeMissionFilter === "claimable" ? "#fff0b8" : "#fff7df", border: homeMissionFilter === "claimable" ? "2px solid #d8a900" : "1px solid #e8d08a", textAlign: "center", cursor: "pointer", color: "#1d2b22" }}>
                       <div style={{ fontSize: 11, color: "#8a5a00", fontWeight: 900 }}>受取可能</div>
                       <strong>{homeMissionClaimableCount}件</strong>
-                    </div>
-                    <div style={{ padding: 10, borderRadius: 14, background: "#edf5ef", border: "1px solid #cfe2d3", textAlign: "center" }}>
+                    </button>
+                    <button type="button" onClick={() => setHomeMissionFilter("completed")} style={{ padding: 10, borderRadius: 14, background: homeMissionFilter === "completed" ? "#dff3e5" : "#edf5ef", border: homeMissionFilter === "completed" ? "2px solid #4ca26a" : "1px solid #cfe2d3", textAlign: "center", cursor: "pointer", color: "#1d2b22" }}>
                       <div style={{ fontSize: 11, color: "#31563f", fontWeight: 900 }}>達成済み</div>
                       <strong>{homeMissionCompletedCount}件</strong>
-                    </div>
-                    <div style={{ padding: 10, borderRadius: 14, background: "#edf2ff", border: "1px solid #cbd8ff", textAlign: "center" }}>
+                    </button>
+                    <button type="button" onClick={() => setHomeMissionFilter("all")} style={{ padding: 10, borderRadius: 14, background: homeMissionFilter === "all" ? "#dfe8ff" : "#edf2ff", border: homeMissionFilter === "all" ? "2px solid #5b76c9" : "1px solid #cbd8ff", textAlign: "center", cursor: "pointer", color: "#1d2b22" }}>
                       <div style={{ fontSize: 11, color: "#314c8a", fontWeight: 900 }}>任務総数</div>
                       <strong>{homeMissionItems.length}件</strong>
-                    </div>
+                    </button>
                   </div>
+                  <button type="button" disabled={homeMissionClaimableCount <= 0} onClick={claimAllHomeMissionRewards} style={{ width: "100%", marginBottom: 10, padding: "11px 14px", borderRadius: 999, border: "none", background: homeMissionClaimableCount > 0 ? "linear-gradient(145deg,#ffb02e,#ff5a3d)" : "#c8d0c8", color: "#ffffff", fontSize: 15, fontWeight: 900, cursor: homeMissionClaimableCount > 0 ? "pointer" : "not-allowed", opacity: homeMissionClaimableCount > 0 ? 1 : 0.68 }}>
+                    🎁 まとめて受け取る{homeMissionClaimableCount > 0 ? `（${homeMissionClaimableCount}件）` : ""}
+                  </button>
                   <div style={{ display: "grid", gap: 8, maxHeight: 430, overflowY: "auto", paddingRight: 3 }}>
-                    {homeMissionItems.map((mission) => renderHomeMissionCard(mission))}
+                    {visibleHomeMissionItems.length > 0 ? visibleHomeMissionItems.map((mission) => renderHomeMissionCard(mission)) : (
+                      <div style={{ padding: 14, borderRadius: 14, background: "#f3f6f1", border: "1px solid #d8e0d8", fontSize: 13, textAlign: "center", color: "#61705f", fontWeight: 800 }}>
+                        表示できる任務はありません。
+                      </div>
+                    )}
                   </div>
                 </>
               ) : titleModal === "settings" ? (
                 <>
                   <h2 style={{ marginTop: 0 }}>設定</h2>
-                  <p>BGMはタイトル画面とゲーム内オプションで共通管理します。</p>
+                  <p style={{ fontSize: 13, lineHeight: 1.7, marginTop: 0 }}>BGM、初期化、開発者用コマンドを管理します。</p>
                   <div style={{ padding: 12, borderRadius: 12, background: "#f3f6f1", lineHeight: 1.7 }}>
                     <div>難易度：標準</div>
                     <div>BGM：{isBgmOn ? "ON" : "OFF"}</div>
@@ -25963,6 +28322,46 @@ return (
                     <button type="button" onClick={turnBgmOff} style={{ padding: "10px 12px", borderRadius: 999, border: "1px solid #b8c7b9", background: "#ffffff", color: "#1d2b22", fontWeight: 700, cursor: "pointer" }}>
                       BGM OFF
                     </button>
+                  </div>
+
+                  <div style={{ marginTop: 16, padding: 12, borderRadius: 14, background: "#fff7df", border: "1px solid #e8d08a", display: "grid", gap: 9 }}>
+                    <strong>初期化</strong>
+                    <button type="button" onClick={resetCurrentMapToChapterStart} style={{ padding: "10px 12px", borderRadius: 999, border: "1px solid #e8d08a", background: "#fffdf3", color: "#1d2b22", fontWeight: 900, cursor: "pointer" }}>
+                      マップを最初に戻す
+                    </button>
+                    <small style={{ lineHeight: 1.5, color: "#7a4a00" }}>現在の章・マップを最初の状態へ戻します。チュートリアル詰まり対策用です。</small>
+                    <button type="button" onClick={resetGameDataKeepingEmployeesFromSettings} style={{ padding: "10px 12px", borderRadius: 999, border: "1px solid #cfe2d3", background: "#ffffff", color: "#1d2b22", fontWeight: 900, cursor: "pointer" }}>
+                      社員だけ残して初期化
+                    </button>
+                    <button type="button" onClick={resetAllGameDataFromSettings} style={{ padding: "10px 12px", borderRadius: 999, border: "none", background: "linear-gradient(145deg,#ff6b6b,#c40022)", color: "#ffffff", fontWeight: 900, cursor: "pointer" }}>
+                      完全初期化
+                    </button>
+                    <small style={{ lineHeight: 1.5, color: "#7a4a00" }}>完全初期化は社員・ランク・セーブデータを含めてインストール直後の状態に戻します。</small>
+                  </div>
+
+                  <div style={{ marginTop: 16, padding: 12, borderRadius: 14, background: "#edf5ef", border: "1px solid #cfe2d3", display: "grid", gap: 9 }}>
+                    <button type="button" onClick={() => setShowDeveloperCommand((current) => !current)} style={{ padding: "10px 12px", borderRadius: 999, border: "none", background: "#1d5c3a", color: "#ffffff", fontWeight: 900, cursor: "pointer" }}>
+                      開発者用
+                    </button>
+                    {showDeveloperCommand && (
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 8 }}>
+                        <input
+                          type="text"
+                          value={developerCommandInput}
+                          onChange={(event) => setDeveloperCommandInput(event.target.value)}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter") {
+                              handleDeveloperCommand();
+                            }
+                          }}
+                          placeholder="隠しコマンドを入力"
+                          style={{ minWidth: 0, padding: "10px 12px", borderRadius: 999, border: "1px solid #cfe2d3", fontWeight: 800 }}
+                        />
+                        <button type="button" onClick={handleDeveloperCommand} style={{ padding: "10px 14px", borderRadius: 999, border: "none", background: "#ffb02e", color: "#1d2b22", fontWeight: 900, cursor: "pointer" }}>
+                          OK
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </>
               ) : (
@@ -25978,8 +28377,8 @@ return (
                   </div>
                 </>
               )}
-              <button type="button" onClick={() => { setTitleModal(null); setTitleVaultDetailEmployee(null); }} aria-label="閉じる" title="閉じる" style={{ marginTop: titleModal === "freeMapSelect" ? 8 : 12, marginBottom: titleModal === "freeMapSelect" ? 2 : 4, width: "100%", padding: titleModal === "freeMapSelect" ? "7px 14px" : "8px 14px", borderRadius: 999, border: "none", background: "#1d5c3a", color: "#ffffff", fontWeight: 900, cursor: "pointer", fontSize: titleModal === "freeMapSelect" ? 16 : 18, lineHeight: 1 }}>
-                ×
+              <button type="button" onClick={() => { setTitleModal(null); setTitleVaultDetailEmployee(null); }} aria-label="閉じる" title="閉じる" style={{ marginTop: titleModal === "freeMapSelect" ? 8 : 12, marginBottom: titleModal === "freeMapSelect" ? 10 : 12, width: "100%", padding: titleModal === "freeMapSelect" ? "9px 14px" : "10px 14px", borderRadius: 999, border: "none", background: "#1d5c3a", color: "#ffffff", fontWeight: 900, cursor: "pointer", fontSize: titleModal === "freeMapSelect" ? 15 : 16, lineHeight: 1.1 }}>
+                閉じる
               </button>
             </div>
           </div>
@@ -26121,7 +28520,7 @@ return (
                 <tr><th>期末現金</th><td>{annualReport.money.toLocaleString()}万円</td></tr>
                 <tr><th>総資産</th><td>{annualReport.assetValue.toLocaleString()}万円</td></tr>
                 <tr><th>プレイヤーランク</th><td>{annualReport.playerRank}</td></tr>
-                <tr><th>プレイヤーEXP</th><td>{annualReport.playerExp} / {annualReport.nextPlayerExp}</td></tr>
+                <tr><th>シルバーシート</th><td>{annualReport.playerExp} / {annualReport.nextPlayerExp}</td></tr>
               </tbody>
             </table>
             <button onClick={() => setAnnualReport(null)}>OK</button>
@@ -26695,7 +29094,7 @@ return (
       {currentGameMode === "story" && tutorialStep === STORY_TUTORIAL_STEPS.COMPLETE && (
         <div className="story-next-chapter-panel">
           <div>
-            <strong>第0章クリア</strong>
+            <strong>1-1章クリア</strong>
             <span>基本操作を学びました。次は15×15の岐阜編へ進みます。</span>
           </div>
           <button type="button" onClick={startGifuChapter}>岐阜編に進む</button>
@@ -26706,8 +29105,7 @@ return (
         <div className={`gifu-goal-panel ${hasClearedGifuChapter ? "cleared" : ""}`}>
           <div>
             <strong>{hasClearedGifuChapter ? "岐阜編クリア" : "岐阜編目標"}</strong>
-            <span>人口 {totalPopulation.toLocaleString()} / {GIFU_CLEAR_POPULATION.toLocaleString()}人</span>
-            <span>総資産 {gifuTotalAssets.toLocaleString()} / {GIFU_CLEAR_TOTAL_ASSETS.toLocaleString()}万円</span>
+            <span>完成済み自社建物 {gifuOwnedBuildingCount.toLocaleString()} / {GIFU_CLEAR_BUILDING_COUNT.toLocaleString()}棟</span>
           </div>
         </div>
       )}
@@ -26738,8 +29136,7 @@ return (
         <div className={`gifu-goal-panel nagoya-goal-panel ${hasClearedNagoyaChapter ? "cleared" : ""}`}>
           <div>
             <strong>{hasClearedNagoyaChapter ? "名古屋編クリア" : "名古屋編目標"}</strong>
-            <span>人口 {totalPopulation.toLocaleString()} / {NAGOYA_CLEAR_POPULATION.toLocaleString()}人</span>
-            <span>総資産 {nagoyaTotalAssets.toLocaleString()} / {NAGOYA_CLEAR_TOTAL_ASSETS.toLocaleString()}万円</span>
+            <span>実質月利益 {actualMonthlyProfit.toLocaleString()} / {NAGOYA_CLEAR_MONTHLY_PROFIT.toLocaleString()}万円</span>
           </div>
         </div>
       )}
@@ -26758,478 +29155,122 @@ return (
         </div>
       )}
 
-<nav className="bottom-menu compact-command-menu icon-command-menu v72-top-command-bar v73-top-command-bar" aria-label="メイン操作">
+<div className="map-top-hud-v268" aria-label="経営ステータス">
   <button
     type="button"
-    title="ホーム"
-    aria-label="ホーム"
+    className={`map-top-hud-chip-v268 ${isMapViewMenuOpen ? "active" : ""}`}
+    title="人口・表示切替"
+    aria-label="人口・表示切替"
     onClick={() => {
-      setActivePanel(hqPlaced ? "home" : "hq");
-      setMapViewMode("normal");
-      setIsMainMenuOpen(false);
-      setIsMoneyInfoOpen(false);
+      setIsMapViewMenuOpen((current) => !current);
       setIsDateInfoOpen(false);
+      setIsMoneyInfoOpen(false);
+      setIsMainMenuOpen(false);
+      setIsMapInfoMenuOpen(false);
     }}
-    className={`top-icon-button ${activePanel === "home" && mapViewMode === "normal" ? "active" : ""}`}
-  >
-    <span className="top-icon-symbol">🏠</span>
-  </button>
-
+  ><span>👥</span><strong>{totalPopulation.toLocaleString()}</strong></button>
   <button
     type="button"
-    title="拠点へ移動"
-    aria-label="拠点へ移動"
-    disabled={!hqPlaced || officeTiles.length === 0}
-    onClick={focusNextPlayerOffice}
-    className={`top-icon-button ${selectedOfficeTile ? "active" : ""}`}
-  >
-    <span className="top-icon-symbol">📍</span>
-  </button>
-
-  <button
-    type="button"
-    title="翌月へ"
-    aria-label="翌月へ"
-    disabled={!hqPlaced}
+    className={`map-top-hud-chip-v268 ${isDateInfoOpen ? "active" : ""}`}
+    title="年月・プレイヤー情報"
+    aria-label="年月・プレイヤー情報"
     onClick={() => {
-      nextMonth();
-      setIsMainMenuOpen(false);
+      setIsDateInfoOpen((current) => !current);
+      setIsMapViewMenuOpen(false);
       setIsMoneyInfoOpen(false);
-      setIsDateInfoOpen(false);
+      setIsMainMenuOpen(false);
+      setIsMapInfoMenuOpen(false);
     }}
-    className={`top-icon-button ${shouldShowStoryTutorialNextMonthGuide() ? "story-next-month-guide" : ""} ${getNagoyaTutorialGuideClass("next-month")}`}
+  ><span>📅</span><strong>{gameDate.label}</strong></button>
+  <button
+    type="button"
+    className={`map-top-hud-chip-v268 ${isMoneyInfoOpen ? "active" : ""}`}
+    title="資産・財政情報"
+    aria-label="資産・財政情報"
+    onClick={() => {
+      setIsMoneyInfoOpen((current) => !current);
+      setIsDateInfoOpen(false);
+      setIsMapViewMenuOpen(false);
+      setIsMainMenuOpen(false);
+      setIsMapInfoMenuOpen(false);
+    }}
+  ><span>💰</span><strong>{money.toLocaleString()}万</strong></button>
+  <button
+    type="button"
+    className={`map-top-hud-chip-v268 ${actualMonthlyProfit >= 0 ? "positive" : "negative"}`}
+    title="月次収益"
+    aria-label="月次収益"
+    onClick={() => {
+      setIsMoneyInfoOpen((current) => !current);
+      setIsDateInfoOpen(false);
+      setIsMapViewMenuOpen(false);
+      setIsMainMenuOpen(false);
+      setIsMapInfoMenuOpen(false);
+    }}
+  ><span>{monthlyProfitIcon}</span><strong>{monthlyProfitSign}{actualMonthlyProfit.toLocaleString()}万</strong></button>
+  <button
+    type="button"
+    className="map-top-hud-chip-v268 zoom-chip-v269"
+    title={`倍率変更（現在 ${tileSize}px）`}
+    aria-label={`倍率変更（現在 ${tileSize}px）`}
+    onClick={() => setTileSize((current) => (current >= 38 ? 24 : Math.min(40, current + 4)))}
   >
-    <span className="top-icon-symbol">⏭️</span>
+    <span>🔍</span>
   </button>
 
-  <div className="top-status-inline v73-top-status-inline" aria-label="主要ステータス">
-    {isDemoMode && (
-      <button
-        type="button"
-        className="top-compact-stat top-compact-stat-button demo-money-add-button"
-        title="デモ版：所持金を1億円追加"
-        aria-label="デモ版：所持金を1億円追加"
-        style={{
-          width: 42,
-          minWidth: 42,
-          maxWidth: 42,
-          height: 28,
-          minHeight: 28,
-          padding: 0,
-          fontSize: 11,
-          lineHeight: 1,
-          flex: "0 0 42px",
-        }}
-        onClick={addDemoMoney100m}
-      >
-        ＋1億
-      </button>
-    )}
-
-    <div className="top-status-chip-wrap">
-      <button
-        type="button"
-        className={`top-compact-stat top-compact-stat-button ${isMoneyInfoOpen ? "active" : ""}`}
-        title="資産情報"
-        aria-label="資産情報"
-        onClick={() => {
-          setIsMoneyInfoOpen((current) => !current);
-          setIsDateInfoOpen(false);
-          setIsMainMenuOpen(false);
-        }}
-      >
-        💰{money.toLocaleString()}万
-      </button>
-      {isMoneyInfoOpen && (
-        <div className="top-info-popup top-info-popup-money">
-          <div className="top-info-popup-title-row">
-            <h3>💰 資産</h3>
-            <button type="button" className="popup-close-button" onClick={() => setIsMoneyInfoOpen(false)} aria-label="資産情報を閉じる" title="閉じる">×</button>
-          </div>
-          <div className="top-info-popup-grid">
-            <div className="finance-popup-section">
-              <p className="finance-popup-title">資産</p>
-              <span>所持金</span>
-              <strong>{money.toLocaleString()}万</strong>
-              <span>土地・建物</span>
-              <strong>{Math.round(assetValue).toLocaleString()}万</strong>
-              <span>資産総額</span>
-              <strong>{Math.round(money + assetValue).toLocaleString()}万</strong>
-            </div>
-
-            <div className="finance-popup-section">
-              <p className="finance-popup-title">負債</p>
-              <details>
-                <summary className="finance-detail-summary">
-                  <span className="summary-label">借入残高</span>
-                  <strong>{totalLoanRemaining.toLocaleString()}万</strong>
-                </summary>
-                <div className="finance-detail-box">
-                  {loans.length === 0 ? (
-                    <div className="finance-detail-note">借入はありません。</div>
-                  ) : (
-                    loans.map((loan) => (
-                      <div className="finance-detail-row" key={loan.id}>
-                        <span>{loan.bankName}</span>
-                        <strong>{Math.round(loan.remaining ?? 0).toLocaleString()}万</strong>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </details>
-            </div>
-
-            <div className="finance-popup-section">
-              <p className="finance-popup-title">資産評価</p>
-              <span>実質資産</span>
-              <strong>{netWorthAfterDebt.toLocaleString()}万</strong>
-            </div>
-
-            <div className="finance-popup-section">
-              <p className="finance-popup-title">収益</p>
-              <span>月家賃</span>
-              <strong>{totalRent.toLocaleString()}万</strong>
-            </div>
-
-            <div className="finance-popup-section">
-              <p className="finance-popup-title">費用</p>
-              <span>給与</span>
-              <strong>{employeePayroll.toLocaleString()}万</strong>
-              <details>
-                <summary className="finance-detail-summary">
-                  <span className="summary-label">維持費</span>
-                  <strong>{buildingMaintenance.toLocaleString()}万</strong>
-                </summary>
-                <div className="finance-detail-box">
-                  <div className="finance-detail-row"><span>管理料</span><strong>{maintenanceDetails.managementFee.toLocaleString()}万</strong></div>
-                  <div className="finance-detail-row"><span>保険料</span><strong>{maintenanceDetails.insurance.toLocaleString()}万</strong></div>
-                  <div className="finance-detail-row"><span>修繕積立</span><strong>{maintenanceDetails.repairReserve.toLocaleString()}万</strong></div>
-                  <div className="finance-detail-row"><span>固定資産税 月割参考</span><strong>{maintenanceDetails.propertyTaxMonthlyReference.toLocaleString()}万</strong></div>
-                  <div className="finance-detail-note">固定資産税は月利益には含めず、年次処理の参考額として表示しています。</div>
-                </div>
-              </details>
-              <span>月返済</span>
-              <strong>{totalMonthlyLoanPayment.toLocaleString()}万</strong>
-            </div>
-
-            <div className="finance-popup-section">
-              <p className="finance-popup-title">利益</p>
-              <span>実質月利益</span>
-              <strong className={actualMonthlyProfit >= 0 ? "status-good" : "status-bad"}>{monthlyProfitSign}{actualMonthlyProfit.toLocaleString()}万</strong>
-              <span>空室率</span>
-              <strong>{vacancyRoomStats.vacantRooms}/{vacancyRoomStats.totalRooms}戸・{vacancyRate}%</strong>
-            </div>
-          </div>
-        </div>
-      )}
+  {isMapViewMenuOpen && (
+    <div className="map-view-dropdown-hud-v270" aria-label="マップ表示切替">
+      <button type="button" className={mapViewMode === "normal" ? "active" : ""} onClick={() => { setMapViewMode("normal"); setIsMapViewMenuOpen(false); }}>通常表示</button>
+      <button type="button" className={mapViewMode === "landPrice" ? "active" : ""} onClick={() => { setMapViewMode("landPrice"); setIsMapViewMenuOpen(false); }}>地価表示</button>
+      <button type="button" className={mapViewMode === "housingDemand" ? "active" : ""} onClick={() => { setMapViewMode("housingDemand"); setIsMapViewMenuOpen(false); }}>住宅需要</button>
+      <button type="button" className={mapViewMode === "commercialDemand" ? "active" : ""} onClick={() => { setMapViewMode("commercialDemand"); setIsMapViewMenuOpen(false); }}>商業需要</button>
+      <button type="button" className={mapViewMode === "industrialDemand" ? "active" : ""} onClick={() => { setMapViewMode("industrialDemand"); setIsMapViewMenuOpen(false); }}>工業需要</button>
     </div>
+  )}
 
-    <div className="top-status-chip-wrap">
-      <button
-        type="button"
-        className="top-compact-stat"
-        title={`実質月利益：${monthlyProfitSign}${actualMonthlyProfit.toLocaleString()}万`}
-        aria-label={`実質月利益：${monthlyProfitSign}${actualMonthlyProfit.toLocaleString()}万`}
-      >
-        {monthlyProfitIcon}{monthlyProfitSign}{actualMonthlyProfit.toLocaleString()}万
-      </button>
-    </div>
-
-    <div className="top-status-chip-wrap top-date-status-wrap">
-      <button
-        type="button"
-        className={`top-compact-stat top-compact-stat-button ${isDateInfoOpen ? "active" : ""}`}
-        title="経過・プレイヤー情報"
-        aria-label="経過・プレイヤー情報"
-        onClick={() => {
-          setIsDateInfoOpen((current) => !current);
-          setIsMoneyInfoOpen(false);
-          setIsMainMenuOpen(false);
-        }}
-      >
-        📅{gameDate.label}
-      </button>
-      {isDateInfoOpen && (
-        <div className="top-info-popup top-info-popup-date">
-          <div className="top-info-popup-title-row">
-            <h3>📅 進行</h3>
-            <button type="button" className="popup-close-button" onClick={() => setIsDateInfoOpen(false)} aria-label="進行情報を閉じる" title="閉じる">×</button>
-          </div>
-          <div className="top-info-popup-grid">
-            <span>現在</span>
-            <strong>{gameDate.label}</strong>
-            <span>経過</span>
-            <strong>{month}ヶ月</strong>
-            <span>ランク</span>
-            <strong>{playerRank}</strong>
-            <span>EXP</span>
-            <strong>{playerExp} / {getPlayerRequiredExp(playerRank)}</strong>
-            <span>人口</span>
-            <strong>{totalPopulation.toLocaleString()}</strong>
-            <span>社員</span>
-            <strong>{employees.length}人</strong>
-            <span>保管社員</span>
-            <strong>{employeeStorage.length}人</strong>
-            <span>支店</span>
-            <strong>{branchCount}店</strong>
-          </div>
-        </div>
-      )}
-    </div>
-  </div>
-
-  <div className="main-menu-wrap v73-main-menu-wrap">
-    <button
-      type="button"
-      title="メニュー"
-      aria-label="メニュー"
-      disabled={!hqPlaced}
-      onClick={() => {
-        setIsMainMenuOpen((current) => !current);
-        setIsMoneyInfoOpen(false);
-        setIsDateInfoOpen(false);
-      }}
-      className={`top-icon-button ${isMainMenuOpen ? "active" : ""}`}
-    >
-      <span className="top-icon-symbol">☰</span>
-      {!isStoryTutorialActive() && hasEmployeeRecruitNotice && <span className="menu-alert-dot">!</span>}
-    </button>
-
-    {isMainMenuOpen && (
-      <div className="main-menu-popup icon-main-menu-popup">
-        <button
-          type="button"
-          onClick={() => {
-            setBuildEntrySource("menu");
-            setPendingBuildKey(null);
-            setActivePanel("build");
-            setIsMainMenuOpen(false);
-          }}
-          className={activePanel === "build" ? "active" : ""}
-        >
-          🏗 建設
-        </button>
-        {!isStoryTutorialActive() && (
-          <>
-            <button
-              type="button"
-              onClick={() => {
-                setActivePanel("employee");
-                setIsMainMenuOpen(false);
-              }}
-              className={activePanel === "employee" ? "active" : ""}
-            >
-              👥 社員配置
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setTitleModal("recruitHome");
-                setShowTitleScreen(true);
-                setHasEmployeeRecruitNotice(false);
-                setIsMainMenuOpen(false);
-              }}
-              className=""
-            >
-              ✉️ 社員採用
-              {hasEmployeeRecruitNotice && <span className="menu-alert-dot">!</span>}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setTitleModal("accountVault");
-                setShowTitleScreen(true);
-                setIsMainMenuOpen(false);
-              }}
-              className=""
-            >
-              📒 社員名簿
-            </button>
-          </>
-        )}
-        <button
-          type="button"
-          onClick={() => {
-            setActivePanel("property");
-            setIsMainMenuOpen(false);
-          }}
-          className={activePanel === "property" ? "active" : ""}
-        >
-          🏠 物件
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setActivePanel("bank");
-            setIsMainMenuOpen(false);
-          }}
-          className={`${activePanel === "bank" ? "active" : ""} ${getNagoyaTutorialGuideClass("bank-menu")}`}
-        >
-          🏦 銀行
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setActivePanel("info");
-            setIsMainMenuOpen(false);
-          }}
-          className={activePanel === "info" ? "active" : ""}
-        >
-          📊 情報
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setActivePanel("log");
-            setIsMainMenuOpen(false);
-          }}
-          className={activePanel === "log" ? "active" : ""}
-        >
-          📜 ログ
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setShowTitleScreen(true);
-            setTitleModal(null);
-            setTitleVaultDetailEmployee(null);
-            setActivePanel("home");
-            setIsMainMenuOpen(false);
-            setIsMoneyInfoOpen(false);
-            setIsDateInfoOpen(false);
-          }}
-          className=""
-        >
-          🏠 ホームメニューへ
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setActivePanel("option");
-            setIsMainMenuOpen(false);
-          }}
-          className={activePanel === "option" ? "active" : ""}
-        >
-          ⚙️ オプション
-        </button>
-        <button
-          type="button"
-          className="main-menu-close-button"
-          onClick={() => setIsMainMenuOpen(false)}
-          aria-label="メニューを閉じる"
-          title="閉じる"
-        >
-          ×
-        </button>
+  {isDateInfoOpen && (
+    <div className="map-top-hud-popup-v270">
+      <div className="map-top-hud-popup-title-v270"><span>📅 進行・プレイヤー情報</span><button type="button" onClick={() => setIsDateInfoOpen(false)}>×</button></div>
+      <div className="map-top-hud-popup-grid-v270">
+        <span>現在</span><strong>{gameDate.label}</strong>
+        <span>経過</span><strong>{month}ヶ月</strong>
+        <span>ランク</span><strong>{playerRank}</strong>
+        <span>EXP</span><strong>{playerExp} / {getPlayerRequiredExp(playerRank)}</strong>
+        <span>人口</span><strong>{totalPopulation.toLocaleString()}</strong>
+        <span>社員</span><strong>{employees.length}人</strong>
+        <span>保管社員</span><strong>{employeeStorage.length}人</strong>
+        <span>支店</span><strong>{branchCount}店</strong>
       </div>
-    )}
-  </div>
-</nav>
+    </div>
+  )}
+
+  {isMoneyInfoOpen && (
+    <div className="map-top-hud-popup-v270">
+      <div className="map-top-hud-popup-title-v270"><span>💰 資産</span><button type="button" onClick={() => setIsMoneyInfoOpen(false)}>×</button></div>
+      <div className="map-top-hud-popup-grid-v270">
+        <span>所持金</span><strong>{money.toLocaleString()}万</strong>
+        <span>土地・建物</span><strong>{Math.round(assetValue).toLocaleString()}万</strong>
+        <span>資産総額</span><strong>{Math.round(money + assetValue).toLocaleString()}万</strong>
+        <span>借入残高</span><strong>{totalLoanRemaining.toLocaleString()}万</strong>
+        <span>実質資産</span><strong>{netWorthAfterDebt.toLocaleString()}万</strong>
+        <span>月家賃</span><strong>{totalRent.toLocaleString()}万</strong>
+        <span>給与</span><strong>{employeePayroll.toLocaleString()}万</strong>
+        <span>維持費</span><strong>{buildingMaintenance.toLocaleString()}万</strong>
+        <span>月返済</span><strong>{totalMonthlyLoanPayment.toLocaleString()}万</strong>
+        <span>実質月利益</span><strong>{monthlyProfitSign}{actualMonthlyProfit.toLocaleString()}万</strong>
+        <span>空室率</span><strong>{vacancyRoomStats.vacantRooms}/{vacancyRoomStats.totalRooms}戸・{vacancyRate}%</strong>
+      </div>
+    </div>
+  )}
+</div>
 <div className="game-layout"></div>
 
       <main className={`main-layout ${(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "employeeRecruit" || activePanel === "employeeLibrary" || activePanel === "property" || activePanel === "log" || activePanel === "option" || activePanel === "info" || activePanel === "bank") ? "full-panel" : ""}`}>
         {(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build") && (
         <section className="map-section playfield-v212 playfield-v214 playfield-v216">
-          <div className="panel-title-row map-title-row v153-map-control-row">
-            <div className="map-title-status v153-map-title-status">
-              <button
-                type="button"
-                className={`map-compact-stat map-view-menu-button ${isMapViewMenuOpen ? "active" : ""}`}
-                title="表示切替"
-                aria-label="表示切替"
-                onClick={() => {
-                  setIsMapViewMenuOpen((current) => !current);
-                  setIsDateInfoOpen(false);
-                }}
-              >
-                👥{totalPopulation.toLocaleString()} ▾
-              </button>
-              <button
-                type="button"
-                className={`map-compact-stat map-date-inline map-date-info-button ${isDateInfoOpen ? "active" : ""}`}
-                title="経過・プレイヤー情報"
-                aria-label="経過・プレイヤー情報"
-                onClick={() => {
-                  setIsDateInfoOpen((current) => !current);
-                  setIsMapViewMenuOpen(false);
-                  setIsMoneyInfoOpen(false);
-                  setIsMainMenuOpen(false);
-                }}
-              >
-                📅{gameDate.label}
-              </button>
-              {isMapViewMenuOpen && (
-                <div className="map-view-dropdown">
-                  <button type="button" className={mapViewMode === "normal" ? "active" : ""} onClick={() => { setMapViewMode("normal"); setIsMapViewMenuOpen(false); }}>通常表示</button>
-                  <button type="button" className={mapViewMode === "landPrice" ? "active" : ""} onClick={() => { setMapViewMode("landPrice"); setIsMapViewMenuOpen(false); }}>地価表示</button>
-                  <button type="button" className={mapViewMode === "housingDemand" ? "active" : ""} onClick={() => { setMapViewMode("housingDemand"); setIsMapViewMenuOpen(false); }}>住宅需要</button>
-                  <button type="button" className={mapViewMode === "commercialDemand" ? "active" : ""} onClick={() => { setMapViewMode("commercialDemand"); setIsMapViewMenuOpen(false); }}>商業需要</button>
-                  <button type="button" className={mapViewMode === "industrialDemand" ? "active" : ""} onClick={() => { setMapViewMode("industrialDemand"); setIsMapViewMenuOpen(false); }}>工業需要</button>
-                </div>
-              )}
-              {isDateInfoOpen && (
-                <div className="top-info-popup top-info-popup-date map-date-info-popup">
-                  <div className="top-info-popup-title-row">
-                    <h3>📅 進行</h3>
-                    <button type="button" className="popup-close-button" onClick={() => setIsDateInfoOpen(false)} aria-label="進行情報を閉じる" title="閉じる">×</button>
-                  </div>
-                  <div className="top-info-popup-grid">
-                    <span>現在</span>
-                    <strong>{gameDate.label}</strong>
-                    <span>経過</span>
-                    <strong>{month}ヶ月</strong>
-                    <span>ランク</span>
-                    <strong>{playerRank}</strong>
-                    <span>EXP</span>
-                    <strong>{playerExp} / {getPlayerRequiredExp(playerRank)}</strong>
-                    <span>人口</span>
-                    <strong>{totalPopulation.toLocaleString()}</strong>
-                    <span>社員</span>
-                    <strong>{employees.length}人</strong>
-                    <span>保管社員</span>
-                    <strong>{employeeStorage.length}人</strong>
-                    <span>支店</span>
-                    <strong>{branchCount}店</strong>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="zoom-controls v153-zoom-controls">
-              <button onClick={() => setTileSize(Math.max(18, tileSize - 2))}>－</button>
-              <span>{tileSize}px</span>
-              <button onClick={() => setTileSize(Math.min(40, tileSize + 2))}>＋</button>
-            </div>
-          </div>
-
-          <div className="playfield-hud-v212">
-            <div className="playfield-hud-chip-v212"><span className="hud-icon-v212">💰</span><div><small>所持金</small><strong>{money.toLocaleString()}万円</strong></div></div>
-            <div className="playfield-hud-chip-v212"><span className="hud-icon-v212">{monthlyProfitIcon}</span><div><small>実質月収支</small><strong>{monthlyProfitSign}{actualMonthlyProfit.toLocaleString()}万円</strong></div></div>
-            <div className="playfield-hud-chip-v212"><span className="hud-icon-v212">👥</span><div><small>人口</small><strong>{totalPopulation.toLocaleString()}人</strong></div></div>
-            <div className="playfield-hud-chip-v212"><span className="hud-icon-v212">⚡</span><div><small>行動力</small><strong>{actionPoints}</strong></div></div>
-          </div>
-
-          <div className="playfield-selection-card-v212">
-            <div className="playfield-selection-icon-v212">{selectedTilePlaySummary.icon}</div>
-            <div className="playfield-selection-main-v212">
-              <h3>{selectedTilePlaySummary.title}</h3>
-              <p>{selectedTilePlaySummary.subtitle}</p>
-            </div>
-            <div className="playfield-selection-tags-v212">
-              {selectedTilePlaySummary.tags.map((tag) => <span key={tag}>{tag}</span>)}
-            </div>
-          </div>
-
-          <div className="legend">
-            <span>売=売り物件</span>
-            <span>自=自分の空地</span>
-            <span>□=大型建物</span>
-            <span>道/駅/学/工=建築不可</span>
-            <span>山/川/海=建築不可</span>
-          </div>
-
           <div
             ref={mapScrollRef}
-            className="map-scroll drag-scroll"
+            className="map-scroll drag-scroll" onScroll={showMapBottomNavTemporarily}
             onPointerDown={handleMapPointerDown}
             onPointerMove={handleMapPointerMove}
             onPointerUp={handleMapPointerUp}
@@ -27412,6 +29453,55 @@ return (
           </div>
         </section>
         )}
+
+        <nav className={`map-bottom-menu-v268 ${isMapBottomNavVisible ? "" : "auto-hidden-v272"}`} aria-label="マップ下部メニュー" onPointerDown={showMapBottomNavTemporarily} onTouchStart={showMapBottomNavTemporarily}>
+          <button type="button" disabled={!hqPlaced || officeTiles.length === 0} onClick={() => { focusNextPlayerOffice(); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); setIsMapEmployeeMenuOpen(false); }}>
+            <span className="map-bottom-menu-icon-v268">🏢</span><span>本社</span>
+          </button>
+          <button type="button" className={activePanel === "build" ? "active" : ""} onClick={() => { setBuildEntrySource("menu"); setPendingBuildKey(null); setActivePanel("build"); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); setIsMapEmployeeMenuOpen(false); }}>
+            <span className="map-bottom-menu-icon-v268">🏗</span><span>建設</span>
+          </button>
+          <div className="map-bottom-menu-item-wrap-v268">
+            <button type="button" className={`${isMapEmployeeMenuOpen || activePanel === "employee" || activePanel === "employeeRecruit" ? "active" : ""} ${getNagoyaTutorialGuideClass("employee-menu")}`} disabled={!hqPlaced} onClick={() => { setIsMapEmployeeMenuOpen((current) => !current); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); }}>
+              <span className="map-bottom-menu-icon-v268">👥</span><span>社員</span>
+            </button>
+            {isMapEmployeeMenuOpen && (
+              <div className="map-bottom-popup-v268 map-employee-popup-v268">
+                <button type="button" className={getNagoyaTutorialGuideClass("employee-recruit")} onClick={() => { setEmployeeRecruitReturnPanel(activePanel || "employee"); setShowTitleScreen(true); setTitleModal("recruitHome"); setTitleVaultDetailEmployee(null); setIsMapEmployeeMenuOpen(false); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); }}>📨 社員採用</button>
+                <button type="button" className={getNagoyaTutorialGuideClass("employee-assignment")} onClick={() => { setActivePanel("employee"); setIsMapEmployeeMenuOpen(false); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); }}>👥 社員配属</button>
+              </div>
+            )}
+          </div>
+          <button type="button" className={`${activePanel === "bank" ? "active" : ""} ${getNagoyaTutorialGuideClass("bank-menu")}`} disabled={!hqPlaced} onClick={() => { setActivePanel("bank"); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); setIsMapEmployeeMenuOpen(false); }}>
+            <span className="map-bottom-menu-icon-v268">🏦</span><span>銀行</span>
+          </button>
+          <div className="map-bottom-menu-item-wrap-v268">
+            <button type="button" className={isMapInfoMenuOpen || activePanel === "property" || activePanel === "info" ? "active" : ""} disabled={!hqPlaced} onClick={() => { setIsMapInfoMenuOpen((current) => !current); setIsMainMenuOpen(false); setIsMapEmployeeMenuOpen(false); }}>
+              <span className="map-bottom-menu-icon-v268">📋</span><span>情報</span>
+            </button>
+            {isMapInfoMenuOpen && (
+              <div className="map-bottom-popup-v268 map-info-popup-v268">
+                <button type="button" onClick={() => { setActivePanel("property"); setIsMapInfoMenuOpen(false); setIsMapEmployeeMenuOpen(false); }}>🏠 所有物件一覧</button>
+                <button type="button" onClick={() => { setActivePanel("info"); setIsMapInfoMenuOpen(false); }}>🏢 会社情報</button>
+              </div>
+            )}
+          </div>
+          <button type="button" disabled={!hqPlaced} className={`${shouldShowStoryTutorialNextMonthGuide() ? "story-next-month-guide" : ""} ${getNagoyaTutorialGuideClass("next-month")}`} onClick={() => { nextMonth(); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); setIsMapEmployeeMenuOpen(false); }}>
+            <span className="map-bottom-menu-icon-v268">⏭</span><span>翌月へ</span>
+          </button>
+          <div className="map-bottom-menu-item-wrap-v268">
+            <button type="button" className={isMainMenuOpen ? "active" : ""} disabled={!hqPlaced} onClick={() => { setIsMainMenuOpen((current) => !current); setIsMapInfoMenuOpen(false); setIsMapEmployeeMenuOpen(false); }}>
+              <span className="map-bottom-menu-icon-v268">☰</span><span>メニュー</span>
+            </button>
+            {isMainMenuOpen && (
+              <div className="map-bottom-popup-v268 map-system-popup-v268">
+                <button type="button" onClick={() => { setActivePanel("option"); setIsMainMenuOpen(false); }}>⚙️ オプション</button>
+                <button type="button" onClick={() => { setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); setIsMapEmployeeMenuOpen(false); resetCurrentMapToChapterStart(); }}>🔄 マップをやり直す</button>
+                <button type="button" onClick={() => { setShowTitleScreen(true); setTitleModal(null); setTitleVaultDetailEmployee(null); setActivePanel("home"); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); setIsMapEmployeeMenuOpen(false); }}>🏠 ホームメニューへ戻る</button>
+              </div>
+            )}
+          </div>
+        </nav>
 
         {(activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "employeeRecruit" || activePanel === "employeeLibrary") && (
   <section
@@ -27878,22 +29968,13 @@ return (
 
 
 {activePanel === "employeeRecruit" && (
-  <div className="detail-card employee-recruit-page-v220">
-    <div className="employee-recruit-page-header-v220">
-      <div>
-        <h2>社員採用</h2>
-        <p>ホームの社員採用と同じ履歴書・封筒演出で採用します。採用した社員は保管庫に入り、社員配置から本社・支店へ配属できます。</p>
-      </div>
+  <div className="employee-recruit-home-style-page-v27219">
+    <div className="employee-recruit-home-style-header-v27219">
+      <h2>社員採用</h2>
       <span>採用チケットで履歴書確認</span>
     </div>
 
-    <div className="employee-subnav-row">
-      <button type="button" onClick={() => setActivePanel("employee")}>社員配置</button>
-      <button type="button" className="active" onClick={() => setActivePanel("employeeRecruit")}>社員採用</button>
-      <button type="button" onClick={() => setActivePanel("employeeLibrary")}>社員名簿</button>
-    </div>
-
-    <div className="home-recruit-pass-grid-v2184 employee-recruit-pass-grid-v220">
+    <div className="home-recruit-pass-grid-v2184 employee-recruit-home-style-grid-v27219">
       {[
         ["rookie", rookieEmployeeTickets, "低確率・毎日用"],
         ["normal", employeeTickets, "URまで排出"],
@@ -27907,7 +29988,7 @@ return (
             type="button"
             className={`home-recruit-pass-button-v206 home-recruit-pass-button-v2184 ${brand.className}`}
             disabled={disabled}
-            onClick={() => startEmployeeRecruitmentByTicket(ticketType)}
+            onClick={() => startHomeEmployeeRecruitmentByTicket(ticketType, "map")}
             style={{
               border: `1px solid ${brand.borderColor}`,
               background: brand.buttonGradient,
@@ -27917,28 +29998,22 @@ return (
           >
             <span className="home-recruit-pass-icon-v2184">{brand.icon}</span>
             <strong>{brand.menuName}</strong>
-            <small>{description}</small>
             <em>{ticketCount}枚</em>
           </button>
         );
       })}
     </div>
 
-    <div className="home-recruit-odds-compact-v2184 employee-recruit-odds-v220">
+    <div className="home-recruit-odds-compact-v2184 employee-recruit-home-style-odds-v27219">
       <span><strong>{getRecruitmentMenuName("rookie")}:</strong> {getTicketOddsText("rookie")}</span>
       <span><strong>{getRecruitmentMenuName("normal")}:</strong> {getTicketOddsText("normal")}</span>
       <span><strong>{getRecruitmentMenuName("premium")}:</strong> {getTicketOddsText("premium")}</span>
     </div>
 
-    {isDemoMode && (
-      <div className="button-row ticket-button-row employee-recruit-demo-row-v220">
-        <button onClick={addRookieEmployeeTicketForDemo}>社員採用券+1</button>
-        <button onClick={addEmployeeTicketForDemo}>採用券+1</button>
-        <button onClick={addPremiumEmployeeTicketForDemo}>プラチナ採用券+1</button>
-      </div>
-    )}
+    <button type="button" className="employee-recruit-home-style-close-v27219" onClick={() => setActivePanel(employeeRecruitReturnPanel || "employee")}>閉じる</button>
   </div>
 )}
+
 
 {activePanel === "employeeLibrary" && (
   <div className="detail-card employee-library-panel">
