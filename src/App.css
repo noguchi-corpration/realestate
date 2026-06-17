@@ -9774,3 +9774,128 @@ th, td {
   from { transform: scale(1); }
   to { transform: scale(1.05); }
 }
+/* ===== v304.25 スマホ縦：マップ上部HUD 6項目1行固定 ===== */
+@media (max-width: 600px) and (orientation: portrait) {
+  html body .map-top-hud-v268 {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 2px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 4px 3px !important;
+    margin: 0 0 3px !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body .map-top-hud-v268 > button.map-top-hud-chip-v268 {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    min-width: 0 !important;
+    padding: 0 2px !important;
+    gap: 0 !important;
+    border-radius: 999px !important;
+    font-size: 10px !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body .map-top-hud-v268 > button.map-top-hud-chip-v268:nth-of-type(1) { flex: 0 0 50px !important; }
+  html body .map-top-hud-v268 > button.map-top-hud-chip-v268:nth-of-type(2) { flex: 0 0 70px !important; }
+  html body .map-top-hud-v268 > button.map-top-hud-chip-v268:nth-of-type(3) { flex: 0 0 60px !important; }
+  html body .map-top-hud-v268 > button.map-top-hud-chip-v268:nth-of-type(4) { flex: 0 1 78px !important; }
+  html body .map-top-hud-v268 > button.map-top-hud-chip-v268:nth-of-type(5) { flex: 0 1 58px !important; }
+  html body .map-top-hud-v268 > button.map-top-hud-chip-v268:nth-of-type(6) { flex: 0 0 28px !important; }
+
+  html body .map-top-hud-v268 > button.map-top-hud-chip-v268 > span {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+  }
+
+  html body .map-top-hud-v268 > button.map-top-hud-chip-v268 > strong {
+    display: inline-block !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 9.5px !important;
+    line-height: 1 !important;
+    letter-spacing: -0.08em !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+  }
+
+  html body .map-top-hud-v268 > button.monthly-profit-chip-v303 > span {
+    display: none !important;
+  }
+
+  html body .map-top-hud-v268 > button.zoom-chip-v269 {
+    flex: 0 0 28px !important;
+    width: 28px !important;
+    min-width: 28px !important;
+    max-width: 28px !important;
+    padding: 0 !important;
+  }
+
+  html body .map-top-hud-v268 > button.zoom-chip-v269 > span {
+    display: inline-flex !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+  }
+
+  html body .map-top-hud-v268 .map-view-dropdown-hud-v270 {
+    position: absolute !important;
+    top: 42px !important;
+    left: 4px !important;
+    right: 4px !important;
+    z-index: 9500 !important;
+  }
+}
+.side-section.floating-panel.floating-panel-land {
+  gap: 4px !important;
+  padding: 8px !important;
+}
+
+.side-section.floating-panel.floating-panel-land .smart-chip-row.status-chip-row {
+  gap: 4px !important;
+  margin: 2px 0 4px !important;
+}
+
+.side-section.floating-panel.floating-panel-land button {
+  min-height: 30px !important;
+  height: 30px !important;
+  padding: 0 10px !important;
+  font-size: 11px !important;
+  line-height: 1.1 !important;
+}
+
+.side-section.floating-panel.floating-panel-land .smart-chip {
+  height: 28px !important;
+  min-height: 28px !important;
+  max-height: 28px !important;
+  padding: 0 9px !important;
+  font-size: 10.5px !important;
+}
+.side-section.floating-panel.floating-panel-land .land-detail-card,
+.side-section.floating-panel.floating-panel-land .property-detail-card,
+.side-section.floating-panel.floating-panel-land .detail-card {
+  margin-top: 4px !important;
+}
