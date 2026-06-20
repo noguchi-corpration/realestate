@@ -9894,8 +9894,58 @@ th, td {
   padding: 0 9px !important;
   font-size: 10.5px !important;
 }
-.side-section.floating-panel.floating-panel-land .land-detail-card,
-.side-section.floating-panel.floating-panel-land .property-detail-card,
-.side-section.floating-panel.floating-panel-land .detail-card {
-  margin-top: 4px !important;
+
+
+/* v310.20: 建設メニュー下スクロール強制修正（外部CSS保険） */
+@media (max-width: 760px) and (orientation: portrait) {
+  html body .app section.side-section.floating-panel.floating-panel-build,
+  html body section.side-section.floating-panel.floating-panel-build,
+  html body .side-section.floating-panel.floating-panel-build {
+    position: fixed !important;
+    left: 4px !important;
+    right: 4px !important;
+    top: 74px !important;
+    bottom: calc(116px + env(safe-area-inset-bottom, 0px)) !important;
+    width: auto !important;
+    max-width: none !important;
+    height: calc(100dvh - 190px - env(safe-area-inset-bottom, 0px)) !important;
+    min-height: 260px !important;
+    max-height: none !important;
+    overflow-x: hidden !important;
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: contain !important;
+    touch-action: pan-y !important;
+    resize: none !important;
+    display: block !important;
+    box-sizing: border-box !important;
+    z-index: 12000 !important;
+  }
+  html body .side-section.floating-panel.floating-panel-build .floating-panel-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 80 !important;
+    flex: none !important;
+    touch-action: pan-y !important;
+  }
+  html body .side-section.floating-panel.floating-panel-build .floating-panel-resize-handle {
+    display: none !important;
+  }
+  html body .side-section.floating-panel.floating-panel-build .build-game-menu-v314,
+  html body .side-section.floating-panel.floating-panel-build .build-panel-v312,
+  html body .side-section.floating-panel.floating-panel-build .build-pop-card,
+  html body .side-section.floating-panel.floating-panel-build .build-pop-card-v311 {
+    display: grid !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    touch-action: pan-y !important;
+    padding-bottom: calc(160px + env(safe-area-inset-bottom, 0px)) !important;
+    box-sizing: border-box !important;
+  }
+  html body .side-section.floating-panel.floating-panel-build button,
+  html body .side-section.floating-panel.floating-panel-build * {
+    touch-action: pan-y !important;
+  }
 }

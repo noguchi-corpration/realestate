@@ -19,9 +19,10 @@ const MAP_SIZE = 70;
 
 const FREE_MAP_OPTIONS = [
   { key: "free_15", label: "岐阜 15×15", size: 15, description: "軽量。スマホ確認向けの小型マップ。" },
-  { key: "free_30", label: "名古屋 30×30", size: 30, description: "標準。スマホでも遊びやすい広さ。" },
-  { key: "free_50", label: "中京圏域 50×50", size: 50, description: "中規模。広めに開発したい方向け。" },
-  { key: "free_70", label: "首都圏 70×70", size: 70, description: "最大規模。長期プレイ向け。" },
+  { key: "free_30", label: "名古屋 30×30", size: 30, description: "岐阜編クリア後に解放。標準サイズの名古屋マップ。" },
+  { key: "free_kyoto", label: "京都 30×30", size: 30, description: "京都編クリア後に解放。観光需要と固定観光地がある30×30マップ。", unlockAfterKyoto: true },
+  { key: "free_50", label: "中京圏域 50×50", size: 50, description: "名古屋編クリア後に解放。広めに開発したい方向け。" },
+  { key: "free_70", label: "首都圏 70×70", size: 70, description: "東京編クリア後に解放予定。最大規模の長期プレイ向けマップ。" },
 ];
 
 function normalizeFreeModeKey(mode) {
@@ -47,6 +48,7 @@ function getGameAreaLabel(mode, freeMapKey = null) {
   if (mode === "story_tutorial") return "創業チュートリアル";
   if (mode === "story_gifu" || mode === "story") return "岐阜編";
   if (mode === "story_nagoya" || mode === "story_nagoya_bridge") return "名古屋編";
+  if (mode === "story_kyoto") return "京都編";
   if (mode === "story_cleared") return "第1部クリア後";
   return "未所属";
 }
@@ -64,7 +66,7 @@ function getFreeModeSaveKey(slot, mapKey) {
 const SAVE_SLOT_COUNT = 3;
 const DEFAULT_COMPANY_NAME = "箱庭不動産";
 const DEFAULT_SAVE_SLOT = 1;
-const GAME_VERSION = "v307.2";
+const GAME_VERSION = "v310.21";
 // v244 roadmap: 七瀬レベル帯会話 / イベント会話 / 資産到達会話 / 支店到達会話 / 社員人数会話
 // v245 roadmap: 宅建講座 / 不動産投資講座 / 建築講座 / 税金講座 / 続き付き知識会話強化
 // v247: 七瀬レベル帯・資産/支店/社員イベント会話・知識会話実装版
@@ -141,12 +143,18 @@ const GAME_VERSION = "v307.2";
 // v280: 本社Lv/進行/資産ポップアップのヘッダー高さ縮小・閉じるボタン小型横長化
 // v275.2: フリーモード初期化を創業メンバー選択まで戻す・続きから/最初から分離版
 // v276: 人口ボタンの表示切替復活・本社Lv詳細ポップアップ追加版
+// v310.5: 建設パネル高さを内容条件別に固定・HUD詳細をインライン絶対配置化
+// v310.6: HUD詳細を1行HUD外の吹き出し表示へ移動・建設パネル高さ再圧縮
 const BASE_EMPLOYEE_SALARY = 15;
 const EMPLOYEE_SALARY_GROWTH_RATE = 1.05;
 const GIFU_CLEAR_BUILDING_COUNT = 3;
 const NAGOYA_CLEAR_MONTHLY_PROFIT = 50;
+const KYOTO_TUTORIAL_TOURISM_BUILDING_COUNT = 3;
+const KYOTO_FINAL_TOURISM_BUILDING_COUNT = 5;
+const KYOTO_FINAL_NET_WORTH = 50000;
+const KYOTO_RIVAL_COMPANY_NAME = "古都観光開発";
 const ACCOUNT_DATA_KEY = "realEstateGameAccountData_v1";
-const DEV_DEMO_SHEET_GRANT_AMOUNT = 1000;
+const DEV_DEMO_SHEET_GRANT_AMOUNT = 0;
 const DEV_DEMO_SHEET_GRANT_KEY = "devDemoSheetsGranted_v299";
 const OFFICE_EMPLOYEE_ASSIGN_LIMIT = 999;
 const HQ_BRANCH_UNLOCK_LEVEL = 3;
@@ -180,7 +188,7 @@ function getNewSpecialMissionUnlocks(beforeRank = 1, afterRank = 1) {
 }
 
 const QUALIFICATION_CANONICAL_NAME_BY_KEY = {
-  takken: "宅地建物取引士",
+  takken: "宅建士",
   architect_1st: "一級建築士",
   rental_manager: "賃貸不動産経営管理士",
   mba: "MBA",
@@ -266,7 +274,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     cost: 20,
     durationMinutes: 30,
     targetPower: 80,
-    expReward: 30,
+    expReward: 100,
     rewards: { rookieEmployeeTickets: 1, silverSheets: 5 },
   },
   {
@@ -282,7 +290,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     cost: 20,
     durationMinutes: 30,
     targetPower: 80,
-    expReward: 30,
+    expReward: 200,
     rewards: { rookieEmployeeTickets: 1, silverSheets: 5 },
   },
   {
@@ -298,7 +306,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     cost: 20,
     durationMinutes: 30,
     targetPower: 80,
-    expReward: 30,
+    expReward: 300,
     rewards: { rookieEmployeeTickets: 1, silverSheets: 5 },
   },
   {
@@ -314,7 +322,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     cost: 45,
     durationMinutes: 60,
     targetPower: 170,
-    expReward: 70,
+    expReward: 400,
     rewards: { employeeTickets: 1, silverSheets: 15 },
   },
   {
@@ -330,7 +338,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     cost: 65,
     durationMinutes: 90,
     targetPower: 240,
-    expReward: 95,
+    expReward: 500,
     rewards: { employeeTickets: 1, goldSheets: 1 },
   },
   {
@@ -346,7 +354,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     cost: 90,
     durationMinutes: 120,
     targetPower: 340,
-    expReward: 140,
+    expReward: 650,
     rewards: { premiumEmployeeTickets: 1, goldSheets: 2 },
   },
   {
@@ -362,7 +370,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     cost: 150,
     durationMinutes: 240,
     targetPower: 520,
-    expReward: 220,
+    expReward: 1000,
     rewards: { premiumEmployeeTickets: 1, goldSheets: 3, rainbowSheets: 1 },
   },
 ];
@@ -389,6 +397,7 @@ function getSpecialMissionAreaKeyFromMode(mode, freeMapKey = null) {
   if (mode === "story_tutorial") return "tutorial";
   if (mode === "story_gifu" || mode === "story") return "gifu";
   if (mode === "story_nagoya" || mode === "story_nagoya_bridge") return "nagoya";
+  if (mode === "story_kyoto") return "kyoto";
   if (mode === "story_cleared") return "cleared";
   if (isFreeModeKey(mode) || freeMapKey) return normalizeFreeModeKey(freeMapKey || mode);
   return "unknown";
@@ -418,12 +427,17 @@ function getSpecialMissionUnlockLevel(mission) {
   return Math.max(1, Math.round(Number(mission?.unlockHqLevel ?? mission?.unlockRank ?? 1) || 1));
 }
 
+function getSharedRequiredExp(level = 1) {
+  const currentLevel = Math.max(1, Math.round(Number(level) || 1));
+  return Math.round(100 * Math.pow(1.1, currentLevel - 1));
+}
+
 function calculateHeadquarterLevelFromTotalExp(totalExp = 0) {
   let level = 1;
   let exp = Math.max(0, Math.round(Number(totalExp) || 0));
 
-  while (level < 20 && exp >= getPlayerRequiredExp(level)) {
-    exp -= getPlayerRequiredExp(level);
+  while (level < 20 && exp >= getSharedRequiredExp(level)) {
+    exp -= getSharedRequiredExp(level);
     level += 1;
   }
 
@@ -1394,6 +1408,81 @@ const NAGOYA_PROLOGUE_SCENES = [
   },
 ];
 
+const KYOTO_PROLOGUE_BACKGROUND = "/backgrounds/city_kyoto.png";
+const KYOTO_PROLOGUE_SCENES = [
+  {
+    background: KYOTO_PROLOGUE_BACKGROUND,
+    speaker: "七瀬 灯里",
+    portrait: "happy",
+    text: "わあ……ここが京都なんですね。修学旅行以来かもしれません。",
+  },
+  {
+    background: KYOTO_PROLOGUE_BACKGROUND,
+    speaker: "七瀬 灯里",
+    portrait: "normal",
+    text: "京都って観光地のイメージが強いですよね。お寺や神社、昔ながらの街並みもあって、名古屋とはまた違う雰囲気です。",
+  },
+  {
+    background: KYOTO_PROLOGUE_BACKGROUND,
+    speaker: "七瀬 灯里",
+    portrait: "serious",
+    text: "でも、不動産会社として見ると、どんなところに注目すればいいんでしょうか？",
+  },
+  {
+    background: KYOTO_PROLOGUE_BACKGROUND,
+    speaker: "社長",
+    portrait: "normal",
+    text: "観光需要だな。京都では住宅や商業だけでなく、観光施設そのものにも価値がある。",
+  },
+  {
+    background: KYOTO_PROLOGUE_BACKGROUND,
+    speaker: "七瀬 灯里",
+    portrait: "surprise",
+    text: "観光需要……。観光地として有名なのは知っていましたけど、経営の視点で見ると全然違って見えますね。",
+  },
+  {
+    background: KYOTO_PROLOGUE_BACKGROUND,
+    speaker: "七瀬 灯里",
+    portrait: "happy",
+    text: "旅館やホテル、お土産店、温泉施設……。観光施設も活用しながら、会社も街も発展させていくんですね！",
+  },
+  {
+    background: KYOTO_PROLOGUE_BACKGROUND,
+    speaker: "七瀬 灯里",
+    portrait: "serious",
+    text: "第3章、京都編。まずは観光施設を3棟建設して、京都ならではの経営を学んでいきましょう！",
+  },
+];
+
+const STORY_KYOTO_EVENTS = {
+  TUTORIAL_CLEAR: {
+    background: KYOTO_PROLOGUE_BACKGROUND,
+    portrait: "happy",
+    title: "京都編：観光経営の基本",
+    text: "社長、観光施設を3棟建設できました！\n\n観光需要を見ながら建てる場所を選ぶと、同じ土地でも見え方が変わりますね。\n\nここからは京都での本格経営です。ライバル会社『古都観光開発』に負けないよう、今建てた施設を活かして会社も街も発展させていきましょう！",
+  },
+  CLEAR: {
+    background: KYOTO_PROLOGUE_BACKGROUND,
+    portrait: "happy",
+    title: "京都編クリア",
+    text: "社長、京都での本格目標を達成しました！\n\n観光施設を軸にしながら、会社の資産も大きく伸ばせましたね。\n\n京都で学んだ観光経営は、きっと次の大阪展開でも役に立つと思います。\n\n次はいよいよ大阪方面への展開ですね！",
+  },
+};
+
+function getStoryKyotoGoalText(isTutorialPhase = true) {
+  if (isTutorialPhase) {
+    return `観光施設を${KYOTO_TUTORIAL_TOURISM_BUILDING_COUNT.toLocaleString()}棟建設しましょう。`;
+  }
+  return `観光施設${KYOTO_FINAL_TOURISM_BUILDING_COUNT.toLocaleString()}棟以上・純資産${Math.round(KYOTO_FINAL_NET_WORTH / 10000).toLocaleString()}億円以上を目指しましょう。`;
+}
+
+function getStoryKyotoAdviceText(isTutorialPhase = true) {
+  if (isTutorialPhase) {
+    return "京都編では観光需要が重要です。土地情報や人口ボタンの需要マップで観光需要を確認しながら、土産物店・旅館・ビジネスホテル・温泉施設を建てていきましょう。";
+  }
+  return `ここからは京都編本編です。チュートリアルで建てた観光施設はそのまま引き継がれています。ライバル会社『${KYOTO_RIVAL_COMPANY_NAME}』を意識しながら、観光施設と資産規模を伸ばしていきましょう。`;
+}
+
 function getStoryNagoyaGoalText(step) {
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.LOAN_CONSULT) return "銀行で融資相談を行いましょう。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_CONSULT) return "翌月へ進めて、融資相談結果を待ちましょう。";
@@ -1864,6 +1953,11 @@ function createGifuStoryMap() {
     }
   }
 
+  placeStoryRivalOffice(tiles, "A", "岐阜まちづくり不動産", [
+    { x: 12, y: 12 },
+    { x: 2, y: 12 },
+  ]);
+
   return {
     tiles: recalculateTileZonesByFacilities(tiles),
     stationX,
@@ -2226,6 +2320,12 @@ function createNagoyaStoryMap(gifuSourceTiles = []) {
     placeCompletedBuilding(entry.x, entry.y, entry.building, entry.owner, entry.rent, entry.age, entry.condition);
   });
 
+  placeStoryRivalOffice(tiles, "B", "中京圏開発", [
+    { x: 23, y: 22 },
+    { x: 19, y: 17 },
+    { x: 25, y: 12 },
+  ]);
+
   return {
     tiles: recalculateTileZonesByFacilities(tiles),
     stationX,
@@ -2274,12 +2374,16 @@ function getDefaultAccountData() {
     playerExp: 0,
     employeeVault: [],
     unlockedStoryAkari: false,
+    hasClearedGifuChapter: false,
+    hasClearedNagoyaChapter: false,
+    hasClearedKyotoChapter: false,
+    hasCompletedKyotoTourismTutorial: false,
     rookieEmployeeTickets: 0,
     employeeTickets: 0,
     premiumEmployeeTickets: 0,
-    silverSheets: DEV_DEMO_SHEET_GRANT_AMOUNT,
-    goldSheets: DEV_DEMO_SHEET_GRANT_AMOUNT,
-    rainbowSheets: DEV_DEMO_SHEET_GRANT_AMOUNT,
+    silverSheets: 0,
+    goldSheets: 0,
+    rainbowSheets: 0,
     specialMissionData: null,
     items: {},
     usedSecretCommands: {},
@@ -2300,12 +2404,16 @@ function normalizeAccountData(rawAccountData) {
     playerExp: Math.max(0, Math.round(Number(parsedAccountData.playerExp) || 0)),
     employeeVault: Array.isArray(parsedAccountData.employeeVault) ? parsedAccountData.employeeVault : [],
     unlockedStoryAkari: parsedAccountData.unlockedStoryAkari === true,
+    hasClearedGifuChapter: parsedAccountData.hasClearedGifuChapter === true,
+    hasClearedNagoyaChapter: parsedAccountData.hasClearedNagoyaChapter === true,
+    hasClearedKyotoChapter: parsedAccountData.hasClearedKyotoChapter === true,
+    hasCompletedKyotoTourismTutorial: parsedAccountData.hasCompletedKyotoTourismTutorial === true,
     rookieEmployeeTickets: Math.max(0, Math.round(Number(parsedAccountData.rookieEmployeeTickets) || 0)),
     employeeTickets: Math.max(0, Math.round(Number(parsedAccountData.employeeTickets ?? 0) || 0)),
     premiumEmployeeTickets: Math.max(0, Math.round(Number(parsedAccountData.premiumEmployeeTickets) || 0)),
-    silverSheets: demoSheetsGranted ? safeSilverSheets : Math.max(safeSilverSheets, DEV_DEMO_SHEET_GRANT_AMOUNT),
-    goldSheets: demoSheetsGranted ? safeGoldSheets : Math.max(safeGoldSheets, DEV_DEMO_SHEET_GRANT_AMOUNT),
-    rainbowSheets: demoSheetsGranted ? safeRainbowSheets : Math.max(safeRainbowSheets, DEV_DEMO_SHEET_GRANT_AMOUNT),
+    silverSheets: safeSilverSheets,
+    goldSheets: safeGoldSheets,
+    rainbowSheets: safeRainbowSheets,
     specialMissionData: parsedAccountData.specialMissionData && typeof parsedAccountData.specialMissionData === "object" ? parsedAccountData.specialMissionData : null,
     items: parsedAccountData.items && typeof parsedAccountData.items === "object" ? Object.fromEntries(Object.entries(parsedAccountData.items).map(([key, value]) => [key, Math.max(0, Math.round(Number(value) || 0))])) : {},
     usedSecretCommands: parsedAccountData.usedSecretCommands && typeof parsedAccountData.usedSecretCommands === "object" ? parsedAccountData.usedSecretCommands : {},
@@ -2577,12 +2685,23 @@ function mergeAccountDataWithGame(accountData, gameData = {}) {
     employeeVault,
     unlockedStoryAkari: accountData?.unlockedStoryAkari === true ||
       employeeVault.some((employee) => employee.id === 122) ||
-      gameData.hasClearedNagoyaChapter === true,
+      gameData.hasClearedGifuChapter === true ||
+      gameData.hasClearedNagoyaChapter === true ||
+      gameData.hasClearedKyotoChapter === true,
+    hasClearedGifuChapter: accountData?.hasClearedGifuChapter === true || gameData.hasClearedGifuChapter === true,
+    hasClearedNagoyaChapter: accountData?.hasClearedNagoyaChapter === true || gameData.hasClearedNagoyaChapter === true,
+    hasClearedKyotoChapter: accountData?.hasClearedKyotoChapter === true || gameData.hasClearedKyotoChapter === true,
+    hasCompletedKyotoTourismTutorial: accountData?.hasCompletedKyotoTourismTutorial === true || gameData.hasCompletedKyotoTourismTutorial === true,
     rookieEmployeeTickets: Math.max(0, Math.round(Number(gameData.rookieEmployeeTickets ?? currentTickets.rookieEmployeeTickets) || 0)),
     employeeTickets: Math.max(0, Math.round(Number(gameData.employeeTickets ?? currentTickets.employeeTickets) || 0)),
     premiumEmployeeTickets: Math.max(0, Math.round(Number(gameData.premiumEmployeeTickets ?? currentTickets.premiumEmployeeTickets) || 0)),
     silverSheets: Math.max(0, Math.round(Number(accountData?.silverSheets ?? accountData?.silverSheet ?? 0) || 0)),
     goldSheets: Math.max(0, Math.round(Number(accountData?.goldSheets ?? accountData?.goldSheet ?? 0) || 0)),
+    rainbowSheets: Math.max(0, Math.round(Number(accountData?.rainbowSheets ?? accountData?.rainbowSheet ?? 0) || 0)),
+    specialMissionData: accountData?.specialMissionData && typeof accountData.specialMissionData === "object" ? accountData.specialMissionData : null,
+    items: accountData?.items && typeof accountData.items === "object" ? Object.fromEntries(Object.entries(accountData.items).map(([key, value]) => [key, Math.max(0, Math.round(Number(value) || 0))])) : {},
+    usedSecretCommands: accountData?.usedSecretCommands && typeof accountData.usedSecretCommands === "object" ? accountData.usedSecretCommands : {},
+    [DEV_DEMO_SHEET_GRANT_KEY]: true,
     updatedAt: new Date().toISOString(),
   };
 }
@@ -3154,6 +3273,66 @@ const BUILDINGS = {
     height: 2,
     allowedTenants: ["SHOP"],
   },
+
+  souvenir_shop: {
+    category: "観光",
+    structure: "木造",
+    lifeYears: 22,
+    name: "土産物店",
+    short: "土産",
+    cost: 4500,
+    baseRent: 42,
+    rooms: 1,
+    buildMonths: 3,
+    width: 1,
+    height: 1,
+    allowedTenants: ["SHOP"],
+  },
+
+  ryokan: {
+    category: "観光",
+    structure: "木造",
+    lifeYears: 22,
+    name: "旅館",
+    short: "旅",
+    cost: 14000,
+    baseRent: 90,
+    rooms: 2,
+    buildMonths: 6,
+    width: 1,
+    height: 2,
+    allowedTenants: ["SHOP"],
+  },
+
+  business_hotel: {
+    category: "観光",
+    structure: "RC造",
+    lifeYears: 47,
+    name: "ビジネスホテル",
+    short: "BH",
+    cost: 32000,
+    baseRent: 180,
+    rooms: 2,
+    buildMonths: 10,
+    width: 2,
+    height: 2,
+    allowedTenants: ["SHOP"],
+  },
+
+  hot_spring: {
+    category: "観光",
+    structure: "RC造",
+    lifeYears: 47,
+    name: "温泉施設",
+    short: "温",
+    cost: 42000,
+    baseRent: 240,
+    rooms: 2,
+    buildMonths: 12,
+    width: 2,
+    height: 2,
+    allowedTenants: ["SHOP"],
+  },
    hq_apartment: {
     category: "本社",
     structure: "RC造",
@@ -3354,6 +3533,7 @@ const BUILDING_CATEGORIES = [
   "住宅",
   "商業",
   "工業",
+  "観光",
 ];
 
 const SPECIAL_SKILLS = {
@@ -11876,7 +12056,273 @@ function isTileNearRoadOrRail(tile, tiles) {
   });
 }
 
+
+
+function placeStoryRivalOffice(tiles, companyId = "A", companyName = "ライバル不動産", preferredPositions = []) {
+  if (!Array.isArray(tiles) || tiles.length === 0) return;
+  const preferredKeys = new Set(preferredPositions.map((pos) => `${pos.x},${pos.y}`));
+  const preferredCandidates = tiles.filter((tile) => {
+    return preferredKeys.has(`${tile.x},${tile.y}`) &&
+      tile.terrain === TERRAIN.PLAIN &&
+      tile.feature === FEATURE.NONE &&
+      !tile.rail &&
+      !tile.building &&
+      !tile.buildingMainId &&
+      tile.owner !== OWNER.PLAYER &&
+      tile.owner !== OWNER.PUBLIC;
+  });
+  const fallbackCandidates = tiles.filter((tile) => {
+    return tile.terrain === TERRAIN.PLAIN &&
+      tile.feature === FEATURE.NONE &&
+      !tile.rail &&
+      !tile.building &&
+      !tile.buildingMainId &&
+      tile.owner === OWNER.SALE;
+  });
+  const candidatePool = preferredCandidates.length > 0 ? preferredCandidates : fallbackCandidates;
+  const rivalOfficeTile = candidatePool[0];
+  if (!rivalOfficeTile) return;
+  const company = getRivalCompany(companyId);
+  const rivalEmployee = {
+    ...pickRivalInitialEmployee("rookie"),
+    officeId: `rival_${company.id}_hq`,
+  };
+  rivalOfficeTile.owner = OWNER.RIVAL;
+  rivalOfficeTile.feature = FEATURE.HQ;
+  rivalOfficeTile.building = null;
+  rivalOfficeTile.buildingMainId = null;
+  rivalOfficeTile.rooms = [];
+  rivalOfficeTile.rivalCompanyId = company.id;
+  rivalOfficeTile.rivalCompanyName = companyName || company.name;
+  rivalOfficeTile.rivalOfficeName = `${rivalOfficeTile.rivalCompanyName} 本社`;
+  rivalOfficeTile.rivalEmployees = [rivalEmployee];
+  rivalOfficeTile.rivalMoney = company.initialMoney;
+}
+
+function createKyotoStoryMap() {
+  const size = 30;
+  const stationX = 14;
+  const stationY = 24;
+  const stationPositions = [{ x: stationX, y: stationY, name: "京都駅" }];
+  const schoolPositions = [
+    { x: 10, y: 15, name: "中央の学校" },
+    { x: 20, y: 12, name: "東山の学校" },
+  ];
+  const factoryPositions = [];
+  const roadSet = new Set();
+  const railSet = new Set();
+  const riverSet = new Set();
+  const mountainSet = new Set();
+  const fixedTourismSet = new Map();
+  const fixedBuildings = new Map();
+  const tiles = [];
+
+  function addRoad(x, y) { if (x >= 0 && x < size && y >= 0 && y < size) roadSet.add(`${x},${y}`); }
+  function addRail(x, y) { if (x >= 0 && x < size && y >= 0 && y < size) railSet.add(`${x},${y}`); }
+  function addRiver(x, y) { if (x >= 0 && x < size && y >= 0 && y < size) riverSet.add(`${x},${y}`); }
+  function addMountain(x, y) { if (x >= 0 && x < size && y >= 0 && y < size) mountainSet.add(`${x},${y}`); }
+  function addFixedTourism(x, y, label, building = "souvenir_shop") {
+    fixedTourismSet.set(`${x},${y}`, { label, building });
+  }
+  function addFixedBuilding(x, y, data) { fixedBuildings.set(`${x},${y}`, data); }
+
+  for (let x = 0; x < size; x++) addRail(x, stationY);
+  for (let y = 21; y <= 27; y++) addRail(stationX, y);
+
+  [7, 14, 22].forEach((x) => { for (let y = 5; y < size; y++) addRoad(x, y); });
+  [10, 16, 23, 26].forEach((y) => { for (let x = 2; x < size - 2; x++) addRoad(x, y); });
+
+  for (let y = 5; y < size; y++) {
+    const curveX = 5 + Math.round(Math.sin(y * 0.45) * 1.5);
+    addRiver(curveX, y);
+    if (y % 4 === 0) addRiver(curveX + 1, y);
+  }
+
+  for (let y = 0; y <= 5; y++) {
+    for (let x = 0; x < size; x++) {
+      if (y <= 3 || x < 4 || x > 25 || (x + y) % 3 === 0) addMountain(x, y);
+    }
+  }
+  for (let y = 6; y <= 12; y++) {
+    for (let x = 0; x <= 3; x++) addMountain(x, y);
+    for (let x = 26; x < size; x++) addMountain(x, y);
+  }
+
+  addFixedTourism(4, 13, "竹林公園", "ryokan");
+  addFixedTourism(7, 7, "渓流温泉地", "hot_spring");
+  addFixedTourism(22, 9, "黄金寺院", "souvenir_shop");
+  addFixedTourism(25, 15, "千本鳥居神社", "souvenir_shop");
+  addFixedTourism(20, 18, "歴史庭園", "ryokan");
+
+  addFixedBuilding(12, 24, { owner: OWNER.SALE, building: null, landPrice: 420 });
+  addFixedBuilding(16, 23, { owner: OWNER.SALE, building: null, landPrice: 440 });
+  addFixedBuilding(10, 22, { owner: OWNER.OTHER, building: "small_shop", rent: 105, age: 7, condition: 82, landPrice: 390 });
+  addFixedBuilding(18, 25, { owner: OWNER.OTHER, building: "convenience", rent: 115, age: 5, condition: 86, landPrice: 410 });
+  addFixedBuilding(8, 18, { owner: OWNER.SALE, building: null, landPrice: 320 });
+  addFixedBuilding(23, 17, { owner: OWNER.SALE, building: null, landPrice: 340 });
+  addFixedBuilding(4, 16, { owner: OWNER.SALE, building: null, landPrice: 260 });
+  addFixedBuilding(6, 12, { owner: OWNER.OTHER, building: "ryokan", rent: 120, age: 16, condition: 74, landPrice: 330 });
+  addFixedBuilding(21, 20, { owner: OWNER.OTHER, building: "souvenir_shop", rent: 72, age: 10, condition: 80, landPrice: 300 });
+
+  function getKyotoZone(x, y) {
+    if (getDistance(x, y, stationX, stationY) <= 4) return ZONE.COMMERCIAL;
+    if (x >= 20 && y >= 7 && y <= 20) return ZONE.COMMERCIAL;
+    if (x <= 8 && y >= 10 && y <= 18) return ZONE.COMMERCIAL;
+    if (y >= 12 && y <= 22) return ZONE.RESIDENTIAL;
+    return ZONE.GENERAL;
+  }
+
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const key = `${x},${y}`;
+      const rail = railSet.has(key);
+      let terrain = TERRAIN.PLAIN;
+      let feature = FEATURE.NONE;
+      let owner = OWNER.OTHER;
+      let building = null;
+      let rooms = [];
+      let age = 0;
+      let condition = 100;
+      let zone = getKyotoZone(x, y);
+      let landPrice = 170 + Math.max(0, 12 - getDistance(x, y, stationX, stationY)) * 18;
+      const fixedTourism = fixedTourismSet.get(key);
+      const fixed = fixedBuildings.get(key);
+
+      if (mountainSet.has(key)) {
+        terrain = TERRAIN.MOUNTAIN;
+        owner = OWNER.PUBLIC;
+        landPrice = 80;
+      }
+
+      if (riverSet.has(key)) {
+        terrain = TERRAIN.RIVER;
+        owner = OWNER.PUBLIC;
+        landPrice = 70;
+      }
+
+      if (fixed) {
+        owner = fixed.owner;
+        building = fixed.building;
+        age = fixed.age ?? 0;
+        condition = fixed.condition ?? 100;
+        landPrice = fixed.landPrice ?? landPrice;
+        rooms = building ? createRooms(building, fixed.rent ?? 80, 0) : [];
+      }
+
+      if (roadSet.has(key)) {
+        feature = FEATURE.ROAD;
+        owner = OWNER.PUBLIC;
+        building = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
+        terrain = TERRAIN.PLAIN;
+        landPrice += 35;
+      }
+
+      if (rail) {
+        feature = FEATURE.NONE;
+        owner = OWNER.PUBLIC;
+        building = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
+        terrain = TERRAIN.PLAIN;
+      }
+
+      if (x === stationX && y === stationY) {
+        feature = FEATURE.STATION;
+        owner = OWNER.PUBLIC;
+        building = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
+        terrain = TERRAIN.PLAIN;
+        landPrice += 260;
+        zone = ZONE.COMMERCIAL;
+      }
+
+      const school = schoolPositions.find((point) => point.x === x && point.y === y);
+      if (school) {
+        feature = FEATURE.SCHOOL;
+        owner = OWNER.PUBLIC;
+        building = null;
+        rooms = [];
+        age = 0;
+        condition = 100;
+        terrain = TERRAIN.PLAIN;
+        landPrice += 70;
+        zone = ZONE.RESIDENTIAL;
+      }
+
+      if (fixedTourism) {
+        owner = OWNER.PUBLIC;
+        building = fixedTourism.building;
+        rooms = createRooms(fixedTourism.building, 0, 0);
+        age = 0;
+        condition = 100;
+        terrain = TERRAIN.PLAIN;
+        landPrice += 180;
+        zone = ZONE.COMMERCIAL;
+      }
+
+      if (
+        owner === OWNER.OTHER &&
+        !building &&
+        feature === FEATURE.NONE &&
+        terrain === TERRAIN.PLAIN &&
+        !rail &&
+        ((x * 19 + y * 23) % 5 === 0)
+      ) {
+        owner = OWNER.SALE;
+      }
+
+      tiles.push({
+        id: y * size + x,
+        x,
+        y,
+        terrain,
+        feature,
+        rail,
+        zone,
+        owner,
+        building,
+        buildingMainId: null,
+        rooms,
+        age,
+        condition,
+        vacancyMonths: 0,
+        recoveryMode: false,
+        landPrice: Math.max(70, landPrice),
+        tourismName: fixedTourism?.label ?? null,
+      });
+    }
+  }
+
+  placeStoryRivalOffice(tiles, "B", KYOTO_RIVAL_COMPANY_NAME, [
+    { x: 24, y: 18 },
+    { x: 22, y: 20 },
+    { x: 18, y: 22 },
+  ]);
+
+  return {
+    tiles: recalculateTileZonesByFacilities(tiles),
+    stationX,
+    stationY,
+    stationPositions,
+    schoolX: schoolPositions[0].x,
+    schoolY: schoolPositions[0].y,
+    schoolPositions,
+    factoryX: null,
+    factoryY: null,
+    factoryPositions,
+  };
+}
+
 function createMap(freeMapMode = "free_70") {
+if (normalizeFreeModeKey(freeMapMode) === "free_kyoto") {
+  return createKyotoStoryMap();
+}
 const mapOption = getFreeMapOption(freeMapMode);
 const mapSize = mapOption.size;
 const hasSea = mapSize >= 50;
@@ -12795,7 +13241,7 @@ const HOME_SHOP_ITEMS = [
   { id: "training_mba", category: "training", icon: "🧑‍🏫", name: "MBA参考書", description: "社員1名の全能力を+1します。", costSilver: 0, costGold: 15, costRainbow: 0, rewardType: "item", itemKey: "training_mba", rewardCount: 1, effectText: "全能力+1" },
   { id: "training_appraiser", category: "training", icon: "📚", name: "不動産鑑定士参考書", description: "社員1名の営業+2、管理+2、建築+1。", costSilver: 0, costGold: 15, costRainbow: 0, rewardType: "item", itemKey: "training_appraiser", rewardCount: 1, effectText: "営業+2 / 管理+2 / 建築+1" },
 
-  { id: "license_takken", category: "qualification", icon: "🎓", name: "宅地建物取引士資格証", description: "社員1名の営業+10、統率+5、管理+5。各社員1回限定予定。", costSilver: 0, costGold: 0, costRainbow: 5, rewardType: "item", itemKey: "license_takken", rewardCount: 1, effectText: "営業+10 / 統率+5 / 管理+5" },
+  { id: "license_takken", category: "qualification", icon: "🎓", name: "宅建士資格証", description: "社員1名の営業+10、統率+5、管理+5。各社員1回限定予定。", costSilver: 0, costGold: 0, costRainbow: 5, rewardType: "item", itemKey: "license_takken", rewardCount: 1, effectText: "営業+10 / 統率+5 / 管理+5" },
   { id: "license_architect", category: "qualification", icon: "🎓", name: "一級建築士資格証", description: "社員1名の建築+15、管理+5。各社員1回限定予定。", costSilver: 0, costGold: 0, costRainbow: 5, rewardType: "item", itemKey: "license_architect", rewardCount: 1, effectText: "建築+15 / 管理+5" },
   { id: "license_rental_manager", category: "qualification", icon: "🎓", name: "賃貸不動産経営管理士資格証", description: "社員1名の営業+5、統率+5、管理+10。各社員1回限定予定。", costSilver: 0, costGold: 0, costRainbow: 5, rewardType: "item", itemKey: "license_rental_manager", rewardCount: 1, effectText: "営業+5 / 統率+5 / 管理+10" },
   { id: "license_mba", category: "qualification", icon: "🎓", name: "MBA取得証", description: "社員1名の全能力を+5します。各社員1回限定予定。", costSilver: 0, costGold: 0, costRainbow: 5, rewardType: "item", itemKey: "license_mba", rewardCount: 1, effectText: "全能力+5" },
@@ -14355,6 +14801,8 @@ const [storySequenceIndex, setStorySequenceIndex] = useState(0);
 const [hasShownGifuHqCompleteGuide, setHasShownGifuHqCompleteGuide] = useState(savedGame?.hasShownGifuHqCompleteGuide ?? false);
 const [hasClearedGifuChapter, setHasClearedGifuChapter] = useState(savedGame?.hasClearedGifuChapter ?? false);
 const [hasClearedNagoyaChapter, setHasClearedNagoyaChapter] = useState(savedGame?.hasClearedNagoyaChapter ?? false);
+const [hasClearedKyotoChapter, setHasClearedKyotoChapter] = useState(savedGame?.hasClearedKyotoChapter ?? false);
+const [hasCompletedKyotoTourismTutorial, setHasCompletedKyotoTourismTutorial] = useState(savedGame?.hasCompletedKyotoTourismTutorial ?? false);
 const [nagoyaTutorialStep, setNagoyaTutorialStep] = useState(savedGame?.nagoyaTutorialStep ?? null);
 
 const [tiles, setTiles] = useState(initialMap.tiles);
@@ -14577,14 +15025,17 @@ useEffect(() => {
       currentGameMode,
       freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null,
       activeSaveSlot,
+      hasClearedGifuChapter,
       hasClearedNagoyaChapter,
+      hasClearedKyotoChapter,
+      hasCompletedKyotoTourismTutorial,
       rookieEmployeeTickets,
       employeeTickets,
       premiumEmployeeTickets,
     }));
     setHomeAccountRefreshKey((current) => current + 1);
   }
-}, [currentGameMode, tutorialStep, tiles, playerRank, playerExp, employees, employeeStorage, hasClearedNagoyaChapter, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets]);
+}, [currentGameMode, tutorialStep, tiles, playerRank, playerExp, employees, employeeStorage, hasClearedNagoyaChapter, hasClearedKyotoChapter, hasCompletedKyotoTourismTutorial, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets]);
 
 
 
@@ -14722,6 +15173,9 @@ useEffect(() => {
       tutorialStep,
       hasShownGifuHqCompleteGuide,
       hasClearedGifuChapter,
+      hasClearedNagoyaChapter,
+      hasClearedKyotoChapter,
+      hasCompletedKyotoTourismTutorial,
       savedAt: new Date().toISOString(),
       money,
       loans,
@@ -14739,7 +15193,7 @@ useEffect(() => {
       employees,
       employeeCandidates,
       employeeStorage,
-      accountSnapshot: mergeAccountDataWithGame(savedAccountData, { playerRank, playerExp, employees, employeeStorage, currentGameMode, freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null, activeSaveSlot, hasClearedNagoyaChapter, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }),
+      accountSnapshot: mergeAccountDataWithGame(savedAccountData, { playerRank, playerExp, employees, employeeStorage, currentGameMode, freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null, activeSaveSlot, hasClearedGifuChapter, hasClearedNagoyaChapter, hasClearedKyotoChapter, hasCompletedKyotoTourismTutorial, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }),
       actionPoints,
       rookieEmployeeTickets,
       employeeTickets,
@@ -14799,6 +15253,8 @@ useEffect(() => {
   usedSecretCommands,
   hasClearedGifuChapter,
   hasClearedNagoyaChapter,
+  hasClearedKyotoChapter,
+  hasCompletedKyotoTourismTutorial,
 ]);
 
 useEffect(() => {
@@ -14810,14 +15266,17 @@ useEffect(() => {
     currentGameMode,
     freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null,
     activeSaveSlot,
+    hasClearedGifuChapter,
     hasClearedNagoyaChapter,
+    hasClearedKyotoChapter,
+    hasCompletedKyotoTourismTutorial,
     rookieEmployeeTickets,
     employeeTickets,
     premiumEmployeeTickets,
   });
 
   writeAccountData(nextAccountData);
-}, [playerRank, playerExp, employees, employeeStorage, hasClearedNagoyaChapter, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets]);
+}, [playerRank, playerExp, employees, employeeStorage, hasClearedNagoyaChapter, hasClearedKyotoChapter, hasCompletedKyotoTourismTutorial, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets]);
 
 const [tileSize, setTileSize] = useState(24);
 const [activePanel, setActivePanel] = useState(() => {
@@ -15172,6 +15631,7 @@ function getSelectedTileHeaderIcon(tile = selectedTile, mainTile = selectedMainT
     if (buildingInfo.subCategory === "マンション") return "🏢";
     if (buildingInfo.category === "商業") return "🏪";
     if (buildingInfo.category === "工業") return "🏭";
+    if (buildingInfo.category === "観光") return "♨️";
     return "🏠";
   }
   if (tile.owner === OWNER.SALE) return "🏷️";
@@ -15411,6 +15871,10 @@ const cityDemandIndex = useMemo(() => {
     return BUILDINGS[tile.building]?.category === "商業";
   }).length;
 
+  const tourismCount = mainBuildings.filter((tile) => {
+    return BUILDINGS[tile.building]?.category === "観光";
+  }).length;
+
   const factoryCount = tiles.filter(
     (tile) => tile.feature === FEATURE.FACTORY
   ).length;
@@ -15445,15 +15909,15 @@ const demandByCategory = useMemo(() => {
 
   const housingCount = mainBuildings.filter((tile) => {
     const category = BUILDINGS[tile.building]?.category;
-    return (
-      category === "住宅" ||
-      category === "住宅" ||
-      category === "住宅"
-    );
+    return category === "住宅";
   }).length;
 
   const commercialCount = mainBuildings.filter((tile) => {
     return BUILDINGS[tile.building]?.category === "商業";
+  }).length;
+
+  const tourismCount = mainBuildings.filter((tile) => {
+    return BUILDINGS[tile.building]?.category === "観光";
   }).length;
 
   const factoryCount = tiles.filter(
@@ -15476,6 +15940,7 @@ const demandByCategory = useMemo(() => {
   let housingDemand = 50;
   let commercialDemand = 50;
   let industrialDemand = 50;
+  let tourismDemand = 50;
 
   housingDemand += Math.floor(totalPopulation / 45);
   housingDemand += schoolCount * 8;
@@ -15495,10 +15960,17 @@ const demandByCategory = useMemo(() => {
   industrialDemand += stationCount * 2;
   industrialDemand -= schoolCount * 2;
 
+  tourismDemand += Math.floor((commercialDemand - 50) * 0.35);
+  tourismDemand += stationCount * 3;
+  tourismDemand += tourismCount * 5;
+  tourismDemand += Math.floor(totalPopulation / 90);
+  tourismDemand -= factoryCount * 2;
+
   return {
     housing: Math.max(30, Math.min(130, housingDemand)),
     commercial: Math.max(30, Math.min(130, commercialDemand)),
     industrial: Math.max(30, Math.min(130, industrialDemand)),
+    tourism: Math.max(30, Math.min(130, tourismDemand)),
   };
 }, [tiles, totalPopulation]);
   const totalRent = useMemo(() => {
@@ -16216,7 +16688,7 @@ function getCompanyEmployeeOfficeName(employee, isStored = false) {
   if (employee?.companyEmployeeOfficeName) return employee.companyEmployeeOfficeName;
 
   const officeId = employee?.officeId ?? "hq";
-  const areaLabel = getGameAreaLabel(currentGameMode, isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : freeMapKey);
+  const areaLabel = employee?.areaLabel || getGameAreaLabel(employee?.currentGameMode ?? employee?.mode ?? currentGameMode, employee?.freeMapKey ?? (isFreeModeKey(employee?.currentGameMode ?? employee?.mode ?? currentGameMode) ? normalizeFreeModeKey(employee?.currentGameMode ?? employee?.mode ?? currentGameMode) : null));
 
   if (officeId === "hq") return `${areaLabel}本社`;
   if (String(officeId).includes("_hq")) return `${areaLabel}本社`;
@@ -16307,6 +16779,12 @@ if (
   demand += getNearbyDemandBoostScore(targetTile, "industrial", tiles);
 }
 
+if (building.category === "観光") {
+  const tourismBuildingScore = getTourismBuildingDemandScore(targetTile, buildingKey);
+  demand += Math.floor((tourismBuildingScore - 50) / 2);
+  demand += getNearbyDemandBoostScore(targetTile, "tourism", tiles);
+}
+
 // 全体需要
 demand += Math.floor((cityDemandIndex - 50) / 3);
     demand += Math.max(0, 45 - stationDistance * 5);
@@ -16383,6 +16861,11 @@ function getRentMultiplier(tile, buildingKey) {
 
   if (BUILDINGS[buildingKey].category === "商業") {
     multiplier += Math.min(0.25, totalPopulation / 500);
+  }
+
+  if (BUILDINGS[buildingKey].category === "観光") {
+    const tourismScore = getTourismBuildingDemandScore(mainTile, buildingKey);
+    multiplier += Math.min(0.30, Math.max(0, tourismScore - 60) / 220);
   }
 
   const conditionRate = (mainTile.condition ?? 100) / 100;
@@ -17278,7 +17761,7 @@ function getEmployeeRequiredExp(level) {
 }
 
 function getPlayerRequiredExp(rank) {
-  return getEmployeeRequiredExp(rank);
+  return getSharedRequiredExp(rank);
 }
 
 function getPlayerTotalExp(rank, exp) {
@@ -18463,9 +18946,9 @@ function buildInitialAccountData(overrides = {}) {
     rookieEmployeeTickets: 0,
     employeeTickets: 0,
     premiumEmployeeTickets: 0,
-    silverSheets: DEV_DEMO_SHEET_GRANT_AMOUNT,
-    goldSheets: DEV_DEMO_SHEET_GRANT_AMOUNT,
-    rainbowSheets: DEV_DEMO_SHEET_GRANT_AMOUNT,
+    silverSheets: 0,
+    goldSheets: 0,
+    rainbowSheets: 0,
     specialMissionData: null,
     items: {},
     usedSecretCommands: {},
@@ -19862,6 +20345,7 @@ workingTiles = workingTiles.map((tile) => {
   let nearbyHousing = 0;
   let nearbyCommercial = 0;
   let nearbyIndustrial = 0;
+  let nearbyTourism = 0;
   let nearbyStations = 0;
   let nearbyFactories = 0;
   let nearbyRoads = 0;
@@ -19885,6 +20369,7 @@ workingTiles = workingTiles.map((tile) => {
       if (category === "住宅") nearbyHousing += 1;
       if (category === "商業") nearbyCommercial += 1;
       if (category === "工業") nearbyIndustrial += 1;
+      if (category === "観光") nearbyTourism += 1;
 
       if (building && (nearbyTile.age ?? 0) >= building.lifeYears * 0.9) {
         oldBuildings += 1;
@@ -19920,6 +20405,9 @@ workingTiles = workingTiles.map((tile) => {
 
   // 工業は雇用効果で少し上がる
   targetLandPrice += Math.min(1600, nearbyIndustrial * 220);
+
+  // 観光施設は周辺地価と回遊需要を押し上げる
+  targetLandPrice += Math.min(2800, nearbyTourism * 380);
 
   // 用途地域補正
   if (tile.zone === ZONE.RESIDENTIAL) {
@@ -22686,15 +23174,110 @@ score += getNearbyDemandBoostScore(tile, "industrial", tiles);
 
   return Math.max(30, Math.min(140, Math.round(score)));
 }
+function getTourismDemandColor(score) {
+  return getHousingDemandColor(score);
+}
+
+function getTourismNatureScore(tile) {
+  if (!tile) return 50;
+  let score = 45;
+
+  const mountainDistance = tiles.some((t) => t.terrain === TERRAIN.MOUNTAIN)
+    ? Math.min(...tiles.filter((t) => t.terrain === TERRAIN.MOUNTAIN).map((t) => getDistance(tile.x, tile.y, t.x, t.y)))
+    : 999;
+  const riverDistance = tiles.some((t) => t.terrain === TERRAIN.RIVER)
+    ? Math.min(...tiles.filter((t) => t.terrain === TERRAIN.RIVER).map((t) => getDistance(tile.x, tile.y, t.x, t.y)))
+    : 999;
+  const seaDistance = tiles.some((t) => t.terrain === TERRAIN.SEA)
+    ? Math.min(...tiles.filter((t) => t.terrain === TERRAIN.SEA).map((t) => getDistance(tile.x, tile.y, t.x, t.y)))
+    : 999;
+
+  score += Math.max(0, 40 - mountainDistance * 5);
+  score += Math.max(0, 30 - riverDistance * 5);
+  score += Math.max(0, 28 - seaDistance * 4);
+
+  return Math.max(30, Math.min(140, Math.round(score)));
+}
+
+function getTourismAccessScore(tile) {
+  if (!tile) return 50;
+  let score = 45;
+
+  const stationTiles = tiles.filter((t) => t.feature === FEATURE.STATION);
+  const stationDistance = stationTiles.length > 0
+    ? Math.min(...stationTiles.map((station) => getDistance(tile.x, tile.y, station.x, station.y)))
+    : 999;
+  const roadNearby = tiles.some((t) => t.feature === FEATURE.ROAD && getDistance(tile.x, tile.y, t.x, t.y) <= 1);
+
+  score += Math.max(0, 55 - stationDistance * 8);
+  if (roadNearby) score += 20;
+
+  return Math.max(30, Math.min(140, Math.round(score)));
+}
+
+function getTourismDemandScore(tile) {
+  const commercialScore = getCommercialDemandScore(tile, tiles);
+  const accessScore = getTourismAccessScore(tile);
+  const natureScore = getTourismNatureScore(tile);
+
+  const nearbyTourismBuildings = tiles.filter((t) => {
+    if (!t.building || t.buildingMainId) return false;
+    return BUILDINGS[t.building]?.category === "観光" && getDistance(tile.x, tile.y, t.x, t.y) <= 4;
+  }).length;
+
+  const nearbyIndustrialBuildings = tiles.filter((t) => {
+    if (!t.building || t.buildingMainId) return false;
+    return BUILDINGS[t.building]?.category === "工業" && getDistance(tile.x, tile.y, t.x, t.y) <= 4;
+  }).length;
+
+  let score =
+    commercialScore * 0.35 +
+    accessScore * 0.25 +
+    natureScore * 0.25 +
+    Math.min(30, nearbyTourismBuildings * 8);
+
+  score -= Math.min(24, nearbyIndustrialBuildings * 6);
+  score += getNearbyDemandBoostScore(tile, "tourism", tiles);
+
+  return Math.max(30, Math.min(140, Math.round(score)));
+}
+
+function getTourismBuildingDemandScore(tile, buildingKey) {
+  const commercialScore = getCommercialDemandScore(tile, tiles);
+  const tourismScore = getTourismDemandScore(tile);
+  const accessScore = getTourismAccessScore(tile);
+  const natureScore = getTourismNatureScore(tile);
+
+  if (buildingKey === "souvenir_shop") {
+    return Math.round(commercialScore * 0.7 + tourismScore * 0.3);
+  }
+
+  if (buildingKey === "ryokan") {
+    return Math.round(tourismScore * 0.6 + natureScore * 0.3 + commercialScore * 0.1);
+  }
+
+  if (buildingKey === "business_hotel") {
+    return Math.round(commercialScore * 0.6 + accessScore * 0.3 + tourismScore * 0.1);
+  }
+
+  if (buildingKey === "hot_spring") {
+    return Math.round(tourismScore * 0.5 + natureScore * 0.4 + commercialScore * 0.1);
+  }
+
+  return tourismScore;
+}
+
 function selectNPCBuildingByDemand(tile) {
   const housingScore = getHousingDemandScore(tile);
   const commercialScore = getCommercialDemandScore(tile, tiles);
   const industrialScore = getIndustrialDemandScore(tile);
+  const tourismScore = getTourismDemandScore(tile);
 
   const maxScore = Math.max(
     housingScore,
     commercialScore,
-    industrialScore
+    industrialScore,
+    tourismScore
   );
 
   // 住宅需要が一番高い場所
@@ -22721,6 +23304,18 @@ function selectNPCBuildingByDemand(tile) {
     return candidates[randomInt(0, candidates.length - 1)];
   }
 
+  // 観光需要が一番高い場所
+  if (maxScore === tourismScore) {
+    const candidates = [
+      "souvenir_shop",
+      "ryokan",
+      "business_hotel",
+      "hot_spring",
+    ];
+
+    return candidates[randomInt(0, candidates.length - 1)];
+  }
+
   // 工業需要が一番高い場所
   // ※今は工業建物が未実装なので、工場周辺にできやすい建物を選ぶ
 const candidates = [
@@ -22741,7 +23336,8 @@ const demandColorByTileId = useMemo(() => {
   if (
     mapViewMode !== "housingDemand" &&
     mapViewMode !== "commercialDemand" &&
-    mapViewMode !== "industrialDemand"
+    mapViewMode !== "industrialDemand" &&
+    mapViewMode !== "tourismDemand"
   ) {
     return new Map();
   }
@@ -22775,6 +23371,14 @@ const demandColorByTileId = useMemo(() => {
         targetTile.id,
         getIndustrialDemandColor(getIndustrialDemandScore(targetTile))
       );
+      return;
+    }
+
+    if (mapViewMode === "tourismDemand") {
+      colorMap.set(
+        targetTile.id,
+        getTourismDemandColor(getTourismDemandScore(targetTile))
+      );
     }
   });
 
@@ -22793,7 +23397,8 @@ function getTileColor(tile) {
   if (
     mapViewMode === "housingDemand" ||
     mapViewMode === "commercialDemand" ||
-    mapViewMode === "industrialDemand"
+    mapViewMode === "industrialDemand" ||
+    mapViewMode === "tourismDemand"
   ) {
     return demandColorByTileId.get(tile.id) ?? "#cccccc";
   }
@@ -23037,7 +23642,7 @@ function saveCurrentGameToSlot(slot = activeSaveSlot) {
     employees,
     employeeCandidates,
     employeeStorage,
-    accountSnapshot: mergeAccountDataWithGame(savedAccountData, { playerRank, playerExp, employees, employeeStorage, currentGameMode, freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null, activeSaveSlot, hasClearedNagoyaChapter, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }),
+    accountSnapshot: mergeAccountDataWithGame(savedAccountData, { playerRank, playerExp, employees, employeeStorage, currentGameMode, freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null, activeSaveSlot, hasClearedGifuChapter, hasClearedNagoyaChapter, hasClearedKyotoChapter, hasCompletedKyotoTourismTutorial, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }),
     actionPoints,
     rookieEmployeeTickets,
     employeeTickets,
@@ -23055,13 +23660,15 @@ function saveCurrentGameToSlot(slot = activeSaveSlot) {
     hasShownGifuHqCompleteGuide,
     hasClearedGifuChapter,
     hasClearedNagoyaChapter,
+    hasClearedKyotoChapter,
+    hasCompletedKyotoTourismTutorial,
     nagoyaTutorialStep,
   };
 
   localStorage.setItem("realEstateGameCurrentSlot", String(slot));
   localStorage.setItem(getSaveSlotKey(slot), JSON.stringify(saveData));
   localStorage.setItem("realEstateGameSave", JSON.stringify(saveData));
-  writeAccountData(mergeAccountDataWithGame(readAccountData(), { playerRank, playerExp, employees, employeeStorage, currentGameMode, freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null, activeSaveSlot, hasClearedNagoyaChapter, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }));
+  writeAccountData(mergeAccountDataWithGame(readAccountData(), { playerRank, playerExp, employees, employeeStorage, currentGameMode, freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null, activeSaveSlot, hasClearedGifuChapter, hasClearedNagoyaChapter, hasClearedKyotoChapter, hasCompletedKyotoTourismTutorial, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }));
   setActiveSaveSlot(slot);
   setSaveSlotRefreshKey((current) => current + 1);
   setLog(`スロット${slot}に保存しました。`);
@@ -23101,6 +23708,8 @@ function applySaveDataToCurrentGame(data, slot) {
   setHasShownGifuHqCompleteGuide(data.hasShownGifuHqCompleteGuide ?? false);
   setHasClearedGifuChapter(data.hasClearedGifuChapter ?? false);
   setHasClearedNagoyaChapter(data.hasClearedNagoyaChapter ?? false);
+  setHasClearedKyotoChapter(data.hasClearedKyotoChapter ?? false);
+  setHasCompletedKyotoTourismTutorial(data.hasCompletedKyotoTourismTutorial ?? false);
   setNagoyaTutorialStep(data.nagoyaTutorialStep ?? null);
   setTiles(data.tiles);
   setSelectedId(data.selectedId ?? null);
@@ -23131,7 +23740,10 @@ function applySaveDataToCurrentGame(data, slot) {
     currentGameMode: data.currentGameMode ?? "free",
     freeMapKey: data.freeMapKey ?? (isFreeModeKey(data.currentGameMode) ? normalizeFreeModeKey(data.currentGameMode) : null),
     activeSaveSlot: slot,
+    hasClearedGifuChapter: data.hasClearedGifuChapter ?? false,
     hasClearedNagoyaChapter: data.hasClearedNagoyaChapter ?? false,
+    hasClearedKyotoChapter: data.hasClearedKyotoChapter ?? false,
+    hasCompletedKyotoTourismTutorial: data.hasCompletedKyotoTourismTutorial ?? false,
   }));
   setActionPoints(data.actionPoints ?? 0);
   const loadedAccountTickets = getAccountTicketCounts(readAccountData(), data);
@@ -23303,6 +23915,8 @@ function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode
   setHasShownGifuHqCompleteGuide(false);
   setHasClearedGifuChapter(false);
   setHasClearedNagoyaChapter(false);
+  setHasClearedKyotoChapter(false);
+  setHasCompletedKyotoTourismTutorial(false);
   setNagoyaTutorialStep(null);
   setTutorialStep(isStoryTutorial ? STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE : null);
   setStoryEvent(isStoryTutorial ? STORY_TUTORIAL_EVENTS.START : null);
@@ -23441,6 +24055,8 @@ function startGifuChapter() {
   setHasShownGifuHqCompleteGuide(true);
   setHasClearedGifuChapter(false);
   setHasClearedNagoyaChapter(false);
+  setHasClearedKyotoChapter(false);
+  setHasCompletedKyotoTourismTutorial(false);
   setNagoyaTutorialStep(null);
   setStoryEvent(STORY_GIFU_EVENTS.INTRO);
   setTiles(gifuMap.tiles);
@@ -23548,8 +24164,62 @@ useEffect(() => {
     title: "名古屋編クリア",
     text: "社長、名古屋編の目標だった実質月利益50万円以上を達成しました！\n\n最初は空き家一軒から始まった会社でしたけど、\n今では名古屋でも安定して利益を出せる会社になりましたね。\n\n私も入社したばかりで、\n右も左も分からなかったのに、\nたくさんの経験をさせてもらいました。\n\nまだまだ未熟ですけど、\nこれからも社長と一緒に頑張っていきたいです。\n\n━━━━━━━━━━━━\nストーリーモード 第1部 完\n1-1章 創業チュートリアル ～ 1-4章 名古屋編\n━━━━━━━━━━━━",
   });
-  setLog("名古屋編の目標を達成しました。実質月利益50万円以上を達成です。ストーリーモード第1部を完了しました。");
+  setLog("名古屋編の目標を達成しました。次は京都編へ進めます。");
 }, [isNagoyaChapterClearConditionMet, hasClearedNagoyaChapter]);
+
+function startKyotoChapter() {
+  const kyotoMap = createKyotoStoryMap();
+  setCurrentGameMode("story_kyoto");
+  setNagoyaTutorialStep(null);
+  setHasCompletedKyotoTourismTutorial(false);
+  setStoryEvent(null);
+  setStorySequence(KYOTO_PROLOGUE_SCENES);
+  setStorySequenceIndex(0);
+  setTiles(kyotoMap.tiles);
+  setSelectedId(null);
+  setHqPlaced(true);
+  setActivePanel("home");
+  setPendingBuildKey(null);
+  setPendingBranchPlacement(false);
+  setSelectedBuildCategory(null);
+  setSelectedHousingType(null);
+  setActionPoints(1);
+  setLog("第3章 京都編を開始しました。まずは観光需要を見ながら、観光施設を3棟建設しましょう。");
+}
+
+const kyotoTourismBuildingCount = tiles.filter((tile) => {
+  return currentGameMode === "story_kyoto" &&
+    tile.owner === OWNER.PLAYER &&
+    tile.building &&
+    !tile.buildingMainId &&
+    tile.buildingStatus !== "constructing" &&
+    BUILDINGS[tile.building]?.category === "観光";
+}).length;
+
+const isKyotoTourismTutorialConditionMet =
+  currentGameMode === "story_kyoto" &&
+  !hasCompletedKyotoTourismTutorial &&
+  kyotoTourismBuildingCount >= KYOTO_TUTORIAL_TOURISM_BUILDING_COUNT;
+
+useEffect(() => {
+  if (!isKyotoTourismTutorialConditionMet) return;
+  setHasCompletedKyotoTourismTutorial(true);
+  setStoryEvent(STORY_KYOTO_EVENTS.TUTORIAL_CLEAR);
+  setLog("京都編の観光チュートリアルを達成しました。建てた観光施設を引き継いだまま、京都編本編へ進みます。");
+}, [isKyotoTourismTutorialConditionMet]);
+
+const isKyotoChapterClearConditionMet =
+  currentGameMode === "story_kyoto" &&
+  hasCompletedKyotoTourismTutorial &&
+  kyotoTourismBuildingCount >= KYOTO_FINAL_TOURISM_BUILDING_COUNT &&
+  netWorthAfterDebt >= KYOTO_FINAL_NET_WORTH;
+
+useEffect(() => {
+  if (!isKyotoChapterClearConditionMet || hasClearedKyotoChapter) return;
+  setHasClearedKyotoChapter(true);
+  setStoryEvent(STORY_KYOTO_EVENTS.CLEAR);
+  setLog("京都編の本編目標を達成しました。京都30×30マップと京都の地域任務がフリーモードに解放されました。");
+}, [isKyotoChapterClearConditionMet, hasClearedKyotoChapter]);
 
 function continueAfterStoryFirstPart() {
   setCurrentGameMode("free_30");
@@ -23677,6 +24347,16 @@ function getCurrentAkariGuide() {
     };
   }
 
+  if (currentGameMode === "story_kyoto") {
+    return {
+      portrait: "happy",
+      title: "第3章 京都編",
+      goal: getStoryKyotoGoalText(!hasCompletedKyotoTourismTutorial),
+      text: getStoryKyotoAdviceText(!hasCompletedKyotoTourismTutorial),
+      nextMonthGuide: false,
+    };
+  }
+
   if (currentGameMode === "story_gifu" && !hqPlaced) {
     return {
       portrait: "serious",
@@ -23708,10 +24388,11 @@ const titleSavedMode = savedGame?.currentGameMode ?? currentGameMode ?? "free";
 const titleHasStorySave = Boolean(savedGame) && String(titleSavedMode).startsWith("story");
 const titleHasFreeSave = Boolean(savedGame) && isFreeModeKey(titleSavedMode);
 function getStoryChapterProgressLevel() {
-  if (hasClearedNagoyaChapter || currentGameMode === "story_cleared" || currentGameMode === "free_30") return 4;
+  // 1: 1-1章 / 2: 岐阜編 / 3: 名古屋準備編 / 4: 名古屋編 / 5: 京都編 / 6: 京都編クリア後
+  if (storyProgressFlags.kyoto) return 6;
+  if (currentGameMode === "story_kyoto" || storyProgressFlags.nagoya || currentGameMode === "story_cleared") return 5;
   if (currentGameMode === "story_nagoya") return 4;
-  if (currentGameMode === "story_nagoya_bridge") return 3;
-  if (hasClearedGifuChapter) return 3;
+  if (currentGameMode === "story_nagoya_bridge" || storyProgressFlags.gifu) return 3;
   if (currentGameMode === "story_gifu") return 2;
   if (titleAccountData.unlockedStoryAkari || currentGameMode === "story_tutorial") return 1;
   return 1;
@@ -23727,6 +24408,12 @@ function openLatestStoryFromTitle() {
     return;
   }
   startNewGameFromTitle(activeSaveSlot, "story");
+}
+
+function startKyotoChapterFromSelect() {
+  startKyotoChapter();
+  setShowTitleScreen(false);
+  setTitleModal(null);
 }
 
 function startNagoyaChapterFromSelect() {
@@ -23782,6 +24469,14 @@ function startStoryChapterFromTitle(chapterKey) {
     const ok = window.confirm("1-4章 名古屋編を最初から始めますか？\n※戻って遊ぶ章の途中保存は残しません。");
     if (!ok) return;
     startNagoyaChapterFromSelect();
+    return;
+  }
+  if (chapterKey === "chapter_kyoto") {
+    if (progress < 5) { alert("名古屋編をクリアすると京都編が解放されます。"); return; }
+    const ok = window.confirm("第3章 京都編を最初から始めますか？\n※観光施設3棟のチュートリアルから開始します。");
+    if (!ok) return;
+    startKyotoChapterFromSelect();
+    return;
   }
 }
 
@@ -23802,9 +24497,32 @@ function isFreeModeUnlocked() {
     currentGameMode === "story_gifu" ||
     currentGameMode === "story_nagoya_bridge" ||
     currentGameMode === "story_nagoya" ||
+    currentGameMode === "story_kyoto" ||
     currentGameMode === "story_cleared" ||
-    hasClearedGifuChapter ||
-    hasClearedNagoyaChapter;
+    storyProgressFlags.gifu ||
+    storyProgressFlags.nagoya ||
+    storyProgressFlags.kyoto;
+}
+
+function getFreeMapUnlockRequirement(mapKey) {
+  const normalizedKey = normalizeFreeModeKey(mapKey);
+  if (normalizedKey === "free_15") return "1-1章クリア後";
+  if (normalizedKey === "free_30") return "岐阜編クリア後";
+  if (normalizedKey === "free_50") return "名古屋編クリア後";
+  if (normalizedKey === "free_kyoto") return "京都編クリア後";
+  if (normalizedKey === "free_70") return "東京編クリア後";
+  return "ストーリー進行で解放";
+}
+
+function isFreeMapOptionUnlocked(mapKey) {
+  const normalizedKey = normalizeFreeModeKey(mapKey);
+  if (!isFreeModeUnlocked()) return false;
+  if (normalizedKey === "free_15") return true;
+  if (normalizedKey === "free_30") return Boolean(storyProgressFlags.gifu || storyProgressFlags.nagoya || storyProgressFlags.kyoto || currentGameMode === "story_nagoya_bridge" || currentGameMode === "story_nagoya" || currentGameMode === "story_kyoto");
+  if (normalizedKey === "free_50") return Boolean(storyProgressFlags.nagoya || storyProgressFlags.kyoto || currentGameMode === "story_kyoto");
+  if (normalizedKey === "free_kyoto") return Boolean(storyProgressFlags.kyoto);
+  if (normalizedKey === "free_70") return false;
+  return false;
 }
 
 function continueFreeFromTitle() {
@@ -23820,6 +24538,10 @@ function openFreeMapFromTitle(mapKey) {
     alert("フリーモードは1-1章 創業チュートリアルをクリアすると解放されます。");
     return;
   }
+  if (!isFreeMapOptionUnlocked(mapKey)) {
+    alert(`${getFreeMapOption(mapKey).label}は${getFreeMapUnlockRequirement(mapKey)}に解放されます。`);
+    return;
+  }
 
   const data = getFreeModeSavedData(mapKey);
   if (data) {
@@ -23833,6 +24555,10 @@ function openFreeMapFromTitle(mapKey) {
 function resetFreeMapFromTitle(mapKey) {
   if (!isFreeModeUnlocked()) {
     alert("フリーモードは1-1章 創業チュートリアルをクリアすると解放されます。");
+    return;
+  }
+  if (!isFreeMapOptionUnlocked(mapKey)) {
+    alert(`${getFreeMapOption(mapKey).label}は${getFreeMapUnlockRequirement(mapKey)}に解放されます。`);
     return;
   }
 
@@ -23867,6 +24593,12 @@ const titleTotalAssets = money + tiles.reduce((sum, tile) => {
   return sum + (tile.landPrice ?? 0) + buildingValue;
 }, 0);
 const titleAccountData = useMemo(() => readAccountData(), [homeAccountRefreshKey, playerRank, playerExp, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets]);
+const storyProgressFlags = {
+  gifu: hasClearedGifuChapter || titleAccountData.hasClearedGifuChapter === true,
+  nagoya: hasClearedNagoyaChapter || titleAccountData.hasClearedNagoyaChapter === true,
+  kyoto: hasClearedKyotoChapter || titleAccountData.hasClearedKyotoChapter === true,
+  kyotoTutorial: hasCompletedKyotoTourismTutorial || titleAccountData.hasCompletedKyotoTourismTutorial === true,
+};
 const titleAccountEmployeeVault = mergeEmployeeCollections(titleAccountData.employeeVault ?? []);
 const titleItemInventory = getAccountItemInventory(titleAccountData);
 const titleOwnedItemEntries = HOME_SHOP_ITEMS
@@ -23878,13 +24610,15 @@ const titleOwnedItemKindCount = titleOwnedItemEntries.length;
 const titleFounderSelectableEmployees = getFounderSelectableEmployees(titleAccountData);
 const titleStoryAkari = getStoryAkariForFounder(titleAccountData);
 const titleDateLabel = getGameDate(month).label;
-const titleFreeStatusText = isFreeModeUnlocked() ? "15×15 / 30×30 / 50×50 / 70×70 から選択" : "1-1章クリア後に解放";
+const titleFreeStatusText = isFreeModeUnlocked() ? (storyProgressFlags.kyoto ? "京都30×30を含むフリーマップから選択" : "15×15 / 30×30 / 50×50 / 70×70 から選択") : "1-1章クリア後に解放";
 function getStoryStatusTextByMode(mode) {
+  if (mode === "story_kyoto") return "第3章 京都編 進行中";
   if (mode === "story_nagoya") return "1-4章 名古屋編 進行中";
   if (mode === "story_nagoya_bridge") return "1-3章 名古屋準備編 進行中";
   if (mode === "story_gifu") return "1-2章 岐阜編 進行中";
   if (mode === "story" || mode === "story_tutorial") return "1-1章 創業チュートリアル 進行中";
-  if (hasClearedNagoyaChapter || mode === "story_cleared") return "1-4章 名古屋編クリア済み";
+  if (storyProgressFlags.kyoto) return "第3章 京都編クリア済み";
+  if (hasClearedNagoyaChapter || mode === "story_cleared") return "第3章 京都編から再開できます";
   if (hasClearedGifuChapter) return "1-3章 名古屋準備編から再開できます";
   if (titleAccountData.unlockedStoryAkari) return "1-2章 岐阜編から再開できます";
   return "1-1章から開始";
@@ -24018,7 +24752,7 @@ const EMPLOYEE_USABLE_ITEM_EFFECTS = {
   training_rental_manager: { statDeltas: { management: 3, sales: 1, leadership: 1 } },
   training_mba: { statDeltas: { leadership: 1, sales: 1, construction: 1, management: 1 } },
   training_appraiser: { statDeltas: { sales: 2, management: 2, construction: 1 } },
-  license_takken: { statDeltas: { sales: 10, leadership: 5, management: 5 }, qualificationKey: "takken", qualificationName: "宅地建物取引士" },
+  license_takken: { statDeltas: { sales: 10, leadership: 5, management: 5 }, qualificationKey: "takken", qualificationName: "宅建士" },
   license_architect: { statDeltas: { construction: 15, management: 5 }, qualificationKey: "architect_1st", qualificationName: "一級建築士" },
   license_rental_manager: { statDeltas: { sales: 5, leadership: 5, management: 10 }, qualificationKey: "rental_manager", qualificationName: "賃貸不動産経営管理士" },
   license_mba: { statDeltas: { leadership: 5, sales: 5, construction: 5, management: 5 }, qualificationKey: "mba", qualificationName: "MBA" },
@@ -24368,6 +25102,7 @@ function claimSpecialMissionDispatch(dispatchId) {
   };
 
   writeAccountData(nextAccountData);
+  setEmployees((currentEmployees) => syncEmployeeListWithAccountVault(currentEmployees, nextAccountData));
   setRookieEmployeeTickets(nextAccountData.rookieEmployeeTickets);
   setEmployeeTickets(nextAccountData.employeeTickets);
   setPremiumEmployeeTickets(nextAccountData.premiumEmployeeTickets);
@@ -25303,9 +26038,9 @@ function getHomeKnowledgeAkariTalkMessages() {
       "住居専用地域では、住環境を守るために大きな店舗や工場が制限されます。\n逆に商業地域では、店舗や事務所が建てやすくなります。",
       "箱庭不動産でも、駅・学校・工場の周辺で用途地域が変わります。\n現実の考え方をゲームにも少し反映しています。"
     ] }),
-    createAkariTalk("【宅建】重要事項説明は、宅地建物取引士が行う大切な業務です。\n契約前に、物件や取引条件を説明する役割があります。", "serious", { category: "knowledge", pages: [
+    createAkariTalk("【宅建】重要事項説明は、宅建士が行う大切な業務です。\n契約前に、物件や取引条件を説明する役割があります。", "serious", { category: "knowledge", pages: [
       "【宅建】重要事項説明は、契約前に買主や借主へ重要な内容を説明する制度です。",
-      "説明する宅地建物取引士である必要があります。\n宅地建物取引士証の提示も重要なポイントです。",
+      "説明する人は宅建士である必要があります。\n宅建士証の提示も重要なポイントです。",
       "試験では、誰が説明できるか、いつ説明するかが問われやすいですよ。"
     ] }),
     createAkariTalk("【税金】固定資産税は毎年1月1日時点の所有者に課税されます。", "think", { category: "knowledge", pages: [
@@ -25976,7 +26711,7 @@ function getHomeCourseAkariTalkMessages() {
     ] }),
     createAkariTalk("【宅建講座 2】重要事項説明は、契約前に大事な情報を説明する制度です。", "serious", { category: "knowledge", pages: [
       "【宅建講座 2】重要事項説明は、買主や借主が契約前に判断できるように行います。",
-      "説明できるのは宅地建物取引士です。\n宅地建物取引士証を提示する点も試験で狙われます。",
+      "説明できるのは宅建士です。\n宅建士証を提示する点も試験で狙われます。",
       "35条書面、37条書面とセットで覚えましょう。"
     ] }),
     createAkariTalk("【宅建講座 3】媒介契約は、不動産会社に仲介を依頼する契約です。", "think", { category: "knowledge", pages: [
@@ -26403,6 +27138,18 @@ function getHomeMissionItems() {
   const currentGameModeLabel = currentGameMode ?? "free";
 
   const missionDefinitions = [
+    {
+      id: "release_campaign_sheets_100",
+      group: "キャンペーン",
+      icon: "🎉",
+      title: "リリース記念キャンペーン",
+      description: "リリース記念として、シルバー・ゴールド・レインボーシートを各100枚受け取れます。",
+      current: 1,
+      target: 1,
+      rewardExp: 100,
+      rewardGoldSheets: 100,
+      rewardRainbowSheets: 100,
+    },
     {
       id: "daily_login",
       group: "デイリー",
@@ -27007,6 +27754,16 @@ const visibleHomeMissionItems = sortedHomeMissionItems.filter((mission) => {
   return true;
 });
 const homePresentBoxHistory = readPresentBoxHistory();
+const homeLoginBonusHistory = homePresentBoxHistory.filter((item) => item?.source === "ログインボーナス");
+const hasShownDailyLoginBonusModalRef = useRef(false);
+
+useEffect(() => {
+  if (!homeCoreFeaturesUnlocked || !homeLoginBonusStatus.canClaim) return;
+  if (hasShownDailyLoginBonusModalRef.current) return;
+  hasShownDailyLoginBonusModalRef.current = true;
+  setTitleModal("missions");
+}, [homeCoreFeaturesUnlocked, homeLoginBonusStatus.canClaim, homeLoginBonusStatus.todayKey]);
+
 const homePresentNoticeCount = homeCoreFeaturesUnlocked ? ((homeLoginBonusStatus.canClaim ? 1 : 0) + homeMissionClaimableCount) : 0;
 const titleFullPageModal = ["founderSelect", "recruitHome", "accountVault", "items", "presentBox", "missions", "shop", "settings", "specialDispatch"].includes(titleModal);
 
@@ -27024,16 +27781,18 @@ function claimHomeMissionReward(missionId) {
   const accountData = readAccountData();
   const rewardSilverSheets = Math.max(0, Math.round(Number(mission.rewardExp) || 0));
   const rewardGoldSheets = Math.max(0, Math.round(Number(mission.rewardGoldSheets) || 0));
+  const rewardRainbowSheets = Math.max(0, Math.round(Number(mission.rewardRainbowSheets) || 0));
   const nextAccountData = {
     ...accountData,
     silverSheets: Math.max(0, Math.round(Number(accountData.silverSheets ?? accountData.silverSheet ?? 0) || 0)) + rewardSilverSheets,
     goldSheets: Math.max(0, Math.round(Number(accountData.goldSheets ?? accountData.goldSheet ?? 0) || 0)) + rewardGoldSheets,
+    rainbowSheets: Math.max(0, Math.round(Number(accountData.rainbowSheets ?? accountData.rainbowSheet ?? 0) || 0)) + rewardRainbowSheets,
     updatedAt: new Date().toISOString(),
   };
 
   writeAccountData(nextAccountData);
   setHomeAccountRefreshKey((current) => current + 1);
-  const rewardText = [`シルバーシート +${rewardSilverSheets}`, rewardGoldSheets > 0 ? `ゴールドシート +${rewardGoldSheets}` : ""].filter(Boolean).join(" / ");
+  const rewardText = [`シルバーシート +${rewardSilverSheets}`, rewardGoldSheets > 0 ? `ゴールドシート +${rewardGoldSheets}` : "", rewardRainbowSheets > 0 ? `レインボーシート +${rewardRainbowSheets}` : ""].filter(Boolean).join(" / ");
   setLog(`任務「${mission.title}」を達成しました。${rewardText}`);
 }
 
@@ -27050,6 +27809,7 @@ function claimAllHomeMissionRewards() {
   ]));
   const rewardSilverSheets = claimableMissions.reduce((sum, mission) => sum + Math.max(0, Math.round(Number(mission.rewardExp) || 0)), 0);
   const rewardGoldSheets = claimableMissions.reduce((sum, mission) => sum + Math.max(0, Math.round(Number(mission.rewardGoldSheets) || 0)), 0);
+  const rewardRainbowSheets = claimableMissions.reduce((sum, mission) => sum + Math.max(0, Math.round(Number(mission.rewardRainbowSheets) || 0)), 0);
 
   writeHomeMissionData({
     claimedMissionIds: nextClaimedMissionIds,
@@ -27061,13 +27821,14 @@ function claimAllHomeMissionRewards() {
     ...accountData,
     silverSheets: Math.max(0, Math.round(Number(accountData.silverSheets ?? accountData.silverSheet ?? 0) || 0)) + rewardSilverSheets,
     goldSheets: Math.max(0, Math.round(Number(accountData.goldSheets ?? accountData.goldSheet ?? 0) || 0)) + rewardGoldSheets,
+    rainbowSheets: Math.max(0, Math.round(Number(accountData.rainbowSheets ?? accountData.rainbowSheet ?? 0) || 0)) + rewardRainbowSheets,
     updatedAt: new Date().toISOString(),
   };
 
   writeAccountData(nextAccountData);
   setHomeAccountRefreshKey((current) => current + 1);
   setHomeMissionFilter("claimable");
-  const rewardText = [`シルバーシート +${rewardSilverSheets}`, rewardGoldSheets > 0 ? `ゴールドシート +${rewardGoldSheets}` : ""].filter(Boolean).join(" / ");
+  const rewardText = [`シルバーシート +${rewardSilverSheets}`, rewardGoldSheets > 0 ? `ゴールドシート +${rewardGoldSheets}` : "", rewardRainbowSheets > 0 ? `レインボーシート +${rewardRainbowSheets}` : ""].filter(Boolean).join(" / ");
   setLog(`任務報酬を${claimableMissions.length}件まとめて受け取りました。${rewardText}`);
 }
 
@@ -27377,12 +28138,6 @@ function exchangeHomeShopItem(itemId) {
   setEmployeeTickets(nextAccountData.employeeTickets);
   setPremiumEmployeeTickets(nextAccountData.premiumEmployeeTickets);
   setHomeAccountRefreshKey((current) => current + 1);
-  addPresentBoxHistoryItem({
-    source: "ショップ",
-    icon: item.icon,
-    name: item.name,
-    text: getHomeShopRewardText(item),
-  });
   setLog(`ショップで${item.name}を交換しました。`);
   alert(`${item.name}を交換しました。`);
 }
@@ -27547,7 +28302,7 @@ function renderHomeMissionCard(mission) {
         <span style={{ width: 38, height: 38, borderRadius: 14, display: "grid", placeItems: "center", background: "#ffffff", boxShadow: "0 5px 12px rgba(0,0,0,0.12)", fontWeight: 900 }}>{mission.icon}</span>
         <span style={{ minWidth: 0 }}>
           <strong style={{ display: "block", fontSize: 14 }}>{mission.title}</strong>
-          <span style={{ display: "block", fontSize: 10, opacity: 0.72, marginTop: 2 }}>{mission.group} / シルバーシート +{mission.rewardExp}{mission.rewardGoldSheets ? ` / ゴールドシート +${mission.rewardGoldSheets}` : ""}</span>
+          <span style={{ display: "block", fontSize: 10, opacity: 0.72, marginTop: 2 }}>{mission.group} / シルバーシート +{mission.rewardExp}{mission.rewardGoldSheets ? ` / ゴールドシート +${mission.rewardGoldSheets}` : ""}{mission.rewardRainbowSheets ? ` / レインボーシート +${mission.rewardRainbowSheets}` : ""}</span>
         </span>
         <span style={{ padding: "4px 8px", borderRadius: 999, background: mission.claimed ? "#7a8a7a" : isClaimable ? "#ff4d5d" : "#b8c7b9", color: "#ffffff", fontSize: 10, fontWeight: 900 }}>
           {mission.claimed ? "受取済" : isClaimable ? "達成" : `${mission.progressRate}%`}
@@ -27633,7 +28388,7 @@ function claimHomeDailyLoginBonus() {
     count: reward.count,
   });
   setLog(`ログインボーナスとして${reward.text}を受け取りました。`);
-  setTitleModal("presentBox");
+  setTitleModal("missions");
 }
 
 function turnBgmOn() {
@@ -27976,6 +28731,35 @@ function isStoryTutorialTargetTile(tile) {
   }
 
   return false;
+}
+
+const mapTopHudPopupInlineStyle = {
+  width: "100%",
+  maxHeight: "min(44dvh, 340px)",
+  overflowY: "auto",
+  boxSizing: "border-box",
+  margin: 0,
+};
+
+function getBuildFloatingPanelHeightValue() {
+  // v310.16: 「auto」だけでは旧CSS/親枠の制約に負けて外枠が伸びないため、
+  // 表示中の建設カテゴリとカード枚数から必要高さをJSX側で明示する。
+  // CSS側で画面下端を超える場合だけ外枠全体スクロールにする。
+  const baseHeight = 46 + 118 + 150 + 28; // header + hero + category grid + gaps/padding
+
+  if (!selectedBuildCategory) return `${baseHeight + 84}px`;
+  if (selectedBuildCategory === "住宅" && !selectedHousingType) return `${baseHeight + 132}px`;
+  if (selectedBuildCategory === "支店") return `${baseHeight + 178}px`;
+  if (selectedBuildCategory === "修繕") return `${baseHeight + 3 * 138}px`;
+
+  const visibleBuildingCount = Object.values(BUILDINGS).filter((building) => {
+    if (selectedBuildCategory !== "住宅") return building.category === selectedBuildCategory;
+    return building.category === "住宅" && building.subCategory === selectedHousingType;
+  }).length;
+
+  const cardHeight = 166;
+  const estimatedHeight = baseHeight + Math.max(1, visibleBuildingCount) * cardHeight + 18;
+  return `${Math.max(460, Math.min(1180, estimatedHeight))}px`;
 }
 
 return (
@@ -29785,7 +30569,7 @@ return (
                 }
               }}
             >
-              {storySequenceIndex < storySequence.length - 1 ? "次へ" : "融資チュートリアルへ"}
+              {storySequenceIndex < storySequence.length - 1 ? "次へ" : currentGameMode === "story_kyoto" ? "京都編を開始" : "融資チュートリアルへ"}
             </button>
           </div>
         </div>
@@ -30400,6 +31184,34 @@ return (
         border: 1px solid rgba(255,255,255,0.78) !important;
         box-shadow: 0 24px 58px rgba(6, 44, 34, 0.28), inset 0 1px 0 rgba(255,255,255,0.90) !important;
       }
+
+      /* v310.15: 建設ビジュアルメニューは内容量に合わせて外枠を伸縮。
+         画面高を超える場合だけ、旧カード内部ではなく外枠全体をスクロールさせる。 */
+      .side-section.floating-panel.floating-panel-build {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: calc(100dvh - 74px) !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        overscroll-behavior: contain !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      .side-section.floating-panel.floating-panel-build .floating-panel-header {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 20 !important;
+      }
+      .side-section.floating-panel.floating-panel-build .build-game-menu-v314 {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+      .side-section.floating-panel.floating-panel-build button {
+        touch-action: manipulation;
+      }
+
       .side-section.floating-panel .floating-panel-header {
         min-height: 38px !important;
         padding: 8px 10px !important;
@@ -31413,6 +32225,1044 @@ return (
         html body .side-section.floating-panel .smart-section-card:first-of-type {
           margin-top: 0 !important;
         }
+
+
+      /* v310.4: 上部HUDの詳細ポップアップをHUDのグリッド/フレックス計算から外す。スマホ縦で右端に押し込まれる不具合対策。 */
+      .map-top-hud-v268 > .map-top-hud-popup-v270 {
+        position: absolute !important;
+        left: 6px !important;
+        right: 6px !important;
+        top: calc(100% + 5px) !important;
+        width: auto !important;
+        max-width: calc(100vw - 12px) !important;
+        max-height: min(62dvh, 420px) !important;
+        overflow-y: auto !important;
+        z-index: 90 !important;
+        grid-column: auto !important;
+        grid-row: auto !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+      }
+      .map-top-hud-v268 > .map-top-hud-popup-v270::before {
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: 22px;
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-bottom: 9px solid rgba(255,255,255,0.98);
+      }
+      @media (max-width: 760px) {
+        html body .map-top-hud-v268 > .map-top-hud-popup-v270,
+        html body .playfield-v216 .map-top-hud-v268 > .map-top-hud-popup-v270 {
+          position: absolute !important;
+          left: 4px !important;
+          right: 4px !important;
+          top: 36px !important;
+          width: auto !important;
+          max-width: calc(100vw - 8px) !important;
+          max-height: min(58dvh, 390px) !important;
+          overflow-y: auto !important;
+          z-index: 90 !important;
+          grid-column: auto !important;
+          grid-row: auto !important;
+          flex: none !important;
+        }
+      }
+
+      /* v310.4: 建設メニューは中身に合わせて高さを自動化。初期表示の巨大な空白を削り、カテゴリボタンは少しだけ大きくする。 */
+      .side-section.floating-panel.floating-panel-build {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: calc(100dvh - 70px) !important;
+        overflow: hidden !important;
+      }
+      .side-section.floating-panel.floating-panel-build .build-pop-card {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: calc(100dvh - 124px) !important;
+        overflow-y: auto !important;
+        padding: 8px 10px 10px !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+      }
+      .side-section.floating-panel.floating-panel-build .build-icon-menu {
+        display: grid !important;
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+        gap: 5px !important;
+        margin: 0 0 8px !important;
+      }
+      .side-section.floating-panel.floating-panel-build .build-icon-button {
+        min-width: 0 !important;
+        min-height: 40px !important;
+        padding: 4px 3px !important;
+        border-radius: 10px !important;
+        font-size: 11px !important;
+        line-height: 1.05 !important;
+        font-weight: 900 !important;
+      }
+      .side-section.floating-panel.floating-panel-build .build-icon-button .build-icon {
+        display: block !important;
+        font-size: 18px !important;
+        line-height: 1 !important;
+        margin-bottom: 2px !important;
+      }
+      .side-section.floating-panel.floating-panel-build .build-help-text {
+        margin: 6px 0 0 !important;
+        font-size: 13px !important;
+        line-height: 1.35 !important;
+      }
+      .side-section.floating-panel.floating-panel-build .build-detail-popup {
+        margin-top: 8px !important;
+        padding: 0 !important;
+      }
+      .side-section.floating-panel.floating-panel-build .build-detail-buttons {
+        gap: 6px !important;
+      }
+      @media (max-width: 380px) {
+        .side-section.floating-panel.floating-panel-build .build-icon-menu {
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+        .side-section.floating-panel.floating-panel-build .build-icon-button {
+          min-height: 38px !important;
+        }
+      }
+
+      /* v310.5: JSXの高さ変数を最優先。建設パネルは中身量ごとの指定高さ＋内部スクロールに固定する。 */
+      html body .side-section.floating-panel.floating-panel-build {
+        height: var(--floating-panel-height) !important;
+        min-height: 0 !important;
+        max-height: var(--floating-panel-height) !important;
+        overflow: hidden !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-pop-card {
+        height: calc(var(--floating-panel-height) - 46px) !important;
+        min-height: 0 !important;
+        max-height: calc(var(--floating-panel-height) - 46px) !important;
+        overflow-y: auto !important;
+        overscroll-behavior: contain !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button {
+        min-height: 104px !important;
+        padding: 7px 8px !important;
+        font-size: 12px !important;
+        line-height: 1.18 !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button strong {
+        font-size: 14px !important;
+        line-height: 1.15 !important;
+      }
+      html body .map-top-hud-v268 > .map-top-hud-popup-v270 {
+        display: none !important;
+      }
+      html body .map-top-hud-bubble-wrap-v3106 {
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        z-index: 9100 !important;
+        pointer-events: none !important;
+        width: min(430px, calc(100vw - 20px)) !important;
+        margin: 5px 10px 0 !important;
+      }
+      html body .map-top-hud-bubble-v3106,
+      html body .map-view-dropdown-bubble-v3106 {
+        pointer-events: auto !important;
+        width: 100% !important;
+        max-height: min(44dvh, 340px) !important;
+        overflow-y: auto !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        padding: 8px 10px !important;
+        border-radius: 14px !important;
+        border: 2px solid rgba(38, 74, 63, 0.72) !important;
+        background: rgba(255,255,255,0.98) !important;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.24) !important;
+      }
+      html body .map-top-hud-bubble-v3106::before,
+      html body .map-view-dropdown-bubble-v3106::before {
+        content: "";
+        position: absolute;
+        top: -7px;
+        left: var(--hud-bubble-arrow-left, 24px);
+        width: 12px;
+        height: 12px;
+        transform: rotate(45deg);
+        background: rgba(255,255,255,0.98);
+        border-left: 2px solid rgba(38, 74, 63, 0.72);
+        border-top: 2px solid rgba(38, 74, 63, 0.72);
+      }
+      html body .map-view-dropdown-bubble-v3106 {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+      }
+      html body .map-view-dropdown-bubble-v3106 button {
+        min-height: 32px !important;
+        border-radius: 10px !important;
+        font-size: 12px !important;
+        font-weight: 900 !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build {
+        height: auto !important;
+        max-height: min(var(--floating-panel-height), calc(100dvh - 92px)) !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-pop-card {
+        height: auto !important;
+        max-height: calc(min(var(--floating-panel-height), calc(100dvh - 92px)) - 46px) !important;
+      }
+      /* v310.7: カード一覧の下端クリップ防止。通常は外枠に収め、画面不足時だけ内部スクロール。 */
+      html body .side-section.floating-panel.floating-panel-build .build-detail-popup {
+        overflow: visible !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-buttons {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        align-items: stretch !important;
+        padding-bottom: 10px !important;
+        overflow: visible !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button {
+        min-height: 96px !important;
+        height: auto !important;
+        box-sizing: border-box !important;
+      }
+
+
+      /* v310.8: 建設メニュー最終上書き。v310.5の固定高さルールを無効化し、情報量に応じて外枠を自動伸縮させる。 */
+      html body .side-section.floating-panel.floating-panel-build {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: calc(100dvh - 92px) !important;
+        overflow: hidden !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-pop-card {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: calc(100dvh - 142px) !important;
+        overflow-y: auto !important;
+        padding-bottom: 12px !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-popup {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-buttons {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button {
+        min-height: 112px !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button span {
+        display: block !important;
+      }
+
+
+      /* v310.9: 建設メニューを内容量に合わせて本当に自動伸縮。内部スクロール優先を解除し、カード全文を表示する。 */
+      html body .side-section.floating-panel.floating-panel-build {
+        height: fit-content !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-pop-card {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 8px 10px 14px !important;
+        box-sizing: border-box !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-icon-menu {
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        margin-bottom: 8px !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-icon-button {
+        min-height: 44px !important;
+        padding: 5px 4px !important;
+        font-size: 12px !important;
+        line-height: 1.08 !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-icon-button .build-icon {
+        font-size: 19px !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-popup,
+      html body .side-section.floating-panel.floating-panel-build .build-detail-buttons {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-buttons {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+        align-items: stretch !important;
+        padding-bottom: 0 !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button {
+        min-height: 130px !important;
+        height: auto !important;
+        overflow: visible !important;
+        padding: 8px 9px !important;
+        font-size: 13px !important;
+        line-height: 1.16 !important;
+        box-sizing: border-box !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button strong {
+        font-size: 15px !important;
+        line-height: 1.18 !important;
+        margin-bottom: 2px !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button span {
+        display: block !important;
+        white-space: normal !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .locked-build-label,
+      html body .side-section.floating-panel.floating-panel-build .unlocked-build-label {
+        font-size: 12px !important;
+        line-height: 1.15 !important;
+        margin: 1px 0 2px !important;
+      }
+      @media (max-width: 390px) {
+        html body .side-section.floating-panel.floating-panel-build .build-detail-button {
+          min-height: 136px !important;
+          font-size: 12.5px !important;
+          padding: 8px 8px !important;
+        }
+        html body .side-section.floating-panel.floating-panel-build .build-detail-button strong {
+          font-size: 14px !important;
+        }
+      }
+
+
+      /* v310.10: 建設メニュー実効上書き。
+         自動高さが他ルールで潰されていたため、JSXで算出した --floating-panel-height を最終採用する。
+         内部スクロールは使わず、外枠自体をカテゴリの情報量に合わせて伸ばす。 */
+      html body .side-section.floating-panel.floating-panel-build {
+        height: var(--floating-panel-height) !important;
+        min-height: var(--floating-panel-height) !important;
+        max-height: var(--floating-panel-height) !important;
+        overflow: hidden !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-pop-card {
+        height: calc(var(--floating-panel-height) - 46px) !important;
+        min-height: calc(var(--floating-panel-height) - 46px) !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 7px 9px 10px !important;
+        box-sizing: border-box !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-icon-menu {
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        gap: 5px !important;
+        margin: 0 0 7px !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-icon-button {
+        min-height: 39px !important;
+        padding: 3px 3px !important;
+        font-size: 11.5px !important;
+        line-height: 1.05 !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-icon-button .build-icon {
+        font-size: 17px !important;
+        margin-bottom: 1px !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-popup,
+      html body .side-section.floating-panel.floating-panel-build .build-detail-buttons {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-buttons {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        align-items: stretch !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button {
+        min-height: 118px !important;
+        height: auto !important;
+        overflow: visible !important;
+        padding: 7px 8px !important;
+        font-size: 12.5px !important;
+        line-height: 1.10 !important;
+        box-sizing: border-box !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button strong {
+        font-size: 14.5px !important;
+        line-height: 1.12 !important;
+        margin-bottom: 2px !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button span {
+        display: block !important;
+        white-space: normal !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .locked-build-label,
+      html body .side-section.floating-panel.floating-panel-build .unlocked-build-label {
+        font-size: 11.5px !important;
+        line-height: 1.1 !important;
+        margin: 1px 0 2px !important;
+      }
+
+
+      /* v310.11: 建設メニューを旧CSSから切り離して作り直し。
+         外枠は中身量に合わせる。カードは2列で全体表示。画面に収まらない時だけパネル全体をスクロール。 */
+      html body .side-section.floating-panel.floating-panel-build {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: calc(100dvh - 88px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-pop-card-v311 {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        padding: 8px 10px 12px !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-icon-menu-v311 {
+        display: grid !important;
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        margin: 0 0 8px !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-icon-button-v311 {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 0 !important;
+        min-height: 42px !important;
+        padding: 4px 3px !important;
+        border-radius: 10px !important;
+        font-size: 12px !important;
+        line-height: 1.05 !important;
+        font-weight: 900 !important;
+        border: 1px solid rgba(34, 68, 56, .20) !important;
+        background: rgba(255,255,255,.90) !important;
+        color: #1f2933 !important;
+        box-sizing: border-box !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-icon-button-v311.active {
+        background: linear-gradient(135deg, #0e4f34, #1e7a50) !important;
+        color: #fff !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-icon-v311 {
+        display: block !important;
+        font-size: 18px !important;
+        line-height: 1 !important;
+        margin-bottom: 1px !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-help-text-v311 {
+        margin: 8px 2px 0 !important;
+        font-size: 15px !important;
+        line-height: 1.4 !important;
+        color: #4b5563 !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-popup-v311 {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        margin-top: 8px !important;
+        padding: 0 !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-buttons-v311 {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+        align-items: stretch !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 0 !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button-v311 {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        min-height: 136px !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 9px 10px !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+        font-size: 13.5px !important;
+        line-height: 1.14 !important;
+        text-align: left !important;
+        background: rgba(255,255,255,.86) !important;
+        border: 1px solid rgba(34, 68, 56, .14) !important;
+        color: #1f2933 !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button-v311 strong {
+        display: block !important;
+        font-size: 15.5px !important;
+        line-height: 1.15 !important;
+        margin: 0 0 3px !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button-v311 span {
+        display: block !important;
+        white-space: normal !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button-v311 .locked-build-label,
+      html body .side-section.floating-panel.floating-panel-build .build-detail-button-v311 .unlocked-build-label {
+        font-size: 12.5px !important;
+        line-height: 1.15 !important;
+        margin: 1px 0 2px !important;
+      }
+      @media (max-width: 390px) {
+        html body .side-section.floating-panel.floating-panel-build .build-detail-button-v311 {
+          min-height: 142px !important;
+          font-size: 13px !important;
+          padding: 8px 9px !important;
+        }
+        html body .side-section.floating-panel.floating-panel-build .build-detail-button-v311 strong {
+          font-size: 15px !important;
+        }
+      }
+
+
+      /* v310.13: 建設メニューをソーシャルゲーム風に再設計。旧Windows風の文字列カードを廃止。 */
+      html body .side-section.floating-panel.floating-panel-build {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: calc(100dvh - 72px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        border-radius: 22px !important;
+        border: 2px solid rgba(255,255,255,.78) !important;
+        background:
+          radial-gradient(circle at 18% 0%, rgba(255,238,166,.95), transparent 30%),
+          radial-gradient(circle at 100% 16%, rgba(90,214,162,.35), transparent 35%),
+          linear-gradient(180deg, rgba(18,62,48,.97) 0%, rgba(38,106,72,.96) 42%, rgba(236,249,239,.98) 43%, rgba(232,246,238,.98) 100%) !important;
+        box-shadow: 0 16px 36px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.55) !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build h2 {
+        color: #10251b !important;
+        text-shadow: none !important;
+        background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(239,244,243,.92)) !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .close-btn {
+        z-index: 12 !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-panel-v312 {
+        padding: 8px 10px 12px !important;
+        display: grid !important;
+        gap: 10px !important;
+        box-sizing: border-box !important;
+      }
+      html body .build-hero-v313 {
+        position: relative !important;
+        min-height: 86px !important;
+        border-radius: 22px !important;
+        overflow: hidden !important;
+        padding: 12px 124px 12px 14px !important;
+        color: #fff !important;
+        background:
+          linear-gradient(110deg, rgba(15,47,39,.96), rgba(24,112,70,.92) 55%, rgba(255,193,72,.68)),
+          radial-gradient(circle at 78% 20%, rgba(255,255,255,.22), transparent 28%) !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.38), 0 8px 18px rgba(0,0,0,.20) !important;
+        border: 1px solid rgba(255,255,255,.35) !important;
+      }
+      html body .build-hero-v313::after {
+        content: "🏗️";
+        position: absolute;
+        right: 18px;
+        bottom: -18px;
+        font-size: 82px;
+        opacity: .42;
+        filter: drop-shadow(0 8px 8px rgba(0,0,0,.25));
+      }
+      html body .build-hero-v313 strong {
+        display: block !important;
+        font-size: 19px !important;
+        line-height: 1.12 !important;
+        font-weight: 950 !important;
+        letter-spacing: .02em !important;
+      }
+      html body .build-hero-v313 span {
+        display: block !important;
+        margin-top: 5px !important;
+        font-size: 12.5px !important;
+        line-height: 1.35 !important;
+        opacity: .92 !important;
+      }
+      html body .build-category-grid-v312 {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 7px !important;
+      }
+      html body .build-category-card-v312 {
+        min-width: 0 !important;
+        min-height: 64px !important;
+        border: 1px solid rgba(255,255,255,.45) !important;
+        border-radius: 18px !important;
+        padding: 6px 5px !important;
+        background: linear-gradient(180deg, rgba(255,255,255,.97), rgba(226,238,230,.94)) !important;
+        box-shadow: 0 5px 12px rgba(0,0,0,.13), inset 0 1px 0 rgba(255,255,255,.90) !important;
+        color: #1d3428 !important;
+        display: grid !important;
+        justify-items: center !important;
+        align-content: center !important;
+        gap: 3px !important;
+        text-align: center !important;
+        position: relative !important;
+        overflow: hidden !important;
+      }
+      html body .build-category-card-v312::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, rgba(255,255,255,.55), transparent 38%, rgba(255,255,255,.28));
+        pointer-events: none;
+      }
+      html body .build-category-card-v312.active {
+        background: linear-gradient(135deg, #0b5038, #1fa263 65%, #ffd35d) !important;
+        color: #fff !important;
+        border-color: rgba(255,255,255,.72) !important;
+        box-shadow: 0 7px 16px rgba(9,80,54,.34), inset 0 1px 0 rgba(255,255,255,.40) !important;
+        transform: translateY(-1px) !important;
+      }
+      html body .build-category-icon-v312 {
+        display: grid !important;
+        place-items: center !important;
+        width: 30px !important;
+        height: 30px !important;
+        border-radius: 999px !important;
+        background: rgba(255,255,255,.65) !important;
+        font-size: 20px !important;
+        line-height: 1 !important;
+        position: relative !important;
+        z-index: 1 !important;
+      }
+      html body .build-category-card-v312.active .build-category-icon-v312 {
+        background: rgba(255,255,255,.24) !important;
+      }
+      html body .build-category-text-v312 {
+        display: grid !important;
+        gap: 1px !important;
+        min-width: 0 !important;
+        position: relative !important;
+        z-index: 1 !important;
+      }
+      html body .build-category-text-v312 strong {
+        font-size: 14px !important;
+        line-height: 1.05 !important;
+        font-weight: 950 !important;
+        white-space: nowrap !important;
+      }
+      html body .build-category-text-v312 small {
+        display: none !important;
+      }
+      html body .build-empty-v312 {
+        border-radius: 22px !important;
+        padding: 18px !important;
+        background: rgba(255,255,255,.78) !important;
+        border: 1px dashed rgba(29, 88, 58, .28) !important;
+        display: grid !important;
+        gap: 5px !important;
+        color: #314236 !important;
+        font-size: 14px !important;
+        text-align: center !important;
+      }
+      html body .housing-type-grid-v312 {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+      }
+      html body .housing-type-card-v312 {
+        border-radius: 20px !important;
+        padding: 12px 7px !important;
+        min-height: 98px !important;
+        border: 1px solid rgba(255,255,255,.65) !important;
+        background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(235,247,240,.96)) !important;
+        box-shadow: 0 7px 15px rgba(0,0,0,.13), inset 0 1px 0 rgba(255,255,255,.88) !important;
+        display: grid !important;
+        justify-items: center !important;
+        align-content: center !important;
+        gap: 4px !important;
+        color: #203126 !important;
+      }
+      html body .housing-type-card-v312 span { font-size: 30px !important; line-height: 1 !important; }
+      html body .housing-type-card-v312 strong { font-size: 15.5px !important; line-height: 1.1 !important; }
+      html body .housing-type-card-v312 small { font-size: 10.5px !important; line-height: 1.2 !important; opacity: .78 !important; }
+      html body .build-card-grid-v312 {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 9px !important;
+        align-items: stretch !important;
+      }
+      html body .build-card-grid-v312.one-card-v312 {
+        grid-template-columns: 1fr !important;
+      }
+      html body .build-option-card-v312 {
+        min-width: 0 !important;
+        min-height: 118px !important;
+        padding: 0 !important;
+        border-radius: 22px !important;
+        border: 1px solid rgba(255,255,255,.70) !important;
+        background:
+          linear-gradient(180deg, rgba(255,255,255,.98), rgba(240,248,243,.97)) !important;
+        box-shadow: 0 8px 18px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.92) !important;
+        color: #1f2e25 !important;
+        display: grid !important;
+        grid-template-columns: 82px 1fr !important;
+        gap: 0 !important;
+        text-align: left !important;
+        overflow: hidden !important;
+        position: relative !important;
+      }
+      html body .build-option-card-v312::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(100deg, rgba(255,255,255,.48), transparent 38%, rgba(255,215,106,.12));
+        pointer-events: none;
+      }
+      html body .build-option-card-v312.locked-build-card-v312 {
+        background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(232,232,232,.82)) !important;
+        color: rgba(31,46,37,.70) !important;
+        filter: grayscale(.18) !important;
+      }
+      html body .build-option-art-v313 {
+        position: relative !important;
+        display: grid !important;
+        place-items: center !important;
+        min-height: 118px !important;
+        background: linear-gradient(160deg, rgba(20,110,70,.16), rgba(255,207,80,.22)) !important;
+        border-right: 1px solid rgba(38,90,62,.12) !important;
+      }
+      html body .build-option-art-v313 span {
+        font-size: 43px !important;
+        line-height: 1 !important;
+        filter: drop-shadow(0 5px 5px rgba(0,0,0,.18)) !important;
+      }
+      html body .build-option-body-v313 {
+        position: relative !important;
+        z-index: 1 !important;
+        padding: 9px 10px 9px !important;
+        display: grid !important;
+        gap: 7px !important;
+        align-content: start !important;
+      }
+      html body .build-option-head-v312 {
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: space-between !important;
+        gap: 7px !important;
+        min-width: 0 !important;
+      }
+      html body .build-option-icon-v312 {
+        display: none !important;
+      }
+      html body .build-option-head-v312 strong {
+        display: block !important;
+        font-size: 17.5px !important;
+        line-height: 1.1 !important;
+        font-weight: 950 !important;
+        white-space: normal !important;
+      }
+      html body .build-option-head-v312 small {
+        display: inline-block !important;
+        margin-top: 3px !important;
+        padding: 3px 8px !important;
+        border-radius: 999px !important;
+        font-size: 11px !important;
+        line-height: 1.1 !important;
+        font-weight: 950 !important;
+        background: rgba(255,255,255,.72) !important;
+      }
+      html body .build-status-v312.ok { color: #0d8043 !important; }
+      html body .build-status-v312.locked { color: #c75a67 !important; }
+      html body .build-stat-grid-v312 {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 5px !important;
+      }
+      html body .build-stat-grid-v312 span {
+        min-width: 0 !important;
+        border-radius: 12px !important;
+        padding: 5px 4px !important;
+        background: rgba(255,255,255,.74) !important;
+        border: 1px solid rgba(30, 90, 60, .10) !important;
+        display: grid !important;
+        gap: 1px !important;
+        font-size: 10px !important;
+        line-height: 1.05 !important;
+        color: #637065 !important;
+        text-align: center !important;
+      }
+      html body .build-stat-grid-v312 b {
+        display: block !important;
+        color: #1f2e25 !important;
+        font-size: 12.3px !important;
+        line-height: 1.15 !important;
+        font-weight: 950 !important;
+        white-space: normal !important;
+      }
+      html body .build-cta-v313 {
+        margin-top: 1px !important;
+        border-radius: 999px !important;
+        padding: 7px 10px !important;
+        background: linear-gradient(135deg, #16764b, #25a767) !important;
+        color: #fff !important;
+        font-size: 12.5px !important;
+        font-weight: 950 !important;
+        text-align: center !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.34) !important;
+      }
+      html body .locked-build-card-v312 .build-cta-v313 {
+        background: linear-gradient(135deg, #a7a7a7, #c9c9c9) !important;
+        color: #555 !important;
+      }
+      html body .build-placement-guide-v312 {
+        border-radius: 18px !important;
+        padding: 11px !important;
+        background: rgba(255, 248, 214, .96) !important;
+        border: 1px solid rgba(196, 146, 34, .34) !important;
+        display: grid !important;
+        gap: 6px !important;
+      }
+      html body .build-placement-guide-v312 p {
+        margin: 0 !important;
+        font-size: 13px !important;
+        line-height: 1.35 !important;
+      }
+      html body .build-placement-guide-v312 button {
+        border-radius: 999px !important;
+        padding: 7px 12px !important;
+        font-weight: 900 !important;
+        background: #fff !important;
+      }
+      @media (max-width: 390px) {
+        html body .build-hero-v313 { min-height: 78px !important; padding-right: 104px !important; }
+        html body .build-hero-v313::after { font-size: 72px !important; }
+        html body .build-category-grid-v312 { gap: 6px !important; }
+        html body .build-category-card-v312 { min-height: 58px !important; padding: 5px !important; }
+        html body .build-category-icon-v312 { width: 28px !important; height: 28px !important; font-size: 18px !important; }
+        html body .build-category-text-v312 strong { font-size: 13px !important; }
+        html body .build-option-card-v312 { grid-template-columns: 70px 1fr !important; min-height: 112px !important; }
+        html body .build-option-art-v313 { min-height: 112px !important; }
+        html body .build-option-art-v313 span { font-size: 37px !important; }
+        html body .build-option-body-v313 { padding: 8px !important; gap: 6px !important; }
+        html body .build-option-head-v312 strong { font-size: 16px !important; }
+        html body .build-stat-grid-v312 { gap: 4px !important; }
+        html body .build-stat-grid-v312 span { font-size: 9.5px !important; padding: 4px 3px !important; }
+        html body .build-stat-grid-v312 b { font-size: 11.5px !important; }
+      }
+
+
+      /* v310.16: 建設メニュー外枠の最終上書き。
+         旧ルールの auto/max-height では親枠が伸びなかったため、JSX算出高さを採用する。
+         画面下端を超える場合のみ、内側カードではなくパネル全体をスクロールさせる。 */
+      html body .side-section.floating-panel.floating-panel-build {
+        height: min(var(--floating-panel-height), calc(100dvh - var(--floating-panel-top) - 8px)) !important;
+        min-height: min(var(--floating-panel-height), calc(100dvh - var(--floating-panel-top) - 8px)) !important;
+        max-height: calc(100dvh - var(--floating-panel-top) - 8px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .floating-panel-header {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 40 !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-game-menu-v314 {
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+      html body .side-section.floating-panel.floating-panel-build .build-game-menu-v314 > div:last-child {
+        margin-bottom: 0 !important;
+      }
+      @media (max-width: 760px) and (orientation: portrait) {
+        html body .side-section.floating-panel.floating-panel-build {
+          width: calc(100vw - 8px) !important;
+          max-width: calc(100vw - 8px) !important;
+        }
+      }
+
+
+      /* v310.17: スマホ縦専用の建設メニュー最終制御。
+         親コンテナ/マップ側の overflow に切られないよう fixed 化し、
+         外枠全体をタッチスクロール対象にする。 */
+      @media (max-width: 760px) and (orientation: portrait) {
+        html body .side-section.floating-panel.floating-panel-build {
+          position: fixed !important;
+          left: 4px !important;
+          right: 4px !important;
+          top: var(--floating-panel-top) !important;
+          bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+          width: auto !important;
+          max-width: none !important;
+          height: auto !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          overflow-x: hidden !important;
+          overflow-y: auto !important;
+          touch-action: pan-y !important;
+          overscroll-behavior: contain !important;
+          -webkit-overflow-scrolling: touch !important;
+          z-index: 9200 !important;
+          box-sizing: border-box !important;
+        }
+        html body .side-section.floating-panel.floating-panel-build .floating-panel-header {
+          position: sticky !important;
+          top: 0 !important;
+          z-index: 50 !important;
+          touch-action: none !important;
+        }
+        html body .side-section.floating-panel.floating-panel-build .build-game-menu-v314,
+        html body .side-section.floating-panel.floating-panel-build .build-panel-v312 {
+          height: auto !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          overflow: visible !important;
+          touch-action: pan-y !important;
+          padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px)) !important;
+        }
+        html body .side-section.floating-panel.floating-panel-build .build-card-grid-v312,
+        html body .side-section.floating-panel.floating-panel-build .build-option-card-v312 {
+          overflow: visible !important;
+        }
+      }
+
+
+      /* v310.19: スマホ縦の建設メニューを確実にスクロール可能にする。
+         原因対策: 旧button touch-action: manipulation と下部メニュー重なりで、カード上の縦スワイプが拾われなかった。
+         パネルは下部メニューの上までに固定し、中身(build-game-menu)だけを縦スクロールさせる。 */
+      @media (max-width: 760px) and (orientation: portrait) {
+        html body .side-section.floating-panel.floating-panel-build {
+          position: fixed !important;
+          left: 4px !important;
+          right: 4px !important;
+          top: var(--floating-panel-top) !important;
+          bottom: calc(92px + env(safe-area-inset-bottom, 0px)) !important;
+          width: auto !important;
+          max-width: none !important;
+          height: auto !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          overflow: hidden !important;
+          touch-action: pan-y !important;
+          overscroll-behavior: contain !important;
+          z-index: 9200 !important;
+          box-sizing: border-box !important;
+          display: flex !important;
+          flex-direction: column !important;
+        }
+        html body .side-section.floating-panel.floating-panel-build .floating-panel-header {
+          flex: 0 0 auto !important;
+          position: relative !important;
+          top: 0 !important;
+          z-index: 60 !important;
+          touch-action: none !important;
+        }
+        html body .side-section.floating-panel.floating-panel-build .build-game-menu-v314,
+        html body .side-section.floating-panel.floating-panel-build .build-panel-v312,
+        html body .side-section.floating-panel.floating-panel-build .build-pop-card,
+        html body .side-section.floating-panel.floating-panel-build .build-pop-card-v311 {
+          flex: 1 1 auto !important;
+          min-height: 0 !important;
+          height: auto !important;
+          max-height: none !important;
+          overflow-x: hidden !important;
+          overflow-y: auto !important;
+          -webkit-overflow-scrolling: touch !important;
+          overscroll-behavior: contain !important;
+          touch-action: pan-y !important;
+          padding-bottom: 18px !important;
+          box-sizing: border-box !important;
+        }
+        html body .side-section.floating-panel.floating-panel-build button,
+        html body .side-section.floating-panel.floating-panel-build .build-option-card-v312,
+        html body .side-section.floating-panel.floating-panel-build .build-category-card-v312,
+        html body .side-section.floating-panel.floating-panel-build .build-card-grid-v312 {
+          touch-action: pan-y !important;
+        }
+      }
+
+
+      /* v310.20: 建設メニュー下スクロール強制修正。
+         スマホ縦ではドラッグ用の可変高さを捨て、画面内の固定スクロール窓にする。
+         下部メニューに隠れないよう bottom を大きめに取り、section 自体をスクロール対象にする。 */
+      @media (max-width: 760px) and (orientation: portrait) {
+        html body .app section.side-section.floating-panel.floating-panel-build,
+        html body section.side-section.floating-panel.floating-panel-build,
+        html body .side-section.floating-panel.floating-panel-build {
+          position: fixed !important;
+          left: 4px !important;
+          right: 4px !important;
+          top: 74px !important;
+          bottom: calc(116px + env(safe-area-inset-bottom, 0px)) !important;
+          width: auto !important;
+          max-width: none !important;
+          height: calc(100dvh - 190px - env(safe-area-inset-bottom, 0px)) !important;
+          min-height: 260px !important;
+          max-height: none !important;
+          overflow-x: hidden !important;
+          overflow-y: scroll !important;
+          -webkit-overflow-scrolling: touch !important;
+          overscroll-behavior-y: contain !important;
+          touch-action: pan-y !important;
+          resize: none !important;
+          display: block !important;
+          box-sizing: border-box !important;
+          z-index: 12000 !important;
+        }
+        html body .side-section.floating-panel.floating-panel-build .floating-panel-header {
+          position: sticky !important;
+          top: 0 !important;
+          z-index: 80 !important;
+          flex: none !important;
+          touch-action: pan-y !important;
+        }
+        html body .side-section.floating-panel.floating-panel-build .floating-panel-resize-handle {
+          display: none !important;
+        }
+        html body .side-section.floating-panel.floating-panel-build .build-game-menu-v314,
+        html body .side-section.floating-panel.floating-panel-build .build-panel-v312,
+        html body .side-section.floating-panel.floating-panel-build .build-pop-card,
+        html body .side-section.floating-panel.floating-panel-build .build-pop-card-v311 {
+          display: grid !important;
+          height: auto !important;
+          min-height: 0 !important;
+          max-height: none !important;
+          overflow: visible !important;
+          touch-action: pan-y !important;
+          padding-bottom: calc(160px + env(safe-area-inset-bottom, 0px)) !important;
+          box-sizing: border-box !important;
+        }
+        html body .side-section.floating-panel.floating-panel-build button,
+        html body .side-section.floating-panel.floating-panel-build * {
+          touch-action: pan-y !important;
+        }
+      }
+
       `}</style>
 
         {!titleFullPageModal && (
@@ -31939,6 +33789,7 @@ return (
                     { key: "chapter_1_2", title: "1-2章 岐阜編", sub: "完成済み自社建物3棟を目指します。", unlocked: progress >= 2 || titleAccountData.unlockedStoryAkari },
                     { key: "chapter_1_3", title: "1-3章 名古屋準備編", sub: "銀行融資・支店建設・社員配属を確認します。", unlocked: progress >= 3 },
                     { key: "chapter_1_4", title: "1-4章 名古屋編", sub: "実質月利益50万円以上を目指します。", unlocked: progress >= 4 },
+                    { key: "chapter_kyoto", title: "第3章 京都編", sub: "観光施設を建て、京都の観光経営でライバル会社に挑みます。", unlocked: progress >= 5 },
                   ];
                   return (
                     <>
@@ -31964,18 +33815,19 @@ return (
                   <h2 style={{ margin: "0 0 10px", fontSize: 24, lineHeight: 1.15, whiteSpace: "nowrap" }}>フリーマップ選択</h2>
                   <div style={{ display: "grid", gap: 8 }}>
                     {FREE_MAP_OPTIONS.map((option) => {
-                      const data = getFreeModeSavedData(option.key);
+                      const unlocked = isFreeMapOptionUnlocked(option.key);
+                      const data = unlocked ? getFreeModeSavedData(option.key) : null;
                       const hasData = Boolean(data);
-                      const dateText = data ? getGameDate(data.month ?? 1).label : "未開始";
-                      const moneyText = data ? `${Number(data.money ?? 0).toLocaleString()}万円` : "新規開始";
+                      const dateText = unlocked ? (data ? getGameDate(data.month ?? 1).label : "未開始") : getFreeMapUnlockRequirement(option.key);
+                      const moneyText = unlocked ? (data ? `${Number(data.money ?? 0).toLocaleString()}万円` : "新規開始") : "🔒 未解放";
                       return (
-                        <div key={option.key} style={{ padding: "10px 12px", borderRadius: 16, border: "1px solid #cfe2d3", background: hasData ? "linear-gradient(145deg,#edf5ef,#d8f0e2)" : "#fff", color: "#1d2b22", textAlign: "left", fontWeight: 900 }}>
-                          <button type="button" onClick={() => hasData ? openFreeMapFromTitle(option.key) : resetFreeMapFromTitle(option.key)} style={{ width: "100%", border: "none", background: "transparent", color: "#1d2b22", textAlign: "left", fontWeight: 900, cursor: "pointer", padding: 0 }}>
-                            <div style={{ fontSize: 16, lineHeight: 1.2 }}>🏙 {option.label}</div>
+                        <div key={option.key} style={{ padding: "10px 12px", borderRadius: 16, border: unlocked ? "1px solid #cfe2d3" : "1px solid #d8d8d8", background: !unlocked ? "#eef0ed" : hasData ? "linear-gradient(145deg,#edf5ef,#d8f0e2)" : "#fff", color: unlocked ? "#1d2b22" : "#7c877d", textAlign: "left", fontWeight: 900, opacity: unlocked ? 1 : 0.68 }}>
+                          <button type="button" disabled={!unlocked} onClick={() => hasData ? openFreeMapFromTitle(option.key) : resetFreeMapFromTitle(option.key)} style={{ width: "100%", border: "none", background: "transparent", color: unlocked ? "#1d2b22" : "#7c877d", textAlign: "left", fontWeight: 900, cursor: unlocked ? "pointer" : "not-allowed", padding: 0 }}>
+                            <div style={{ fontSize: 16, lineHeight: 1.2 }}>{unlocked ? "🏙" : "🔒"} {option.label}</div>
                             <div style={{ fontSize: 11, marginTop: 3, opacity: 0.75, lineHeight: 1.35 }}>{option.description}</div>
                             <div style={{ fontSize: 11, marginTop: 4, opacity: 0.8 }}>{dateText} / {moneyText}</div>
                           </button>
-                          {hasData ? (
+                          {unlocked && hasData ? (
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
                               <button type="button" onClick={() => openFreeMapFromTitle(option.key)} style={{ padding: "9px 10px", borderRadius: 999, border: "1px solid #86b894", background: "#ffffff", color: "#1d5c3a", fontWeight: 900, cursor: "pointer" }}>
                                 続きから
@@ -32241,7 +34093,7 @@ return (
                   </div>
                   <h3 style={{ margin: "14px 0 8px", fontSize: 15 }}>受取履歴</h3>
                   <div style={{ display: "grid", gap: 8, maxHeight: 180, overflowY: "auto", paddingRight: 3 }}>
-                    {homePresentBoxHistory.length > 0 ? homePresentBoxHistory.map((item) => (
+                    {homeLoginBonusHistory.length > 0 ? homeLoginBonusHistory.map((item) => (
                       <div key={item.id} style={{ display: "grid", gridTemplateColumns: "38px 1fr", gap: 9, alignItems: "center", padding: 10, borderRadius: 14, background: "#ffffff", border: "1px solid #d8e0d8" }}>
                         <span style={{ width: 38, height: 38, borderRadius: 13, display: "grid", placeItems: "center", background: "#fff7df", fontWeight: 900 }}>{item.icon ?? "🎁"}</span>
                         <span>
@@ -32291,7 +34143,7 @@ return (
                         </button>
                       )}
                       <div style={{ display: "grid", gap: 6, maxHeight: 120, overflowY: "auto" }}>
-                        {homePresentBoxHistory.length > 0 ? homePresentBoxHistory.slice(0, 5).map((item) => (
+                        {homeLoginBonusHistory.length > 0 ? homeLoginBonusHistory.slice(0, 5).map((item) => (
                           <div key={item.id} style={{ display: "grid", gridTemplateColumns: "30px 1fr", gap: 8, alignItems: "center", padding: 8, borderRadius: 12, background: "#ffffff", border: "1px solid #ead79a" }}>
                             <span style={{ width: 30, height: 30, borderRadius: 10, display: "grid", placeItems: "center", background: "#fff7df" }}>{item.icon ?? "🎁"}</span>
                             <span><strong style={{ fontSize: 12 }}>{item.text ?? item.name}</strong><small style={{ display: "block", color: "#61705f" }}>{item.source ?? "報酬"} / {item.date ?? ""}</small></span>
@@ -33446,6 +35298,22 @@ return (
         </div>
       )}
 
+      {currentGameMode === "story_kyoto" && (
+        <div className={`gifu-goal-panel nagoya-goal-panel ${hasClearedKyotoChapter ? "cleared" : ""}`}>
+          <div>
+            <strong>{hasClearedKyotoChapter ? "京都編クリア" : hasCompletedKyotoTourismTutorial ? "京都編本編" : "京都編チュートリアル"}</strong>
+            {!hasCompletedKyotoTourismTutorial ? (
+              <span>観光施設 {kyotoTourismBuildingCount.toLocaleString()} / {KYOTO_TUTORIAL_TOURISM_BUILDING_COUNT.toLocaleString()}棟</span>
+            ) : (
+              <span>観光施設 {kyotoTourismBuildingCount.toLocaleString()} / {KYOTO_FINAL_TOURISM_BUILDING_COUNT.toLocaleString()}棟・純資産 {netWorthAfterDebt.toLocaleString()} / {KYOTO_FINAL_NET_WORTH.toLocaleString()}万円</span>
+            )}
+            {hasCompletedKyotoTourismTutorial && !hasClearedKyotoChapter && (
+              <span>ライバル：{KYOTO_RIVAL_COMPANY_NAME}</span>
+            )}
+          </div>
+        </div>
+      )}
+
       {currentGameMode === "story_nagoya" && hasClearedNagoyaChapter && !storyEvent && !storySequence && (
         <div className="story-next-chapter-panel story-first-part-complete-panel">
           <div>
@@ -33454,6 +35322,7 @@ return (
             <span>このまま経営を続けるか、保存してタイトルへ戻れます。</span>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+            <button type="button" onClick={startKyotoChapter}>京都編へ進む</button>
             <button type="button" onClick={continueAfterStoryFirstPart}>経営を続ける</button>
             <button type="button" onClick={returnToTitleAfterStoryFirstPart}>タイトルへ戻る</button>
           </div>
@@ -33541,66 +35410,83 @@ return (
     <span>🔍</span>
   </button>
 
-  {isMapViewMenuOpen && (
-    <div className="map-view-dropdown-hud-v270" aria-label="マップ表示切替">
-      <button type="button" className={mapViewMode === "normal" ? "active" : ""} onClick={() => { setMapViewMode("normal"); setIsMapViewMenuOpen(false); }}>通常表示</button>
-      <button type="button" className={mapViewMode === "landPrice" ? "active" : ""} onClick={() => { setMapViewMode("landPrice"); setIsMapViewMenuOpen(false); }}>地価表示</button>
-      <button type="button" className={mapViewMode === "housingDemand" ? "active" : ""} onClick={() => { setMapViewMode("housingDemand"); setIsMapViewMenuOpen(false); }}>住宅需要</button>
-      <button type="button" className={mapViewMode === "commercialDemand" ? "active" : ""} onClick={() => { setMapViewMode("commercialDemand"); setIsMapViewMenuOpen(false); }}>商業需要</button>
-      <button type="button" className={mapViewMode === "industrialDemand" ? "active" : ""} onClick={() => { setMapViewMode("industrialDemand"); setIsMapViewMenuOpen(false); }}>工業需要</button>
-    </div>
-  )}
+  {/* v310.6: isMapViewMenuOpen はHUD外の吹き出しで表示 */}
 
-  {isHeadquarterInfoOpen && (
-    <div className="map-top-hud-popup-v270">
-      <div className="map-top-hud-popup-title-v270"><span>🏢 本社Lv詳細</span><button type="button" aria-label="閉じる" title="閉じる" onClick={() => setIsHeadquarterInfoOpen(false)} style={{ width: 32, minWidth: 32, maxWidth: 32, height: 20, minHeight: 20, maxHeight: 20, borderRadius: 6, padding: 0, lineHeight: 1, boxShadow: "none" }}>×</button></div>
-      <div className="map-top-hud-popup-grid-v270">
-        <span>現在の本社Lv</span><strong>{headquarterLevel}</strong>
-        <span>本社EXP</span><strong>{headquarterNextLevelInfo.isMaxLevel ? "最大Lv" : `${headquarterNextLevelInfo.exp} / ${headquarterNextLevelInfo.requiredExp}`}</strong>
-        <span>社員呼び出し枠</span><strong>{employees.length}/{employeeCallLimit}人</strong>
-      </div>
-      <div className="headquarter-next-reward-v278">
-        <span>次レベルアップ時</span>
-        <strong>{headquarterNextLevelRewardText}</strong>
-      </div>
-    </div>
-  )}
 
-  {isDateInfoOpen && (
-    <div className="map-top-hud-popup-v270">
-      <div className="map-top-hud-popup-title-v270"><span>📅 進行・プレイヤー情報</span><button type="button" aria-label="閉じる" title="閉じる" onClick={() => setIsDateInfoOpen(false)} style={{ width: 32, minWidth: 32, maxWidth: 32, height: 20, minHeight: 20, maxHeight: 20, borderRadius: 6, padding: 0, lineHeight: 1, boxShadow: "none" }}>×</button></div>
-      <div className="map-top-hud-popup-grid-v270">
-        <span>現在</span><strong>{gameDate.label}</strong>
-        <span>経過</span><strong>{month}ヶ月</strong>
-        <span>プレイヤーランク</span><strong>{playerRank}</strong>
-        <span>本社Lv</span><strong>{headquarterLevel}</strong>
-        <span>社員呼び出し枠</span><strong>{employees.length}/{employeeCallLimit}人</strong>
-        <span>人口</span><strong>{totalPopulation.toLocaleString()}</strong>
-        <span>保管社員</span><strong>{employeeStorage.length}人</strong>
-        <span>支店</span><strong>{branchCount}店</strong>
-      </div>
-    </div>
-  )}
+  {/* v310.6: isHeadquarterInfoOpen はHUD外の吹き出しで表示 */}
 
-  {isMoneyInfoOpen && (
-    <div className="map-top-hud-popup-v270">
-      <div className="map-top-hud-popup-title-v270"><span>💰 資産</span><button type="button" aria-label="閉じる" title="閉じる" onClick={() => setIsMoneyInfoOpen(false)} style={{ width: 32, minWidth: 32, maxWidth: 32, height: 20, minHeight: 20, maxHeight: 20, borderRadius: 6, padding: 0, lineHeight: 1, boxShadow: "none" }}>×</button></div>
-      <div className="map-top-hud-popup-grid-v270">
-        <span>所持金</span><strong>{money.toLocaleString()}万</strong>
-        <span>土地・建物</span><strong>{Math.round(assetValue).toLocaleString()}万</strong>
-        <span>資産総額</span><strong>{Math.round(money + assetValue).toLocaleString()}万</strong>
-        <span>借入残高</span><strong>{totalLoanRemaining.toLocaleString()}万</strong>
-        <span>実質資産</span><strong>{netWorthAfterDebt.toLocaleString()}万</strong>
-        <span>月家賃</span><strong>{totalRent.toLocaleString()}万</strong>
-        <span>給与</span><strong>{employeePayroll.toLocaleString()}万</strong>
-        <span>維持費</span><strong>{buildingMaintenance.toLocaleString()}万</strong>
-        <span>月返済</span><strong>{totalMonthlyLoanPayment.toLocaleString()}万</strong>
-        <span>実質月利益</span><strong>{monthlyProfitSign}{actualMonthlyProfit.toLocaleString()}万</strong>
-        <span>空室率</span><strong>{vacancyRoomStats.vacantRooms}/{vacancyRoomStats.totalRooms}戸・{vacancyRate}%</strong>
-      </div>
-    </div>
-  )}
+
+  {/* v310.6: isDateInfoOpen はHUD外の吹き出しで表示 */}
+
+
+  {/* v310.6: isMoneyInfoOpen はHUD外の吹き出しで表示 */}
+
 </div>
+
+{(isMapViewMenuOpen || isHeadquarterInfoOpen || isDateInfoOpen || isMoneyInfoOpen) && (
+  <div className="map-top-hud-bubble-wrap-v3106" aria-label="経営ステータス詳細">
+    {isMapViewMenuOpen && (
+      <div className="map-view-dropdown-bubble-v3106" style={{ "--hud-bubble-arrow-left": "116px" }} aria-label="マップ表示切替">
+        <button type="button" className={mapViewMode === "normal" ? "active" : ""} onClick={() => { setMapViewMode("normal"); setIsMapViewMenuOpen(false); }}>通常表示</button>
+        <button type="button" className={mapViewMode === "landPrice" ? "active" : ""} onClick={() => { setMapViewMode("landPrice"); setIsMapViewMenuOpen(false); }}>地価表示</button>
+        <button type="button" className={mapViewMode === "housingDemand" ? "active" : ""} onClick={() => { setMapViewMode("housingDemand"); setIsMapViewMenuOpen(false); }}>住宅需要</button>
+        <button type="button" className={mapViewMode === "commercialDemand" ? "active" : ""} onClick={() => { setMapViewMode("commercialDemand"); setIsMapViewMenuOpen(false); }}>商業需要</button>
+        <button type="button" className={mapViewMode === "industrialDemand" ? "active" : ""} onClick={() => { setMapViewMode("industrialDemand"); setIsMapViewMenuOpen(false); }}>工業需要</button>
+        <button type="button" className={mapViewMode === "tourismDemand" ? "active" : ""} onClick={() => { setMapViewMode("tourismDemand"); setIsMapViewMenuOpen(false); }}>観光需要</button>
+      </div>
+    )}
+
+    {isHeadquarterInfoOpen && (
+      <div className="map-top-hud-bubble-v3106" style={{ ...mapTopHudPopupInlineStyle, "--hud-bubble-arrow-left": "28px" }}>
+        <div className="map-top-hud-popup-title-v270"><span>🏢 本社Lv詳細</span><button type="button" aria-label="閉じる" title="閉じる" onClick={() => setIsHeadquarterInfoOpen(false)} style={{ width: 32, minWidth: 32, maxWidth: 32, height: 20, minHeight: 20, maxHeight: 20, borderRadius: 6, padding: 0, lineHeight: 1, boxShadow: "none" }}>×</button></div>
+        <div className="map-top-hud-popup-grid-v270">
+          <span>現在の本社Lv</span><strong>{headquarterLevel}</strong>
+          <span>本社EXP</span><strong>{headquarterNextLevelInfo.isMaxLevel ? "最大Lv" : `${headquarterNextLevelInfo.exp} / ${headquarterNextLevelInfo.requiredExp}`}</strong>
+          <span>社員呼び出し枠</span><strong>{employees.length}/{employeeCallLimit}人</strong>
+        </div>
+        <div className="headquarter-next-reward-v278">
+          <span>次レベルアップ時</span>
+          <strong>{headquarterNextLevelRewardText}</strong>
+        </div>
+      </div>
+    )}
+
+    {isDateInfoOpen && (
+      <div className="map-top-hud-bubble-v3106" style={{ ...mapTopHudPopupInlineStyle, "--hud-bubble-arrow-left": "190px" }}>
+        <div className="map-top-hud-popup-title-v270"><span>📅 進行・プレイヤー情報</span><button type="button" aria-label="閉じる" title="閉じる" onClick={() => setIsDateInfoOpen(false)} style={{ width: 32, minWidth: 32, maxWidth: 32, height: 20, minHeight: 20, maxHeight: 20, borderRadius: 6, padding: 0, lineHeight: 1, boxShadow: "none" }}>×</button></div>
+        <div className="map-top-hud-popup-grid-v270">
+          <span>現在</span><strong>{gameDate.label}</strong>
+          <span>経過</span><strong>{month}ヶ月</strong>
+          <span>プレイヤーランク</span><strong>{playerRank}</strong>
+          <span>本社Lv</span><strong>{headquarterLevel}</strong>
+          <span>社員呼び出し枠</span><strong>{employees.length}/{employeeCallLimit}人</strong>
+          <span>人口</span><strong>{totalPopulation.toLocaleString()}</strong>
+          <span>保管社員</span><strong>{employeeStorage.length}人</strong>
+          <span>支店</span><strong>{branchCount}店</strong>
+        </div>
+      </div>
+    )}
+
+    {isMoneyInfoOpen && (
+      <div className="map-top-hud-bubble-v3106" style={{ ...mapTopHudPopupInlineStyle, "--hud-bubble-arrow-left": "258px" }}>
+        <div className="map-top-hud-popup-title-v270"><span>💰 資産</span><button type="button" aria-label="閉じる" title="閉じる" onClick={() => setIsMoneyInfoOpen(false)} style={{ width: 32, minWidth: 32, maxWidth: 32, height: 20, minHeight: 20, maxHeight: 20, borderRadius: 6, padding: 0, lineHeight: 1, boxShadow: "none" }}>×</button></div>
+        <div className="map-top-hud-popup-grid-v270">
+          <span>所持金</span><strong>{money.toLocaleString()}万</strong>
+          <span>土地・建物</span><strong>{Math.round(assetValue).toLocaleString()}万</strong>
+          <span>資産総額</span><strong>{Math.round(money + assetValue).toLocaleString()}万</strong>
+          <span>借入残高</span><strong>{totalLoanRemaining.toLocaleString()}万</strong>
+          <span>実質資産</span><strong>{netWorthAfterDebt.toLocaleString()}万</strong>
+          <span>月家賃</span><strong>{totalRent.toLocaleString()}万</strong>
+          <span>給与</span><strong>{employeePayroll.toLocaleString()}万</strong>
+          <span>維持費</span><strong>{buildingMaintenance.toLocaleString()}万</strong>
+          <span>月返済</span><strong>{totalMonthlyLoanPayment.toLocaleString()}万</strong>
+          <span>実質月利益</span><strong>{monthlyProfitSign}{actualMonthlyProfit.toLocaleString()}万</strong>
+          <span>空室率</span><strong>{vacancyRoomStats.vacantRooms}/{vacancyRoomStats.totalRooms}戸・{vacancyRate}%</strong>
+        </div>
+      </div>
+    )}
+  </div>
+)}
 <div className="game-layout"></div>
 
       <main className={`main-layout ${(activePanel === "home" || activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "employeeRecruit" || activePanel === "employeeLibrary" || activePanel === "property" || activePanel === "log" || activePanel === "option" || activePanel === "info" || activePanel === "bank") ? "full-panel" : ""}`}>
@@ -33850,7 +35736,13 @@ return (
       "--floating-panel-left": `${floatingPanel.x}px`,
       "--floating-panel-top": `${floatingPanel.y}px`,
       "--floating-panel-width": `${floatingPanel.width}px`,
-      "--floating-panel-height": activePanel === "land" && selectedTile && selectedTile.feature !== FEATURE.HQ && selectedTile.feature !== FEATURE.BRANCH ? "auto" : `${floatingPanel.height}px`,
+      "--floating-panel-height": activePanel === "build"
+        ? getBuildFloatingPanelHeightValue()
+        : (activePanel === "land" && selectedTile && selectedTile.feature !== FEATURE.HQ && selectedTile.feature !== FEATURE.BRANCH)
+          ? "auto"
+          : `${floatingPanel.height}px`,
+      height: activePanel === "build" ? undefined : undefined,
+      maxHeight: activePanel === "build" ? undefined : undefined,
     } : undefined}
   >
     {isFloatingPanelMode() && (
@@ -34027,6 +35919,7 @@ return (
               <div className="smart-info-item"><span>座標</span><strong>{selectedTile.x},{selectedTile.y}</strong></div>
               <div className="smart-info-item"><span>所有</span><strong>{ownerName}</strong></div>
               <div className="smart-info-item"><span>地域</span><strong>{zoneName}</strong></div>
+              <div className="smart-info-item"><span>観光需要</span><strong>{getTourismDemandScore(selectedTile)}</strong></div>
             </div>
           </div>
 
@@ -34269,7 +36162,7 @@ return (
       };
       const getOfficeShortLabel = (officeTile, includeArea = false) => {
         const officeId = officeTile.officeId ?? "hq";
-        const currentAreaLabel = getGameAreaLabel(currentGameMode, isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : freeMapKey);
+        const currentAreaLabel = getGameAreaLabel(currentGameMode, isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null);
         const baseLabel = (() => {
           if (officeId === "hq") return "本社";
           const match = String(officeTile.officeName ?? officeTile.hqName ?? "").match(/\d+/);
@@ -34515,17 +36408,51 @@ return (
 )}
 
 {activePanel === "build" && (
-  <div className="detail-card build-pop-card">
+  <div
+    className="build-game-menu-v314"
+    style={{
+      display: "grid",
+      gap: 10,
+      padding: "8px 10px 12px",
+      color: "#14251c",
+      boxSizing: "border-box",
+      background: "linear-gradient(180deg, rgba(13,56,43,0.06), rgba(255,255,255,0.78))",
+      borderRadius: 18,
+    }}
+  >
+    <div
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        minHeight: 94,
+        borderRadius: 22,
+        padding: "13px 118px 13px 14px",
+        background: "linear-gradient(135deg, #0b3f31 0%, #118251 54%, #f4c34e 100%)",
+        color: "white",
+        boxShadow: "0 10px 24px rgba(6,58,39,.28), inset 0 1px 0 rgba(255,255,255,.35)",
+        border: "1px solid rgba(255,255,255,.38)",
+      }}
+    >
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 78% 18%, rgba(255,255,255,.30), transparent 25%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", right: 13, bottom: -16, fontSize: 82, opacity: .46, filter: "drop-shadow(0 8px 8px rgba(0,0,0,.28))" }}>🏗️</div>
+      <strong style={{ position: "relative", display: "block", fontSize: 20, lineHeight: 1.08, fontWeight: 950, letterSpacing: ".02em" }}>街づくり建設</strong>
+      <span style={{ position: "relative", display: "block", marginTop: 6, fontSize: 12.5, lineHeight: 1.35, opacity: .94 }}>用途を選んで、費用・家賃・工期・必要マスを確認します。</span>
+      <span style={{ position: "relative", display: "inline-block", marginTop: 8, padding: "4px 10px", borderRadius: 999, background: "rgba(255,255,255,.22)", fontSize: 11.5, fontWeight: 900, border: "1px solid rgba(255,255,255,.26)" }}>
+        {selectedBuildCategory ? `${selectedBuildCategory}を選択中` : "カテゴリを選択"}
+      </span>
+    </div>
 
     {pendingBuildKey && (
-      <div className="build-placement-guide">
-        <p>{BUILDINGS[pendingBuildKey]?.name}を建てる土地を選択中です。行動範囲内の自分の空き土地をマップでクリックしてください。</p>
+      <div style={{ borderRadius: 18, padding: 11, background: "linear-gradient(135deg,#fff6d5,#ffffff)", border: "1px solid rgba(196,146,34,.35)", boxShadow: "0 6px 14px rgba(0,0,0,.08)" }}>
+        <strong>建設位置を選択中</strong>
+        <p style={{ margin: "4px 0 8px", fontSize: 13, lineHeight: 1.35 }}>{BUILDINGS[pendingBuildKey]?.name}を建てる土地を選択中です。行動範囲内の自分の空き土地をマップでクリックしてください。</p>
         <button
           type="button"
           onClick={() => {
             setPendingBuildKey(null);
             setLog("建設する土地の選択を解除しました。");
           }}
+          style={{ borderRadius: 999, padding: "7px 12px", fontWeight: 900, background: "white", border: "1px solid rgba(0,0,0,.15)" }}
         >
           建設選択をやめる
         </button>
@@ -34533,8 +36460,9 @@ return (
     )}
 
     {pendingBranchPlacement && (
-      <div className="build-placement-guide">
-        <p>支店を建てる土地を選択中です。本社・支店の行動範囲内にある自分の空き土地をマップでクリックしてください。近すぎると営業範囲は広がりにくくなります。</p>
+      <div style={{ borderRadius: 18, padding: 11, background: "linear-gradient(135deg,#fff6d5,#ffffff)", border: "1px solid rgba(196,146,34,.35)", boxShadow: "0 6px 14px rgba(0,0,0,.08)" }}>
+        <strong>支店位置を選択中</strong>
+        <p style={{ margin: "4px 0 8px", fontSize: 13, lineHeight: 1.35 }}>支店を建てる土地を選択中です。本社・支店の行動範囲内にある自分の空き土地をマップでクリックしてください。</p>
         <button
           type="button"
           onClick={() => {
@@ -34542,129 +36470,172 @@ return (
             setSelectedBuildCategory(null);
             setLog("支店建設の土地選択を解除しました。");
           }}
+          style={{ borderRadius: 999, padding: "7px 12px", fontWeight: 900, background: "white", border: "1px solid rgba(0,0,0,.15)" }}
         >
           支店建設をやめる
         </button>
       </div>
     )}
 
-    <div className="build-icon-menu">
-  <button
-  className={`build-icon-button ${
-    selectedBuildCategory === "住宅" ? "active" : ""
-  }`}
-  onClick={() => {
-  setSelectedBuildCategory("住宅");
-  setSelectedHousingType(null);
-}}
->
-  <span className="build-icon">🏠</span>
-  <span>住宅</span>
-</button>
-
-      <button
-        className={`build-icon-button ${
-          selectedBuildCategory === "商業" ? "active" : ""
-        }`}
-        onClick={() => { setSelectedBuildCategory("商業"); setSelectedHousingType(null); }}
-      >
-        <span className="build-icon">🏪</span>
-        <span>店舗</span>
-      </button>
-            <button
-        className={`build-icon-button ${
-          selectedBuildCategory === "工業" ? "active" : ""
-        }`}
-        onClick={() => { setSelectedBuildCategory("工業"); setSelectedHousingType(null); }}
-      >
-        <span className="build-icon">🏭</span>
-        <span>工業</span>
-      </button>
-
-      <button
-        className={`build-icon-button ${
-          selectedBuildCategory === "支店" ? "active" : ""
-        } ${getNagoyaTutorialGuideClass("branch-build")}`}
-        onClick={() => { setSelectedBuildCategory("支店"); setSelectedHousingType(null); }}
-      >
-        <span className="build-icon">🏢</span>
-        <span>支店</span>
-      </button>
-
-      <button
-        className={`build-icon-button ${
-          selectedBuildCategory === "修繕" ? "active" : ""
-        }`}
-        onClick={() => { setSelectedBuildCategory("修繕"); setSelectedHousingType(null); }}
-      >
-        <span className="build-icon">🔧</span>
-        <span>修繕</span>
-      </button>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
+      {[
+        { key: "住宅", icon: "🏠", label: "住宅", sub: "住まい", gradient: "linear-gradient(135deg,#58b368,#dff7b5)" },
+        { key: "商業", icon: "🏪", label: "店舗", sub: "収益", gradient: "linear-gradient(135deg,#0b7a6b,#78e2bc)" },
+        { key: "工業", icon: "🏭", label: "工業", sub: "雇用", gradient: "linear-gradient(135deg,#4c6078,#c1d3e8)" },
+        { key: "観光", icon: "♨️", label: "観光", sub: "集客", gradient: "linear-gradient(135deg,#dc604d,#ffd184)" },
+        { key: "支店", icon: "🏢", label: "支店", sub: "拡張", gradient: "linear-gradient(135deg,#4386d8,#d5e9ff)" },
+        { key: "修繕", icon: "🔧", label: "修繕", sub: "回復", gradient: "linear-gradient(135deg,#7a58d8,#f0dcff)" },
+      ].map((category) => {
+        const active = selectedBuildCategory === category.key;
+        return (
+          <button
+            key={category.key}
+            type="button"
+            className={category.key === "支店" ? getNagoyaTutorialGuideClass("branch-build") : ""}
+            onClick={() => {
+              setSelectedBuildCategory(category.key);
+              setSelectedHousingType(null);
+            }}
+            style={{
+              position: "relative",
+              overflow: "hidden",
+              minHeight: 70,
+              borderRadius: 19,
+              padding: "7px 6px",
+              border: active ? "2px solid rgba(255,238,133,.95)" : "1px solid rgba(255,255,255,.62)",
+              background: active ? category.gradient : "linear-gradient(180deg,rgba(255,255,255,.96),rgba(232,242,236,.92))",
+              color: active ? "#fff" : "#203329",
+              boxShadow: active ? "0 8px 18px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.38)" : "0 6px 14px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.9)",
+              display: "grid",
+              justifyItems: "center",
+              alignContent: "center",
+              gap: 3,
+              textAlign: "center",
+              transform: active ? "translateY(-1px)" : "none",
+            }}
+          >
+            <span style={{ fontSize: 25, lineHeight: 1, filter: "drop-shadow(0 4px 5px rgba(0,0,0,.18))" }}>{category.icon}</span>
+            <strong style={{ fontSize: 14.5, lineHeight: 1.05, fontWeight: 950 }}>{category.label}</strong>
+            <small style={{ fontSize: 10.5, lineHeight: 1, opacity: active ? .9 : .72, fontWeight: 850 }}>{category.sub}</small>
+          </button>
+        );
+      })}
     </div>
 
     {!selectedBuildCategory && (
-      <p className="build-help-text">
-        建てたい種類を選んでください。
-      </p>
+      <div style={{ borderRadius: 22, padding: 18, background: "rgba(255,255,255,.80)", border: "1px dashed rgba(29,88,58,.28)", display: "grid", gap: 5, textAlign: "center", boxShadow: "inset 0 1px 0 rgba(255,255,255,.86)" }}>
+        <strong>カテゴリを選択してください</strong>
+        <span style={{ fontSize: 13 }}>建物カードで費用・家賃・工期・必要マスを確認できます。</span>
+      </div>
     )}
 
-{selectedBuildCategory && (
-  <div className="build-detail-popup">
-    <div className="build-detail-buttons">
     {selectedBuildCategory === "住宅" && !selectedHousingType && (
-  <>
-    <button
-      className="build-detail-button"
-      onClick={() => setSelectedHousingType("戸建")}
-    >
-      <strong>戸建</strong>
-      <span>平屋・2、3階建て</span>
-    </button>
-
-    <button
-      className="build-detail-button"
-      onClick={() => setSelectedHousingType("アパート")}
-    >
-      <strong>アパート</strong>
-      <span>2、3階建て</span>
-    </button>
-
-    <button
-      className="build-detail-button"
-      onClick={() => setSelectedHousingType("マンション")}
-    >
-      <strong>マンション</strong>
-      <span>5、7階建て</span>
-    </button>
-  </>
-)}
-      {selectedBuildCategory === "支店" && (
-        <>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 9 }}>
+        {[
+          { key: "戸建", icon: "🏡", title: "戸建", desc: "低コスト" },
+          { key: "アパート", icon: "🏘️", title: "アパート", desc: "安定収益" },
+          { key: "マンション", icon: "🏙️", title: "マンション", desc: "大型投資" },
+        ].map((type) => (
           <button
-            className={`build-detail-button ${getNagoyaTutorialGuideClass("branch-build")}`}
-            onClick={startBranchPlacement}
+            key={type.key}
+            type="button"
+            onClick={() => setSelectedHousingType(type.key)}
+            style={{
+              minHeight: 104,
+              borderRadius: 21,
+              padding: "12px 7px",
+              border: "1px solid rgba(255,255,255,.70)",
+              background: "linear-gradient(180deg,#ffffff,#edf8f1)",
+              boxShadow: "0 8px 17px rgba(0,0,0,.14), inset 0 1px 0 rgba(255,255,255,.95)",
+              display: "grid",
+              justifyItems: "center",
+              alignContent: "center",
+              gap: 5,
+              color: "#203126",
+              textAlign: "center",
+            }}
           >
-            <strong>支店</strong>
-            <span>建築費: 1億円</span>
-            <span>営業範囲: 10マス</span>
-            <span>条件: 本社・支店の行動範囲内の自分の空き土地</span>
-            <span>{currentGameMode === "story_nagoya_bridge" && nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH ? "工期: 3ヶ月（チュートリアル）" : "工期: 6ヶ月"}</span>
+            <span style={{ fontSize: 34, lineHeight: 1 }}>{type.icon}</span>
+            <strong style={{ fontSize: 15.5 }}>{type.title}</strong>
+            <small style={{ fontSize: 11, opacity: .72 }}>{type.desc}</small>
           </button>
-        </>
-      )}
+        ))}
+      </div>
+    )}
 
-      {selectedBuildCategory !== "修繕" && selectedBuildCategory !== "支店" &&
-        Object.entries(BUILDINGS)
+    {selectedBuildCategory === "支店" && (
+      <div style={{ display: "grid", gap: 10 }}>
+        <button
+          type="button"
+          className={getNagoyaTutorialGuideClass("branch-build")}
+          onClick={startBranchPlacement}
+          style={{
+            minHeight: 150,
+            borderRadius: 24,
+            overflow: "hidden",
+            padding: 0,
+            border: "1px solid rgba(255,255,255,.74)",
+            background: "linear-gradient(135deg,#eaf5ff,#ffffff)",
+            boxShadow: "0 10px 24px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.95)",
+            display: "grid",
+            gridTemplateColumns: "112px 1fr",
+            color: "#172a20",
+            textAlign: "left",
+          }}
+        >
+          <div style={{ display: "grid", placeItems: "center", background: "linear-gradient(160deg,#4386d8,#d5e9ff)", color: "white", fontSize: 58 }}>🏢</div>
+          <div style={{ padding: 12, display: "grid", gap: 8 }}>
+            <strong style={{ fontSize: 20, lineHeight: 1.1 }}>支店</strong>
+            <span style={{ fontSize: 12.5, lineHeight: 1.35, opacity: .78 }}>営業範囲を広げ、支店エリアの開発拠点にします。</span>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0,1fr))", gap: 6 }}>
+              <span style={{ borderRadius: 12, padding: 6, background: "rgba(255,255,255,.82)", fontSize: 11, textAlign: "center" }}>建築費<b style={{ display: "block", fontSize: 13 }}>1億円</b></span>
+              <span style={{ borderRadius: 12, padding: 6, background: "rgba(255,255,255,.82)", fontSize: 11, textAlign: "center" }}>範囲<b style={{ display: "block", fontSize: 13 }}>10マス</b></span>
+              <span style={{ borderRadius: 12, padding: 6, background: "rgba(255,255,255,.82)", fontSize: 11, textAlign: "center" }}>条件<b style={{ display: "block", fontSize: 13 }}>自社空地</b></span>
+              <span style={{ borderRadius: 12, padding: 6, background: "rgba(255,255,255,.82)", fontSize: 11, textAlign: "center" }}>工期<b style={{ display: "block", fontSize: 13 }}>{currentGameMode === "story_nagoya_bridge" && nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH ? "3ヶ月" : "6ヶ月"}</b></span>
+            </div>
+            <div style={{ borderRadius: 999, padding: "8px 12px", background: "linear-gradient(135deg,#1e74cb,#61b7ff)", color: "white", fontWeight: 950, textAlign: "center" }}>支店建設を開始</div>
+          </div>
+        </button>
+      </div>
+    )}
+
+    {selectedBuildCategory === "修繕" && (
+      <div style={{ display: "grid", gap: 10 }}>
+        {[
+          { key: "light", icon: "🧹", name: "軽修繕", cost: "建築費の3%", effect: "+15%", months: "1ヶ月", color: "linear-gradient(160deg,#62b67a,#e8ffd7)" },
+          { key: "exterior", icon: "🎨", name: "外装工事", cost: "建築費の5%", effect: "+30%", months: "2ヶ月", color: "linear-gradient(160deg,#e1a03e,#fff0bf)" },
+          { key: "major", icon: "🛠️", name: "大規模修繕", cost: "建築費の12%", effect: "+60%", months: "4ヶ月", color: "linear-gradient(160deg,#7a58d8,#f0dcff)" },
+        ].map((repair) => (
+          <button
+            key={repair.key}
+            type="button"
+            onClick={() => repairBuilding(repair.key)}
+            style={{ minHeight: 128, borderRadius: 23, overflow: "hidden", padding: 0, border: "1px solid rgba(255,255,255,.72)", background: "linear-gradient(180deg,#ffffff,#f4fbf6)", boxShadow: "0 9px 20px rgba(0,0,0,.14)", display: "grid", gridTemplateColumns: "94px 1fr", color: "#172a20", textAlign: "left" }}
+          >
+            <div style={{ display: "grid", placeItems: "center", background: repair.color, fontSize: 48 }}>{repair.icon}</div>
+            <div style={{ padding: 12, display: "grid", gap: 7 }}>
+              <strong style={{ fontSize: 18 }}>{repair.name}</strong>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))", gap: 6 }}>
+                <span style={{ borderRadius: 12, padding: 6, background: "rgba(235,247,240,.95)", fontSize: 11, textAlign: "center" }}>費用<b style={{ display: "block", fontSize: 12 }}>{repair.cost}</b></span>
+                <span style={{ borderRadius: 12, padding: 6, background: "rgba(235,247,240,.95)", fontSize: 11, textAlign: "center" }}>効果<b style={{ display: "block", fontSize: 12 }}>{repair.effect}</b></span>
+                <span style={{ borderRadius: 12, padding: 6, background: "rgba(235,247,240,.95)", fontSize: 11, textAlign: "center" }}>工期<b style={{ display: "block", fontSize: 12 }}>{repair.months}</b></span>
+              </div>
+              <div style={{ borderRadius: 999, padding: "7px 12px", background: "linear-gradient(135deg,#16764b,#25a767)", color: "white", fontWeight: 950, textAlign: "center" }}>修繕を実行</div>
+            </div>
+          </button>
+        ))}
+      </div>
+    )}
+
+    {selectedBuildCategory !== "修繕" && selectedBuildCategory !== "支店" && (selectedBuildCategory !== "住宅" || selectedHousingType) && (
+      <div style={{ display: "grid", gap: 11 }}>
+        {Object.entries(BUILDINGS)
           .filter(([, building]) => {
-  if (selectedBuildCategory !== "住宅") {
-    return building.category === selectedBuildCategory;
-  }
-
-  return (
-    building.category === "住宅" &&
-    building.subCategory === selectedHousingType
-  );
-})
+            if (selectedBuildCategory !== "住宅") {
+              return building.category === selectedBuildCategory;
+            }
+            return building.category === "住宅" && building.subCategory === selectedHousingType;
+          })
           .map(([key, building]) => {
             const requiredRank = getRequiredRankForBuilding(key);
             const unlocked = isBuildingUnlockedForRank(key, playerRank);
@@ -34672,12 +36643,16 @@ return (
               tutorialStep === STORY_TUTORIAL_STEPS.BUILD_APARTMENT &&
               key !== "house_1f";
             const canSelectBuilding = unlocked && !tutorialBuildLocked;
+            const categoryIcon = building.category === "商業" ? "🏪" : building.category === "工業" ? "🏭" : building.category === "観光" ? "♨️" : building.subCategory === "マンション" ? "🏙️" : building.subCategory === "アパート" ? "🏘️" : "🏠";
+            const categoryGradient = building.category === "商業" ? "linear-gradient(160deg,#0b7a6b,#75e5bd)" : building.category === "工業" ? "linear-gradient(160deg,#4c6078,#c1d3e8)" : building.category === "観光" ? "linear-gradient(160deg,#dc604d,#ffd184)" : "linear-gradient(160deg,#58b368,#dff7b5)";
+            const monthlyFullRent = Number(building.baseRent || 0) * Number(building.rooms || 0);
 
             return (
               <button
                 key={key}
                 disabled={tutorialBuildLocked}
-                className={`build-detail-button ${canSelectBuilding ? "" : "locked-build-button"} ${tutorialBuildLocked ? "tutorial-locked-build-button" : ""}`}
+                type="button"
+                className={tutorialBuildLocked ? "tutorial-locked-build-button" : ""}
                 onClick={() => {
                   if (tutorialBuildLocked) {
                     showStoryTutorialBlockedMessage();
@@ -34691,59 +36666,57 @@ return (
                   startBuildPlacement(key);
                 }}
                 title={`${building.rooms}室 / ${building.width}×${building.height}マス必要`}
+                style={{
+                  minHeight: 154,
+                  borderRadius: 25,
+                  overflow: "hidden",
+                  padding: 0,
+                  border: canSelectBuilding ? "1px solid rgba(255,255,255,.76)" : "1px solid rgba(200,200,200,.72)",
+                  background: canSelectBuilding ? "linear-gradient(180deg,#ffffff,#f2fbf5)" : "linear-gradient(180deg,#f0f0f0,#dddddd)",
+                  boxShadow: "0 10px 24px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.95)",
+                  color: "#172a20",
+                  display: "grid",
+                  gridTemplateColumns: "108px 1fr",
+                  textAlign: "left",
+                  filter: canSelectBuilding ? "none" : "grayscale(.25)",
+                }}
               >
-                <strong>{building.name}</strong>
-                {tutorialBuildLocked && <span className="locked-build-label">チュートリアル未開放</span>}
-                {!tutorialBuildLocked && !unlocked && <span className="locked-build-label">未開放：Rank{requiredRank}で解放</span>}
-                {canSelectBuilding && <span className="unlocked-build-label">建築可能</span>}
-                <span>建築費:{building.cost}万円</span>
-                <span>戸数:{building.rooms}戸</span>
-                <span>1戸賃料:{building.baseRent}万円</span>
-                <span>満室想定:{building.baseRent * building.rooms}万円</span>
-                <span>必要マス:{building.width}×{building.height}</span>
-                <span>工期:{building.buildMonths}ヶ月</span>
+                <div style={{ position: "relative", display: "grid", placeItems: "center", background: categoryGradient, color: "white", minHeight: 154 }}>
+                  <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 25% 18%, rgba(255,255,255,.42), transparent 30%)" }} />
+                  <span style={{ position: "relative", fontSize: 58, lineHeight: 1, filter: "drop-shadow(0 7px 8px rgba(0,0,0,.22))" }}>{categoryIcon}</span>
+                  <span style={{ position: "absolute", left: 8, top: 8, borderRadius: 999, padding: "3px 7px", background: "rgba(0,0,0,.25)", color: "white", fontSize: 10.5, fontWeight: 950 }}>
+                    {building.width}×{building.height}
+                  </span>
+                </div>
+                <div style={{ padding: "11px 11px 10px", display: "grid", gap: 8, alignContent: "start" }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+                    <div style={{ minWidth: 0 }}>
+                      <strong style={{ display: "block", fontSize: 19, lineHeight: 1.12, fontWeight: 950 }}>{building.name}</strong>
+                      {tutorialBuildLocked && <span style={{ display: "inline-block", marginTop: 4, padding: "3px 8px", borderRadius: 999, background: "#ffe1e5", color: "#c84a5a", fontSize: 11.5, fontWeight: 950 }}>チュートリアル未開放</span>}
+                      {!tutorialBuildLocked && !unlocked && <span style={{ display: "inline-block", marginTop: 4, padding: "3px 8px", borderRadius: 999, background: "#ffe1e5", color: "#c84a5a", fontSize: 11.5, fontWeight: 950 }}>Rank{requiredRank}で解放</span>}
+                      {canSelectBuilding && <span style={{ display: "inline-block", marginTop: 4, padding: "3px 8px", borderRadius: 999, background: "#e4f8e8", color: "#0d8043", fontSize: 11.5, fontWeight: 950 }}>建築可能</span>}
+                    </div>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))", gap: 6 }}>
+                    <span style={{ borderRadius: 13, padding: "6px 4px", background: "rgba(235,247,240,.95)", fontSize: 10.5, color: "#5e6d62", textAlign: "center" }}>費用<b style={{ display: "block", color: "#172a20", fontSize: 12.6 }}>{building.cost.toLocaleString()}万</b></span>
+                    <span style={{ borderRadius: 13, padding: "6px 4px", background: "rgba(235,247,240,.95)", fontSize: 10.5, color: "#5e6d62", textAlign: "center" }}>戸数<b style={{ display: "block", color: "#172a20", fontSize: 12.6 }}>{building.rooms}戸</b></span>
+                    <span style={{ borderRadius: 13, padding: "6px 4px", background: "rgba(235,247,240,.95)", fontSize: 10.5, color: "#5e6d62", textAlign: "center" }}>賃料<b style={{ display: "block", color: "#172a20", fontSize: 12.6 }}>{building.baseRent}万</b></span>
+                    <span style={{ borderRadius: 13, padding: "6px 4px", background: "rgba(235,247,240,.95)", fontSize: 10.5, color: "#5e6d62", textAlign: "center" }}>満室<b style={{ display: "block", color: "#172a20", fontSize: 12.6 }}>{monthlyFullRent.toLocaleString()}万</b></span>
+                    <span style={{ borderRadius: 13, padding: "6px 4px", background: "rgba(235,247,240,.95)", fontSize: 10.5, color: "#5e6d62", textAlign: "center" }}>必要<b style={{ display: "block", color: "#172a20", fontSize: 12.6 }}>{building.width}×{building.height}</b></span>
+                    <span style={{ borderRadius: 13, padding: "6px 4px", background: "rgba(235,247,240,.95)", fontSize: 10.5, color: "#5e6d62", textAlign: "center" }}>工期<b style={{ display: "block", color: "#172a20", fontSize: 12.6 }}>{building.buildMonths}ヶ月</b></span>
+                  </div>
+                  <div style={{ borderRadius: 999, padding: "8px 12px", background: canSelectBuilding ? "linear-gradient(135deg,#16764b,#25a767)" : "linear-gradient(135deg,#a7a7a7,#c9c9c9)", color: canSelectBuilding ? "white" : "#555", fontSize: 13, fontWeight: 950, textAlign: "center", boxShadow: canSelectBuilding ? "inset 0 1px 0 rgba(255,255,255,.34)" : "none" }}>
+                    {canSelectBuilding ? "この建物を選択" : `Rank${requiredRank}で解放`}
+                  </div>
+                </div>
               </button>
             );
           })}
-
-      {selectedBuildCategory === "修繕" && (
-        <>
-          <button
-            className="build-detail-button"
-            onClick={() => repairBuilding("light")}
-          >
-            <strong>軽修繕</strong>
-            <span>費用: 建築費の3%</span>
-            <span>効果: 建物状態 +15%</span>
-            <span>工期: 1ヶ月</span>
-          </button>
-
-          <button
-            className="build-detail-button"
-            onClick={() => repairBuilding("exterior")}
-          >
-            <strong>外装工事</strong>
-            <span>費用: 建築費の5%</span>
-            <span>効果: 建物状態 +30%</span>
-            <span>工期: 2ヶ月</span>
-          </button>
-
-          <button
-            className="build-detail-button"
-            onClick={() => repairBuilding("major")}
-          >
-            <strong>大規模修繕</strong>
-            <span>費用: 建築費の12%</span>
-            <span>効果: 建物状態 +60%</span>
-            <span>工期: 4ヶ月</span>
-          </button>
-        </>
-      )}
-    </div>
+      </div>
+    )}
   </div>
 )}
-  </div>
-)}
+
 </section>
 )}
             
