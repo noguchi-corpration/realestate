@@ -21,7 +21,7 @@ const FREE_MAP_OPTIONS = [
   { key: "free_15", label: "岐阜 15×15", size: 15, description: "軽量。スマホ確認向けの小型マップ。" },
   { key: "free_30", label: "名古屋 30×30", size: 30, description: "岐阜編クリア後に解放。標準サイズの名古屋マップ。" },
   { key: "free_kyoto", label: "京都 30×30", size: 30, description: "京都編クリア後に解放。観光需要と固定観光地がある30×30マップ。", unlockAfterKyoto: true },
-  { key: "free_50", label: "中京圏域 50×50", size: 50, description: "名古屋編クリア後に解放。広めに開発したい方向け。" },
+  { key: "free_50", label: "大阪 50×50", size: 50, description: "京都編以降の大阪方面展開用。広めに開発したい方向け。" },
   { key: "free_70", label: "首都圏 70×70", size: 70, description: "東京編クリア後に解放予定。最大規模の長期プレイ向けマップ。" },
 ];
 
@@ -45,30 +45,169 @@ function isGifuHeadquarterStartMode(mode) {
 }
 
 function isRemoteBranchStartMode(mode) {
-  if (mode === "story_kyoto") return true;
+  if (mode === "story_kyoto" || mode === "story_osaka" || mode === "story_tokyo") return true;
   if (isFreeModeKey(mode)) return !isGifuHeadquarterStartMode(mode);
   return false;
+}
+
+
+function normalizeAreaDisplayName(rawValue = "") {
+  let text = String(rawValue || "").trim();
+  if (!text) return text;
+
+  // v363.12: 旧名称は表示時に必ず新名称へ寄せる。
+  // 中京圏域は今後「大阪」扱いに統一する。
+  text = text.replace(/中京圏域/g, "大阪");
+
+  const areaNames = ["名古屋", "京都", "東京", "首都圏", "大阪", "岐阜"];
+  areaNames.forEach((area) => {
+    const escapedArea = area.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    text = text.replace(new RegExp(`(?:${escapedArea}){2,}(支店|本社)`, "g"), `${area}$1`);
+    text = text.replace(new RegExp(`(${escapedArea}編)(?:${escapedArea}編)+(支店|本社)`, "g"), `$1$2`);
+    text = text.replace(new RegExp(`(${escapedArea})(?:${escapedArea})+(支店|本社)`, "g"), `$1$2`);
+  });
+
+  // 岐阜だけは本社。過去修正で混入した「岐阜支店」は表示時に必ず戻す。
+  text = text.replace(/岐阜編支店/g, "岐阜編本社");
+  text = text.replace(/岐阜支店/g, "岐阜本社");
+
+  return text;
+}
+
+function inferAssignmentAreaKeyFromText(...values) {
+  const text = normalizeAreaDisplayName(values.filter(Boolean).join(" "));
+  if (!text) return "unknown";
+  if (text.includes("岐阜")) return "gifu";
+  if (text.includes("名古屋")) return "nagoya";
+  if (text.includes("京都")) return "kyoto";
+  if (text.includes("大阪")) return "free_50";
+  if (text.includes("東京") || text.includes("首都圏")) return "free_70";
+  return "unknown";
+}
+
+function getCanonicalAreaNameByAssignment(mode = null, freeMapKey = null, areaLabel = "", officeLabel = "") {
+  const normalizedMode = mode ?? null;
+  const normalizedFreeMapKey = freeMapKey ?? (isFreeModeKey(normalizedMode) ? normalizeFreeModeKey(normalizedMode) : null);
+  let areaKey = getSpecialMissionAreaKeyFromMode(normalizedMode, normalizedFreeMapKey);
+  if (areaKey === "unknown" || areaKey === "cleared") {
+    areaKey = inferAssignmentAreaKeyFromText(areaLabel, officeLabel);
+  }
+
+  const storyMode = String(normalizedMode || "").startsWith("story_") || normalizedMode === "story";
+  if (areaKey === "tutorial" || areaKey === "gifu" || areaKey === "free_15") return storyMode ? "岐阜編" : "岐阜";
+  if (areaKey === "nagoya" || areaKey === "free_30") return storyMode ? "名古屋編" : "名古屋";
+  if (areaKey === "kyoto" || areaKey === "free_kyoto") return storyMode ? "京都編" : "京都";
+  if (areaKey === "free_50") return storyMode ? "大阪編" : "大阪";
+  if (areaKey === "free_70") return storyMode ? "首都圏編" : "首都圏";
+
+  const cleanedArea = normalizeAreaDisplayName(String(areaLabel || officeLabel || "").replace(/(本社|支店)$/g, ""));
+  return cleanedArea || "未所属";
+}
+
+function getCanonicalAssignmentDisplayName(mode = null, freeMapKey = null, areaLabel = "", officeId = "", officeLabel = "") {
+  const normalizedOfficeId = String(officeId ?? "");
+  if (!normalizedOfficeId || ["waiting", "storage", "待機"].includes(normalizedOfficeId)) return "待機";
+
+  const areaName = getCanonicalAreaNameByAssignment(mode, freeMapKey, areaLabel, officeLabel);
+  if (!areaName || areaName === "未所属" || areaName === "保管庫") return "待機";
+
+  const areaKey = getSpecialMissionAreaKeyFromMode(mode, freeMapKey);
+  const inferredAreaKey = areaKey === "unknown" || areaKey === "cleared"
+    ? inferAssignmentAreaKeyFromText(areaName, areaLabel, officeLabel)
+    : areaKey;
+
+  // v367: 名古屋編だけは岐阜本社を内包した拡張マップなので、hqを専用表示にする。
+  if (normalizedOfficeId === "hq") {
+    if (mode === "story_nagoya" || mode === "story_nagoya_bridge") return "名古屋編岐阜本社";
+    if (isGifuHeadquarterAreaKey(inferredAreaKey) || areaName.includes("岐阜")) {
+      return normalizeAreaDisplayName(`${areaName}本社`);
+    }
+    return normalizeAreaDisplayName(`${areaName}支店1`);
+  }
+
+  const role = isGifuHeadquarterAreaKey(inferredAreaKey) || areaName.includes("岐阜") ? "本社" : "支店";
+  const branchNumber = role === "支店"
+    ? String(officeLabel || officeId || "").match(/支店(\d+)|branch[_-]?(\d+)/i)
+    : null;
+  const branchSuffix = branchNumber ? (branchNumber[1] || branchNumber[2] || "") : "";
+  return normalizeAreaDisplayName(`${areaName}${role}${branchSuffix}`);
 }
 
 function getGameAreaLabel(mode, freeMapKey = null) {
   const normalizedMode = normalizeFreeModeKey(freeMapKey || mode);
   const freeOption = FREE_MAP_OPTIONS.find((option) => option.key === normalizedMode);
   if (freeOption && (mode === "free" || isFreeModeKey(mode) || freeMapKey)) {
-    return freeOption.label.replace(/\s*\d+×\d+$/, "");
+    return normalizeAreaDisplayName(freeOption.label.replace(/\s*\d+×\d+$/, ""));
   }
-  if (mode === "story_tutorial") return "創業チュートリアル";
+  if (mode === "story_tutorial") return "岐阜編";
   if (mode === "story_gifu" || mode === "story") return "岐阜編";
   if (mode === "story_nagoya" || mode === "story_nagoya_bridge") return "名古屋編";
   if (mode === "story_kyoto") return "京都編";
+  if (mode === "story_osaka") return "大阪編";
+  if (mode === "story_tokyo") return "東京編";
   if (mode === "story_cleared") return "第1部クリア後";
   return "未所属";
 }
 
+function getAreaOfficeRoleLabel(mode, freeMapKey = null, officeId = "hq", fallbackOfficeLabel = "") {
+  const normalizedOfficeId = String(officeId || "hq");
+  const fallback = String(fallbackOfficeLabel || "");
+
+  if (normalizedOfficeId === "storage" || normalizedOfficeId === "waiting") return "待機";
+
+  const areaKey = getSpecialMissionAreaKeyFromMode(mode, freeMapKey);
+  const isGifuHq = isGifuHeadquarterAreaKey(areaKey);
+
+  if (normalizedOfficeId === "hq" || normalizedOfficeId.includes("_hq") || fallback.includes("本社")) {
+    return isGifuHq ? "本社" : "支店";
+  }
+
+  if (fallback) {
+    return isGifuHq ? fallback.replace(/支店/g, "本社") : fallback.replace(/本社/g, "支店");
+  }
+
+  return "支店";
+}
+
+function normalizeOfficeDisplayNameForArea(rawName = "", mode = "", freeMapKey = null) {
+  let normalized = normalizeAreaDisplayName(rawName);
+  if (!normalized) return normalized;
+
+  // 地域名込みの旧所属名は、ここで正規表示へ変換する。
+  if (/(岐阜|名古屋|京都|大阪|東京|首都圏)/.test(normalized)) {
+    return getCanonicalAssignmentDisplayName(mode || null, freeMapKey, normalized, "hq", normalized);
+  }
+
+  const areaKey = getSpecialMissionAreaKeyFromMode(mode, freeMapKey);
+  if (isGifuHeadquarterAreaKey(areaKey)) return normalized.replace(/支店/g, "本社");
+  if (areaKey !== "unknown") return normalized.replace(/本社/g, "支店");
+  return normalized;
+}
+
+function joinAreaAndOfficeName(areaLabel = "", officeName = "") {
+  const area = normalizeAreaDisplayName(areaLabel);
+  const office = normalizeAreaDisplayName(officeName);
+  if (!area) return normalizeOfficeDisplayNameForArea(office);
+  if (!office) return normalizeAreaDisplayName(area);
+  if (office === area || office.startsWith(area)) return normalizeOfficeDisplayNameForArea(office);
+
+  const cleanArea = area.replace(/(本社|支店)$/g, "");
+  const role = office.includes("本社") ? "本社" : office.includes("支店") ? "支店" : office;
+  return normalizeOfficeDisplayNameForArea(`${cleanArea}${role}`);
+}
+
 function getEmployeeAssignmentLabel(assignment) {
   if (!assignment || typeof assignment !== "object") return "保管庫";
-  const area = assignment.areaLabel || getGameAreaLabel(assignment.mode, assignment.freeMapKey);
-  const office = assignment.officeLabel || (assignment.officeId === "hq" ? "本社" : assignment.officeId ? "支店" : "");
-  return office ? `${area}${office}` : area;
+  const officeId = String(assignment.officeId ?? "");
+  if (!officeId || officeId === "waiting" || officeId === "storage" || officeId === "待機") return "待機";
+
+  return getCanonicalAssignmentDisplayName(
+    assignment.mode ?? null,
+    assignment.freeMapKey ?? null,
+    assignment.areaLabel ?? "",
+    assignment.officeId ?? "",
+    assignment.officeLabel ?? ""
+  );
 }
 
 function getFreeModeSaveKey(slot, mapKey) {
@@ -77,7 +216,7 @@ function getFreeModeSaveKey(slot, mapKey) {
 const SAVE_SLOT_COUNT = 3;
 const DEFAULT_COMPANY_NAME = "箱庭不動産";
 const DEFAULT_SAVE_SLOT = 1;
-const GAME_VERSION = "v310.36";
+const GAME_VERSION = "v367.2-chapter-number-fix";
 // v244 roadmap: 七瀬レベル帯会話 / イベント会話 / 資産到達会話 / 支店到達会話 / 社員人数会話
 // v245 roadmap: 宅建講座 / 不動産投資講座 / 建築講座 / 税金講座 / 続き付き知識会話強化
 // v247: 七瀬レベル帯・資産/支店/社員イベント会話・知識会話実装版
@@ -159,16 +298,26 @@ const GAME_VERSION = "v310.36";
 const BASE_EMPLOYEE_SALARY = 15;
 const EMPLOYEE_SALARY_GROWTH_RATE = 1.05;
 const GIFU_CLEAR_BUILDING_COUNT = 3;
-const NAGOYA_CLEAR_MONTHLY_PROFIT = 50;
+const NAGOYA_CLEAR_MONTHLY_PROFIT = 300;
 const KYOTO_TUTORIAL_TOURISM_BUILDING_COUNT = 3;
 const KYOTO_FINAL_TOURISM_BUILDING_COUNT = 5;
-const KYOTO_FINAL_NET_WORTH = 50000;
+const KYOTO_FINAL_MONTHLY_PROFIT = 1000;
 const KYOTO_RIVAL_COMPANY_NAME = "古都観光開発";
+const OSAKA_START_MONEY = 50000;
+const OSAKA_INDUSTRIAL_BUILDING_KEYS = ["small_factory", "medium_factory", "large_factory", "warehouse"];
+const OSAKA_CLEAR_MONTHLY_PROFIT = 2500;
+const OSAKA_RIVAL_COMPANY_NAMES = ["浪速都市開発", "阪神プロパティ", "梅田リアルティ"];
+const TOKYO_START_MONEY = 100000;
+const TOKYO_CLEAR_MONTHLY_PROFIT = 5000;
+const TOKYO_RIVAL_COMPANY_NAMES = ["首都圏地所", "湾岸リアルティ", "山手都市開発"];
 const ACCOUNT_DATA_KEY = "realEstateGameAccountData_v1";
-const DEV_DEMO_SHEET_GRANT_AMOUNT = 1000;
+const DEV_DEMO_SHEET_GRANT_AMOUNT = 0;
 const DEV_DEMO_SHEET_GRANT_KEY = "devDemoSheetsGranted_v299";
+const MEDAL_TO_SHINE_RATE = 100;
 const OFFICE_EMPLOYEE_ASSIGN_LIMIT = 999;
 const HQ_BRANCH_UNLOCK_LEVEL = 3;
+const GAME_OVER_RESCUE_MEDAL_COST = 50;
+const GAME_OVER_RESCUE_RESTART_MONEY = 10000;
 
 const DAILY_LOGIN_BONUS_KEY = "realEstateGameDailyLoginBonus_v1";
 const HOME_MISSION_DATA_KEY = "realEstateGameHomeMissions_v1";
@@ -286,7 +435,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     durationMinutes: 30,
     targetPower: 80,
     expReward: 100,
-    rewards: { rookieEmployeeTickets: 1, silverSheets: 5 },
+    rewards: { medals: 10 },
   },
   {
     id: "building_basic",
@@ -302,7 +451,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     durationMinutes: 30,
     targetPower: 80,
     expReward: 200,
-    rewards: { rookieEmployeeTickets: 1, silverSheets: 5 },
+    rewards: { medals: 12 },
   },
   {
     id: "tenant_basic",
@@ -318,7 +467,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     durationMinutes: 30,
     targetPower: 80,
     expReward: 300,
-    rewards: { rookieEmployeeTickets: 1, silverSheets: 5 },
+    rewards: { medals: 15 },
   },
   {
     id: "rival_middle",
@@ -334,7 +483,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     durationMinutes: 60,
     targetPower: 170,
     expReward: 400,
-    rewards: { employeeTickets: 1, silverSheets: 15 },
+    rewards: { medals: 30, dispatch_time_30: 1 },
   },
   {
     id: "admin_middle",
@@ -350,7 +499,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     durationMinutes: 90,
     targetPower: 240,
     expReward: 500,
-    rewards: { employeeTickets: 1, goldSheets: 1 },
+    rewards: { medals: 50, shine: 1 },
   },
   {
     id: "large_high",
@@ -366,7 +515,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     durationMinutes: 120,
     targetPower: 340,
     expReward: 650,
-    rewards: { premiumEmployeeTickets: 1, goldSheets: 2 },
+    rewards: { medals: 80, shine: 2, dispatch_success_30: 1 },
   },
   {
     id: "special_high",
@@ -382,7 +531,7 @@ const SPECIAL_DISPATCH_MISSIONS = [
     durationMinutes: 240,
     targetPower: 520,
     expReward: 1000,
-    rewards: { premiumEmployeeTickets: 1, goldSheets: 3, rainbowSheets: 1 },
+    rewards: { medals: 150, shine: 5, exp_book_500: 1 },
   },
 ];
 
@@ -409,6 +558,8 @@ function getSpecialMissionAreaKeyFromMode(mode, freeMapKey = null) {
   if (mode === "story_gifu" || mode === "story") return "gifu";
   if (mode === "story_nagoya" || mode === "story_nagoya_bridge") return "nagoya";
   if (mode === "story_kyoto") return "kyoto";
+  if (mode === "story_osaka") return "free_50";
+  if (mode === "story_tokyo") return "free_70";
   if (mode === "story_cleared") return "cleared";
   if (isFreeModeKey(mode) || freeMapKey) return normalizeFreeModeKey(freeMapKey || mode);
   return "unknown";
@@ -418,6 +569,24 @@ function getSpecialMissionAreaLabelFromMode(mode, freeMapKey = null) {
   const label = getGameAreaLabel(mode, freeMapKey);
   if (!label || label === "未所属") return "現在マップ";
   return label;
+}
+
+
+function isGifuHeadquarterAreaKey(areaKey = "") {
+  const key = String(areaKey || "");
+  return key === "gifu" || key === "tutorial" || key === "free_15";
+}
+
+function getOfficeLevelShortLabelByAreaKey(areaKey = "") {
+  return isGifuHeadquarterAreaKey(areaKey) ? "本社Lv" : "支店Lv";
+}
+
+function getOfficeLevelFullLabelByAreaKey(areaKey = "") {
+  return isGifuHeadquarterAreaKey(areaKey) ? "本社レベル" : "支店レベル";
+}
+
+function getOfficeExpLabelByAreaKey(areaKey = "") {
+  return isGifuHeadquarterAreaKey(areaKey) ? "本社EXP" : "支店EXP";
 }
 
 function getSpecialMissionAreaRewardRate(areaKey = "unknown") {
@@ -614,9 +783,15 @@ function formatSpecialMissionRewardText(rewards = {}, expReward = 0) {
   if ((rewards.rookieEmployeeTickets ?? 0) > 0) parts.push(`社員採用チケット×${rewards.rookieEmployeeTickets}`);
   if ((rewards.employeeTickets ?? 0) > 0) parts.push(`レア社員採用チケット×${rewards.employeeTickets}`);
   if ((rewards.premiumEmployeeTickets ?? 0) > 0) parts.push(`プレミア社員採用チケット×${rewards.premiumEmployeeTickets}`);
-  if ((rewards.silverSheets ?? 0) > 0) parts.push(`シルバーシート×${rewards.silverSheets}`);
-  if ((rewards.goldSheets ?? 0) > 0) parts.push(`ゴールドシート×${rewards.goldSheets}`);
-  if ((rewards.rainbowSheets ?? 0) > 0) parts.push(`レインボーシート×${rewards.rainbowSheets}`);
+  if ((rewards.medals ?? 0) > 0) parts.push(`メダル×${rewards.medals}`);
+  if ((rewards.shine ?? 0) > 0) parts.push(`シャイン×${rewards.shine}`);
+  Object.entries(rewards ?? {}).forEach(([key, value]) => {
+    if (["rookieEmployeeTickets", "employeeTickets", "premiumEmployeeTickets", "silverSheets", "goldSheets", "rainbowSheets", "medals", "shine"].includes(key)) return;
+    const count = Math.max(0, Math.round(Number(value) || 0));
+    if (count <= 0) return;
+    const itemName = HOME_SHOP_ITEMS.find((shopItem) => shopItem.itemKey === key)?.name ?? key;
+    parts.push(`${itemName}×${count}`);
+  });
   if (expReward > 0) parts.push(`社員EXP+${expReward}`);
   return parts.join(" / ") || "社員EXP";
 }
@@ -1285,17 +1460,17 @@ const STORY_TUTORIAL_EVENTS = {
     text: "完成しました！ 中古再生と新築賃貸、両方を少しだけ経験できましたね。私も、不動産会社の仕事が少し見えてきた気がします。",
   },
   PURCHASE_OLD_HOUSE_STARTED: {
-    portrait: "serious",
+    portrait: "happy",
     title: "購入交渉を開始しました",
     text: "購入交渉が始まりました。結果が出るまで月を進める必要があります。上の『翌月へ』ボタンを押して、交渉の結果を待ちましょう。",
   },
   REPAIR_OLD_HOUSE_STARTED: {
-    portrait: "serious",
+    portrait: "happy",
     title: "修繕を開始しました",
     text: "修繕工事が始まりました。工事が終わるまで月を進めましょう。上の『翌月へ』ボタンで時間を進められます。",
   },
   PURCHASE_APARTMENT_LAND_STARTED: {
-    portrait: "serious",
+    portrait: "happy",
     title: "土地購入交渉を開始しました",
     text: "空き地の購入交渉が始まりました。結果が出るまで『翌月へ』で時間を進めましょう。",
   },
@@ -1325,7 +1500,7 @@ const STORY_GIFU_EVENTS = {
   CLEAR: {
     portrait: "happy",
     title: "岐阜編クリア",
-    text: "社長！岐阜での経営目標を達成しました！\n完成済みの自社建物3棟を達成です。小さな不動産会社だった私たちも、少しずつ形になってきましたね。\n次の舞台へ進む準備が整いました！",
+    text: "社長！岐阜での経営目標を達成しました！\n建物を3棟完成させました。小さな不動産会社だった私たちも、少しずつ形になってきましたね。\n次の舞台へ進む準備が整いました！",
   },
 };
 
@@ -1345,12 +1520,12 @@ const NAGOYA_PROLOGUE_BACKGROUND = "/backgrounds/city_nagoya.png";
 const STORY_NAGOYA_EVENTS = {
   INTRO: {
     background: NAGOYA_PROLOGUE_BACKGROUND,
-    portrait: "happy",
-    title: "1-3章 名古屋準備編",
+    portrait: "happy_4",
+    title: "2-1章 名古屋準備編",
     text: "社長、岐阜での実績が認められました！ 次はいよいよ名古屋方面への進出です。少し緊張しますが、今度は私も少しはお役に立てると思います。まずは銀行融資の流れを確認しましょう。",
   },
   LOAN_CONSULT_STARTED: {
-    portrait: "serious",
+    portrait: "happy",
     title: "融資相談を開始しました",
     text: "銀行へ融資相談を依頼しました。相談結果が出るまで月を進めましょう。相談結果を見てから申請すれば、無理な借入を避けやすそうです。",
   },
@@ -1360,7 +1535,7 @@ const STORY_NAGOYA_EVENTS = {
     text: "相談結果が届きました！ 銀行がどれくらい貸してくれそうか確認できます。次は相談結果を参考にして、融資申請をしてみましょう。",
   },
   LOAN_APPLICATION_STARTED: {
-    portrait: "serious",
+    portrait: "happy",
     title: "融資申請を開始しました",
     text: "融資申請を行いました。審査結果が出るまで月を進めましょう。承認されれば資金が増えますが、毎月返済も始まります。",
   },
@@ -1370,17 +1545,17 @@ const STORY_NAGOYA_EVENTS = {
     text: "資金調達ができました！ 借入は返済が必要ですが、会社を大きくするための大切な力になりますね。次はこの資金を使って、支店建設の流れを確認しましょう。",
   },
   BRANCH_STARTED: {
-    portrait: "serious",
+    portrait: "happy",
     title: "支店建設を開始しました",
     text: "支店建設が始まりました。完成するまで月を進めましょう。支店が完成すると、その周辺でも購入・建設・修繕ができるようになります。",
   },
   BRANCH_COMPLETE: {
-    portrait: "happy",
+    portrait: "happy_4",
     title: "支店完成",
     text: "支店が完成しました！ 次は社員を支店へ配属しましょう。配属できる社員が足りない場合は、下部メニューの『社員』から社員採用を行い、その後に社員配属で支店へ1人以上置いてください。",
   },
   BRANCH_EMPLOYEE_ASSIGNED: {
-    portrait: "happy",
+    portrait: "happy_4",
     title: "支店配属完了",
     text: "支店に社員を配属できました！ これで支店の活動範囲でも購入・建設・修繕ができるようになります。名古屋編へ進む準備は整いました。",
   },
@@ -1390,7 +1565,7 @@ const NAGOYA_PROLOGUE_SCENES = [
   {
     background: "/backgrounds/city_gihu.png",
     speaker: "七瀬 灯里",
-    portrait: "happy",
+    portrait: "happy_4",
     text: "社長、岐阜での経営目標を達成できましたね。最初は私も何も分からなかったのに、会社として確かな実績になりました。",
   },
   {
@@ -1424,7 +1599,7 @@ const KYOTO_PROLOGUE_SCENES = [
   {
     background: KYOTO_PROLOGUE_BACKGROUND,
     speaker: "七瀬 灯里",
-    portrait: "happy",
+    portrait: "happy_4",
     text: "わあ……ここが京都なんですね。修学旅行以来かもしれません。",
   },
   {
@@ -1461,22 +1636,28 @@ const KYOTO_PROLOGUE_SCENES = [
     background: KYOTO_PROLOGUE_BACKGROUND,
     speaker: "七瀬 灯里",
     portrait: "happy",
-    text: "第3章、京都編。まずは観光施設を3棟建設して、京都ならではの経営を学んでいきましょう！",
+    text: "3-1章、京都観光チュートリアルです。まずは観光施設を3棟建設して、京都ならではの経営を学んでいきましょう！",
   },
 ];
 
 const STORY_KYOTO_EVENTS = {
+  OPENING: {
+    background: KYOTO_PROLOGUE_BACKGROUND,
+    portrait: "happy",
+    title: "第3章 京都観光編 開幕",
+    text: "社長、京都編が始まります！\n\n京都では観光需要を活かした経営が重要になります。まずは京都支店を設置し、観光施設の建設へ進みましょう。",
+  },
   TUTORIAL_CLEAR: {
     background: KYOTO_PROLOGUE_BACKGROUND,
     portrait: "happy",
-    title: "京都編：観光経営の基本",
-    text: "社長、観光施設を3棟建設できました！\n\n観光需要を見ながら建てる場所を選ぶと、同じ土地でも見え方が変わりますね。\n\nここからは京都での本格経営です。ライバル会社『古都観光開発』に負けないよう、今建てた施設を活かして会社も街も発展させていきましょう！",
+    title: "3-1章 京都観光チュートリアル完了",
+    text: "社長、観光施設を3棟建設できました！\n\n観光需要を見ながら建てる場所を選ぶと、同じ土地でも見え方が変わりますね。\n\nここからは3-2章 京都編本編です。ライバル会社『古都観光開発』に負けないよう、今建てた施設を活かして会社も街も発展させていきましょう！",
   },
   CLEAR: {
     background: KYOTO_PROLOGUE_BACKGROUND,
-    portrait: "happy",
-    title: "京都編クリア",
-    text: "社長、京都での本格目標を達成しました！\n\n観光施設を軸にしながら、会社の資産も大きく伸ばせましたね。\n\n京都で学んだ観光経営は、きっと次の大阪展開でも役に立つと思います。\n\n次はいよいよ大阪方面への展開ですね！",
+    portrait: "happy_4",
+    title: "3-2章 京都編クリア",
+    text: "社長、京都での本格目標を達成しました！\n\n観光施設を軸にしながら、会社の月次利益も大きく伸ばせましたね。\n\n京都で学んだ観光経営は、きっと次の大阪展開でも役に立つと思います。\n\n次はいよいよ大阪方面への展開ですね！",
   },
 };
 
@@ -1484,14 +1665,104 @@ function getStoryKyotoGoalText(isTutorialPhase = true) {
   if (isTutorialPhase) {
     return `観光施設を${KYOTO_TUTORIAL_TOURISM_BUILDING_COUNT.toLocaleString()}棟建設しましょう。`;
   }
-  return `観光施設${KYOTO_FINAL_TOURISM_BUILDING_COUNT.toLocaleString()}棟以上・純資産${Math.round(KYOTO_FINAL_NET_WORTH / 10000).toLocaleString()}億円以上を目指しましょう。`;
+  return `観光施設${KYOTO_FINAL_TOURISM_BUILDING_COUNT.toLocaleString()}棟以上・実質月利益${KYOTO_FINAL_MONTHLY_PROFIT.toLocaleString()}万円以上を目指しましょう。`;
 }
 
 function getStoryKyotoAdviceText(isTutorialPhase = true) {
   if (isTutorialPhase) {
     return "京都編では観光需要が重要です。土地情報や人口ボタンの需要マップで観光需要を確認しながら、土産物店・旅館・ビジネスホテル・温泉施設を建てていきましょう。";
   }
-  return `ここからは京都編本編です。チュートリアルで建てた観光施設はそのまま引き継がれています。ライバル会社『${KYOTO_RIVAL_COMPANY_NAME}』を意識しながら、観光施設と資産規模を伸ばしていきましょう。`;
+  return `ここからは京都編本編です。チュートリアルで建てた観光施設はそのまま引き継がれています。ライバル会社『${KYOTO_RIVAL_COMPANY_NAME}』を意識しながら、観光施設と月次利益を伸ばしていきましょう。`;
+}
+
+const OSAKA_PROLOGUE_BACKGROUND = "/backgrounds/city_osaka.png";
+const OSAKA_PROLOGUE_SCENES = [
+  {
+    background: OSAKA_PROLOGUE_BACKGROUND,
+    speaker: "七瀬 灯里",
+    portrait: "normal",
+    text: "社長、次は大阪編です。ここからは50×50の大きなマップになります。",
+  },
+  {
+    background: OSAKA_PROLOGUE_BACKGROUND,
+    speaker: "七瀬 灯里",
+    portrait: "serious",
+    text: "大阪では工業と物流が重要になります。町工場・中規模工場・大規模工場・物流倉庫を建てて、産業の土台を作りましょう。",
+  },
+  {
+    background: OSAKA_PROLOGUE_BACKGROUND,
+    speaker: "七瀬 灯里",
+    portrait: "happy",
+    text: "開始資金は5億円です。まずは工業チュートリアルとして、4種類の工業施設を完成させましょう！",
+  },
+];
+
+const STORY_OSAKA_EVENTS = {
+  TUTORIAL_CLEAR: {
+    background: OSAKA_PROLOGUE_BACKGROUND,
+    portrait: "happy",
+    title: "4-1章 大阪工業チュートリアル完了",
+    text: "社長、工業施設4種類を建設できました！\n\n工場や物流倉庫は、街の需要や周辺の発展にも関わる重要な施設です。\n\nここからは4-2章 大阪編本編です。実質月利益2,500万円以上を目指しましょう！",
+  },
+  CLEAR: {
+    background: OSAKA_PROLOGUE_BACKGROUND,
+    portrait: "happy_4",
+    title: "4-2章 大阪編クリア",
+    text: "社長、大阪編の目標を達成しました！\n\n工業と物流を活かした経営で、大きな利益を出せるようになりましたね。\n\n次はいよいよ東京編。最大規模の都市経営に挑戦です！",
+  },
+};
+
+function getStoryOsakaGoalText(isTutorialPhase = true) {
+  if (isTutorialPhase) {
+    return "町工場・中規模工場・大規模工場・物流倉庫を1棟ずつ完成させましょう。";
+  }
+  return `実質月利益${OSAKA_CLEAR_MONTHLY_PROFIT.toLocaleString()}万円以上を目指しましょう。`;
+}
+
+function getStoryOsakaAdviceText(isTutorialPhase = true) {
+  if (isTutorialPhase) {
+    return "大阪編では工業施設を学びます。まずは建設メニューから町工場を建て、その後に中規模工場・大規模工場・物流倉庫も完成させましょう。";
+  }
+  return "ここからは大阪編本編です。工業・物流・商業を組み合わせて、実質月利益2,500万円以上を目指しましょう。";
+}
+
+const TOKYO_PROLOGUE_BACKGROUND = "/backgrounds/city_tokyo.png";
+const TOKYO_PROLOGUE_SCENES = [
+  {
+    background: TOKYO_PROLOGUE_BACKGROUND,
+    speaker: "七瀬 灯里",
+    portrait: "serious",
+    text: "社長、ついに東京編です。70×70の最大規模マップになります。",
+  },
+  {
+    background: TOKYO_PROLOGUE_BACKGROUND,
+    speaker: "七瀬 灯里",
+    portrait: "normal",
+    text: "ここからはチュートリアルなしの本格経営です。ライバル会社も強くなりますので、利益をしっかり伸ばしましょう。",
+  },
+  {
+    background: TOKYO_PROLOGUE_BACKGROUND,
+    speaker: "七瀬 灯里",
+    portrait: "happy",
+    text: "東京編の目標は、実質月利益5,000万円以上です。ここまでの経験をすべて使って挑みましょう！",
+  },
+];
+
+const STORY_TOKYO_EVENTS = {
+  CLEAR: {
+    background: TOKYO_PROLOGUE_BACKGROUND,
+    portrait: "happy_4",
+    title: "東京編クリア",
+    text: "社長、東京編の目標を達成しました！\n\n最大規模の都市でも、しっかり利益を出せる会社になりましたね。\n\n箱庭不動産の全国展開、ここに到達です！",
+  },
+};
+
+function getStoryTokyoGoalText() {
+  return `実質月利益${TOKYO_CLEAR_MONTHLY_PROFIT.toLocaleString()}万円以上を目指しましょう。`;
+}
+
+function getStoryTokyoAdviceText() {
+  return "東京編はチュートリアルなしの本格経営です。ライバル会社の動きも見ながら、支店・融資・社員配属を総動員して利益を伸ばしましょう。";
 }
 
 function getStoryNagoyaGoalText(step) {
@@ -2388,13 +2659,19 @@ function getDefaultAccountData() {
     hasClearedGifuChapter: false,
     hasClearedNagoyaChapter: false,
     hasClearedKyotoChapter: false,
+    hasClearedOsakaChapter: false,
+    hasClearedTokyoChapter: false,
     hasCompletedKyotoTourismTutorial: false,
+    hasCompletedOsakaIndustrialTutorial: false,
     rookieEmployeeTickets: 0,
     employeeTickets: 0,
     premiumEmployeeTickets: 0,
-    silverSheets: DEV_DEMO_SHEET_GRANT_AMOUNT,
-    goldSheets: DEV_DEMO_SHEET_GRANT_AMOUNT,
-    rainbowSheets: DEV_DEMO_SHEET_GRANT_AMOUNT,
+    medals: 0,
+    shine: 0,
+    releaseCampaignClaimed: false,
+    silverSheets: 0,
+    goldSheets: 0,
+    rainbowSheets: 0,
     specialMissionData: null,
     items: {},
     usedSecretCommands: {},
@@ -2406,9 +2683,11 @@ function getDefaultAccountData() {
 function normalizeAccountData(rawAccountData) {
   const parsedAccountData = rawAccountData && typeof rawAccountData === "object" ? rawAccountData : {};
   const demoSheetsGranted = parsedAccountData[DEV_DEMO_SHEET_GRANT_KEY] === true;
-  const safeSilverSheets = Math.max(0, Math.round(Number(parsedAccountData.silverSheets ?? parsedAccountData.silverSheet ?? 0) || 0));
-  const safeGoldSheets = Math.max(0, Math.round(Number(parsedAccountData.goldSheets ?? parsedAccountData.goldSheet ?? 0) || 0));
-  const safeRainbowSheets = Math.max(0, Math.round(Number(parsedAccountData.rainbowSheets ?? parsedAccountData.rainbowSheet ?? 0) || 0));
+  const safeMedals = Math.max(0, Math.round(Number(parsedAccountData.medals ?? parsedAccountData.medal ?? 0) || 0));
+  const safeShine = Math.max(0, Math.round(Number(parsedAccountData.shine ?? parsedAccountData.shines ?? 0) || 0));
+  const safeSilverSheets = 0;
+  const safeGoldSheets = 0;
+  const safeRainbowSheets = 0;
 
   return {
     playerRank: Math.max(1, Math.round(Number(parsedAccountData.playerRank) || 1)),
@@ -2418,13 +2697,19 @@ function normalizeAccountData(rawAccountData) {
     hasClearedGifuChapter: parsedAccountData.hasClearedGifuChapter === true,
     hasClearedNagoyaChapter: parsedAccountData.hasClearedNagoyaChapter === true,
     hasClearedKyotoChapter: parsedAccountData.hasClearedKyotoChapter === true,
+    hasClearedOsakaChapter: parsedAccountData.hasClearedOsakaChapter === true,
+    hasClearedTokyoChapter: parsedAccountData.hasClearedTokyoChapter === true,
     hasCompletedKyotoTourismTutorial: parsedAccountData.hasCompletedKyotoTourismTutorial === true,
+    hasCompletedOsakaIndustrialTutorial: parsedAccountData.hasCompletedOsakaIndustrialTutorial === true,
     rookieEmployeeTickets: Math.max(0, Math.round(Number(parsedAccountData.rookieEmployeeTickets) || 0)),
     employeeTickets: Math.max(0, Math.round(Number(parsedAccountData.employeeTickets ?? 0) || 0)),
     premiumEmployeeTickets: Math.max(0, Math.round(Number(parsedAccountData.premiumEmployeeTickets) || 0)),
-    silverSheets: demoSheetsGranted ? safeSilverSheets : Math.max(safeSilverSheets, DEV_DEMO_SHEET_GRANT_AMOUNT),
-    goldSheets: demoSheetsGranted ? safeGoldSheets : Math.max(safeGoldSheets, DEV_DEMO_SHEET_GRANT_AMOUNT),
-    rainbowSheets: demoSheetsGranted ? safeRainbowSheets : Math.max(safeRainbowSheets, DEV_DEMO_SHEET_GRANT_AMOUNT),
+    medals: safeMedals,
+    shine: safeShine,
+    releaseCampaignClaimed: parsedAccountData.releaseCampaignClaimed === true,
+    silverSheets: safeSilverSheets,
+    goldSheets: safeGoldSheets,
+    rainbowSheets: safeRainbowSheets,
     specialMissionData: parsedAccountData.specialMissionData && typeof parsedAccountData.specialMissionData === "object" ? parsedAccountData.specialMissionData : null,
     items: parsedAccountData.items && typeof parsedAccountData.items === "object" ? Object.fromEntries(Object.entries(parsedAccountData.items).map(([key, value]) => [key, Math.max(0, Math.round(Number(value) || 0))])) : {},
     usedSecretCommands: parsedAccountData.usedSecretCommands && typeof parsedAccountData.usedSecretCommands === "object" ? parsedAccountData.usedSecretCommands : {},
@@ -2516,9 +2801,9 @@ function normalizeAccountEmployee(employee) {
     ? {
         mode: employee.currentAssignment.mode ?? null,
         freeMapKey: employee.currentAssignment.freeMapKey ?? null,
-        areaLabel: employee.currentAssignment.areaLabel ?? "",
+        areaLabel: normalizeAreaDisplayName(employee.currentAssignment.areaLabel ?? ""),
         officeId: employee.currentAssignment.officeId ?? null,
-        officeLabel: employee.currentAssignment.officeLabel ?? "",
+        officeLabel: normalizeOfficeDisplayNameForArea(employee.currentAssignment.officeLabel ?? "", employee.currentAssignment.mode ?? null, employee.currentAssignment.freeMapKey ?? null),
         savedAt: employee.currentAssignment.savedAt ?? "",
       }
     : null;
@@ -2548,16 +2833,17 @@ function normalizeAccountEmployee(employee) {
 }
 
 function createEmployeeAssignmentFromGame(employee, gameData = {}) {
-  if (!employee || !employee.officeId) return null;
+  const officeId = String(employee?.officeId ?? "");
+  if (!employee || !officeId || officeId === "waiting" || officeId === "storage" || officeId === "待機") return null;
   const mode = gameData.currentGameMode ?? gameData.mode ?? null;
   const freeMapKey = gameData.freeMapKey ?? (isFreeModeKey(mode) ? normalizeFreeModeKey(mode) : null);
-  const areaLabel = gameData.areaLabel ?? getGameAreaLabel(mode, freeMapKey);
+  const areaLabel = normalizeAreaDisplayName(gameData.areaLabel ?? getGameAreaLabel(mode, freeMapKey));
   return {
     mode,
     freeMapKey,
     areaLabel,
-    officeId: employee.officeId,
-    officeLabel: employee.officeId === "hq" ? "本社" : "支店",
+    officeId,
+    officeLabel: getAreaOfficeRoleLabel(mode, freeMapKey, officeId),
     saveSlot: gameData.activeSaveSlot ?? null,
     savedAt: new Date().toISOString(),
   };
@@ -2683,8 +2969,20 @@ function mergeAccountDataWithGame(accountData, gameData = {}) {
   const rankExp = getBetterAccountRankExp(accountData, gameData.playerRank, gameData.playerExp);
   const gameEmployeesForAccount = annotateGameEmployeesForAccount(gameData.employees ?? [], gameData);
   const storageEmployeesForAccount = annotateGameEmployeesForAccount(gameData.employeeStorage ?? [], { ...gameData, currentGameMode: null, freeMapKey: null, areaLabel: "保管庫" });
+
+  // v363.8: フリーマップは「1マップ1セーブ」。同じ地域を最初から開始して保存したら、
+  // その地域の古い配属情報は消す。これで旧名古屋支店所属が新データに残らない。
+  const currentAreaKey = getSpecialMissionAreaKeyFromMode(gameData.currentGameMode, gameData.freeMapKey);
+  const accountVaultForMerge = (accountData?.employeeVault ?? []).map((employee) => {
+    const assignment = employee?.currentAssignment;
+    if (!assignment || !currentAreaKey || currentAreaKey === "unknown") return employee;
+    const assignmentAreaKey = getSpecialMissionAreaKeyFromMode(assignment.mode, assignment.freeMapKey);
+    if (assignmentAreaKey !== currentAreaKey) return employee;
+    return { ...employee, currentAssignment: null, officeId: null, busyUntilMonth: null, busyActionName: null };
+  });
+
   const employeeVault = mergeEmployeeCollections(
-    accountData?.employeeVault ?? [],
+    accountVaultForMerge,
     gameEmployeesForAccount,
     storageEmployeesForAccount
   );
@@ -2698,17 +2996,24 @@ function mergeAccountDataWithGame(accountData, gameData = {}) {
       employeeVault.some((employee) => employee.id === 122) ||
       gameData.hasClearedGifuChapter === true ||
       gameData.hasClearedNagoyaChapter === true ||
-      gameData.hasClearedKyotoChapter === true,
+      gameData.hasClearedKyotoChapter === true ||
+      gameData.hasClearedOsakaChapter === true ||
+      gameData.hasClearedTokyoChapter === true,
     hasClearedGifuChapter: accountData?.hasClearedGifuChapter === true || gameData.hasClearedGifuChapter === true,
     hasClearedNagoyaChapter: accountData?.hasClearedNagoyaChapter === true || gameData.hasClearedNagoyaChapter === true,
     hasClearedKyotoChapter: accountData?.hasClearedKyotoChapter === true || gameData.hasClearedKyotoChapter === true,
+    hasClearedOsakaChapter: accountData?.hasClearedOsakaChapter === true || gameData.hasClearedOsakaChapter === true,
+    hasClearedTokyoChapter: accountData?.hasClearedTokyoChapter === true || gameData.hasClearedTokyoChapter === true,
     hasCompletedKyotoTourismTutorial: accountData?.hasCompletedKyotoTourismTutorial === true || gameData.hasCompletedKyotoTourismTutorial === true,
+    hasCompletedOsakaIndustrialTutorial: accountData?.hasCompletedOsakaIndustrialTutorial === true || gameData.hasCompletedOsakaIndustrialTutorial === true,
     rookieEmployeeTickets: Math.max(0, Math.round(Number(gameData.rookieEmployeeTickets ?? currentTickets.rookieEmployeeTickets) || 0)),
     employeeTickets: Math.max(0, Math.round(Number(gameData.employeeTickets ?? currentTickets.employeeTickets) || 0)),
     premiumEmployeeTickets: Math.max(0, Math.round(Number(gameData.premiumEmployeeTickets ?? currentTickets.premiumEmployeeTickets) || 0)),
-    silverSheets: Math.max(0, Math.round(Number(accountData?.silverSheets ?? accountData?.silverSheet ?? 0) || 0)),
-    goldSheets: Math.max(0, Math.round(Number(accountData?.goldSheets ?? accountData?.goldSheet ?? 0) || 0)),
-    rainbowSheets: Math.max(0, Math.round(Number(accountData?.rainbowSheets ?? accountData?.rainbowSheet ?? 0) || 0)),
+    medals: Math.max(0, Math.round(Number(accountData?.medals ?? accountData?.medal ?? 0) || 0)),
+    shine: Math.max(0, Math.round(Number(accountData?.shine ?? accountData?.shines ?? 0) || 0)),
+    silverSheets: 0,
+    goldSheets: 0,
+    rainbowSheets: 0,
     specialMissionData: accountData?.specialMissionData && typeof accountData.specialMissionData === "object" ? accountData.specialMissionData : null,
     items: accountData?.items && typeof accountData.items === "object" ? Object.fromEntries(Object.entries(accountData.items).map(([key, value]) => [key, Math.max(0, Math.round(Number(value) || 0))])) : {},
     usedSecretCommands: accountData?.usedSecretCommands && typeof accountData.usedSecretCommands === "object" ? accountData.usedSecretCommands : {},
@@ -2769,7 +3074,7 @@ function isEmployeeAssignedToAnotherMap(employee) {
 }
 
 function getEmployeeAssignmentStatusText(employee) {
-  if (!employee?.currentAssignment) return "保管庫";
+  if (!employee?.currentAssignment) return "待機";
   return getEmployeeAssignmentLabel(employee.currentAssignment);
 }
 
@@ -2896,7 +3201,7 @@ const BANKS = {
     id: "regional",
     name: "地方銀行",
     shortName: "地銀",
-    rate: 0.028,
+    rate: 0.035,
     maxYears: 20,
     approvalMultiplier: 18,
     collateralRate: 0.55,
@@ -2977,10 +3282,9 @@ function getLoanNegotiationPower(actionEmployees) {
   if (members.length === 0) return 0;
 
   const bestPower = members.reduce((best, employee) => {
-    const power =
-      (employee.sales ?? 0) * 0.5 +
-      (employee.management ?? 0) * 0.35 +
-      (employee.leadership ?? 0) * 0.15;
+    const sales = Number(employee?.sales ?? 0) || 0;
+    const management = Number(employee?.management ?? 0) || 0;
+    const power = sales * 0.55 + management * 0.45;
     return Math.max(best, power);
   }, 0);
 
@@ -2992,6 +3296,37 @@ function getLoanTeamAverage(actionEmployees, statKey) {
   if (members.length === 0) return 0;
 
   return Math.round(members.reduce((best, employee) => Math.max(best, employee[statKey] ?? 0), 0));
+}
+
+function getLoanApplicationReviewMonths(amount, actionEmployees) {
+  const baseMonths = getLoanReviewMonths(amount);
+  const members = Array.isArray(actionEmployees) ? actionEmployees : [];
+  const negotiationPower = getLoanNegotiationPower(members);
+  const memberReduction = members.length >= 4 ? 2 : members.length >= 2 ? 1 : 0;
+  const abilityReduction = negotiationPower >= 150 ? 1 : 0;
+  return Math.max(1, baseMonths - memberReduction - abilityReduction);
+}
+
+function getLoanOutlookMeta(outlookLabel = "普通") {
+  if (outlookLabel === "非常に高い") {
+    return { label: "非常に高い", icon: "🌈", tone: "rainbow", className: "loan-outlook-rainbow" };
+  }
+  if (outlookLabel === "高い") {
+    return { label: "高め", icon: "🔴", tone: "red", className: "loan-outlook-red" };
+  }
+  if (outlookLabel === "普通" || outlookLabel === "五分五分") {
+    return { label: "普通", icon: "🟢", tone: "green", className: "loan-outlook-green" };
+  }
+  return { label: "低め", icon: "🔵", tone: "blue", className: "loan-outlook-blue" };
+}
+
+function getLoanEstimatedAnnualRate(bank, consultationPower = 0) {
+  const safeBank = bank ?? BANKS.regional;
+  const power = Math.max(0, Math.round(Number(consultationPower) || 0));
+  const qualityRate = Math.max(0, Math.min(1, (power - 35) / 85));
+  const premium = Math.max(0, (1 - qualityRate) * 0.004);
+  const discount = Math.max(0, qualityRate * 0.0025);
+  return Math.max(0.006, safeBank.rate + premium - discount);
 }
 
 function normalizePendingLoanApplication(application) {
@@ -3055,6 +3390,7 @@ function normalizeLoanConsultationReport(report) {
     estimatedMax: Math.max(0, Math.round(report?.estimatedMax ?? 0)),
     recommendedAmount: Math.max(0, Math.round(report?.recommendedAmount ?? 0)),
     outlookLabel: report?.outlookLabel ?? "不明",
+    estimatedAnnualRate: Math.max(0, Number(report?.estimatedAnnualRate ?? bank.rate) || bank.rate),
     comment: report?.comment ?? "相談結果を確認できませんでした。",
     riskNotes: Array.isArray(report?.riskNotes) ? report.riskNotes : [],
     consultationPower: Math.max(0, Math.round(report?.consultationPower ?? 0)),
@@ -11992,6 +12328,47 @@ function getRivalRecruitTicketLabel(ticketType = "rookie") {
   return "社員採用チケット";
 }
 
+const RIVAL_RARITY_SCORE = { N: 1, R: 2, HR: 3, SR: 4, SSR: 5, UR: 6 };
+
+function getRivalEmployeeAbilityTotal(employee = {}) {
+  return ["leadership", "sales", "construction", "management"].reduce((sum, key) => {
+    return sum + Math.max(0, Number(employee?.[key] ?? employee?.[`base${key[0].toUpperCase()}${key.slice(1)}`] ?? 0) || 0);
+  }, 0);
+}
+
+function sortRivalEmployeesByPriority(employeeList = []) {
+  return [...(Array.isArray(employeeList) ? employeeList : [])].sort((a, b) => {
+    const rarityDiff = (RIVAL_RARITY_SCORE[b?.rarity] ?? 0) - (RIVAL_RARITY_SCORE[a?.rarity] ?? 0);
+    if (rarityDiff !== 0) return rarityDiff;
+    const abilityDiff = getRivalEmployeeAbilityTotal(b) - getRivalEmployeeAbilityTotal(a);
+    if (abilityDiff !== 0) return abilityDiff;
+    return String(a?.name ?? "").localeCompare(String(b?.name ?? ""), "ja");
+  });
+}
+
+function removeBankruptRivalCompany(tileList = [], companyId = "A") {
+  return tileList.map((tile) => {
+    if (tile.owner !== OWNER.RIVAL || tile.rivalCompanyId !== companyId) return tile;
+    return {
+      ...tile,
+      owner: tile.terrain === TERRAIN.PLAIN && tile.feature !== FEATURE.ROAD && tile.feature !== FEATURE.STATION && tile.feature !== FEATURE.SCHOOL && !tile.rail ? OWNER.SALE : OWNER.PUBLIC,
+      feature: tile.feature === FEATURE.HQ || tile.feature === FEATURE.BRANCH ? FEATURE.NONE : tile.feature,
+      building: null,
+      buildingMainId: null,
+      rooms: [],
+      rivalCompanyId: null,
+      rivalCompanyName: null,
+      rivalOfficeId: null,
+      rivalOfficeName: null,
+      rivalEmployees: null,
+      rivalMoney: null,
+      rivalAgeMonths: null,
+      rivalSixMonthTicketGranted: null,
+      rivalRank: null,
+    };
+  });
+}
+
 function drawRivalRecruitRarity(ticketType = "rookie") {
   const roll = Math.random() * 100;
 
@@ -12897,6 +13274,17 @@ function getOwnerName(owner) {
   return "不明";
 }
 
+function getGameOverAkariComment(finalMoney = 0) {
+  const deficit = Math.abs(Math.min(0, Math.round(Number(finalMoney) || 0)));
+  if (deficit >= 10000) {
+    return `社長……ここまで大きく資金が割り込んでしまいました。通常なら経営終了ですが、メダル${GAME_OVER_RESCUE_MEDAL_COST}枚で再建支援を受けることもできます。`;
+  }
+  if (deficit >= 3000) {
+    return `資金繰りが詰まってしまいました……。残念ですが、メダル${GAME_OVER_RESCUE_MEDAL_COST}枚で一度だけ立て直す道もあります。`;
+  }
+  return `所持金がマイナスになってしまいました……。残念です。ただ、メダル${GAME_OVER_RESCUE_MEDAL_COST}枚で再建支援を受けることができます。`;
+}
+
 function getGameDate(month) {
   const startMonth = 4;
   const totalMonths = startMonth + month - 2;
@@ -13222,69 +13610,59 @@ function getSpecialMissionResultBreakdownByRate(successRate) {
 
 
 const HOME_SHOP_CATEGORIES = [
+  { id: "exchange", name: "通貨交換", icon: "🔁", description: "メダルをシャインへ交換できます。" },
   { id: "ticket", name: "採用チケット", icon: "✉", description: "社員採用に使うチケットです。" },
   { id: "manual", name: "教材・マニュアル", icon: "📚", description: "社員1名に使用して、能力値を少しずつ伸ばす育成アイテムです。" },
-  { id: "training", name: "研修", icon: "🧑‍🏫", description: "複数能力をまとめて伸ばす上位育成アイテムです。" },
-  { id: "qualification", name: "資格", icon: "🎓", description: "社員1名につき各資格1回だけ使える超希少アイテムです。" },
+  { id: "training", name: "研修・参考書", icon: "🧑‍🏫", description: "使用すると能力が上がり、資格試験の受験権を1回得る想定のアイテムです。" },
   { id: "dispatch", name: "派遣支援", icon: "🚀", description: "特別任務の時短や成功率アップに使うアイテムです。" },
   { id: "energy", name: "行動力回復", icon: "⚡", description: "特別任務用の行動ポイントを回復します。" },
   { id: "growth", name: "育成・覚醒", icon: "🌱", description: "経験値・レベルアップ・覚醒に関わる希少アイテムです。" },
-  { id: "support", name: "経営支援", icon: "🏢", description: "フリーモード・ストーリーで使える経営支援アイテムです。" },
+  { id: "support", name: "経営支援", icon: "🏢", description: "フリーモード・ストーリー開始前に使える経営支援アイテムです。" },
 ];
 
 const HOME_SHOP_ITEMS = [
-  { id: "silver_to_gold", category: "currency", icon: "🔁", name: "シルバー→ゴールド交換", description: "シルバーシート100枚をゴールドシート10枚に交換します。", costSilver: 100, costGold: 0, costRainbow: 0, rewardType: "currency", rewardCurrency: "goldSheets", rewardCount: 10 },
-  { id: "gold_to_silver", category: "currency", icon: "🔁", name: "ゴールド→シルバー交換", description: "ゴールドシート10枚をシルバーシート100枚に交換します。", costSilver: 0, costGold: 10, costRainbow: 0, rewardType: "currency", rewardCurrency: "silverSheets", rewardCount: 100 },
-  { id: "rainbow_to_gold", category: "currency", icon: "🌈", name: "レインボー→ゴールド交換", description: "レインボーシート10枚をゴールドシート100枚に交換します。上位交換はできません。", costSilver: 0, costGold: 0, costRainbow: 10, rewardType: "currency", rewardCurrency: "goldSheets", rewardCount: 100 },
+  { id: "medal_to_shine", category: "exchange", icon: "🔁", name: "メダル→シャイン交換", description: "100メダルを1シャインへ交換します。", costMedal: 100, costShine: 0, rewardType: "currency", rewardCurrency: "shine", rewardCount: 1, effectText: "100m → 1s" },
 
-  { id: "normal_ticket_from_silver", category: "ticket", icon: "✉", name: "社員採用チケット", description: "N〜SSRまで排出される基本の採用チケットです。", costSilver: 100, costGold: 0, costRainbow: 0, rewardType: "rookieTicket", rewardCount: 1 },
-  { id: "rare_ticket_from_silver", category: "ticket", icon: "📨", name: "レア社員採用チケット", description: "N〜URまで排出される上位採用チケットです。", costSilver: 500, costGold: 0, costRainbow: 0, rewardType: "employeeTicket", rewardCount: 1 },
-  { id: "rare_ticket_from_gold", category: "ticket", icon: "📨", name: "レア社員採用チケット", description: "ゴールドシートで交換できるレア社員採用チケットです。", costSilver: 0, costGold: 50, costRainbow: 0, rewardType: "employeeTicket", rewardCount: 1 },
-  { id: "premium_ticket_from_gold", category: "ticket", icon: "✨", name: "プレミア社員採用チケット", description: "SR以上確定のプレミア採用チケットです。", costSilver: 0, costGold: 50, costRainbow: 0, rewardType: "premiumTicket", rewardCount: 1 },
+  { id: "normal_ticket_from_shine", category: "ticket", icon: "✉", name: "社員採用チケット", description: "N〜SSRまで排出される基本の採用チケットです。", costMedal: 0, costShine: 1, rewardType: "rookieTicket", rewardCount: 1 },
+  { id: "rare_ticket_from_shine", category: "ticket", icon: "📨", name: "レア社員採用チケット", description: "N〜URまで排出される上位採用チケットです。", costMedal: 0, costShine: 10, rewardType: "employeeTicket", rewardCount: 1 },
+  { id: "premium_ticket_from_shine", category: "ticket", icon: "✨", name: "プレミア社員採用チケット", description: "SR以上確定のプレミア採用チケットです。", costMedal: 0, costShine: 100, rewardType: "premiumTicket", rewardCount: 1 },
 
-  { id: "manual_leadership", category: "manual", icon: "📕", name: "統率マニュアル", description: "社員1名の統率を+1します。", costSilver: 300, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "manual_leadership", rewardCount: 1, effectText: "統率+1" },
-  { id: "manual_sales", category: "manual", icon: "📘", name: "営業マニュアル", description: "社員1名の営業を+1します。", costSilver: 300, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "manual_sales", rewardCount: 1, effectText: "営業+1" },
-  { id: "manual_construction", category: "manual", icon: "📗", name: "建築マニュアル", description: "社員1名の建築を+1します。", costSilver: 300, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "manual_construction", rewardCount: 1, effectText: "建築+1" },
-  { id: "manual_management", category: "manual", icon: "📙", name: "管理マニュアル", description: "社員1名の管理を+1します。", costSilver: 300, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "manual_management", rewardCount: 1, effectText: "管理+1" },
-  { id: "training_takken", category: "training", icon: "🏠", name: "宅地建物取引士参考書", description: "社員1名の営業+3、統率+1、管理+1。", costSilver: 0, costGold: 15, costRainbow: 0, rewardType: "item", itemKey: "training_takken", rewardCount: 1, effectText: "営業+3 / 統率+1 / 管理+1" },
-  { id: "training_architect", category: "training", icon: "📐", name: "一級建築士参考書", description: "社員1名の建築+3、管理+2。", costSilver: 0, costGold: 15, costRainbow: 0, rewardType: "item", itemKey: "training_architect", rewardCount: 1, effectText: "建築+3 / 管理+2" },
-  { id: "training_rental_manager", category: "training", icon: "🏘", name: "賃貸不動産経営管理士参考書", description: "社員1名の管理+3、営業+1、統率+1。", costSilver: 0, costGold: 15, costRainbow: 0, rewardType: "item", itemKey: "training_rental_manager", rewardCount: 1, effectText: "管理+3 / 営業+1 / 統率+1" },
-  { id: "training_mba", category: "training", icon: "🧑‍🏫", name: "MBA参考書", description: "社員1名の全能力を+1します。", costSilver: 0, costGold: 15, costRainbow: 0, rewardType: "item", itemKey: "training_mba", rewardCount: 1, effectText: "全能力+1" },
-  { id: "training_appraiser", category: "training", icon: "📚", name: "不動産鑑定士参考書", description: "社員1名の営業+2、管理+2、建築+1。", costSilver: 0, costGold: 15, costRainbow: 0, rewardType: "item", itemKey: "training_appraiser", rewardCount: 1, effectText: "営業+2 / 管理+2 / 建築+1" },
+  { id: "manual_leadership", category: "manual", icon: "📕", name: "統率マニュアル", description: "社員1名の統率を+1します。", costMedal: 0, costShine: 1, rewardType: "item", itemKey: "manual_leadership", rewardCount: 1, effectText: "統率+1" },
+  { id: "manual_sales", category: "manual", icon: "📘", name: "営業マニュアル", description: "社員1名の営業を+1します。", costMedal: 0, costShine: 1, rewardType: "item", itemKey: "manual_sales", rewardCount: 1, effectText: "営業+1" },
+  { id: "manual_construction", category: "manual", icon: "📗", name: "建築マニュアル", description: "社員1名の建築を+1します。", costMedal: 0, costShine: 1, rewardType: "item", itemKey: "manual_construction", rewardCount: 1, effectText: "建築+1" },
+  { id: "manual_management", category: "manual", icon: "📙", name: "管理マニュアル", description: "社員1名の管理を+1します。", costMedal: 0, costShine: 1, rewardType: "item", itemKey: "manual_management", rewardCount: 1, effectText: "管理+1" },
 
-  { id: "license_takken", category: "qualification", icon: "🎓", name: "宅建士資格証", description: "社員1名の営業+10、統率+5、管理+5。各社員1回限定予定。", costSilver: 0, costGold: 0, costRainbow: 5, rewardType: "item", itemKey: "license_takken", rewardCount: 1, effectText: "営業+10 / 統率+5 / 管理+5" },
-  { id: "license_architect", category: "qualification", icon: "🎓", name: "一級建築士資格証", description: "社員1名の建築+15、管理+5。各社員1回限定予定。", costSilver: 0, costGold: 0, costRainbow: 5, rewardType: "item", itemKey: "license_architect", rewardCount: 1, effectText: "建築+15 / 管理+5" },
-  { id: "license_rental_manager", category: "qualification", icon: "🎓", name: "賃貸不動産経営管理士資格証", description: "社員1名の営業+5、統率+5、管理+10。各社員1回限定予定。", costSilver: 0, costGold: 0, costRainbow: 5, rewardType: "item", itemKey: "license_rental_manager", rewardCount: 1, effectText: "営業+5 / 統率+5 / 管理+10" },
-  { id: "license_mba", category: "qualification", icon: "🎓", name: "MBA取得証", description: "社員1名の全能力を+5します。各社員1回限定予定。", costSilver: 0, costGold: 0, costRainbow: 5, rewardType: "item", itemKey: "license_mba", rewardCount: 1, effectText: "全能力+5" },
-  { id: "license_appraiser", category: "qualification", icon: "🎓", name: "不動産鑑定士資格証", description: "社員1名の営業+8、管理+8、建築+2、統率+2。各社員1回限定予定。", costSilver: 0, costGold: 0, costRainbow: 5, rewardType: "item", itemKey: "license_appraiser", rewardCount: 1, effectText: "営業+8 / 管理+8 / 建築+2 / 統率+2" },
+  { id: "training_rental_manager", category: "training", icon: "🏘", name: "賃貸不動産経営管理士参考書", description: "社員1名の管理+5。資格試験の受験権を1回得ます。", costMedal: 0, costShine: 5, rewardType: "item", itemKey: "training_rental_manager", rewardCount: 1, effectText: "管理+5 / 受験権+1" },
+  { id: "training_takken", category: "training", icon: "🏠", name: "宅地建物取引士参考書", description: "社員1名の営業+5。資格試験の受験権を1回得ます。", costMedal: 0, costShine: 5, rewardType: "item", itemKey: "training_takken", rewardCount: 1, effectText: "営業+5 / 受験権+1" },
+  { id: "training_architect", category: "training", icon: "📐", name: "一級建築士参考書", description: "社員1名の建築+5。資格試験の受験権を1回得ます。", costMedal: 0, costShine: 7, rewardType: "item", itemKey: "training_architect", rewardCount: 1, effectText: "建築+5 / 受験権+1" },
+  { id: "training_mba", category: "training", icon: "🧑‍🏫", name: "MBA参考書", description: "社員1名の統率+5。MBA研修試験の受験権を1回得ます。", costMedal: 0, costShine: 7, rewardType: "item", itemKey: "training_mba", rewardCount: 1, effectText: "統率+5 / 受験権+1" },
+  { id: "training_appraiser", category: "training", icon: "📚", name: "不動産鑑定士参考書", description: "社員1名の営業+3、管理+3。資格試験の受験権を1回得ます。", costMedal: 0, costShine: 10, rewardType: "item", itemKey: "training_appraiser", rewardCount: 1, effectText: "営業+3 / 管理+3 / 受験権+1" },
 
-  { id: "dispatch_time_30", category: "dispatch", icon: "⏱", name: "時短券30分", description: "特別任務の残り時間を30分短縮します。", costSilver: 50, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "dispatch_time_30", rewardCount: 1, effectText: "派遣時間-30分" },
-  { id: "dispatch_time_60", category: "dispatch", icon: "⏰", name: "時短券1時間", description: "特別任務の残り時間を1時間短縮します。", costSilver: 100, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "dispatch_time_60", rewardCount: 1, effectText: "派遣時間-1時間" },
-  { id: "dispatch_instant", category: "dispatch", icon: "🚀", name: "特急派遣券", description: "特別任務を即完了させます。", costSilver: 300, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "dispatch_instant", rewardCount: 1, effectText: "派遣即完了" },
-  { id: "dispatch_success_30", category: "dispatch", icon: "📈", name: "調査支援券30%", description: "次回の特別任務成功率を+30%します。", costSilver: 50, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "dispatch_success_30", rewardCount: 1, effectText: "成功率+30%" },
-  { id: "dispatch_success_50", category: "dispatch", icon: "📊", name: "特別支援券50%", description: "次回の特別任務成功率を+50%します。", costSilver: 100, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "dispatch_success_50", rewardCount: 1, effectText: "成功率+50%" },
-  { id: "dispatch_success_100", category: "dispatch", icon: "⛩", name: "必勝祈願札", description: "次回の特別任務成功率を100%にします。", costSilver: 300, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "dispatch_success_100", rewardCount: 1, effectText: "成功率100%" },
+  { id: "dispatch_time_30", category: "dispatch", icon: "⏱", name: "時短券30分", description: "特別任務の残り時間を30分短縮します。", costMedal: 30, costShine: 0, rewardType: "item", itemKey: "dispatch_time_30", rewardCount: 1, effectText: "派遣時間-30分" },
+  { id: "dispatch_time_60", category: "dispatch", icon: "⏰", name: "時短券1時間", description: "特別任務の残り時間を1時間短縮します。", costMedal: 50, costShine: 0, rewardType: "item", itemKey: "dispatch_time_60", rewardCount: 1, effectText: "派遣時間-1時間" },
+  { id: "dispatch_instant", category: "dispatch", icon: "🚀", name: "特急派遣券", description: "特別任務を即完了させます。", costMedal: 100, costShine: 0, rewardType: "item", itemKey: "dispatch_instant", rewardCount: 1, effectText: "派遣即完了" },
+  { id: "dispatch_success_30", category: "dispatch", icon: "📈", name: "調査支援券30%", description: "次回の特別任務成功率を+30%します。", costMedal: 30, costShine: 0, rewardType: "item", itemKey: "dispatch_success_30", rewardCount: 1, effectText: "成功率+30%" },
+  { id: "dispatch_success_50", category: "dispatch", icon: "📊", name: "特別支援券50%", description: "次回の特別任務成功率を+50%します。", costMedal: 50, costShine: 0, rewardType: "item", itemKey: "dispatch_success_50", rewardCount: 1, effectText: "成功率+50%" },
+  { id: "dispatch_success_100", category: "dispatch", icon: "⛩", name: "必勝祈願札", description: "次回の特別任務成功率を100%にします。", costMedal: 100, costShine: 0, rewardType: "item", itemKey: "dispatch_success_100", rewardCount: 1, effectText: "成功率100%" },
 
-  { id: "energy_30", category: "energy", icon: "🥤", name: "エナジードリンク", description: "特別任務の行動ポイントを最大値の30%回復します。", costSilver: 50, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "energy_30", rewardCount: 1, effectText: "行動力30%回復" },
-  { id: "energy_50", category: "energy", icon: "🍱", name: "栄養ドリンク", description: "特別任務の行動ポイントを最大値の50%回復します。", costSilver: 100, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "energy_50", rewardCount: 1, effectText: "行動力50%回復" },
-  { id: "energy_100", category: "energy", icon: "🍱", name: "社長特製弁当", description: "特別任務の行動ポイントを全回復します。", costSilver: 300, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "energy_100", rewardCount: 1, effectText: "行動力100%回復" },
+  { id: "energy_30", category: "energy", icon: "🥤", name: "エナジードリンク", description: "特別任務の行動ポイントを最大値の30%回復します。", costMedal: 30, costShine: 0, rewardType: "item", itemKey: "energy_30", rewardCount: 1, effectText: "行動力30%回復" },
+  { id: "energy_50", category: "energy", icon: "🍹", name: "栄養ドリンク", description: "特別任務の行動ポイントを最大値の50%回復します。", costMedal: 50, costShine: 0, rewardType: "item", itemKey: "energy_50", rewardCount: 1, effectText: "行動力50%回復" },
+  { id: "energy_100", category: "energy", icon: "🍱", name: "社長特製弁当", description: "特別任務の行動ポイントを全回復します。", costMedal: 100, costShine: 0, rewardType: "item", itemKey: "energy_100", rewardCount: 1, effectText: "行動力100%回復" },
 
-  { id: "exp_book_500", category: "growth", icon: "📖", name: "レベルアップ教本", description: "社員1名に経験値+500を付与します。", costSilver: 500, costGold: 0, costRainbow: 0, rewardType: "item", itemKey: "exp_book_500", rewardCount: 1, effectText: "社員EXP+500" },
-  { id: "level_book", category: "growth", icon: "📚", name: "超レベルアップ教本", description: "社員1名のレベルを必ず+1します。", costSilver: 0, costGold: 50, costRainbow: 0, rewardType: "item", itemKey: "level_book", rewardCount: 1, effectText: "社員Lv+1" },
-  { id: "awakening_crystal", category: "growth", icon: "💎", name: "覚醒結晶", description: "社員1名の覚醒を+1します。非常に希少なアイテムです。", costSilver: 0, costGold: 0, costRainbow: 10, rewardType: "item", itemKey: "awakening_crystal", rewardCount: 1, effectText: "覚醒+1" },
+  { id: "exp_book_500", category: "growth", icon: "📖", name: "レベルアップ教本", description: "社員1名に経験値+300を付与します。", costMedal: 0, costShine: 5, rewardType: "item", itemKey: "exp_book_500", rewardCount: 1, effectText: "社員EXP+300" },
+  { id: "level_book", category: "growth", icon: "📚", name: "超レベルアップ教本", description: "社員1名のレベルを必ず+1します。", costMedal: 0, costShine: 50, rewardType: "item", itemKey: "level_book", rewardCount: 1, effectText: "社員Lv+1" },
+  { id: "awakening_crystal", category: "growth", icon: "💎", name: "覚醒結晶", description: "社員1名の覚醒を+1します。非常に希少なアイテムです。", costMedal: 0, costShine: 200, rewardType: "item", itemKey: "awakening_crystal", rewardCount: 1, effectText: "覚醒+1" },
 
-  { id: "startup_money_100m", category: "support", icon: "💴", name: "創業支援金1億円", description: "フリー/ストーリー開始前に使える支援金です。", costSilver: 0, costGold: 30, costRainbow: 0, rewardType: "item", itemKey: "startup_money_100m", rewardCount: 1, effectText: "開始資金+1億円" },
-  { id: "startup_money_300m", category: "support", icon: "💴", name: "創業支援金3億円", description: "フリー/ストーリー開始前に使える大型支援金です。", costSilver: 0, costGold: 0, costRainbow: 3, rewardType: "item", itemKey: "startup_money_300m", rewardCount: 1, effectText: "開始資金+3億円" },
-  { id: "startup_employee_1", category: "support", icon: "👥", name: "スタート社員追加枠+1", description: "開始時に選べる社員枠を+1します。", costSilver: 0, costGold: 30, costRainbow: 0, rewardType: "item", itemKey: "startup_employee_1", rewardCount: 1, effectText: "初期社員+1" },
-  { id: "startup_employee_3", category: "support", icon: "👥", name: "スタート社員追加枠+3", description: "開始時に選べる社員枠を+3します。", costSilver: 0, costGold: 0, costRainbow: 5, rewardType: "item", itemKey: "startup_employee_3", rewardCount: 1, effectText: "初期社員+3" },
+  { id: "startup_money_100m", category: "support", icon: "💴", name: "創業支援金1億円", description: "フリー/ストーリー開始前に使える支援金です。", costMedal: 50, costShine: 0, rewardType: "item", itemKey: "startup_money_100m", rewardCount: 1, effectText: "開始資金+1億円" },
+  { id: "startup_money_300m", category: "support", icon: "💴", name: "創業支援金3億円", description: "フリー/ストーリー開始前に使える大型支援金です。", costMedal: 100, costShine: 0, rewardType: "item", itemKey: "startup_money_300m", rewardCount: 1, effectText: "開始資金+3億円" },
+  { id: "startup_employee_1", category: "support", icon: "👥", name: "スタート社員追加枠+1", description: "開始時に選べる社員枠を+1します。", costMedal: 50, costShine: 0, rewardType: "item", itemKey: "startup_employee_1", rewardCount: 1, effectText: "初期社員+1" },
+  { id: "startup_employee_3", category: "support", icon: "👥", name: "スタート社員追加枠+3", description: "開始時に選べる社員枠を+3します。", costMedal: 100, costShine: 0, rewardType: "item", itemKey: "startup_employee_3", rewardCount: 1, effectText: "初期社員+3" },
 ];
-
-
 
 export default function App() {
 
   useEffect(() => {
-    document.title = `箱庭不動産経営シミュレーター ${GAME_VERSION}`;
+    document.title = `Rising Estate ～箱庭不動産 地方から全国へ～ ${GAME_VERSION}`;
 
     const v134StatusStyleId = "v140-status-ui-style";
     if (typeof document !== "undefined" && !document.getElementById(v134StatusStyleId)) {
@@ -14809,11 +15187,15 @@ const [tutorialStep, setTutorialStep] = useState(savedGame?.tutorialStep ?? null
 const [storyEvent, setStoryEvent] = useState(null);
 const [storySequence, setStorySequence] = useState(null);
 const [storySequenceIndex, setStorySequenceIndex] = useState(0);
+const [pendingStorySequenceAction, setPendingStorySequenceAction] = useState(null);
 const [hasShownGifuHqCompleteGuide, setHasShownGifuHqCompleteGuide] = useState(savedGame?.hasShownGifuHqCompleteGuide ?? false);
 const [hasClearedGifuChapter, setHasClearedGifuChapter] = useState(savedGame?.hasClearedGifuChapter ?? false);
 const [hasClearedNagoyaChapter, setHasClearedNagoyaChapter] = useState(savedGame?.hasClearedNagoyaChapter ?? false);
 const [hasClearedKyotoChapter, setHasClearedKyotoChapter] = useState(savedGame?.hasClearedKyotoChapter ?? false);
+const [hasClearedOsakaChapter, setHasClearedOsakaChapter] = useState(savedGame?.hasClearedOsakaChapter ?? false);
+const [hasClearedTokyoChapter, setHasClearedTokyoChapter] = useState(savedGame?.hasClearedTokyoChapter ?? false);
 const [hasCompletedKyotoTourismTutorial, setHasCompletedKyotoTourismTutorial] = useState(savedGame?.hasCompletedKyotoTourismTutorial ?? false);
+const [hasCompletedOsakaIndustrialTutorial, setHasCompletedOsakaIndustrialTutorial] = useState(savedGame?.hasCompletedOsakaIndustrialTutorial ?? false);
 const [nagoyaTutorialStep, setNagoyaTutorialStep] = useState(savedGame?.nagoyaTutorialStep ?? null);
 
 const [tiles, setTiles] = useState(initialMap.tiles);
@@ -14922,7 +15304,8 @@ useEffect(() => {
 useEffect(() => {
   // v193: 保管庫から持ち込んだ創業メンバーは、前の会社の行動中状態を引き継がない。
   // 既にv192で開始済みのデータでも、創業メンバー扱いの社員を本社配属・行動可能に補正する。
-  if (!hqPlaced) return;
+  const hasPlayerOfficeForFounderFix = hqPlaced || tiles.some((tile) => tile?.owner === OWNER.PLAYER && (tile?.feature === FEATURE.HQ || tile?.feature === FEATURE.BRANCH));
+  if (!hasPlayerOfficeForFounderFix) return;
 
   setEmployees((currentEmployees) => {
     let changed = false;
@@ -14943,18 +15326,26 @@ useEffect(() => {
         if (!shouldFixFounder) return employee;
 
         changed = true;
+        const remoteBranchOfficeId = isRemoteBranchStartMode(currentGameMode)
+          ? (tiles.find((tile) => tile?.owner === OWNER.PLAYER && tile?.feature === FEATURE.BRANCH && tile?.officeId)?.officeId ?? employee.officeId ?? "waiting")
+          : "hq";
         return normalizeEmployeeGrowthBase({
           ...employee,
-          officeId: "hq",
+          officeId: remoteBranchOfficeId,
           busyUntilMonth: null,
           busyActionName: null,
           founderCarryOver: true,
+          currentAssignment: createEmployeeAssignmentFromGame({ ...employee, officeId: remoteBranchOfficeId }, {
+            currentGameMode,
+            freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null,
+            activeSaveSlot: savedGame?.activeSaveSlot ?? getCurrentSaveSlot(),
+          }),
         });
       });
 
     return changed ? nextEmployees : currentEmployees;
   });
-}, [hqPlaced, currentGameMode]);
+}, [hqPlaced, currentGameMode, tiles, month, savedGame]);
 
 useEffect(() => {
   const hasPlayerHQ = tiles.some((tile) => {
@@ -15054,11 +15445,14 @@ useEffect(() => {
       employeeStorage,
       currentGameMode,
       freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null,
-      activeSaveSlot,
+      activeSaveSlot: savedGame?.activeSaveSlot ?? getCurrentSaveSlot(),
       hasClearedGifuChapter,
       hasClearedNagoyaChapter,
       hasClearedKyotoChapter,
+      hasClearedOsakaChapter,
+      hasClearedTokyoChapter,
       hasCompletedKyotoTourismTutorial,
+      hasCompletedOsakaIndustrialTutorial,
       rookieEmployeeTickets,
       employeeTickets,
       premiumEmployeeTickets,
@@ -15135,6 +15529,16 @@ const [log, setLog] = useState(
 const [logHistory, setLogHistory] = useState((savedGame?.logHistory ?? []).slice(0, 200));
 
 const [popupLog, setPopupLog] = useState(null);
+const [gameOverInfo, setGameOverInfo] = useState(() => {
+  const initialMoney = Number(savedGame?.money ?? 20000);
+  if (!Number.isFinite(initialMoney) || initialMoney >= 0) return null;
+  return {
+    finalMoney: Math.round(initialMoney),
+    monthLabel: getGameDate(savedGame?.month ?? 1).label,
+    reason: "所持金がマイナスになりました",
+    akariComment: getGameOverAkariComment(initialMoney),
+  };
+});
 const [annualReport, setAnnualReport] = useState(null);
 const [annualStats, setAnnualStats] = useState(savedGame?.annualStats ?? { income: 0, maintenance: 0, tax: 0, purchase: 0, net: 0 });
 const [monthlyCompanyHistory, setMonthlyCompanyHistory] = useState(savedGame?.monthlyCompanyHistory ?? []);
@@ -15157,6 +15561,7 @@ const [companySortDirection, setCompanySortDirection] = useState("desc");
 
 const [employeeGachaResult, setEmployeeGachaResult] = useState(null);
 const [employeeRecruitmentOffer, setEmployeeRecruitmentOffer] = useState(null);
+const [employeeRecruitAnimationStep, setEmployeeRecruitAnimationStep] = useState("ready");
 const [selectedEmployeeDetail, setSelectedEmployeeDetail] = useState(null);
 const [employeeLibraryFilter, setEmployeeLibraryFilter] = useState("ALL");
 const [actionEmployeeRequest, setActionEmployeeRequest] = useState(null);
@@ -15205,7 +15610,10 @@ useEffect(() => {
       hasClearedGifuChapter,
       hasClearedNagoyaChapter,
       hasClearedKyotoChapter,
+      hasClearedOsakaChapter,
+      hasClearedTokyoChapter,
       hasCompletedKyotoTourismTutorial,
+      hasCompletedOsakaIndustrialTutorial,
       savedAt: new Date().toISOString(),
       money,
       loans,
@@ -15223,7 +15631,7 @@ useEffect(() => {
       employees,
       employeeCandidates,
       employeeStorage,
-      accountSnapshot: mergeAccountDataWithGame(savedAccountData, { playerRank, playerExp, employees, employeeStorage, currentGameMode, freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null, activeSaveSlot, hasClearedGifuChapter, hasClearedNagoyaChapter, hasClearedKyotoChapter, hasCompletedKyotoTourismTutorial, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }),
+      accountSnapshot: mergeAccountDataWithGame(savedAccountData, { playerRank, playerExp, employees, employeeStorage, currentGameMode, freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null, activeSaveSlot, hasClearedGifuChapter, hasClearedNagoyaChapter, hasClearedKyotoChapter, hasClearedOsakaChapter, hasClearedTokyoChapter, hasCompletedKyotoTourismTutorial, hasCompletedOsakaIndustrialTutorial, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }),
       actionPoints,
       rookieEmployeeTickets,
       employeeTickets,
@@ -15378,6 +15786,7 @@ const [homeShopCurrencyPanel, setHomeShopCurrencyPanel] = useState(null);
 const [employeeItemUseTarget, setEmployeeItemUseTarget] = useState(null);
 const [employeeItemUseConfirm, setEmployeeItemUseConfirm] = useState(null);
 const [employeeItemUseResult, setEmployeeItemUseResult] = useState(null);
+const [employeeExamAnimationStep, setEmployeeExamAnimationStep] = useState("result");
 const [homeMissionFilter, setHomeMissionFilter] = useState("claimable");
 const [isHomeBottomNavVisible, setIsHomeBottomNavVisible] = useState(false);
 const homeBottomNavHideTimerRef = useRef(null);
@@ -15386,6 +15795,31 @@ const [isMapInfoMenuOpen, setIsMapInfoMenuOpen] = useState(false);
 const [isMapEmployeeMenuOpen, setIsMapEmployeeMenuOpen] = useState(false);
 const [employeeRecruitReturnPanel, setEmployeeRecruitReturnPanel] = useState("home");
 const mapBottomNavHideTimerRef = useRef(null);
+
+useEffect(() => {
+  if (!employeeItemUseResult?.examResult) {
+    setEmployeeExamAnimationStep("result");
+    return undefined;
+  }
+
+  setEmployeeExamAnimationStep("taking");
+  const timers = [
+    window.setTimeout(() => setEmployeeExamAnimationStep("grading"), 900),
+    window.setTimeout(() => setEmployeeExamAnimationStep("announce"), 1800),
+    window.setTimeout(() => setEmployeeExamAnimationStep("result"), 2500),
+  ];
+
+  return () => timers.forEach((timerId) => window.clearTimeout(timerId));
+}, [employeeItemUseResult]);
+
+useEffect(() => {
+  if (!employeeRecruitmentOffer || employeeRecruitAnimationStep === "ready") return undefined;
+
+  const nextStep = employeeRecruitAnimationStep === "delivery" ? "arrival" : "ready";
+  const delayMs = employeeRecruitAnimationStep === "delivery" ? 850 : 950;
+  const timerId = window.setTimeout(() => setEmployeeRecruitAnimationStep(nextStep), delayMs);
+  return () => window.clearTimeout(timerId);
+}, [employeeRecruitmentOffer, employeeRecruitAnimationStep]);
 
 const hideHomeBottomNavSoon = useCallback(() => {
   if (homeBottomNavHideTimerRef.current) {
@@ -16498,6 +16932,11 @@ const headquarterNextLevelInfo = useMemo(() => {
 
 const headquarterLevel = headquarterNextLevelInfo.level;
 
+const currentOfficeAreaKey = getSpecialMissionAreaKeyFromMode(currentGameMode, isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null);
+const currentOfficeLevelShortLabel = getOfficeLevelShortLabelByAreaKey(currentOfficeAreaKey);
+const currentOfficeLevelFullLabel = getOfficeLevelFullLabelByAreaKey(currentOfficeAreaKey);
+const currentOfficeExpLabel = getOfficeExpLabelByAreaKey(currentOfficeAreaKey);
+
 const employeeCallLimit = useMemo(() => {
   return Math.max(3, 2 + headquarterLevel + branchCount);
 }, [headquarterLevel, branchCount]);
@@ -16524,7 +16963,7 @@ const previousHeadquarterLevelRef = useRef(headquarterLevel);
 useEffect(() => {
   const previousLevel = previousHeadquarterLevelRef.current;
   if (headquarterLevel > previousLevel) {
-    const messages = [`本社Lv${previousLevel} → 本社Lv${headquarterLevel}に上がりました。`, `社員呼び出し枠が${employeeCallLimit}人になりました。`];
+    const messages = [`${currentOfficeLevelShortLabel}${previousLevel} → ${currentOfficeLevelShortLabel}${headquarterLevel}に上がりました。`, `社員呼び出し枠が${employeeCallLimit}人になりました。`];
     if (previousLevel < HQ_BRANCH_UNLOCK_LEVEL && headquarterLevel >= HQ_BRANCH_UNLOCK_LEVEL) {
       messages.push("支店建設が解放されました。建設メニューから支店を建てられます。");
     }
@@ -16588,7 +17027,7 @@ useEffect(() => {
 
 const employeeLimit = employeeCallLimit;
 
-const employeeLimitText = ` / 呼び出し枠${employees.length}/${employeeCallLimit}人（本社Lv${headquarterLevel}・支店${branchCount}店）`;
+const employeeLimitText = ` / 呼び出し枠${employees.length}/${employeeCallLimit}人（${currentOfficeLevelShortLabel}${headquarterLevel}・支店${branchCount}店）`;
 
 const nextBranchRequiredEmployeeCount = useMemo(() => {
   return 0;
@@ -16733,18 +17172,25 @@ function sortCompanyRowsForDisplay(rowList) {
 
 function getCompanyEmployeeOfficeName(employee, isStored = false) {
   if (isStored || employee?.isStoredEmployee) return "社員保管庫";
+  const actualOfficeId = String(employee?.officeId ?? "");
+  if (actualOfficeId === "waiting" || actualOfficeId === "storage" || actualOfficeId === "待機") return "待機";
   if (employee?.currentAssignment) return getEmployeeAssignmentLabel(employee.currentAssignment);
-  if (employee?.displayOfficeName) return employee.displayOfficeName;
-  if (employee?.companyEmployeeOfficeName) return employee.companyEmployeeOfficeName;
+  const employeeMode = employee?.currentGameMode ?? employee?.mode ?? currentGameMode;
+  const employeeFreeMapKey = employee?.freeMapKey ?? (isFreeModeKey(employeeMode) ? normalizeFreeModeKey(employeeMode) : null);
+  if (employee?.displayOfficeName) return normalizeOfficeDisplayNameForArea(employee.displayOfficeName, employeeMode, employeeFreeMapKey);
+  if (employee?.companyEmployeeOfficeName) return normalizeOfficeDisplayNameForArea(employee.companyEmployeeOfficeName, employeeMode, employeeFreeMapKey);
 
   const officeId = employee?.officeId ?? "hq";
-  const areaLabel = employee?.areaLabel || getGameAreaLabel(employee?.currentGameMode ?? employee?.mode ?? currentGameMode, employee?.freeMapKey ?? (isFreeModeKey(employee?.currentGameMode ?? employee?.mode ?? currentGameMode) ? normalizeFreeModeKey(employee?.currentGameMode ?? employee?.mode ?? currentGameMode) : null));
+  const areaLabel = employee?.areaLabel || getGameAreaLabel(employeeMode, employeeFreeMapKey);
 
-  if (officeId === "hq") return `${areaLabel}本社`;
-  if (String(officeId).includes("_hq")) return `${areaLabel}本社`;
-  if (String(officeId).includes("branch")) return `${areaLabel}${getOfficeName(officeId)}`;
+  if (officeId === "hq" || String(officeId).includes("_hq")) {
+    return joinAreaAndOfficeName(areaLabel, getAreaOfficeRoleLabel(employeeMode, employeeFreeMapKey, officeId));
+  }
 
-  return `${areaLabel}${getOfficeName(officeId)}`;
+  const officeName = normalizeOfficeDisplayNameForArea(getOfficeName(officeId), employeeMode, employeeFreeMapKey);
+  if (String(officeId).includes("branch")) return joinAreaAndOfficeName(areaLabel, officeName);
+
+  return joinAreaAndOfficeName(areaLabel, officeName);
 }
 
 function sortEmployeesForDisplay(employeeList) {
@@ -18639,6 +19085,40 @@ function getRecruitEnvelopeLabel(envelopeType) {
   return "白封筒";
 }
 
+function getRecruitmentAnnouncementSignal(applicants = [], ticketType = "normal") {
+  const rarityOrders = { N: 1, R: 2, HR: 3, SR: 4, SSR: 5, UR: 6 };
+  const highestOrder = (Array.isArray(applicants) ? applicants : []).reduce((maxOrder, applicant) => {
+    return Math.max(maxOrder, rarityOrders[applicant?.rarity] ?? 1);
+  }, 1);
+  const roll = Math.random() * 100;
+
+  if (highestOrder >= 5) {
+    if (roll < 24) return { key: "rainbow", icon: "🌈", label: "特別な気配", title: "応募書類到着！", description: "封筒がまばゆく輝いています。すごい履歴書が入っているかもしれません。" };
+    if (roll < 58) return { key: "red", icon: "🔴", label: "かなり期待", title: "応募書類到着！", description: "封筒から強い光が漏れています。期待できそうです。" };
+    if (roll < 82) return { key: "green", icon: "🟢", label: "少し期待", title: "応募書類到着！", description: "封筒がやわらかく光っています。良い出会いがありそうです。" };
+    return { key: "blue", icon: "🔵", label: "通常", title: "応募書類到着！", description: "封筒が届きました。中身を確認してみましょう。" };
+  }
+
+  if (highestOrder >= 4) {
+    if (roll < 42) return { key: "red", icon: "🔴", label: "かなり期待", title: "応募書類到着！", description: "封筒から強い光が漏れています。期待できそうです。" };
+    if (roll < 76) return { key: "green", icon: "🟢", label: "少し期待", title: "応募書類到着！", description: "封筒がやわらかく光っています。良い出会いがありそうです。" };
+    return { key: "blue", icon: "🔵", label: "通常", title: "応募書類到着！", description: "封筒が届きました。中身を確認してみましょう。" };
+  }
+
+  if (highestOrder >= 3) {
+    if (roll < 48) return { key: "green", icon: "🟢", label: "少し期待", title: "応募書類到着！", description: "封筒がやわらかく光っています。良い出会いがありそうです。" };
+    return { key: "blue", icon: "🔵", label: "通常", title: "応募書類到着！", description: "封筒が届きました。中身を確認してみましょう。" };
+  }
+
+  return { key: "blue", icon: "🔵", label: "通常", title: "応募書類到着！", description: "封筒が届きました。中身を確認してみましょう。" };
+}
+
+function getRecruitDeliveryPhaseText(step = "delivery") {
+  if (step === "delivery") return { title: "応募書類配達中...", subtitle: "本社宛ての大封筒が近づいています。", icon: "📮" };
+  if (step === "arrival") return { title: "応募書類到着！", subtitle: "封筒が届きました。光の色はあくまで期待演出です。", icon: "📬" };
+  return { title: "応募書類到着！", subtitle: "封筒が届きました。光の色はあくまで期待演出です。", icon: "📬" };
+}
+
 function createRecruitmentApplicants(ticketType) {
   const isPremium = ticketType === "premium";
   const isRookie = ticketType === "rookie";
@@ -18714,13 +19194,17 @@ function startEmployeeRecruitmentByTicket(ticketType) {
     setEmployeeTickets(employeeTickets - 1);
   }
 
+  const announcementSignal = getRecruitmentAnnouncementSignal(applicants, ticketType);
+
   setEmployeeCandidates([]);
   setEmployeeGachaResult(null);
+  setEmployeeRecruitAnimationStep("delivery");
   setEmployeeRecruitmentOffer({
     ticketType,
     applicants,
     selectedEnvelopeId: null,
     source: "map",
+    announcementSignal,
   });
 
   setLog(`${getTicketName(ticketType)}1枚を使い、履歴書が${applicants.length}通届きました。封筒を開封して1人を採用してください。`);
@@ -18773,6 +19257,7 @@ function cancelEmployeeRecruitmentOffer() {
 
   returnAfterEmployeeRecruitment();
   setEmployeeRecruitmentOffer(null);
+  setEmployeeRecruitAnimationStep("ready");
   setLog("社員採用を終了しました。今回は採用を見送りました。");
 }
 
@@ -18880,6 +19365,7 @@ function confirmRecruitApplicant(applicant) {
     });
     returnAfterEmployeeRecruitment();
     setEmployeeRecruitmentOffer(null);
+    setEmployeeRecruitAnimationStep("ready");
     setLog(
       `${applicant.name}がダブりました。覚醒+${awakeningPreview.afterAwakening}になりました。${awakeningPreview.statMessages.join(" / ")}`
     );
@@ -18920,6 +19406,7 @@ function confirmRecruitApplicant(applicant) {
   });
   returnAfterEmployeeRecruitment();
   setEmployeeRecruitmentOffer(null);
+  setEmployeeRecruitAnimationStep("ready");
 
   setLog(
     `${hiredEmployee.name}（${hiredEmployee.rarity}）を採用しました。社員保管庫に追加しました。配属する場合は社員配置から呼び出してください。現在の呼び出し枠:${employees.length}/${employeeCallLimit}人。`
@@ -18996,9 +19483,12 @@ function buildInitialAccountData(overrides = {}) {
     rookieEmployeeTickets: 0,
     employeeTickets: 0,
     premiumEmployeeTickets: 0,
-    silverSheets: DEV_DEMO_SHEET_GRANT_AMOUNT,
-    goldSheets: DEV_DEMO_SHEET_GRANT_AMOUNT,
-    rainbowSheets: DEV_DEMO_SHEET_GRANT_AMOUNT,
+    medals: 0,
+    shine: 0,
+    releaseCampaignClaimed: false,
+    silverSheets: 0,
+    goldSheets: 0,
+    rainbowSheets: 0,
     specialMissionData: null,
     items: {},
     usedSecretCommands: {},
@@ -19009,7 +19499,7 @@ function buildInitialAccountData(overrides = {}) {
 }
 
 function resetAllGameDataFromSettings() {
-  const ok = window.confirm("完全初期化しますか？\n\n社員・ランク・経験値・チケット・シルバーシート/ゴールドシート・マップ・セーブデータをすべて削除し、インストール直後の状態に戻します。");
+  const ok = window.confirm("完全初期化しますか？\n\n社員・ランク・経験値・チケット・メダル/シャイン・マップ・セーブデータをすべて削除し、インストール直後の状態に戻します。");
   if (!ok) return;
 
   const finalOk = window.confirm("本当に完全初期化しますか？\nこの操作は元に戻せません。");
@@ -19021,7 +19511,7 @@ function resetAllGameDataFromSettings() {
 }
 
 function resetGameDataKeepingEmployeesFromSettings() {
-  const ok = window.confirm("社員だけ残して初期化しますか？\n\n社員名簿の社員だけ残し、ランク・経験値・チケット・シルバーシート/ゴールドシート・マップ・セーブデータを初期化します。");
+  const ok = window.confirm("社員だけ残して初期化しますか？\n\n社員名簿の社員だけ残し、ランク・経験値・チケット・メダル/シャイン・マップ・セーブデータを初期化します。");
   if (!ok) return;
 
   const accountData = readAccountData();
@@ -19053,19 +19543,24 @@ function markSecretCommandUsed(commandKey) {
 function grantSheetReward(sheetType, amount, reason) {
   const safeAmount = Math.max(1, Math.round(Number(amount) || 1));
   const accountData = readAccountData();
-  const currentSilver = Math.max(0, Math.round(Number(accountData.silverSheets ?? accountData.silverSheet ?? 0) || 0));
-  const currentGold = Math.max(0, Math.round(Number(accountData.goldSheets ?? accountData.goldSheet ?? 0) || 0));
+  const currentMedals = Math.max(0, Math.round(Number(accountData.medals ?? accountData.medal ?? 0) || 0));
+  const currentShine = Math.max(0, Math.round(Number(accountData.shine ?? accountData.shines ?? 0) || 0));
+  const isShine = sheetType === "shine" || sheetType === "gold" || sheetType === "rainbow";
   const nextAccountData = {
     ...accountData,
-    silverSheets: sheetType === "silver" ? currentSilver + safeAmount : currentSilver,
-    goldSheets: sheetType === "gold" ? currentGold + safeAmount : currentGold,
+    medals: isShine ? currentMedals : currentMedals + safeAmount,
+    shine: isShine ? currentShine + safeAmount : currentShine,
+    silverSheets: 0,
+    goldSheets: 0,
+    rainbowSheets: 0,
     updatedAt: new Date().toISOString(),
   };
-
   writeAccountData(nextAccountData);
   setHomeAccountRefreshKey((current) => current + 1);
-  setLog(`${reason}：${sheetType === "gold" ? "ゴールドシート" : "シルバーシート"}を${safeAmount}枚獲得しました。`);
-  alert(`${sheetType === "gold" ? "ゴールドシート" : "シルバーシート"}を${safeAmount}枚獲得しました。`);
+  const label = isShine ? "シャイン" : "メダル";
+  const icon = isShine ? "💎" : "🏅";
+  setLog(`${reason}：${icon}${label}を${safeAmount}獲得しました。`);
+  alert(`${icon}${label}を${safeAmount}獲得しました。`);
 }
 
 
@@ -19120,14 +19615,14 @@ function handleDeveloperCommand() {
     return;
   }
 
-  if (["SS", "ＳＳ", "ss", "えすえす", "エスエス", "シルバーシート", "シルバーシート"].map(normalizeCommandText).includes(command)) {
-    grantSheetReward("silver", 100, "隠しコマンド");
+  if (["MEDAL", "ＭＥＤＡＬ", "medal", "メダル"].map(normalizeCommandText).includes(command)) {
+    grantSheetReward("medal", 100, "隠しコマンド");
     setDeveloperCommandInput("");
     return;
   }
 
-  if (["GS", "ＧＳ", "gs", "じーえす", "ジーエス", "ゴールドシート", "ゴールドシート"].map(normalizeCommandText).includes(command)) {
-    grantSheetReward("gold", 100, "隠しコマンド");
+  if (["SHINE", "ＳＨＩＮＥ", "shine", "シャイン"].map(normalizeCommandText).includes(command)) {
+    grantSheetReward("shine", 10, "隠しコマンド");
     setDeveloperCommandInput("");
     return;
   }
@@ -19739,6 +20234,39 @@ async function placeBranch(targetTile = selectedTile) {
       };
     }));
 
+    const employeesToAutoAssign = employeesRef.current.length > 0 ? employeesRef.current : employees;
+    const nextEmployeesAfterBranchOpen = employeesToAutoAssign.map((employee) => {
+      const currentOfficeId = String(employee?.officeId ?? "");
+      const shouldAutoAssignFounder = employee?.founderCarryOver === true && (
+        !currentOfficeId ||
+        currentOfficeId === "hq" ||
+        currentOfficeId === "waiting" ||
+        currentOfficeId === "storage" ||
+        currentOfficeId === "待機"
+      );
+
+      if (!shouldAutoAssignFounder) return employee;
+
+      const assignedEmployee = {
+        ...employee,
+        officeId,
+        busyUntilMonth: null,
+        busyActionName: null,
+      };
+
+      return normalizeEmployeeGrowthBase({
+        ...assignedEmployee,
+        currentAssignment: createEmployeeAssignmentFromGame(assignedEmployee, {
+          currentGameMode,
+          freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null,
+          areaLabel: remoteAreaLabel,
+          activeSaveSlot,
+        }),
+      });
+    });
+    employeesRef.current = nextEmployeesAfterBranchOpen;
+    setEmployees(nextEmployeesAfterBranchOpen);
+
     setHqPlaced(true);
     setPendingBranchPlacement(false);
     setPendingBuildKey(null);
@@ -20336,7 +20864,41 @@ async function repairBuilding(type) {
   }
 }
 
+function handleGameOverRescue() {
+  const accountData = readAccountData();
+  const currentMedals = Math.max(0, Math.round(Number(accountData.medals ?? accountData.medal ?? 0) || 0));
+
+  if (currentMedals < GAME_OVER_RESCUE_MEDAL_COST) {
+    setLog(`メダルが不足しています。再建支援にはメダル${GAME_OVER_RESCUE_MEDAL_COST}枚が必要です。`);
+    return;
+  }
+
+  const nextAccountData = {
+    ...accountData,
+    medals: currentMedals - GAME_OVER_RESCUE_MEDAL_COST,
+    updatedAt: new Date().toISOString(),
+  };
+  writeAccountData(nextAccountData);
+  setHomeAccountRefreshKey((current) => current + 1);
+
+  const rescueLog = `メダル${GAME_OVER_RESCUE_MEDAL_COST}枚を使用して再建支援を受けました。所持金を${GAME_OVER_RESCUE_RESTART_MONEY.toLocaleString()}万円（1億円）に戻して経営を再開します。`;
+  setMoney(GAME_OVER_RESCUE_RESTART_MONEY);
+  setGameOverInfo(null);
+  setPopupLog(null);
+  setLog(rescueLog);
+  setLogHistory((current) => [rescueLog, ...(Array.isArray(current) ? current : [])].slice(0, 200));
+}
+
 function nextMonth() {
+    if (gameOverInfo || money < 0) {
+      setGameOverInfo({
+        finalMoney: Math.round(Number(money) || 0),
+        monthLabel: getGameDate(month).label,
+        reason: "所持金がマイナスになりました",
+        akariComment: getGameOverAkariComment(money),
+      });
+      return;
+    }
     const nextProcessingMonth = month + 1;
     let income = 0;
     let maintenance = 0;
@@ -21595,7 +22157,7 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
     return sum + getEmployeeSalary(employee);
   }, 0);
   const rivalMonthlyNet = rivalMonthlyRent - rivalMonthlyMaintenance - rivalMonthlyPayroll;
-  rivalMoney = Math.max(0, Math.round(rivalMoney + rivalMonthlyNet));
+  rivalMoney = Math.round(rivalMoney + rivalMonthlyNet);
 
   if (gameDate.month === 6) {
     const rivalYearlyTax = companyTiles.reduce((sum, tile) => {
@@ -21607,9 +22169,19 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
     }, 0);
 
     if (rivalYearlyTax > 0) {
-      rivalMoney = Math.max(0, Math.round(rivalMoney - rivalYearlyTax));
+      rivalMoney = Math.round(rivalMoney - rivalYearlyTax);
       logs.push(`${company.name}が固定資産税${rivalYearlyTax}万円を支払いました。`);
     }
+  }
+
+  if (rivalMoney < 0) {
+    logs.push(`【廃業】${company.name}は資金がマイナスになったため廃業しました。`);
+    const clearedTiles = removeBankruptRivalCompany(nextTiles, companyId);
+    const entry = createLateRivalCompanyEntry(clearedTiles, companyId);
+    return {
+      tiles: entry.tiles,
+      logs: entry.log ? [...logs, entry.log] : logs,
+    };
   }
 
   const updateRivalMoney = (tileListForMoney, nextMoney) => {
@@ -21706,14 +22278,12 @@ function runRivalCompanyMonthlyAction(tileList, companyId) {
     const officeIds = sortedOfficeTiles.map(getOfficeIdForRivalOfficeTile);
     const officeCounts = new Map(officeIds.map((officeId) => [officeId, 0]));
 
-    return employeeList.map((employee, index) => {
-      let targetOfficeId = employee.officeId;
-
-      if (!officeIds.includes(targetOfficeId)) {
-        targetOfficeId = officeIds[index % officeIds.length];
+    return sortRivalEmployeesByPriority(employeeList).map((employee, index) => {
+      const officeIndex = Math.floor(index / 5);
+      const targetOfficeId = officeIds[officeIndex] ?? `rival_${companyId}_waiting`;
+      if (officeIds.includes(targetOfficeId)) {
+        officeCounts.set(targetOfficeId, (officeCounts.get(targetOfficeId) ?? 0) + 1);
       }
-
-      officeCounts.set(targetOfficeId, (officeCounts.get(targetOfficeId) ?? 0) + 1);
 
       return {
         ...employee,
@@ -22194,7 +22764,7 @@ const nextPendingLoanConsultations = pendingLoanConsultations.map((consultation)
   const report = calculateLoanConsultationReport(consultation);
   completedLoanConsultationReports.push(report);
   if (consultation.employeeId != null) completedLoanConsultationEmployeeIds.push(consultation.employeeId);
-  eventLog.push(`${consultation.bankName}の融資相談結果：推定${report.estimatedMin.toLocaleString()}万〜${report.estimatedMax.toLocaleString()}万円 / 担当:${consultation.employeeName || "-"}`);
+  eventLog.push(`${consultation.bankName}の融資相談結果：融資目安${report.recommendedAmount.toLocaleString()}万円 / 想定金利${((report.estimatedAnnualRate ?? 0) * 100).toFixed(1)}% / 担当:${consultation.employeeName || "-"}`);
   return null;
 }).filter(Boolean);
 
@@ -22298,7 +22868,8 @@ if (gameDate.month === 3) {
   }
 }
 
-    setMoney(money + finalNet + loanApprovalTotal);
+    const finalCashAfterMonth = Math.round(money + finalNet + loanApprovalTotal);
+    setMoney(finalCashAfterMonth);
     setLoans(nextLoans);
     setPendingLoanApplications(nextPendingLoanApplications);
     setPendingLoanConsultations(nextPendingLoanConsultations);
@@ -22337,7 +22908,7 @@ const monthlyHistoryRecord = {
   loan: loanPaymentTotal,
   corporateTax,
   net: finalNet,
-  money: money + finalNet + loanApprovalTotal,
+  money: finalCashAfterMonth,
   loanApproval: loanApprovalTotal,
 };
 setMonthlyCompanyHistory((prev) => [monthlyHistoryRecord, ...prev].slice(0, 120));
@@ -22348,7 +22919,7 @@ if (gameDate.month === 3) {
     ...updatedAnnualStats,
     corporateTax,
     netAfterTax: (updatedAnnualStats.net ?? 0) - corporateTax,
-    money: money + finalNet + loanApprovalTotal,
+    money: finalCashAfterMonth,
   loanApproval: loanApprovalTotal,
     assetValue: Math.round(assetValue),
     playerRank,
@@ -22391,7 +22962,17 @@ const monthLog =
   (visibleEventLog.length ? visibleEventLog.join("\n") : "大きな変化はありません");
 setLog(monthLog);
 
-setPopupLog(monthLog);
+if (finalCashAfterMonth < 0) {
+  setPopupLog(null);
+  setGameOverInfo({
+    finalMoney: finalCashAfterMonth,
+    monthLabel: gameDate.label,
+    reason: "所持金がマイナスになりました",
+    akariComment: getGameOverAkariComment(finalCashAfterMonth),
+  });
+} else {
+  setPopupLog(monthLog);
+}
 
 setLogHistory((prev) => [monthLog, ...prev].slice(0, 200));
   }
@@ -22448,7 +23029,7 @@ function fullResetGame() {
   setLoanAmountInput("5000");
   setSelectedBankId("regional");
   setMonth(1);
-  const accountRankExp = getBetterAccountRankExp(readAccountData(), 1, 0);
+  const accountRankExp = getBetterAccountRankExp(accountDataForNewGame, 1, 0);
   setPlayerRank(accountRankExp.playerRank);
   setPlayerExp(accountRankExp.playerExp);
   playerRankRef.current = accountRankExp.playerRank;
@@ -22503,84 +23084,84 @@ function getLoanConsultationQualityRate(consultationPower) {
 }
 
 function getLoanOutlookLabel(recommendedAmount, estimatedMax, bankId) {
-  if (recommendedAmount <= 0 || estimatedMax <= 0) return "非常に厳しい";
+  if (recommendedAmount <= 0 || estimatedMax <= 0) return "低い";
   if (bankId === "nonbank" && recommendedAmount >= 500) return "高い";
-  if (recommendedAmount >= estimatedMax * 0.78) return "非常に高い";
-  if (recommendedAmount >= estimatedMax * 0.55) return "高い";
-  if (recommendedAmount >= estimatedMax * 0.32) return "五分五分";
+  if (recommendedAmount >= estimatedMax * 0.9) return "非常に高い";
+  if (recommendedAmount >= estimatedMax * 0.6) return "高い";
+  if (recommendedAmount >= estimatedMax * 0.3) return "普通";
   return "低い";
 }
 
 function buildLoanConsultationComment(bank, report) {
-  const minText = report.estimatedMin.toLocaleString();
-  const maxText = report.estimatedMax.toLocaleString();
-  const recText = report.recommendedAmount.toLocaleString();
+  const recText = Math.max(0, Math.round(report.recommendedAmount ?? 0)).toLocaleString();
+  const rateText = `${((Number(report.estimatedAnnualRate ?? bank?.rate ?? 0) || 0) * 100).toFixed(1)}%`;
+  const bankName = bank?.name ?? "銀行";
   const commentsByBank = {
     nonbank: {
       strong: [
-        `銀行が厳しい局面でも、${recText}万円前後なら当社系の資金調達は十分狙えます。ただし金利負担は重いです。`,
-        `急ぎ資金なら${minText}万〜${maxText}万円の範囲で相談余地があります。短期で返す前提なら使いやすいです。`,
+        `${recText}万円であれば、当社としては前向きに検討できます。ただし金利は${rateText}前後となる見込みです。`,
+        `急ぎの資金調達なら、${recText}万円程度が現実的です。短期で返済する前提なら相談しやすいです。`,
       ],
       normal: [
-        `${recText}万円程度までなら可能性があります。長期保有資金というより、つなぎ資金として考えた方が安全です。`,
-        `審査は柔軟ですが金利は高めです。${minText}万〜${maxText}万円の範囲で抑えるのが現実的です。`,
+        `${recText}万円であれば検討余地があります。長期保有資金というより、つなぎ資金として考えた方が安全です。`,
+        `審査は柔軟ですが金利は高めです。${recText}万円程度に抑えるのが現実的です。`,
       ],
       weak: [
-        `現状でも少額なら相談できますが、返済負担には注意が必要です。${recText}万円以下に抑えたいです。`,
-        `銀行よりは柔軟ですが、今の財務だと大きな金額は危険です。まずは小口が無難です。`,
+        `現状でも少額なら相談できますが、返済負担には注意が必要です。${recText}万円程度までが無難です。`,
+        `銀行よりは柔軟ですが、今の財務だと大きな金額は危険です。まずは${recText}万円程度で実績作りが良さそうです。`,
       ],
     },
     regional: {
       strong: [
-        `地域での実績を見る限り、${recText}万円前後ならかなり前向きに見てもらえそうです。`,
-        `${minText}万〜${maxText}万円の範囲なら相談しやすいです。特に${recText}万円程度なら現実的です。`,
+        `地域での実績を見る限り、${recText}万円ならかなり前向きに検討できます。想定金利は${rateText}前後です。`,
+        `${recText}万円程度であれば現実的です。返済計画を整えて本審査へ進めましょう。`,
       ],
       normal: [
-        `${recText}万円程度なら可能性があります。空室や返済後利益の説明をしっかり準備したいです。`,
-        `${minText}万〜${maxText}万円あたりが目安です。希望額を欲張りすぎなければ勝負できます。`,
+        `${recText}万円なら可能性があります。空室や返済後利益の説明をしっかり準備したいです。`,
+        `希望額は${recText}万円程度が目安です。欲張りすぎなければ本審査で勝負できます。`,
       ],
       weak: [
-        `今の状況だと大きな金額は厳しめです。${recText}万円以下まで抑えるなら相談余地があります。`,
-        `地方銀行でも慎重に見られそうです。まずは小口で実績を作る方が安全です。`,
+        `今の状況だと大きな金額は厳しめです。${recText}万円程度まで抑えるなら相談余地があります。`,
+        `地方銀行でも慎重に見られそうです。まずは${recText}万円程度の小口で実績を作る方が安全です。`,
       ],
     },
     shinkin: {
       strong: [
-        `返済計画が整えば、${recText}万円前後まで十分狙えます。資料の見せ方が大事です。`,
-        `${minText}万〜${maxText}万円の範囲なら検討余地があります。安定経営を強く説明したいです。`,
+        `返済計画が整えば、${recText}万円まで十分狙えます。資料の見せ方が大事です。`,
+        `${recText}万円なら検討しやすい水準です。安定経営を強く説明したいです。`,
       ],
       normal: [
         `${recText}万円程度なら五分五分以上です。既存借入と空室率の説明を用意しましょう。`,
-        `信金は堅実性を見ます。${minText}万〜${maxText}万円の範囲で控えめに申請したいです。`,
+        `信金は堅実性を見ます。今回は${recText}万円程度で控えめに申請したいです。`,
       ],
       weak: [
-        `今の財務だと慎重に見られます。${recText}万円以下に抑えて、返済計画を固めたいです。`,
-        `黒字幅や満室率を改善できれば見え方が変わります。今回は小口が無難です。`,
+        `今の財務だと慎重に見られます。${recText}万円程度に抑えて、返済計画を固めたいです。`,
+        `黒字幅や満室率を改善できれば見え方が変わります。今回は${recText}万円程度が無難です。`,
       ],
     },
     megabank: {
       strong: [
-        `財務内容は悪くありません。${recText}万円前後なら本審査に進める可能性があります。`,
-        `${minText}万〜${maxText}万円の範囲なら検討余地があります。ただし資料の精度はかなり求められます。`,
+        `財務内容は悪くありません。${recText}万円なら本審査に進める可能性があります。`,
+        `${recText}万円なら検討余地があります。ただし資料の精度はかなり求められます。`,
       ],
       normal: [
         `メガバンクは厳しめです。${recText}万円程度まで抑えれば可能性はありますが、五分五分です。`,
-        `低金利は魅力ですが審査は重いです。${minText}万〜${maxText}万円が目安になります。`,
+        `低金利は魅力ですが審査は重いです。今回は${recText}万円程度が目安になります。`,
       ],
       weak: [
         `現状ではメガバンクはかなり厳しいです。まずは地銀か信金で実績を作る方が良さそうです。`,
-        `財務の安定性をもう少し見せたいです。今すぐなら金額をかなり抑える必要があります。`,
+        `財務の安定性をもう少し見せたいです。今すぐなら${recText}万円程度まで抑える必要があります。`,
       ],
     },
   };
 
   const tier = report.outlookLabel === "非常に高い" || report.outlookLabel === "高い"
     ? "strong"
-    : report.outlookLabel === "五分五分"
+    : report.outlookLabel === "普通" || report.outlookLabel === "五分五分"
       ? "normal"
       : "weak";
-  const list = commentsByBank[bank.id]?.[tier] ?? commentsByBank.regional[tier];
-  const indexSeed = Math.abs((report.recommendedAmount ?? 0) + (report.consultationPower ?? 0) + bank.name.length);
+  const list = commentsByBank[bank?.id]?.[tier] ?? commentsByBank.regional[tier];
+  const indexSeed = Math.abs((report.recommendedAmount ?? 0) + (report.consultationPower ?? 0) + String(bankName).length);
   return list[indexSeed % list.length];
 }
 
@@ -22628,6 +23209,7 @@ function calculateLoanConsultationReport(consultation) {
     estimatedMax,
     recommendedAmount,
     outlookLabel,
+    estimatedAnnualRate: getLoanEstimatedAnnualRate(bank, consultationPower),
     riskNotes,
     consultationPower,
   };
@@ -22700,7 +23282,7 @@ async function startLoanConsultation(bankId) {
   setPendingLoanConsultations((current) => [consultation, ...current]);
   markEmployeesBusy([employee.id], 1, "融資相談");
 
-  const message = `${bank.name}へ融資相談を依頼しました。結果は1ヶ月後です。担当:${employee.name} / 相談力:${consultationPower}`;
+  const message = `${bank.name}へ融資相談を依頼しました。結果は1ヶ月後です。担当:${employee.name}`;
   setLog(message);
   setLogHistory((prev) => [message, ...prev].slice(0, 200));
 }
@@ -22720,6 +23302,11 @@ async function borrowFromBank(bankId, overrideAmount = null, consultationReport 
 
   const bank = BANKS[bankId];
   if (!bank) return;
+
+  if (!consultationReport) {
+    window.alert("本審査は融資相談結果からのみ申請できます。まずは融資相談を行ってください。");
+    return;
+  }
 
   const rawAmount = overrideAmount ?? loanAmountInput;
   const amount = Math.round(Number(rawAmount));
@@ -22748,19 +23335,20 @@ async function borrowFromBank(bankId, overrideAmount = null, consultationReport 
     ? `\n相談結果連動: ${consultationReport.bankName} / 相談目安${(consultationReport.recommendedAmount ?? 0).toLocaleString()}万円 / 担当:${consultationReport.employeeName || "-"}\n`
     : "";
 
-  const reviewMonths = getLoanReviewMonths(amount);
-  const actionEmployees = await chooseActionEmployees("融資申請", {
+  const baseReviewMonths = getLoanReviewMonths(amount);
+  const actionEmployees = await chooseActionEmployees("融資本審査", {
     maxCount: 4,
-    baseMonths: reviewMonths,
+    baseMonths: baseReviewMonths,
     statKey: "sales",
   });
 
   if (actionEmployees.length === 0) return;
 
+  const reviewMonths = getLoanApplicationReviewMonths(amount, actionEmployees);
   const negotiationPower = getLoanNegotiationPower(actionEmployees);
   const salesAverage = getLoanTeamAverage(actionEmployees, "sales");
   const managementAverage = getLoanTeamAverage(actionEmployees, "management");
-  const leadershipAverage = getLoanTeamAverage(actionEmployees, "leadership");
+  const leadershipAverage = 0;
   const consultationExecutionWarningText = consultationReport && (consultationReport.consultationPower ?? 0) > negotiationPower
     ? `
 注意: 相談時より申請担当の交渉力が低いため、審査結果が悪化する可能性があります。
@@ -22781,7 +23369,7 @@ async function borrowFromBank(bankId, overrideAmount = null, consultationReport 
 ` +
       `担当: ${actionEmployees.map((employee) => employee.name).join("・")}
 ` +
-      `融資交渉力: ${negotiationPower}
+      `最高営業: ${salesAverage} / 最高管理: ${managementAverage}
 ` +
       `${consultationInfoText}` +
       `${consultationExecutionWarningText}` +
@@ -22828,7 +23416,7 @@ async function borrowFromBank(bankId, overrideAmount = null, consultationReport 
 
   markEmployeesBusy(actionEmployees.map((employee) => employee.id), reviewMonths, "融資申請");
 
-  const message = `${bank.name}へ${amount.toLocaleString()}万円の融資申請を行いました。審査期間${reviewMonths}ヶ月 / 担当:${actionEmployees.map((employee) => employee.name).join("・")} / 融資交渉力:${negotiationPower}`;
+  const message = `${bank.name}へ${amount.toLocaleString()}万円の本審査を申請しました。審査期間${reviewMonths}ヶ月 / 担当:${actionEmployees.map((employee) => employee.name).join("・")}`;
   setLog(message);
   setLogHistory((prev) => [message, ...prev].slice(0, 200));
 }
@@ -22839,7 +23427,7 @@ function calculateLoanReviewResult(application, currentLoans = loans) {
   const negotiationPower = Math.max(0, Math.round(application?.negotiationPower ?? 0));
   const salesAverage = Math.max(0, Math.round(application?.salesAverage ?? 0));
   const managementAverage = Math.max(0, Math.round(application?.managementAverage ?? 0));
-  const leadershipAverage = Math.max(0, Math.round(application?.leadershipAverage ?? 0));
+  const leadershipAverage = 0;
   const consultationRecommendedAmount = Math.max(0, Math.round(application?.consultationRecommendedAmount ?? 0));
   const consultationEstimatedMax = Math.max(0, Math.round(application?.consultationEstimatedMax ?? 0));
   const consultationPower = Math.max(0, Math.round(application?.consultationPower ?? 0));
@@ -22887,11 +23475,8 @@ function calculateLoanReviewResult(application, currentLoans = loans) {
 
   const bankDifficulty = bank.id === "nonbank" ? (nonbankSmallLoanSupport ? 18 : 28) : bank.id === "regional" ? (regionalSmallLoanSupport ? 24 : 40) : bank.id === "shinkin" ? 55 : 68;
   const amountPressure = requestedAmount >= 20000 ? 10 : requestedAmount >= 5000 ? 5 : 0;
-  const managementBonus = (managementAverage - 50) * 0.28;
-  const leadershipBonus = requestedAmount >= 20000 || bank.id === "megabank"
-    ? (leadershipAverage - 50) * 0.22
-    : (leadershipAverage - 50) * 0.1;
-  const finalScore = financialScore + consultationScoreBonus + (negotiationPower - 50) * 0.38 + managementBonus + leadershipBonus - amountPressure - consultationExecutionPenalty;
+  const managementBonus = (managementAverage - 50) * 0.32;
+  const finalScore = financialScore + consultationScoreBonus + (negotiationPower - 50) * 0.42 + managementBonus - amountPressure - consultationExecutionPenalty;
   const hasRepaymentSource = monthlyProfit > 0 || regionalSmallLoanSupport || bank.id === "nonbank" || withinConsultationRecommended;
   const allowedDebtRatio = regionalSmallLoanSupport ? 115 : bank.id === "nonbank" ? 125 : 92;
   const rankPass = playerRank >= bank.minRank || regionalSmallLoanSupport || nonbankSmallLoanSupport;
@@ -23779,7 +24364,7 @@ function saveCurrentGameToSlot(slot = activeSaveSlot) {
     employees,
     employeeCandidates,
     employeeStorage,
-    accountSnapshot: mergeAccountDataWithGame(savedAccountData, { playerRank, playerExp, employees, employeeStorage, currentGameMode, freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null, activeSaveSlot, hasClearedGifuChapter, hasClearedNagoyaChapter, hasClearedKyotoChapter, hasCompletedKyotoTourismTutorial, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }),
+    accountSnapshot: mergeAccountDataWithGame(savedAccountData, { playerRank, playerExp, employees, employeeStorage, currentGameMode, freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null, activeSaveSlot, hasClearedGifuChapter, hasClearedNagoyaChapter, hasClearedKyotoChapter, hasClearedOsakaChapter, hasClearedTokyoChapter, hasCompletedKyotoTourismTutorial, hasCompletedOsakaIndustrialTutorial, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }),
     actionPoints,
     rookieEmployeeTickets,
     employeeTickets,
@@ -23805,7 +24390,7 @@ function saveCurrentGameToSlot(slot = activeSaveSlot) {
   localStorage.setItem("realEstateGameCurrentSlot", String(slot));
   localStorage.setItem(getSaveSlotKey(slot), JSON.stringify(saveData));
   localStorage.setItem("realEstateGameSave", JSON.stringify(saveData));
-  writeAccountData(mergeAccountDataWithGame(readAccountData(), { playerRank, playerExp, employees, employeeStorage, currentGameMode, freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null, activeSaveSlot, hasClearedGifuChapter, hasClearedNagoyaChapter, hasClearedKyotoChapter, hasCompletedKyotoTourismTutorial, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }));
+  writeAccountData(mergeAccountDataWithGame(readAccountData(), { playerRank, playerExp, employees, employeeStorage, currentGameMode, freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null, activeSaveSlot, hasClearedGifuChapter, hasClearedNagoyaChapter, hasClearedKyotoChapter, hasClearedOsakaChapter, hasClearedTokyoChapter, hasCompletedKyotoTourismTutorial, hasCompletedOsakaIndustrialTutorial, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets }));
   setActiveSaveSlot(slot);
   setSaveSlotRefreshKey((current) => current + 1);
   setLog(`スロット${slot}に保存しました。`);
@@ -23846,7 +24431,10 @@ function applySaveDataToCurrentGame(data, slot) {
   setHasClearedGifuChapter(data.hasClearedGifuChapter ?? false);
   setHasClearedNagoyaChapter(data.hasClearedNagoyaChapter ?? false);
   setHasClearedKyotoChapter(data.hasClearedKyotoChapter ?? false);
+  setHasClearedOsakaChapter(data.hasClearedOsakaChapter ?? false);
+  setHasClearedTokyoChapter(data.hasClearedTokyoChapter ?? false);
   setHasCompletedKyotoTourismTutorial(data.hasCompletedKyotoTourismTutorial ?? false);
+  setHasCompletedOsakaIndustrialTutorial(data.hasCompletedOsakaIndustrialTutorial ?? false);
   setNagoyaTutorialStep(data.nagoyaTutorialStep ?? null);
   setTiles(data.tiles);
   setSelectedId(data.selectedId ?? null);
@@ -23880,7 +24468,10 @@ function applySaveDataToCurrentGame(data, slot) {
     hasClearedGifuChapter: data.hasClearedGifuChapter ?? false,
     hasClearedNagoyaChapter: data.hasClearedNagoyaChapter ?? false,
     hasClearedKyotoChapter: data.hasClearedKyotoChapter ?? false,
+    hasClearedOsakaChapter: data.hasClearedOsakaChapter ?? false,
+    hasClearedTokyoChapter: data.hasClearedTokyoChapter ?? false,
     hasCompletedKyotoTourismTutorial: data.hasCompletedKyotoTourismTutorial ?? false,
+    hasCompletedOsakaIndustrialTutorial: data.hasCompletedOsakaIndustrialTutorial ?? false,
   }));
   setActionPoints(data.actionPoints ?? 0);
   const loadedAccountTickets = getAccountTicketCounts(readAccountData(), data);
@@ -24035,6 +24626,32 @@ function renderStartupSupportSelectionPanel(maxFounderSlots = 2) {
   );
 }
 
+
+function clearAccountAssignmentsForArea(accountData = {}, mode = "free") {
+  const freeMapOption = getFreeMapOption(mode);
+  const normalizedStartMode = mode === "story" ? mode : freeMapOption.key;
+  const targetAreaKey = getSpecialMissionAreaKeyFromMode(normalizedStartMode, isFreeModeKey(normalizedStartMode) ? normalizeFreeModeKey(normalizedStartMode) : null);
+  if (!targetAreaKey || targetAreaKey === "unknown") return accountData;
+
+  return {
+    ...(accountData || {}),
+    employeeVault: (Array.isArray(accountData?.employeeVault) ? accountData.employeeVault : []).map((employee) => {
+      const assignment = employee?.currentAssignment;
+      if (!assignment) return employee;
+      const assignmentAreaKey = getSpecialMissionAreaKeyFromMode(assignment.mode, assignment.freeMapKey);
+      if (assignmentAreaKey !== targetAreaKey) return employee;
+      return {
+        ...employee,
+        currentAssignment: null,
+        officeId: null,
+        busyUntilMonth: null,
+        busyActionName: null,
+      };
+    }),
+    updatedAt: new Date().toISOString(),
+  };
+}
+
 function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode = "free", founderEmployeeIds = []) {
   const companyName = (fixedCompanyName || newCompanyNameInput || DEFAULT_COMPANY_NAME).trim() || DEFAULT_COMPANY_NAME;
   const isStoryTutorial = mode === "story";
@@ -24043,10 +24660,26 @@ function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode
   const isHeadquarterStart = isGifuHeadquarterStartMode(normalizedStartMode);
   const isRemoteBranchStart = !isStoryTutorial && isRemoteBranchStartMode(normalizedStartMode);
   const newMap = isStoryTutorial ? createStoryTutorialMap() : createMap(freeMapOption.key);
+  const accountDataBeforeStart = readAccountData();
+  const accountDataForNewGame = isStoryTutorial
+    ? accountDataBeforeStart
+    : clearAccountAssignmentsForArea(accountDataBeforeStart, normalizedStartMode);
+  if (!isStoryTutorial) {
+    writeAccountData(accountDataForNewGame);
+  }
   const startupSupportSummary = consumeStartupSupportItems(selectedStartupSupportItems);
-  const initialEmployees = isStoryTutorial
+  const rawInitialEmployees = isStoryTutorial
     ? [normalizeEmployeeGrowthBase(createStoryAkari())]
-    : getFounderEmployeesFromAccount(readAccountData(), founderEmployeeIds);
+    : getFounderEmployeesFromAccount(accountDataForNewGame, founderEmployeeIds);
+  const initialFounderOfficeId = isRemoteBranchStart ? "waiting" : "hq";
+  const initialEmployees = rawInitialEmployees.map((employee) => normalizeEmployeeGrowthBase({
+    ...employee,
+    officeId: isStoryTutorial ? "hq" : initialFounderOfficeId,
+    busyUntilMonth: null,
+    busyActionName: null,
+    founderCarryOver: employee.founderCarryOver === true,
+    currentAssignment: null,
+  }));
   const startupMoneyBonus = startupSupportSummary.moneyBonus;
 
   localStorage.setItem("realEstateGameCurrentSlot", String(slot));
@@ -24056,7 +24689,10 @@ function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode
   setHasClearedGifuChapter(false);
   setHasClearedNagoyaChapter(false);
   setHasClearedKyotoChapter(false);
+  setHasClearedOsakaChapter(false);
+  setHasClearedTokyoChapter(false);
   setHasCompletedKyotoTourismTutorial(false);
+  setHasCompletedOsakaIndustrialTutorial(false);
   setNagoyaTutorialStep(null);
   setTutorialStep(isStoryTutorial ? STORY_TUTORIAL_STEPS.BUY_OLD_HOUSE : null);
   setStoryEvent(isStoryTutorial ? STORY_TUTORIAL_EVENTS.START : null);
@@ -24070,7 +24706,7 @@ function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode
   setLoanAmountInput("5000");
   setSelectedBankId("regional");
   setMonth(1);
-  const accountRankExp = getBetterAccountRankExp(readAccountData(), 1, 0);
+  const accountRankExp = getBetterAccountRankExp(accountDataForNewGame, 1, 0);
   setPlayerRank(accountRankExp.playerRank);
   setPlayerExp(accountRankExp.playerExp);
   playerRankRef.current = accountRankExp.playerRank;
@@ -24085,7 +24721,7 @@ function resetGameFromTitle(slot = activeSaveSlot, fixedCompanyName = null, mode
   setEmployeeCandidates([]);
   setEmployeeStorage([]);
   setActionPoints(isStoryTutorial ? 5 : 0);
-  const nextAccountTickets = getAccountTicketCounts(readAccountData());
+  const nextAccountTickets = getAccountTicketCounts(accountDataForNewGame);
   setRookieEmployeeTickets(nextAccountTickets.rookieEmployeeTickets);
   setEmployeeTickets(nextAccountTickets.employeeTickets);
   setPremiumEmployeeTickets(nextAccountTickets.premiumEmployeeTickets);
@@ -24198,7 +24834,10 @@ function startGifuChapter() {
   setHasClearedGifuChapter(false);
   setHasClearedNagoyaChapter(false);
   setHasClearedKyotoChapter(false);
+  setHasClearedOsakaChapter(false);
+  setHasClearedTokyoChapter(false);
   setHasCompletedKyotoTourismTutorial(false);
+  setHasCompletedOsakaIndustrialTutorial(false);
   setNagoyaTutorialStep(null);
   setStoryEvent(STORY_GIFU_EVENTS.INTRO);
   setTiles(gifuMap.tiles);
@@ -24246,7 +24885,7 @@ useEffect(() => {
 
   setHasClearedGifuChapter(true);
   setStoryEvent(STORY_GIFU_EVENTS.CLEAR);
-  setLog("岐阜編の目標を達成しました。完成済みの自社建物3棟を達成です。");
+  setLog("岐阜編の目標を達成しました。建物を3棟完成させました。");
 }, [isGifuChapterClearConditionMet, hasClearedGifuChapter]);
 
 function startNagoyaBridgeChapter() {
@@ -24257,6 +24896,7 @@ function startNagoyaBridgeChapter() {
   setStoryEvent(null);
   setStorySequence(NAGOYA_PROLOGUE_SCENES);
   setStorySequenceIndex(0);
+  setShowPrologue(false);
   setTiles(nagoyaMap.tiles);
   setSelectedId(null);
   setHqPlaced(true);
@@ -24277,7 +24917,7 @@ function startNagoyaBridgeChapter() {
   employeesRef.current = normalizedEmployees;
   setEmployees(normalizedEmployees);
 
-  setLog("1-4章 名古屋編の準備を開始しました。岐阜マップを南へ拡張した30×30マップで、まずは銀行融資を確認しましょう。");
+  setLog("2-2章 名古屋編の準備を開始しました。岐阜マップを南へ拡張した30×30マップで、まずは銀行融資を確認しましょう。");
 }
 
 function finishNagoyaBridgeChapter() {
@@ -24285,11 +24925,11 @@ function finishNagoyaBridgeChapter() {
   setStoryEvent({
     background: null,
     portrait: "happy",
-    title: "1-4章 名古屋編",
-    text: "社長、銀行融資と支店建設の流れを確認できましたね。ここからは名古屋方面への本格進出です。名古屋編の目標は、実質月利益50万円以上です。社員を支店へ配属しながら、より広いエリアで経営していきましょう！",
+    title: "2-2章 名古屋編",
+    text: "社長、銀行融資と支店建設の流れを確認できましたね。ここからは名古屋方面への本格進出です。名古屋編の目標は、実質月利益300万円以上です。社員を支店へ配属しながら、より広いエリアで経営していきましょう！",
   });
   setActivePanel("home");
-  setLog("1-4章 名古屋編を開始しました。岐阜から名古屋へ広がる30×30マップで、支店を活用して経営範囲を広げましょう。");
+  setLog("2-2章 名古屋編を開始しました。岐阜から名古屋へ広がる30×30マップで、支店を活用して経営範囲を広げましょう。");
 }
 
 
@@ -24304,9 +24944,9 @@ useEffect(() => {
   setStoryEvent({
     portrait: "happy",
     title: "名古屋編クリア",
-    text: "社長、名古屋編の目標だった実質月利益50万円以上を達成しました！\n\n最初は空き家一軒から始まった会社でしたけど、\n今では名古屋でも安定して利益を出せる会社になりましたね。\n\n私も入社したばかりで、\n右も左も分からなかったのに、\nたくさんの経験をさせてもらいました。\n\nまだまだ未熟ですけど、\nこれからも社長と一緒に頑張っていきたいです。\n\n━━━━━━━━━━━━\nストーリーモード 第1部 完\n1-1章 創業チュートリアル ～ 1-4章 名古屋編\n━━━━━━━━━━━━",
+    text: "社長、名古屋編の目標だった実質月利益300万円以上を達成しました！\n\n最初は空き家一軒から始まった会社でしたけど、\n今では名古屋でも安定して利益を出せる会社になりましたね。\n\n私も入社したばかりで、\n右も左も分からなかったのに、\nたくさんの経験をさせてもらいました。\n\nまだまだ未熟ですけど、\nこれからも社長と一緒に頑張っていきたいです。\n\n━━━━━━━━━━━━\nストーリーモード 第1部 完\n1-1章 創業チュートリアル ～ 2-2章 名古屋編\n━━━━━━━━━━━━",
   });
-  setLog("名古屋編の目標を達成しました。次は京都編へ進めます。");
+  setLog("名古屋編の目標を達成しました。次は3-1章 京都観光チュートリアルへ進めます。");
 }, [isNagoyaChapterClearConditionMet, hasClearedNagoyaChapter]);
 
 function createFallbackKyotoStoryTiles() {
@@ -24400,7 +25040,35 @@ function createFallbackKyotoStoryTiles() {
   return recalculateTileZonesByFacilities(tiles);
 }
 
-function startKyotoChapter() {
+function startKyotoChapter(skipIntro = false) {
+  if (!skipIntro) {
+    const kyotoOpeningSequence = Array.isArray(KYOTO_PROLOGUE_SCENES) && KYOTO_PROLOGUE_SCENES.length > 0
+      ? KYOTO_PROLOGUE_SCENES
+      : [{
+          background: KYOTO_PROLOGUE_BACKGROUND,
+          speaker: "七瀬 灯里",
+          portrait: "happy",
+          text: "第3章、京都編。観光需要を活かした経営を学んでいきましょう！",
+        }];
+
+    setShowTitleScreen(false);
+    setTitleModal(null);
+    setTitleSpecialMissionResult(null);
+    setShowPrologue(false);
+    setStoryEvent(null);
+    setStorySequence(kyotoOpeningSequence);
+    setStorySequenceIndex(0);
+    setPendingStorySequenceAction("start_kyoto_chapter");
+    setLog("京都編プロローグを開始しました。プロローグ終了後、3-1章 京都観光チュートリアルへ進みます。");
+    try {
+      if (typeof window !== "undefined") window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    } catch (error) {
+      if (typeof window !== "undefined") window.scrollTo(0, 0);
+    }
+    return;
+  }
+
+  setPendingStorySequenceAction(null);
   let safeKyotoTiles = [];
   let usedFallback = false;
 
@@ -24423,10 +25091,14 @@ function startKyotoChapter() {
   setStoryEvent(null);
   setStorySequence(null);
   setStorySequenceIndex(0);
+  setShowPrologue(false);
   setCurrentGameMode("story_kyoto");
   setNagoyaTutorialStep(null);
   setHasClearedKyotoChapter(false);
+  setHasClearedOsakaChapter(false);
+  setHasClearedTokyoChapter(false);
   setHasCompletedKyotoTourismTutorial(false);
+  setHasCompletedOsakaIndustrialTutorial(false);
   setTiles(safeKyotoTiles);
   setMoney(30000);
   setLoans([]);
@@ -24445,19 +25117,17 @@ function startKyotoChapter() {
   setIsMapEmployeeMenuOpen(false);
   writeLastNavigationState({ screen: "game", activePanel: "home", titleModal: null });
 
-  setTimeout(() => {
-    setStorySequence(Array.isArray(KYOTO_PROLOGUE_SCENES) ? KYOTO_PROLOGUE_SCENES : []);
-    setStorySequenceIndex(0);
-    try {
-      if (typeof window !== "undefined") window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    } catch (error) {
-      if (typeof window !== "undefined") window.scrollTo(0, 0);
-    }
-  }, 0);
+  setStorySequence(null);
+  setStorySequenceIndex(0);
+  try {
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  } catch (error) {
+    if (typeof window !== "undefined") window.scrollTo(0, 0);
+  }
 
   setLog(usedFallback
-    ? "第3章 京都編を開始しました。予備マップで開始しています。まずは売地を購入し、京都支店を設置しましょう。"
-    : "第3章 京都編を開始しました。まずは京都駅周辺や観光地近くの売地を選び、京都支店を設置しましょう。"
+    ? "3-1章 京都観光チュートリアルを開始しました。予備マップで開始しています。まずは売地を購入し、京都支店を設置しましょう。"
+    : "3-1章 京都観光チュートリアルを開始しました。まずは京都駅周辺や観光地近くの売地を選び、京都支店を設置しましょう。"
   );
 }
 
@@ -24480,21 +25150,158 @@ useEffect(() => {
   if (!isKyotoTourismTutorialConditionMet) return;
   setHasCompletedKyotoTourismTutorial(true);
   setStoryEvent(STORY_KYOTO_EVENTS.TUTORIAL_CLEAR);
-  setLog("京都編の観光チュートリアルを達成しました。建てた観光施設を引き継いだまま、京都編本編へ進みます。");
+  setLog("3-1章 京都観光チュートリアルを達成しました。建てた観光施設を引き継いだまま、3-2章 京都編本編へ進みます。");
 }, [isKyotoTourismTutorialConditionMet]);
 
 const isKyotoChapterClearConditionMet =
   currentGameMode === "story_kyoto" &&
   hasCompletedKyotoTourismTutorial &&
   kyotoTourismBuildingCount >= KYOTO_FINAL_TOURISM_BUILDING_COUNT &&
-  netWorthAfterDebt >= KYOTO_FINAL_NET_WORTH;
+  actualMonthlyProfit >= KYOTO_FINAL_MONTHLY_PROFIT;
 
 useEffect(() => {
   if (!isKyotoChapterClearConditionMet || hasClearedKyotoChapter) return;
   setHasClearedKyotoChapter(true);
   setStoryEvent(STORY_KYOTO_EVENTS.CLEAR);
-  setLog("京都編の本編目標を達成しました。京都30×30マップと京都の地域任務がフリーモードに解放されました。");
+  setLog("3-2章 京都編の本編目標を達成しました。京都30×30マップと京都の地域任務がフリーモードに解放されました。");
 }, [isKyotoChapterClearConditionMet, hasClearedKyotoChapter]);
+
+function startOsakaChapter() {
+  const osakaMap = createMap("free_50");
+  placeStoryRivalOffice(osakaMap.tiles, "A", OSAKA_RIVAL_COMPANY_NAMES[0], [{ x: 35, y: 35 }, { x: 38, y: 30 }]);
+  placeStoryRivalOffice(osakaMap.tiles, "B", OSAKA_RIVAL_COMPANY_NAMES[1], [{ x: 12, y: 35 }, { x: 15, y: 38 }]);
+  placeStoryRivalOffice(osakaMap.tiles, "C", OSAKA_RIVAL_COMPANY_NAMES[2], [{ x: 35, y: 12 }, { x: 38, y: 15 }]);
+  setShowTitleScreen(false);
+  setTitleModal(null);
+  setTitleSpecialMissionResult(null);
+  setStoryEvent(null);
+  setStorySequence(null);
+  setStorySequenceIndex(0);
+  setShowPrologue(false);
+  setCurrentGameMode("story_osaka");
+  setNagoyaTutorialStep(null);
+  setHasClearedOsakaChapter(false);
+  setHasCompletedOsakaIndustrialTutorial(false);
+  setTiles(osakaMap.tiles);
+  setMoney(OSAKA_START_MONEY);
+  setLoans([]);
+  setLoanConsultations([]);
+  setSelectedId(null);
+  setHqPlaced(false);
+  setActivePanel("home");
+  setPendingBuildKey(null);
+  setPendingBranchPlacement(false);
+  setBuildEntrySource("menu");
+  setSelectedBuildCategory(null);
+  setSelectedHousingType(null);
+  setActionPoints(0);
+  setIsMainMenuOpen(false);
+  setIsMapInfoMenuOpen(false);
+  setIsMapEmployeeMenuOpen(false);
+  writeLastNavigationState({ screen: "game", activePanel: "home", titleModal: null });
+
+  setTimeout(() => {
+    setShowPrologue(false);
+    setStoryEvent(null);
+    setStorySequence(Array.isArray(OSAKA_PROLOGUE_SCENES) ? OSAKA_PROLOGUE_SCENES : []);
+    setStorySequenceIndex(0);
+    try {
+      if (typeof window !== "undefined") window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    } catch (error) {
+      if (typeof window !== "undefined") window.scrollTo(0, 0);
+    }
+  }, 0);
+
+  setLog("4-1章 大阪工業チュートリアルを開始しました。開始資金5億円で、まずは工業施設4種類を完成させましょう。");
+}
+
+function startTokyoChapter() {
+  const tokyoMap = createMap("free_70");
+  placeStoryRivalOffice(tokyoMap.tiles, "A", TOKYO_RIVAL_COMPANY_NAMES[0], [{ x: 52, y: 52 }, { x: 58, y: 48 }]);
+  placeStoryRivalOffice(tokyoMap.tiles, "B", TOKYO_RIVAL_COMPANY_NAMES[1], [{ x: 16, y: 52 }, { x: 20, y: 58 }]);
+  placeStoryRivalOffice(tokyoMap.tiles, "C", TOKYO_RIVAL_COMPANY_NAMES[2], [{ x: 52, y: 16 }, { x: 58, y: 20 }]);
+  setShowTitleScreen(false);
+  setTitleModal(null);
+  setTitleSpecialMissionResult(null);
+  setStoryEvent(null);
+  setStorySequence(null);
+  setStorySequenceIndex(0);
+  setShowPrologue(false);
+  setCurrentGameMode("story_tokyo");
+  setNagoyaTutorialStep(null);
+  setHasClearedTokyoChapter(false);
+  setTiles(tokyoMap.tiles);
+  setMoney(TOKYO_START_MONEY);
+  setLoans([]);
+  setLoanConsultations([]);
+  setSelectedId(null);
+  setHqPlaced(false);
+  setActivePanel("home");
+  setPendingBuildKey(null);
+  setPendingBranchPlacement(false);
+  setBuildEntrySource("menu");
+  setSelectedBuildCategory(null);
+  setSelectedHousingType(null);
+  setActionPoints(0);
+  setIsMainMenuOpen(false);
+  setIsMapInfoMenuOpen(false);
+  setIsMapEmployeeMenuOpen(false);
+  writeLastNavigationState({ screen: "game", activePanel: "home", titleModal: null });
+
+  setTimeout(() => {
+    setShowPrologue(false);
+    setStoryEvent(null);
+    setStorySequence(Array.isArray(TOKYO_PROLOGUE_SCENES) ? TOKYO_PROLOGUE_SCENES : []);
+    setStorySequenceIndex(0);
+  }, 0);
+
+  setLog("第5章 東京編を開始しました。最大規模の70×70マップで、実質月利益5,000万円以上を目指しましょう。");
+}
+
+const osakaIndustrialBuildingTypesCompleted = new Set(tiles.filter((tile) => {
+  return currentGameMode === "story_osaka" &&
+    tile.owner === OWNER.PLAYER &&
+    tile.building &&
+    !tile.buildingMainId &&
+    tile.buildingStatus !== "constructing" &&
+    OSAKA_INDUSTRIAL_BUILDING_KEYS.includes(tile.building);
+}).map((tile) => tile.building));
+const osakaIndustrialBuildingCount = osakaIndustrialBuildingTypesCompleted.size;
+
+const isOsakaIndustrialTutorialConditionMet =
+  currentGameMode === "story_osaka" &&
+  !hasCompletedOsakaIndustrialTutorial &&
+  OSAKA_INDUSTRIAL_BUILDING_KEYS.every((key) => osakaIndustrialBuildingTypesCompleted.has(key));
+
+useEffect(() => {
+  if (!isOsakaIndustrialTutorialConditionMet) return;
+  setHasCompletedOsakaIndustrialTutorial(true);
+  setStoryEvent(STORY_OSAKA_EVENTS.TUTORIAL_CLEAR);
+  setLog("大阪編の工業チュートリアルを達成しました。ここからは実質月利益2,500万円以上を目指しましょう。");
+}, [isOsakaIndustrialTutorialConditionMet]);
+
+const isOsakaChapterClearConditionMet =
+  currentGameMode === "story_osaka" &&
+  hasCompletedOsakaIndustrialTutorial &&
+  actualMonthlyProfit >= OSAKA_CLEAR_MONTHLY_PROFIT;
+
+useEffect(() => {
+  if (!isOsakaChapterClearConditionMet || hasClearedOsakaChapter) return;
+  setHasClearedOsakaChapter(true);
+  setStoryEvent(STORY_OSAKA_EVENTS.CLEAR);
+  setLog("大阪編の目標を達成しました。大阪50×50マップと大阪の地域任務がフリーモードに解放されました。");
+}, [isOsakaChapterClearConditionMet, hasClearedOsakaChapter]);
+
+const isTokyoChapterClearConditionMet =
+  currentGameMode === "story_tokyo" &&
+  actualMonthlyProfit >= TOKYO_CLEAR_MONTHLY_PROFIT;
+
+useEffect(() => {
+  if (!isTokyoChapterClearConditionMet || hasClearedTokyoChapter) return;
+  setHasClearedTokyoChapter(true);
+  setStoryEvent(STORY_TOKYO_EVENTS.CLEAR);
+  setLog("東京編の目標を達成しました。首都圏70×70マップがフリーモードに解放されました。");
+}, [isTokyoChapterClearConditionMet, hasClearedTokyoChapter]);
 
 function continueAfterStoryFirstPart() {
   setCurrentGameMode("free_30");
@@ -24603,7 +25410,7 @@ function getCurrentAkariGuide() {
   if (currentGameMode === "story_nagoya_bridge" && nagoyaTutorialStep) {
     return {
       portrait: "serious",
-      title: "1-4章 名古屋編：進出準備",
+      title: "2-2章 名古屋編：進出準備",
       goal: getStoryNagoyaGoalText(nagoyaTutorialStep),
       text: getStoryNagoyaAdviceText(nagoyaTutorialStep),
       nextMonthGuide: nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_CONSULT ||
@@ -24615,7 +25422,7 @@ function getCurrentAkariGuide() {
   if (currentGameMode === "story_nagoya") {
     return {
       portrait: "serious",
-      title: "1-4章 名古屋編",
+      title: "2-2章 名古屋編",
       goal: `実質月利益${NAGOYA_CLEAR_MONTHLY_PROFIT.toLocaleString()}万円以上を目指しましょう。`,
       text: "名古屋編では、支店を使って活動範囲を広げます。社員画面で社員を本社・支店へ配属変更できるので、支店にも担当社員を置いてから購入・建設・修繕を進めましょう。",
       nextMonthGuide: false,
@@ -24626,7 +25433,7 @@ function getCurrentAkariGuide() {
     const areaLabel = getGameAreaLabel(currentGameMode);
     return {
       portrait: "serious",
-      title: currentGameMode === "story_kyoto" ? "第3章 京都編：京都支店設置" : `${areaLabel}：支店設置`,
+      title: currentGameMode === "story_kyoto" ? "3-1章 京都観光チュートリアル：京都支店設置" : currentGameMode === "story_osaka" ? "4-1章 大阪工業チュートリアル：大阪支店設置" : `${areaLabel}：支店設置`,
       goal: `${areaLabel}で活動する支店を設置しましょう。`,
       text: `${areaLabel}は岐阜本社から離れた地域への支店展開です。まずは好きな売地を購入し、建設メニューから支店を選んで${areaLabel}支店を開設しましょう。最初の支店は即時完成します。`,
       nextMonthGuide: false,
@@ -24636,9 +25443,29 @@ function getCurrentAkariGuide() {
   if (currentGameMode === "story_kyoto") {
     return {
       portrait: "happy",
-      title: "第3章 京都編",
+      title: hasCompletedKyotoTourismTutorial ? "3-2章 京都編" : "3-1章 京都観光チュートリアル",
       goal: getStoryKyotoGoalText(!hasCompletedKyotoTourismTutorial),
       text: getStoryKyotoAdviceText(!hasCompletedKyotoTourismTutorial),
+      nextMonthGuide: false,
+    };
+  }
+
+  if (currentGameMode === "story_osaka") {
+    return {
+      portrait: hasCompletedOsakaIndustrialTutorial ? "serious" : "happy",
+      title: hasCompletedOsakaIndustrialTutorial ? "4-2章 大阪編" : "4-1章 大阪工業チュートリアル",
+      goal: getStoryOsakaGoalText(!hasCompletedOsakaIndustrialTutorial),
+      text: getStoryOsakaAdviceText(!hasCompletedOsakaIndustrialTutorial),
+      nextMonthGuide: false,
+    };
+  }
+
+  if (currentGameMode === "story_tokyo") {
+    return {
+      portrait: "serious",
+      title: "第5章 東京編",
+      goal: getStoryTokyoGoalText(),
+      text: getStoryTokyoAdviceText(),
       nextMonthGuide: false,
     };
   }
@@ -24654,7 +25481,7 @@ function getCurrentAkariGuide() {
 
   const guide = AKARI_PAGE_GUIDES[activePanel] ?? AKARI_PAGE_GUIDES.home;
   const gifuGoalText = currentGameMode === "story_gifu"
-    ? `岐阜編目標：完成済み自社建物${gifuOwnedBuildingCount.toLocaleString()} / ${GIFU_CLEAR_BUILDING_COUNT.toLocaleString()}棟`
+    ? `岐阜編目標：建物完成 ${gifuOwnedBuildingCount.toLocaleString()} / ${GIFU_CLEAR_BUILDING_COUNT.toLocaleString()}棟`
     : null;
 
   return {
@@ -24674,8 +25501,10 @@ const titleSavedMode = savedGame?.currentGameMode ?? currentGameMode ?? "free";
 const titleHasStorySave = Boolean(savedGame) && String(titleSavedMode).startsWith("story");
 const titleHasFreeSave = Boolean(savedGame) && isFreeModeKey(titleSavedMode);
 function getStoryChapterProgressLevel() {
-  // 1: 1-1章 / 2: 岐阜編 / 3: 名古屋準備編 / 4: 名古屋編 / 5: 京都編 / 6: 京都編クリア後
-  if (storyProgressFlags.kyoto) return 6;
+  // 1: 1-1章 / 2: 岐阜編 / 3: 2-1章 名古屋準備編 / 4: 2-2章 名古屋編 / 5: 3-1章 京都観光チュートリアル / 6: 4-1章 大阪工業チュートリアル / 7: 第5章 東京編 / 8: クリア後
+  if (storyProgressFlags.tokyo) return 8;
+  if (currentGameMode === "story_tokyo" || storyProgressFlags.osaka) return 7;
+  if (currentGameMode === "story_osaka" || storyProgressFlags.kyoto) return 6;
   if (currentGameMode === "story_kyoto" || storyProgressFlags.nagoya || currentGameMode === "story_cleared") return 5;
   if (currentGameMode === "story_nagoya") return 4;
   if (currentGameMode === "story_nagoya_bridge" || storyProgressFlags.gifu) return 3;
@@ -24708,8 +25537,8 @@ function startNagoyaChapterFromSelect() {
   setNagoyaTutorialStep(null);
   setStoryEvent({
     portrait: "happy",
-    title: "1-4章 名古屋編",
-    text: "社長、ここからは名古屋方面への本格進出です。名古屋編の目標は、実質月利益50万円以上です。支店を活用して経営範囲を広げましょう！",
+    title: "2-2章 名古屋編",
+    text: "社長、ここからは名古屋方面への本格進出です。名古屋編の目標は、実質月利益300万円以上です。支店を活用して経営範囲を広げましょう！",
   });
   setStorySequence(null);
   setStorySequenceIndex(0);
@@ -24723,7 +25552,7 @@ function startNagoyaChapterFromSelect() {
   setSelectedHousingType(null);
   setShowTitleScreen(false);
   setTitleModal(null);
-  setLog("1-4章 名古屋編を開始しました。目標は実質月利益50万円以上です。");
+  setLog("2-2章 名古屋編を開始しました。目標は実質月利益300万円以上です。");
 }
 
 function startStoryChapterFromTitle(chapterKey) {
@@ -24743,7 +25572,7 @@ function startStoryChapterFromTitle(chapterKey) {
   }
   if (chapterKey === "chapter_1_3") {
     if (progress < 3) { alert("1-2章 岐阜編をクリアすると解放されます。"); return; }
-    const ok = window.confirm("1-3章 名古屋準備編を最初から始めますか？\n※戻って遊ぶ章の途中保存は残しません。");
+    const ok = window.confirm("2-1章 名古屋準備編を最初から始めますか？\n※戻って遊ぶ章の途中保存は残しません。");
     if (!ok) return;
     startNagoyaBridgeChapter();
     setShowTitleScreen(false);
@@ -24751,15 +25580,35 @@ function startStoryChapterFromTitle(chapterKey) {
     return;
   }
   if (chapterKey === "chapter_1_4") {
-    if (progress < 4) { alert("1-3章 名古屋準備編をクリアすると解放されます。"); return; }
-    const ok = window.confirm("1-4章 名古屋編を最初から始めますか？\n※戻って遊ぶ章の途中保存は残しません。");
+    if (progress < 4) { alert("2-1章 名古屋準備編をクリアすると解放されます。"); return; }
+    const ok = window.confirm("2-2章 名古屋編を最初から始めますか？\n※戻って遊ぶ章の途中保存は残しません。");
     if (!ok) return;
     startNagoyaChapterFromSelect();
     return;
   }
-  if (chapterKey === "chapter_kyoto") {
+  if (chapterKey === "chapter_3_1" || chapterKey === "chapter_kyoto") {
+    if (progress < 5) { alert("名古屋編をクリアすると3-1章 京都観光チュートリアルが解放されます。"); return; }
+    startKyotoChapterFromSelect();
+    return;
+  }
+  if (chapterKey === "chapter_3_2") {
     if (progress < 5) { alert("名古屋編をクリアすると京都編が解放されます。"); return; }
     startKyotoChapterFromSelect();
+    return;
+  }
+  if (chapterKey === "chapter_4_1" || chapterKey === "chapter_osaka") {
+    if (progress < 6) { alert("京都編をクリアすると4-1章 大阪工業チュートリアルが解放されます。"); return; }
+    startOsakaChapter();
+    return;
+  }
+  if (chapterKey === "chapter_4_2") {
+    if (progress < 6) { alert("京都編をクリアすると大阪編が解放されます。"); return; }
+    startOsakaChapter();
+    return;
+  }
+  if (chapterKey === "chapter_tokyo") {
+    if (progress < 7) { alert("大阪編をクリアすると東京編が解放されます。"); return; }
+    startTokyoChapter();
     return;
   }
 }
@@ -24782,17 +25631,21 @@ function isFreeModeUnlocked() {
     currentGameMode === "story_nagoya_bridge" ||
     currentGameMode === "story_nagoya" ||
     currentGameMode === "story_kyoto" ||
+    currentGameMode === "story_osaka" ||
+    currentGameMode === "story_tokyo" ||
     currentGameMode === "story_cleared" ||
     storyProgressFlags.gifu ||
     storyProgressFlags.nagoya ||
-    storyProgressFlags.kyoto;
+    storyProgressFlags.kyoto ||
+    storyProgressFlags.osaka ||
+    storyProgressFlags.tokyo;
 }
 
 function getFreeMapUnlockRequirement(mapKey) {
   const normalizedKey = normalizeFreeModeKey(mapKey);
   if (normalizedKey === "free_15") return "1-1章クリア後";
   if (normalizedKey === "free_30") return "岐阜編クリア後";
-  if (normalizedKey === "free_50") return "名古屋編クリア後";
+  if (normalizedKey === "free_50") return "京都編クリア後";
   if (normalizedKey === "free_kyoto") return "京都編クリア後";
   if (normalizedKey === "free_70") return "東京編クリア後";
   return "ストーリー進行で解放";
@@ -24803,9 +25656,9 @@ function isFreeMapOptionUnlocked(mapKey) {
   if (!isFreeModeUnlocked()) return false;
   if (normalizedKey === "free_15") return true;
   if (normalizedKey === "free_30") return Boolean(storyProgressFlags.gifu || storyProgressFlags.nagoya || storyProgressFlags.kyoto || currentGameMode === "story_nagoya_bridge" || currentGameMode === "story_nagoya" || currentGameMode === "story_kyoto");
-  if (normalizedKey === "free_50") return Boolean(storyProgressFlags.nagoya || storyProgressFlags.kyoto || currentGameMode === "story_kyoto");
+  if (normalizedKey === "free_50") return Boolean(storyProgressFlags.kyoto || storyProgressFlags.osaka || storyProgressFlags.tokyo || currentGameMode === "story_osaka" || currentGameMode === "story_tokyo");
   if (normalizedKey === "free_kyoto") return Boolean(storyProgressFlags.kyoto);
-  if (normalizedKey === "free_70") return false;
+  if (normalizedKey === "free_70") return Boolean(storyProgressFlags.tokyo);
   return false;
 }
 
@@ -24881,9 +25734,14 @@ const storyProgressFlags = {
   gifu: hasClearedGifuChapter || titleAccountData.hasClearedGifuChapter === true,
   nagoya: hasClearedNagoyaChapter || titleAccountData.hasClearedNagoyaChapter === true,
   kyoto: hasClearedKyotoChapter || titleAccountData.hasClearedKyotoChapter === true,
+  osaka: hasClearedOsakaChapter || titleAccountData.hasClearedOsakaChapter === true,
+  tokyo: hasClearedTokyoChapter || titleAccountData.hasClearedTokyoChapter === true,
   kyotoTutorial: hasCompletedKyotoTourismTutorial || titleAccountData.hasCompletedKyotoTourismTutorial === true,
+  osakaTutorial: hasCompletedOsakaIndustrialTutorial || titleAccountData.hasCompletedOsakaIndustrialTutorial === true,
 };
-const titleAccountEmployeeVault = mergeEmployeeCollections(titleAccountData.employeeVault ?? []);
+// v363.9: 社員名簿ではアカウント上の所属をそのまま表示する。
+// 現在マップと違う所属（岐阜本社など）を勝手に待機へ変えない。
+const titleAccountEmployeeVault = mergeEmployeeCollections((titleAccountData.employeeVault ?? []).map(normalizeAccountEmployee).filter(Boolean));
 const titleItemInventory = getAccountItemInventory(titleAccountData);
 const titleOwnedItemEntries = HOME_SHOP_ITEMS
   .filter((item) => item.rewardType === "item" && item.itemKey)
@@ -24894,25 +25752,31 @@ const titleOwnedItemKindCount = titleOwnedItemEntries.length;
 const titleFounderSelectableEmployees = getFounderSelectableEmployees(titleAccountData);
 const titleStoryAkari = getStoryAkariForFounder(titleAccountData);
 const titleDateLabel = getGameDate(month).label;
-const titleFreeStatusText = isFreeModeUnlocked() ? (storyProgressFlags.kyoto ? "京都30×30を含むフリーマップから選択" : "15×15 / 30×30 / 50×50 / 70×70 から選択") : "1-1章クリア後に解放";
+const titleFreeStatusText = isFreeModeUnlocked() ? (storyProgressFlags.tokyo ? "全フリーマップ解放済み" : storyProgressFlags.kyoto ? "京都30×30・大阪50×50を含むフリーマップから選択" : "15×15 / 30×30 / 50×50 / 70×70 から選択") : "1-1章クリア後に解放";
 function getStoryStatusTextByMode(mode) {
-  if (mode === "story_kyoto") return "第3章 京都編 進行中";
-  if (mode === "story_nagoya") return "1-4章 名古屋編 進行中";
-  if (mode === "story_nagoya_bridge") return "1-3章 名古屋準備編 進行中";
+  if (mode === "story_tokyo") return "第5章 東京編 進行中";
+  if (mode === "story_osaka") return hasCompletedOsakaIndustrialTutorial ? "4-2章 大阪編 進行中" : "4-1章 大阪工業チュートリアル 進行中";
+  if (mode === "story_kyoto") return hasCompletedKyotoTourismTutorial ? "3-2章 京都編 進行中" : "3-1章 京都観光チュートリアル 進行中";
+  if (mode === "story_nagoya") return "2-2章 名古屋編 進行中";
+  if (mode === "story_nagoya_bridge") return "2-1章 名古屋準備編 進行中";
   if (mode === "story_gifu") return "1-2章 岐阜編 進行中";
   if (mode === "story" || mode === "story_tutorial") return "1-1章 創業チュートリアル 進行中";
-  if (storyProgressFlags.kyoto) return "第3章 京都編クリア済み";
-  if (hasClearedNagoyaChapter || mode === "story_cleared") return "第3章 京都編から再開できます";
-  if (hasClearedGifuChapter) return "1-3章 名古屋準備編から再開できます";
+  if (storyProgressFlags.tokyo) return "東京編クリア済み";
+  if (storyProgressFlags.osaka) return "第5章 東京編から再開できます";
+  if (storyProgressFlags.kyoto) return "4-1章 大阪工業チュートリアルから再開できます";
+  if (hasClearedNagoyaChapter || mode === "story_cleared") return "3-1章 京都観光チュートリアルから再開できます";
+  if (hasClearedGifuChapter) return "2-1章 名古屋準備編から再開できます";
   if (titleAccountData.unlockedStoryAkari) return "1-2章 岐阜編から再開できます";
   return "1-1章から開始";
 }
 const titleStoryStatusMode = titleHasStorySave ? titleSavedMode : currentGameMode;
 const titleStoryStatusText = getStoryStatusTextByMode(titleStoryStatusMode);
 const homeCoreFeaturesUnlocked = Boolean(titleAccountData.unlockedStoryAkari) && (currentGameMode !== "story_tutorial" || tutorialStep === STORY_TUTORIAL_STEPS.COMPLETE);
-const titleSilverSheet = Math.max(0, Math.round(Number(titleAccountData.silverSheets ?? titleAccountData.silverSheet ?? 0) || 0));
-const titleGoldSheet = Math.max(0, Math.round(Number(titleAccountData.goldSheets ?? titleAccountData.goldSheet ?? 0) || 0));
-const titleRainbowSheet = Math.max(0, Math.round(Number(titleAccountData.rainbowSheets ?? titleAccountData.rainbowSheet ?? 0) || 0));
+const titleMedals = Math.max(0, Math.round(Number(titleAccountData.medals ?? titleAccountData.medal ?? 0) || 0));
+const titleShine = Math.max(0, Math.round(Number(titleAccountData.shine ?? titleAccountData.shines ?? 0) || 0));
+const titleSilverSheet = 0;
+const titleGoldSheet = 0;
+const titleRainbowSheet = 0;
 const titleSpecialMissionData = normalizeSpecialMissionData(titleAccountData.specialMissionData, titleAccountData.playerRank ?? 1);
 const titleActionPointMax = getActionPointMaxByRank(titleAccountData.playerRank ?? 1);
 const titleActionPointText = `${titleSpecialMissionData.actionPoints.toLocaleString()}/${titleActionPointMax.toLocaleString()}`;
@@ -24974,9 +25838,8 @@ function getAccountItemInventory(accountData = {}) {
 
 function getHomeShopCostParts(item) {
   const parts = [];
-  if ((item.costSilver ?? 0) > 0) parts.push({ key: "silver", icon: "🥈", label: "シルバー", amount: item.costSilver });
-  if ((item.costGold ?? 0) > 0) parts.push({ key: "gold", icon: "🥇", label: "ゴールド", amount: item.costGold });
-  if ((item.costRainbow ?? 0) > 0) parts.push({ key: "rainbow", icon: "🌈", label: "レインボー", amount: item.costRainbow });
+  if ((item.costMedal ?? 0) > 0) parts.push({ key: "medal", icon: "🏅", label: "メダル", amount: item.costMedal });
+  if ((item.costShine ?? 0) > 0) parts.push({ key: "shine", icon: "💎", label: "シャイン", amount: item.costShine });
   return parts;
 }
 
@@ -24993,7 +25856,7 @@ function renderHomeShopPrice(item, compact = false) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: compact ? 4 : 6, flexWrap: "wrap" }}>
       {parts.map((part) => (
-        <span key={part.key} style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: compact ? "3px 7px" : "4px 9px", borderRadius: 999, background: part.key === "silver" ? "linear-gradient(145deg,#f8fbff,#dfe8f2)" : part.key === "gold" ? "linear-gradient(145deg,#fff3c4,#ffd06c)" : "linear-gradient(145deg,#ffe3ff,#cfe0ff)", color: part.key === "gold" ? "#6b4300" : part.key === "rainbow" ? "#5130a8" : "#42505b", border: "1px solid rgba(255,255,255,0.82)", boxShadow: "0 3px 9px rgba(0,0,0,0.08)", fontSize: compact ? 11 : 12, fontWeight: 900 }}>
+        <span key={part.key} style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: compact ? "3px 7px" : "4px 9px", borderRadius: 999, background: part.key === "shine" ? "linear-gradient(145deg,#dff8ff,#8fd8ff)" : "linear-gradient(145deg,#fff3c4,#ffd06c)", color: part.key === "shine" ? "#174c73" : "#6b4300", border: "1px solid rgba(255,255,255,0.82)", boxShadow: "0 3px 9px rgba(0,0,0,0.08)", fontSize: compact ? 11 : 12, fontWeight: 900 }}>
           <span>{part.icon}</span>
           <span>{part.amount}</span>
         </span>
@@ -25004,8 +25867,8 @@ function renderHomeShopPrice(item, compact = false) {
 
 function getHomeShopRewardText(item) {
   if (item.rewardType === "currency") {
-    const label = item.rewardCurrency === "silverSheets" ? "シルバー" : item.rewardCurrency === "goldSheets" ? "ゴールド" : "レインボー";
-    const icon = item.rewardCurrency === "silverSheets" ? "🥈" : item.rewardCurrency === "goldSheets" ? "🥇" : "🌈";
+    const label = item.rewardCurrency === "shine" ? "シャイン" : "メダル";
+    const icon = item.rewardCurrency === "shine" ? "💎" : "🏅";
     return `${icon}${label}${item.rewardCount}`;
   }
   if (item.rewardType === "rookieTicket") return `社員採用チケット×${item.rewardCount}`;
@@ -25031,20 +25894,109 @@ const EMPLOYEE_USABLE_ITEM_EFFECTS = {
   manual_sales: { statDeltas: { sales: 1 } },
   manual_construction: { statDeltas: { construction: 1 } },
   manual_management: { statDeltas: { management: 1 } },
-  training_takken: { statDeltas: { sales: 3, leadership: 1, management: 1 } },
-  training_architect: { statDeltas: { construction: 3, management: 2 } },
-  training_rental_manager: { statDeltas: { management: 3, sales: 1, leadership: 1 } },
-  training_mba: { statDeltas: { leadership: 1, sales: 1, construction: 1, management: 1 } },
-  training_appraiser: { statDeltas: { sales: 2, management: 2, construction: 1 } },
-  license_takken: { statDeltas: { sales: 10, leadership: 5, management: 5 }, qualificationKey: "takken", qualificationName: "宅建士" },
-  license_architect: { statDeltas: { construction: 15, management: 5 }, qualificationKey: "architect_1st", qualificationName: "一級建築士" },
-  license_rental_manager: { statDeltas: { sales: 5, leadership: 5, management: 10 }, qualificationKey: "rental_manager", qualificationName: "賃貸不動産経営管理士" },
-  license_mba: { statDeltas: { leadership: 5, sales: 5, construction: 5, management: 5 }, qualificationKey: "mba", qualificationName: "MBA" },
-  license_appraiser: { statDeltas: { sales: 8, management: 8, construction: 2, leadership: 2 }, qualificationKey: "real_estate_appraiser", qualificationName: "不動産鑑定士" },
-  exp_book_500: { exp: 500 },
+  training_takken: { statDeltas: { sales: 5 }, examKey: "takken" },
+  training_architect: { statDeltas: { construction: 5 }, examKey: "architect_1st" },
+  training_rental_manager: { statDeltas: { management: 5 }, examKey: "rental_manager" },
+  training_mba: { statDeltas: { leadership: 5 }, examKey: "mba" },
+  training_appraiser: { statDeltas: { sales: 3, management: 3 }, examKey: "real_estate_appraiser" },
+  license_takken: { statDeltas: { sales: 10 }, qualificationKey: "takken", qualificationName: "宅建士" },
+  license_architect: { statDeltas: { construction: 15 }, qualificationKey: "architect_1st", qualificationName: "一級建築士" },
+  license_rental_manager: { statDeltas: { management: 5 }, qualificationKey: "rental_manager", qualificationName: "賃貸不動産経営管理士" },
+  license_mba: { statDeltas: { leadership: 15 }, qualificationKey: "mba", qualificationName: "MBA" },
+  license_appraiser: { statDeltas: { sales: 10, management: 10, construction: 5 }, qualificationKey: "real_estate_appraiser", qualificationName: "不動産鑑定士" },
+  exp_book_500: { exp: 300 },
   level_book: { levelUp: 1 },
   awakening_crystal: { awakening: 1 },
 };
+
+const QUALIFICATION_EXAM_CONFIGS = {
+  rental_manager: {
+    key: "rental_manager",
+    qualificationName: "賃貸不動産経営管理士",
+    abilityKeys: ["management"],
+    abilityLabel: "管理",
+    realPassRate: 30,
+    userExpReward: 500,
+    qualificationEffect: EMPLOYEE_USABLE_ITEM_EFFECTS.license_rental_manager,
+  },
+  takken: {
+    key: "takken",
+    qualificationName: "宅建士",
+    abilityKeys: ["sales"],
+    abilityLabel: "営業",
+    realPassRate: 15,
+    userExpReward: 1000,
+    qualificationEffect: EMPLOYEE_USABLE_ITEM_EFFECTS.license_takken,
+  },
+  architect_1st: {
+    key: "architect_1st",
+    qualificationName: "一級建築士",
+    abilityKeys: ["construction"],
+    abilityLabel: "建築",
+    realPassRate: 10,
+    userExpReward: 3000,
+    qualificationEffect: EMPLOYEE_USABLE_ITEM_EFFECTS.license_architect,
+  },
+  mba: {
+    key: "mba",
+    qualificationName: "MBA",
+    abilityKeys: ["leadership"],
+    abilityLabel: "統率",
+    realPassRate: 12,
+    userExpReward: 3000,
+    qualificationEffect: EMPLOYEE_USABLE_ITEM_EFFECTS.license_mba,
+  },
+  real_estate_appraiser: {
+    key: "real_estate_appraiser",
+    qualificationName: "不動産鑑定士",
+    abilityKeys: ["sales", "management"],
+    abilityLabel: "営業・管理平均",
+    realPassRate: 5,
+    userExpReward: 5000,
+    qualificationEffect: EMPLOYEE_USABLE_ITEM_EFFECTS.license_appraiser,
+    passiveText: "中古建物購入価格 -5%",
+  },
+};
+
+function getQualificationExamConfig(itemKeyOrExamKey) {
+  const effect = EMPLOYEE_USABLE_ITEM_EFFECTS[itemKeyOrExamKey] ?? null;
+  const examKey = effect?.examKey ?? itemKeyOrExamKey;
+  return QUALIFICATION_EXAM_CONFIGS[examKey] ?? null;
+}
+
+function getEmployeeAbilityForExam(employee, examConfig, previewAfterStats = null) {
+  if (!employee || !examConfig) return 0;
+  const source = previewAfterStats ?? employee;
+  const values = (examConfig.abilityKeys ?? []).map((key) => Math.max(0, Math.round(Number(source[key]) || 0)));
+  if (values.length <= 0) return 0;
+  return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+}
+
+function getQualificationExamPassRate(employee, itemKey) {
+  const examConfig = getQualificationExamConfig(itemKey);
+  const preview = getEmployeeItemPreview(employee, itemKey);
+  const abilityValue = getEmployeeAbilityForExam(employee, examConfig, preview.afterStats);
+  const rawRate = (Number(examConfig?.realPassRate) || 0) * abilityValue / 30;
+  return Math.max(1, Math.min(95, Math.round(rawRate)));
+}
+
+function getQualificationExamSignal(passRate) {
+  const rate = Math.max(0, Math.round(Number(passRate) || 0));
+  if (rate >= 90) return { key: "rainbow", label: "確実", icon: "🌈", color: "#b84dff", background: "linear-gradient(135deg,#fff0ff,#e8f7ff,#fff7c8)", note: "これはもう大丈夫ですね！" };
+  if (rate >= 60) return { key: "red", label: "高い", icon: "🔴", color: "#d8442f", background: "linear-gradient(135deg,#fff0e8,#ffe0d8)", note: "かなり期待できます！" };
+  if (rate >= 30) return { key: "green", label: "普通", icon: "🟢", color: "#159154", background: "linear-gradient(135deg,#eaffef,#f7fff5)", note: "十分チャンスはあります！" };
+  return { key: "blue", label: "低い", icon: "🔵", color: "#246ee9", background: "linear-gradient(135deg,#eaf2ff,#f6fbff)", note: "少し厳しいかもしれません…" };
+}
+
+function getQualificationExamAkariComment(signal, passed = null) {
+  const signalKey = typeof signal === "string" ? signal : signal?.key;
+  if (passed === true) return "おめでとうございます！ 資格取得です、社長！";
+  if (passed === false) return "今回は残念でした…でも、参考書で伸びた力は必ず次につながります。";
+  if (signalKey === "rainbow") return "これはもう大丈夫ですね！";
+  if (signalKey === "red") return "かなり期待できます！";
+  if (signalKey === "green") return "十分チャンスはあります！";
+  return "少し厳しいかもしれません…でも挑戦する価値はあります。";
+}
 
 const titleDispatchSuccessItemKeys = Object.keys(DISPATCH_SUCCESS_ITEM_EFFECTS).filter((itemKey) => Boolean(getEmployeeItemDefinition(itemKey)));
 const titleSelectedMissionCanStart = Boolean(titleSelectedSpecialMission && titleSelectedMissionUnlocked && !titleSelectedMissionAlreadyActive && titleSpecialMissionSelectedEmployees.length > 0 && titleSpecialMissionData.actionPoints >= titleSelectedSpecialMission.cost && (!titleSelectedMissionSupportItemKeySafe || titleSelectedMissionSupportItemCount > 0));
@@ -25174,7 +26126,7 @@ function startSpecialMissionDispatch(missionId) {
   const missionOfficeLevel = missionArea?.officeLevel ?? getSpecialMissionAreaLevel(mission.areaKey, titleSpecialMissionAreaKey, headquarterLevel, activeSaveSlot);
   const requiredOfficeLevel = getSpecialMissionUnlockLevel(mission);
   if (missionOfficeLevel < requiredOfficeLevel) {
-    alert(`本社Lv${requiredOfficeLevel}で解放されます。現在のこの地域の本社Lvは${missionOfficeLevel}です。`);
+    alert(`${getOfficeLevelShortLabelByAreaKey(missionArea?.key ?? mission.areaKey)}${requiredOfficeLevel}で解放されます。現在のこの地域の${getOfficeLevelShortLabelByAreaKey(missionArea?.key ?? mission.areaKey)}は${missionOfficeLevel}です。`);
     return;
   }
 
@@ -25372,15 +26324,26 @@ function claimSpecialMissionDispatch(dispatchId) {
     activeDispatches: currentMissionData.activeDispatches.filter((item) => item.id !== dispatchId),
   };
 
+  const rewardItemInventory = { ...getAccountItemInventory(accountData) };
+  Object.entries(rewardItems).forEach(([key, value]) => {
+    if (["rookieEmployeeTickets", "employeeTickets", "premiumEmployeeTickets", "silverSheets", "goldSheets", "rainbowSheets", "medals", "shine"].includes(key)) return;
+    const count = Math.max(0, Math.round(Number(value) || 0));
+    if (count <= 0) return;
+    rewardItemInventory[key] = (rewardItemInventory[key] ?? 0) + count;
+  });
+
   const nextAccountData = {
     ...accountData,
     employeeVault: nextVault,
     rookieEmployeeTickets: Math.max(0, Math.round(Number(accountData.rookieEmployeeTickets) || 0)) + (rewardItems.rookieEmployeeTickets ?? 0),
     employeeTickets: Math.max(0, Math.round(Number(accountData.employeeTickets) || 0)) + (rewardItems.employeeTickets ?? 0),
     premiumEmployeeTickets: Math.max(0, Math.round(Number(accountData.premiumEmployeeTickets) || 0)) + (rewardItems.premiumEmployeeTickets ?? 0),
-    silverSheets: Math.max(0, Math.round(Number(accountData.silverSheets ?? accountData.silverSheet ?? 0) || 0)) + (rewardItems.silverSheets ?? 0),
-    goldSheets: Math.max(0, Math.round(Number(accountData.goldSheets ?? accountData.goldSheet ?? 0) || 0)) + (rewardItems.goldSheets ?? 0),
-    rainbowSheets: Math.max(0, Math.round(Number(accountData.rainbowSheets ?? accountData.rainbowSheet ?? 0) || 0)) + (rewardItems.rainbowSheets ?? 0),
+    medals: Math.max(0, Math.round(Number(accountData.medals ?? accountData.medal ?? 0) || 0)) + (rewardItems.medals ?? 0),
+    shine: Math.max(0, Math.round(Number(accountData.shine ?? accountData.shines ?? 0) || 0)) + (rewardItems.shine ?? 0),
+    silverSheets: 0,
+    goldSheets: 0,
+    rainbowSheets: 0,
+    items: rewardItemInventory,
     specialMissionData: nextMissionData,
     updatedAt: new Date().toISOString(),
   };
@@ -25849,8 +26812,7 @@ function renderFounderSlotSummary(selectedEmployees, slotCount = 2) {
 
 function getVaultEmployeeQualificationBadgesForList(employee) {
   return normalizeQualificationList(employee?.qualifications)
-    .map((qualification) => ({ key: qualification.key, label: qualification.name }))
-    .slice(0, 4);
+    .map((qualification) => ({ key: qualification.key, label: qualification.name }));
 }
 
 function renderVaultEmployeeCard(employee, options = {}) {
@@ -27387,13 +28349,17 @@ function startHomeEmployeeRecruitmentByTicket(ticketType, source = "home") {
   setRookieEmployeeTickets(nextTickets.rookieEmployeeTickets);
   setEmployeeTickets(nextTickets.employeeTickets);
   setPremiumEmployeeTickets(nextTickets.premiumEmployeeTickets);
+  const announcementSignal = getRecruitmentAnnouncementSignal(applicants, ticketType);
+
   setEmployeeCandidates([]);
   setEmployeeGachaResult(null);
+  setEmployeeRecruitAnimationStep("delivery");
   setEmployeeRecruitmentOffer({
     ticketType,
     applicants,
     selectedEnvelopeId: null,
     source,
+    announcementSignal,
   });
   if (source === "map") {
     setShowTitleScreen(false);
@@ -27733,7 +28699,7 @@ function getHomeMissionItems() {
       id: "monthly_profit_50",
       group: "収益",
       icon: "益",
-      title: "実質月利益50万円以上",
+      title: "実質月利益300万円以上",
       description: "安定した家賃収入を確保する。",
       current: Math.max(0, actualMonthlyProfit),
       target: 50,
@@ -27962,8 +28928,8 @@ function getHomeMissionItems() {
       id: "story_14_clear",
       group: "ストーリー",
       icon: "1-4",
-      title: "1-4章 名古屋編をクリア",
-      description: "名古屋で実質月利益50万円以上を達成する。",
+      title: "2-2章 名古屋編をクリア",
+      description: "名古屋で実質月利益300万円以上を達成する。",
       current: hasClearedNagoyaChapter ? 1 : 0,
       target: 1,
       rewardExp: 150,
@@ -28027,15 +28993,6 @@ const visibleHomeMissionItems = sortedHomeMissionItems.filter((mission) => {
 });
 const homePresentBoxHistory = readPresentBoxHistory();
 const homeLoginBonusHistory = homePresentBoxHistory.filter((item) => item?.source === "ログインボーナス");
-const hasShownDailyLoginBonusModalRef = useRef(false);
-
-useEffect(() => {
-  if (!homeCoreFeaturesUnlocked || !homeLoginBonusStatus.canClaim) return;
-  if (hasShownDailyLoginBonusModalRef.current) return;
-  hasShownDailyLoginBonusModalRef.current = true;
-  setTitleModal("missions");
-}, [homeCoreFeaturesUnlocked, homeLoginBonusStatus.canClaim, homeLoginBonusStatus.todayKey]);
-
 const homePresentNoticeCount = homeCoreFeaturesUnlocked ? ((homeLoginBonusStatus.canClaim ? 1 : 0) + homeMissionClaimableCount) : 0;
 const titleFullPageModal = ["founderSelect", "recruitHome", "accountVault", "items", "presentBox", "missions", "shop", "settings", "specialDispatch"].includes(titleModal);
 
@@ -28051,18 +29008,21 @@ function claimHomeMissionReward(missionId) {
   });
 
   const accountData = readAccountData();
-  const rewardSilverSheets = Math.max(0, Math.round(Number(mission.rewardExp) || 0));
-  const rewardGoldSheets = Math.max(0, Math.round(Number(mission.rewardGoldSheets) || 0));
+  const rewardMedals = Math.max(0, Math.round(Number(mission.rewardExp) || 0));
+  const rewardShine = Math.max(0, Math.round(Number(mission.rewardGoldSheets) || 0));
   const nextAccountData = {
     ...accountData,
-    silverSheets: Math.max(0, Math.round(Number(accountData.silverSheets ?? accountData.silverSheet ?? 0) || 0)) + rewardSilverSheets,
-    goldSheets: Math.max(0, Math.round(Number(accountData.goldSheets ?? accountData.goldSheet ?? 0) || 0)) + rewardGoldSheets,
+    medals: Math.max(0, Math.round(Number(accountData.medals ?? accountData.medal ?? 0) || 0)) + rewardMedals,
+    shine: Math.max(0, Math.round(Number(accountData.shine ?? accountData.shines ?? 0) || 0)) + rewardShine,
+    silverSheets: 0,
+    goldSheets: 0,
+    rainbowSheets: 0,
     updatedAt: new Date().toISOString(),
   };
 
   writeAccountData(nextAccountData);
   setHomeAccountRefreshKey((current) => current + 1);
-  const rewardText = [`シルバーシート +${rewardSilverSheets}`, rewardGoldSheets > 0 ? `ゴールドシート +${rewardGoldSheets}` : ""].filter(Boolean).join(" / ");
+  const rewardText = [`メダル +${rewardMedals}`, rewardShine > 0 ? `シャイン +${rewardShine}` : ""].filter(Boolean).join(" / ");
   setLog(`任務「${mission.title}」を達成しました。${rewardText}`);
 }
 
@@ -28077,8 +29037,8 @@ function claimAllHomeMissionRewards() {
     ...(homeMissionData.claimedMissionIds ?? []),
     ...claimableMissions.map((mission) => mission.id),
   ]));
-  const rewardSilverSheets = claimableMissions.reduce((sum, mission) => sum + Math.max(0, Math.round(Number(mission.rewardExp) || 0)), 0);
-  const rewardGoldSheets = claimableMissions.reduce((sum, mission) => sum + Math.max(0, Math.round(Number(mission.rewardGoldSheets) || 0)), 0);
+  const rewardMedals = claimableMissions.reduce((sum, mission) => sum + Math.max(0, Math.round(Number(mission.rewardExp) || 0)), 0);
+  const rewardShine = claimableMissions.reduce((sum, mission) => sum + Math.max(0, Math.round(Number(mission.rewardGoldSheets) || 0)), 0);
 
   writeHomeMissionData({
     claimedMissionIds: nextClaimedMissionIds,
@@ -28088,15 +29048,18 @@ function claimAllHomeMissionRewards() {
   const accountData = readAccountData();
   const nextAccountData = {
     ...accountData,
-    silverSheets: Math.max(0, Math.round(Number(accountData.silverSheets ?? accountData.silverSheet ?? 0) || 0)) + rewardSilverSheets,
-    goldSheets: Math.max(0, Math.round(Number(accountData.goldSheets ?? accountData.goldSheet ?? 0) || 0)) + rewardGoldSheets,
+    medals: Math.max(0, Math.round(Number(accountData.medals ?? accountData.medal ?? 0) || 0)) + rewardMedals,
+    shine: Math.max(0, Math.round(Number(accountData.shine ?? accountData.shines ?? 0) || 0)) + rewardShine,
+    silverSheets: 0,
+    goldSheets: 0,
+    rainbowSheets: 0,
     updatedAt: new Date().toISOString(),
   };
 
   writeAccountData(nextAccountData);
   setHomeAccountRefreshKey((current) => current + 1);
   setHomeMissionFilter("claimable");
-  const rewardText = [`シルバーシート +${rewardSilverSheets}`, rewardGoldSheets > 0 ? `ゴールドシート +${rewardGoldSheets}` : ""].filter(Boolean).join(" / ");
+  const rewardText = [`メダル +${rewardMedals}`, rewardShine > 0 ? `シャイン +${rewardShine}` : ""].filter(Boolean).join(" / ");
   setLog(`任務報酬を${claimableMissions.length}件まとめて受け取りました。${rewardText}`);
 }
 
@@ -28179,8 +29142,13 @@ function openEmployeeItemUseConfirm(employee, itemKey) {
   const item = getEmployeeItemDefinition(itemKey);
   const effect = EMPLOYEE_USABLE_ITEM_EFFECTS[itemKey];
   if (!employee || !item || !effect) return;
+  const examConfig = getQualificationExamConfig(itemKey);
   if (effect.qualificationKey && hasEmployeeQualification(employee, effect.qualificationKey)) {
     alert(`${employee.name}は既に${effect.qualificationName}を取得済みです。`);
+    return;
+  }
+  if (examConfig && hasEmployeeQualification(employee, examConfig.key)) {
+    alert(`${employee.name}は既に${examConfig.qualificationName}を取得済みです。`);
     return;
   }
   if (effect.awakening && Math.max(0, Math.round(Number(employee.awakening) || 0)) >= EMPLOYEE_AWAKENING_MAX) {
@@ -28194,7 +29162,10 @@ function openEmployeeItemUseConfirm(employee, itemKey) {
     alert("このアイテムを所持していません。");
     return;
   }
-  setEmployeeItemUseConfirm({ employee, itemKey, item, count, preview: getEmployeeItemPreview(employee, itemKey) });
+  const preview = getEmployeeItemPreview(employee, itemKey);
+  const examPassRate = examConfig ? getQualificationExamPassRate(employee, itemKey) : null;
+  const examSignal = examConfig ? getQualificationExamSignal(examPassRate) : null;
+  setEmployeeItemUseConfirm({ employee, itemKey, item, count, preview, examConfig, examPassRate, examSignal });
 }
 
 function applyEmployeeItemUse() {
@@ -28203,8 +29174,13 @@ function applyEmployeeItemUse() {
   const effect = EMPLOYEE_USABLE_ITEM_EFFECTS[itemKey];
   if (!effect || !employee) return;
 
+  const examConfig = getQualificationExamConfig(itemKey);
   if (effect.qualificationKey && hasEmployeeQualification(employee, effect.qualificationKey)) {
     alert(`${employee.name}は既に${effect.qualificationName}を取得済みです。`);
+    return;
+  }
+  if (examConfig && hasEmployeeQualification(employee, examConfig.key)) {
+    alert(`${employee.name}は既に${examConfig.qualificationName}を取得済みです。`);
     return;
   }
   if (effect.awakening && Math.max(0, Math.round(Number(employee.awakening) || 0)) >= EMPLOYEE_AWAKENING_MAX) {
@@ -28226,6 +29202,31 @@ function applyEmployeeItemUse() {
   Object.entries(statDeltas).forEach(([statKey, delta]) => {
     updatedEmployee[statKey] = Math.max(0, Math.round(Number(updatedEmployee[statKey]) || 0)) + Math.max(0, Math.round(Number(delta) || 0));
   });
+
+  let examResult = null;
+  let playerExpGainFromQualification = 0;
+  if (examConfig) {
+    const abilityValue = getEmployeeAbilityForExam(updatedEmployee, examConfig);
+    const passRate = Math.max(1, Math.min(95, Math.round((Number(examConfig.realPassRate) || 0) * abilityValue / 30)));
+    const roll = Math.floor(Math.random() * 100) + 1;
+    const passed = roll <= passRate;
+    const signal = getQualificationExamSignal(passRate);
+    examResult = { ...examConfig, abilityValue, passRate, roll, passed, signal };
+    if (passed) {
+      const qualificationEffect = examConfig.qualificationEffect ?? {};
+      Object.entries(qualificationEffect.statDeltas ?? {}).forEach(([statKey, delta]) => {
+        updatedEmployee[statKey] = Math.max(0, Math.round(Number(updatedEmployee[statKey]) || 0)) + Math.max(0, Math.round(Number(delta) || 0));
+      });
+      updatedEmployee = {
+        ...updatedEmployee,
+        qualifications: normalizeQualificationList([
+          ...getEmployeeQualificationList(updatedEmployee),
+          { key: examConfig.key, name: examConfig.qualificationName, acquiredAt: new Date().toISOString() },
+        ]),
+      };
+      playerExpGainFromQualification = Math.max(0, Math.round(Number(examConfig.userExpReward) || 0));
+    }
+  }
 
   let levelUpMessages = [];
   let awakeningMessages = [];
@@ -28298,8 +29299,26 @@ function applyEmployeeItemUse() {
   ));
   const existsInVault = nextVault.some((vaultEmployee) => Number(vaultEmployee.id) === Number(updatedEmployee.id));
   const finalVault = existsInVault ? nextVault : mergeEmployeeCollections([updatedEmployee], nextVault);
+  let nextPlayerRank = Math.max(1, Math.round(Number(accountData.playerRank ?? playerRankRef.current) || 1));
+  let nextPlayerExp = Math.max(0, Math.round(Number(accountData.playerExp ?? playerExpRef.current) || 0));
+  let qualificationRankUpResult = null;
+  if (playerExpGainFromQualification > 0) {
+    const beforeRank = nextPlayerRank;
+    const playerResult = applyPlayerRankExp(nextPlayerRank, nextPlayerExp, playerExpGainFromQualification);
+    nextPlayerRank = playerResult.rank;
+    nextPlayerExp = playerResult.exp;
+    playerRankRef.current = nextPlayerRank;
+    playerExpRef.current = nextPlayerExp;
+    setPlayerRank(nextPlayerRank);
+    setPlayerExp(nextPlayerExp);
+    if (playerResult.rankUpCount > 0) {
+      qualificationRankUpResult = { beforeRank, rank: playerResult.rank, rankUpCount: playerResult.rankUpCount };
+    }
+  }
   const nextAccountData = {
     ...accountData,
+    playerRank: nextPlayerRank,
+    playerExp: nextPlayerExp,
     employeeVault: finalVault,
     items: nextInventory,
     updatedAt: new Date().toISOString(),
@@ -28335,13 +29354,20 @@ function applyEmployeeItemUse() {
     afterCount: Math.max(0, currentCount - 1),
     expGain: actualExpGain,
     levelGain,
-    qualificationName: effect.qualificationName ?? "",
+    qualificationName: examResult?.passed ? examResult.qualificationName : (effect.qualificationName ?? ""),
+    examResult,
+    playerExpGainFromQualification,
+    qualificationRankUpResult,
     awakeningMessages,
     awakeningBefore,
     awakeningAfter,
     levelUpMessages,
   });
-  setLog(`${refreshedEmployee.name}に${item.name}を使用しました。`);
+  if (examResult) {
+    setLog(`${refreshedEmployee.name}が${examResult.qualificationName}試験を受験しました。期待度${examResult.signal?.label ?? "-"} / ${examResult.passed ? "合格" : "不合格"}`);
+  } else {
+    setLog(`${refreshedEmployee.name}に${item.name}を使用しました。`);
+  }
 }
 
 function renderEmployeeStatComparison(preview) {
@@ -28375,12 +29401,11 @@ function exchangeHomeShopItem(itemId) {
   if (!item) return;
 
   const accountData = readAccountData();
-  const currentSilver = Math.max(0, Math.round(Number(accountData.silverSheets ?? accountData.silverSheet ?? 0) || 0));
-  const currentGold = Math.max(0, Math.round(Number(accountData.goldSheets ?? accountData.goldSheet ?? 0) || 0));
-  const currentRainbow = Math.max(0, Math.round(Number(accountData.rainbowSheets ?? accountData.rainbowSheet ?? 0) || 0));
+  const currentMedals = Math.max(0, Math.round(Number(accountData.medals ?? accountData.medal ?? 0) || 0));
+  const currentShine = Math.max(0, Math.round(Number(accountData.shine ?? accountData.shines ?? 0) || 0));
 
-  if (currentSilver < item.costSilver || currentGold < item.costGold || currentRainbow < item.costRainbow) {
-    alert("シートが足りません。");
+  if (currentMedals < (item.costMedal ?? 0) || currentShine < (item.costShine ?? 0)) {
+    alert("メダルまたはシャインが足りません。");
     return;
   }
 
@@ -28388,9 +29413,11 @@ function exchangeHomeShopItem(itemId) {
   const itemInventory = getAccountItemInventory(accountData);
   const nextAccountData = {
     ...accountData,
-    silverSheets: currentSilver - item.costSilver + (item.rewardType === "currency" && item.rewardCurrency === "silverSheets" ? item.rewardCount : 0),
-    goldSheets: currentGold - item.costGold + (item.rewardType === "currency" && item.rewardCurrency === "goldSheets" ? item.rewardCount : 0),
-    rainbowSheets: currentRainbow - item.costRainbow + (item.rewardType === "currency" && item.rewardCurrency === "rainbowSheets" ? item.rewardCount : 0),
+    medals: currentMedals - (item.costMedal ?? 0) + (item.rewardType === "currency" && item.rewardCurrency === "medals" ? item.rewardCount : 0),
+    shine: currentShine - (item.costShine ?? 0) + (item.rewardType === "currency" && item.rewardCurrency === "shine" ? item.rewardCount : 0),
+    silverSheets: 0,
+    goldSheets: 0,
+    rainbowSheets: 0,
     rookieEmployeeTickets: tickets.rookieEmployeeTickets + (item.rewardType === "rookieTicket" ? item.rewardCount : 0),
     employeeTickets: tickets.employeeTickets + (item.rewardType === "employeeTicket" ? item.rewardCount : 0),
     premiumEmployeeTickets: tickets.premiumEmployeeTickets + (item.rewardType === "premiumTicket" ? item.rewardCount : 0),
@@ -28410,6 +29437,35 @@ function exchangeHomeShopItem(itemId) {
   alert(`${item.name}を交換しました。`);
 }
 
+function claimTestReleaseCampaign() {
+  if (!homeCoreFeaturesUnlocked) {
+    openLockedHomeFeatureNotice();
+    return;
+  }
+
+  const accountData = readAccountData();
+  if (accountData.releaseCampaignClaimed === true) {
+    alert("テスト版リリースキャンペーンは受取済みです。");
+    return;
+  }
+
+  const nextAccountData = {
+    ...accountData,
+    medals: Math.max(0, Math.round(Number(accountData.medals ?? accountData.medal ?? 0) || 0)) + 100,
+    shine: Math.max(0, Math.round(Number(accountData.shine ?? accountData.shines ?? 0) || 0)) + 10,
+    silverSheets: 0,
+    goldSheets: 0,
+    rainbowSheets: 0,
+    releaseCampaignClaimed: true,
+    updatedAt: new Date().toISOString(),
+  };
+
+  writeAccountData(nextAccountData);
+  setHomeAccountRefreshKey((current) => current + 1);
+  setLog("テスト版リリースキャンペーン：🏅メダル100・💎シャイン10を受け取りました。");
+  alert("🏅メダル100・💎シャイン10を受け取りました。");
+}
+
 function renderHomeShopModal() {
   const currentInventory = getAccountItemInventory(titleAccountData);
   const currencyItems = HOME_SHOP_ITEMS.filter((shopItem) => shopItem.category === "currency");
@@ -28423,7 +29479,7 @@ function renderHomeShopModal() {
 
   const currencyChipStyle = (kind) => ({
     border: homeShopCurrencyPanel === kind ? "1px solid rgba(255,170,40,0.95)" : "1px solid rgba(255,255,255,0.55)",
-    background: kind === "rainbow" ? "linear-gradient(135deg,rgba(255,255,255,0.92),rgba(241,220,255,0.9),rgba(221,250,255,0.9))" : kind === "gold" ? "linear-gradient(135deg,#fff8dd,#ffe29a)" : "linear-gradient(135deg,#f9fbff,#e8edf5)",
+    background: kind === "shine" ? "linear-gradient(135deg,#dff8ff,#8fd8ff)" : "linear-gradient(135deg,#fff8dd,#ffe29a)",
     boxShadow: homeShopCurrencyPanel === kind ? "0 8px 20px rgba(255,142,42,0.22)" : "0 5px 14px rgba(0,0,0,0.08)",
     borderRadius: 999,
     padding: "5px 8px",
@@ -28459,20 +29515,27 @@ function renderHomeShopModal() {
           </span>
           <span style={{ padding: "4px 8px", borderRadius: 999, background: "linear-gradient(135deg,#ffefba,#ffcf6a)", fontSize: 10, fontWeight: 900, color: "#6d4200", boxShadow: "0 5px 14px rgba(255,174,46,0.22)" }}>SHOP</span>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 5 }}>
-          <button type="button" onClick={() => setHomeShopCurrencyPanel(homeShopCurrencyPanel === "silver" ? null : "silver")} style={currencyChipStyle("silver")} title="シルバー交換">
-            <span>🥈</span><span>{titleSilverSheet.toLocaleString()}</span>
-          </button>
-          <button type="button" onClick={() => setHomeShopCurrencyPanel(homeShopCurrencyPanel === "gold" ? null : "gold")} style={currencyChipStyle("gold")} title="ゴールド交換">
-            <span>🥇</span><span>{titleGoldSheet.toLocaleString()}</span>
-          </button>
-          <button type="button" onClick={() => setHomeShopCurrencyPanel(homeShopCurrencyPanel === "rainbow" ? null : "rainbow")} style={currencyChipStyle("rainbow")} title="レインボー交換">
-            <span>🌈</span><span>{titleRainbowSheet.toLocaleString()}</span>
-          </button>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 5 }}>
+          <span style={currencyChipStyle("medal")} title="メダル">
+            <span>🏅</span><span>{titleMedals.toLocaleString()}</span>
+          </span>
+          <span style={currencyChipStyle("shine")} title="シャイン">
+            <span>💎</span><span>{titleShine.toLocaleString()}</span>
+          </span>
         </div>
       </div>
 
-      {homeShopCurrencyPanel && (
+      <section style={{ marginBottom: 10, padding: 10, borderRadius: 18, background: titleAccountData.releaseCampaignClaimed ? "linear-gradient(135deg,#eef5ef,#f7fbf7)" : "linear-gradient(135deg,#fff8d8,#e3f6ff)", border: titleAccountData.releaseCampaignClaimed ? "1px solid rgba(198,214,202,0.95)" : "1px solid rgba(255,186,70,0.9)", boxShadow: "0 8px 22px rgba(31,58,38,0.10)", display: "grid", gridTemplateColumns: "1fr auto", gap: 10, alignItems: "center" }}>
+        <span style={{ minWidth: 0 }}>
+          <strong style={{ display: "block", fontSize: 13, color: "#1d2b22" }}>🎉 テスト版リリースキャンペーン</strong>
+          <small style={{ display: "block", marginTop: 3, fontSize: 11, color: "#536357", fontWeight: 800 }}>今だけ 🏅メダル100 ＆ 💎シャイン10 をプレゼント</small>
+        </span>
+        <button type="button" disabled={titleAccountData.releaseCampaignClaimed === true} onClick={claimTestReleaseCampaign} style={{ padding: "8px 13px", borderRadius: 999, border: "none", background: titleAccountData.releaseCampaignClaimed ? "#b8c7b9" : "linear-gradient(145deg,#1d7f4f,#0f5f3a)", color: "#fff", fontWeight: 900, cursor: titleAccountData.releaseCampaignClaimed ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
+          {titleAccountData.releaseCampaignClaimed ? "受取済み" : "受け取る"}
+        </button>
+      </section>
+
+      {false && homeShopCurrencyPanel && (
         <section style={{ marginBottom: 10, padding: 9, borderRadius: 18, background: "linear-gradient(145deg,#ffffff,#fff7df)", border: "1px solid rgba(232,200,95,0.85)", boxShadow: "0 8px 22px rgba(133,93,32,0.10)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 7 }}>
             <strong style={{ fontSize: 13 }}>{homeShopCurrencyPanel === "silver" ? "🥈 シルバー交換" : homeShopCurrencyPanel === "gold" ? "🥇 ゴールド交換" : "🌈 レインボー交換"}</strong>
@@ -28480,7 +29543,7 @@ function renderHomeShopModal() {
           </div>
           <div style={{ display: "grid", gap: 6 }}>
             {activeCurrencyItems.map((item) => {
-              const canExchange = titleSilverSheet >= item.costSilver && titleGoldSheet >= item.costGold && titleRainbowSheet >= item.costRainbow;
+              const canExchange = titleMedals >= (item.costMedal ?? 0) && titleShine >= (item.costShine ?? 0);
               return (
                 <div key={item.id} style={{ display: "grid", gridTemplateColumns: "1fr auto", alignItems: "center", gap: 8, padding: "8px 9px", borderRadius: 14, background: "rgba(255,255,255,0.78)", border: "1px solid rgba(216,224,216,0.9)" }}>
                   <span style={{ minWidth: 0 }}>
@@ -28530,15 +29593,15 @@ function renderHomeShopModal() {
               <div style={{ display: "grid", gap: 7 }}>
                 {items.map((item) => {
                   const ownedText = getHomeShopOwnedText(item, titleAccountData);
-                  const canExchange = titleSilverSheet >= item.costSilver && titleGoldSheet >= item.costGold && titleRainbowSheet >= item.costRainbow;
-                  const rarityLabel = item.category === "qualification" ? "LEGEND" : item.costRainbow > 0 ? "RAINBOW" : item.costGold > 0 ? "GOLD" : item.costSilver >= 300 ? "RARE" : "NORMAL";
+                  const canExchange = titleMedals >= (item.costMedal ?? 0) && titleShine >= (item.costShine ?? 0);
+                  const rarityLabel = (item.costShine ?? 0) > 0 ? "SHINE" : "MEDAL";
                   return (
                     <div key={item.id} style={{ padding: 9, borderRadius: 18, background: "rgba(255,255,255,0.88)", border: item.category === "qualification" ? "1px solid rgba(190,140,255,0.75)" : "1px solid rgba(216,224,216,0.9)", display: "grid", gridTemplateColumns: "38px 1fr auto", gap: 8, alignItems: "center", boxShadow: "0 6px 16px rgba(0,0,0,0.06)" }}>
                       <span style={{ width: 38, height: 38, borderRadius: 15, display: "grid", placeItems: "center", background: item.category === "qualification" ? "linear-gradient(145deg,#fff9d7,#e9d7ff)" : "linear-gradient(145deg,#fffdf4,#fff0c9)", fontSize: 19, fontWeight: 900, boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.8)" }}>{item.icon}</span>
                       <span style={{ minWidth: 0 }}>
                         <span style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
                           <strong style={{ display: "block", fontSize: 13 }}>{item.name}</strong>
-                          <small style={{ padding: "2px 6px", borderRadius: 999, background: item.category === "qualification" ? "#7d4dff" : item.costGold > 0 ? "#d18a00" : "#7b8a7c", color: "#fff", fontSize: 8, fontWeight: 900, letterSpacing: 0.5 }}>{rarityLabel}</small>
+                          <small style={{ padding: "2px 6px", borderRadius: 999, background: (item.costShine ?? 0) > 0 ? "#2383bd" : "#9b7a19", color: "#fff", fontSize: 8, fontWeight: 900, letterSpacing: 0.5 }}>{rarityLabel}</small>
                         </span>
                         <small style={{ display: "block", color: "#61705f", marginTop: 2, lineHeight: 1.35, fontSize: 10 }}>{item.effectText ?? item.description}</small>
                         <span style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginTop: 5 }}>
@@ -28570,7 +29633,7 @@ function renderHomeMissionCard(mission) {
         <span style={{ width: 38, height: 38, borderRadius: 14, display: "grid", placeItems: "center", background: "#ffffff", boxShadow: "0 5px 12px rgba(0,0,0,0.12)", fontWeight: 900 }}>{mission.icon}</span>
         <span style={{ minWidth: 0 }}>
           <strong style={{ display: "block", fontSize: 14 }}>{mission.title}</strong>
-          <span style={{ display: "block", fontSize: 10, opacity: 0.72, marginTop: 2 }}>{mission.group} / シルバーシート +{mission.rewardExp}{mission.rewardGoldSheets ? ` / ゴールドシート +${mission.rewardGoldSheets}` : ""}</span>
+          <span style={{ display: "block", fontSize: 10, opacity: 0.72, marginTop: 2 }}>{mission.group} / メダル +{mission.rewardExp}{mission.rewardGoldSheets ? ` / シャイン +${mission.rewardGoldSheets}` : ""}</span>
         </span>
         <span style={{ padding: "4px 8px", borderRadius: 999, background: mission.claimed ? "#7a8a7a" : isClaimable ? "#ff4d5d" : "#b8c7b9", color: "#ffffff", fontSize: 10, fontWeight: 900 }}>
           {mission.claimed ? "受取済" : isClaimable ? "達成" : `${mission.progressRate}%`}
@@ -30798,7 +31861,7 @@ return (
     )}
 
     
-    {storySequence && !showPrologue && (
+    {storySequence && (
       <div className="prologue-screen story-sequence-screen">
         {storySequence[storySequenceIndex]?.background && (
           <img
@@ -30832,12 +31895,17 @@ return (
                 if (storySequenceIndex < storySequence.length - 1) {
                   setStorySequenceIndex((currentIndex) => currentIndex + 1);
                 } else {
+                  const pendingAction = pendingStorySequenceAction;
                   setStorySequence(null);
                   setStorySequenceIndex(0);
+                  setPendingStorySequenceAction(null);
+                  if (pendingAction === "start_kyoto_chapter") {
+                    startKyotoChapter(true);
+                  }
                 }
               }}
             >
-              {storySequenceIndex < storySequence.length - 1 ? "次へ" : currentGameMode === "story_kyoto" ? "京都編を開始" : "融資チュートリアルへ"}
+              {storySequenceIndex < storySequence.length - 1 ? "次へ" : pendingStorySequenceAction === "start_kyoto_chapter" ? "3-1章を開始" : currentGameMode === "story_tokyo" ? "東京編を開始" : currentGameMode === "story_osaka" ? "大阪編を開始" : currentGameMode === "story_kyoto" ? "3-1章を開始" : "融資チュートリアルへ"}
             </button>
           </div>
         </div>
@@ -33563,9 +34631,8 @@ return (
               <div className="home-lobby-top-status-v2182" style={{ marginTop: 8 }}>
                 <span className="home-lobby-status-pill-v2182">🏆 RANK {titleAccountData.playerRank ?? 1}</span>
                 <span className="home-lobby-status-pill-v2182">⚡ {titleActionPointText}</span>
-                <span className="home-lobby-status-pill-v2182">🥈 {titleSilverSheet.toLocaleString()}</span>
-                <span className="home-lobby-status-pill-v2182">🥇 {titleGoldSheet.toLocaleString()}</span>
-                <span className="home-lobby-status-pill-v2182">🌈 {titleRainbowSheet.toLocaleString()}</span>
+                <span className="home-lobby-status-pill-v2182">🏅 {titleMedals.toLocaleString()}</span>
+                <span className="home-lobby-status-pill-v2182">💎 {titleShine.toLocaleString()}</span>
               </div>
             </div>
 
@@ -33718,13 +34785,6 @@ return (
               </div>
               ) : null}
             </div>
-
-            {homeCoreFeaturesUnlocked && homeLoginBonusStatus.canClaim && (
-              <div className="home-lobby-banner-v2182">
-                <span>🎁 {homeLoginBonusStatus.rewardText}</span>
-                <button type="button" onClick={claimHomeDailyLoginBonus} style={{ border: "none", borderRadius: 999, padding: "6px 10px", background: "#1d5c3a", color: "#fff", fontWeight: 900, cursor: "pointer" }}>受け取る</button>
-              </div>
-            )}
           </div>
 
           <div
@@ -33772,7 +34832,7 @@ return (
               {renderHomeMenuCard({ icon: "社", title: "社員名簿", sub: homeCoreFeaturesUnlocked ? `${titleAccountEmployeeVault.length}/${EMPLOYEE_POOL.length}名・図鑑/保管庫統合` : "1-1章完了後に解放", accent: "#e8f6ee", badge: homeCoreFeaturesUnlocked && titleAccountEmployeeVault.length > 0 ? `${titleAccountEmployeeVault.length}` : "🔒", onClick: homeCoreFeaturesUnlocked ? () => setTitleModal("accountVault") : openLockedHomeFeatureNotice })}
               {renderHomeMenuCard({ icon: "店", title: "ショップ", sub: homeCoreFeaturesUnlocked ? "チケット・育成アイテムを交換" : "1-1章完了後に解放", accent: "#fff7df", badge: homeCoreFeaturesUnlocked ? "" : "🔒", onClick: homeCoreFeaturesUnlocked ? () => setTitleModal("shop") : openLockedHomeFeatureNotice })}
               {renderHomeMenuCard({ icon: "🎒", title: "アイテム", sub: homeCoreFeaturesUnlocked ? (titleOwnedItemCount > 0 ? `所持${titleOwnedItemKindCount}種 / 合計${titleOwnedItemCount}個` : "所持アイテム確認") : "1-1章完了後に解放", accent: "#e7f0ff", badge: homeCoreFeaturesUnlocked && titleOwnedItemCount > 0 ? String(titleOwnedItemCount) : "🔒", onClick: homeCoreFeaturesUnlocked ? () => setTitleModal("items") : openLockedHomeFeatureNotice })}
-              {renderHomeMenuCard({ icon: "実", title: "実績", sub: homeCoreFeaturesUnlocked ? (homeMissionClaimableCount > 0 ? `${homeMissionClaimableCount}件受取可能` : `達成${homeMissionCompletedCount}件・ログボ${homeLoginBonusStatus.claimCount}回`) : "1-1章完了後に解放", accent: "#ffe7e7", badge: homeCoreFeaturesUnlocked && homeMissionClaimableCount > 0 ? "NEW" : "🔒", onClick: homeCoreFeaturesUnlocked ? () => setTitleModal("missions") : openLockedHomeFeatureNotice })}
+              {renderHomeMenuCard({ icon: "実", title: "実績", sub: homeCoreFeaturesUnlocked ? (homePresentNoticeCount > 0 ? `ログボ/実績 ${homePresentNoticeCount}件確認` : `達成${homeMissionCompletedCount}件・ログボ${homeLoginBonusStatus.claimCount}回`) : "1-1章完了後に解放", accent: "#ffe7e7", badge: homeCoreFeaturesUnlocked && homePresentNoticeCount > 0 ? String(homePresentNoticeCount) : "🔒", onClick: homeCoreFeaturesUnlocked ? () => setTitleModal("missions") : openLockedHomeFeatureNotice })}
               {renderHomeMenuCard({ icon: "設", title: "設定", sub: "設定・クレジット", accent: "#eeeeee", onClick: () => setTitleModal("settings") })}
             </div>
 
@@ -33810,7 +34870,7 @@ return (
             { icon: "名", label: "名簿", badge: "", variant: "vault", action: homeCoreFeaturesUnlocked ? () => setTitleModal("accountVault") : openLockedHomeFeatureNotice },
             { icon: "店", label: "交換", badge: "", variant: "shop", action: homeCoreFeaturesUnlocked ? () => setTitleModal("shop") : openLockedHomeFeatureNotice },
             { icon: "🎒", label: "アイテム", badge: homeCoreFeaturesUnlocked && titleOwnedItemCount > 0 ? String(titleOwnedItemCount) : "", variant: "items", action: homeCoreFeaturesUnlocked ? () => setTitleModal("items") : openLockedHomeFeatureNotice },
-            { icon: "実", label: "実績", badge: homeCoreFeaturesUnlocked && homeMissionClaimableCount > 0 ? String(homeMissionClaimableCount) : "", variant: "mission", action: homeCoreFeaturesUnlocked ? () => setTitleModal("missions") : openLockedHomeFeatureNotice },
+            { icon: "実", label: "実績", badge: homeCoreFeaturesUnlocked && homePresentNoticeCount > 0 ? String(homePresentNoticeCount) : "", variant: "mission", action: homeCoreFeaturesUnlocked ? () => setTitleModal("missions") : openLockedHomeFeatureNotice },
             { icon: "⚙", label: "設定", badge: "", variant: "settings", action: () => setTitleModal("settings") },
           ].map((item) => (
             <button key={item.label} type="button" className={`home-lobby-nav-button-v2182 nav-${item.variant}-v264`} onClick={item.action}>
@@ -33940,7 +35000,7 @@ return (
                             <details key={area.key} style={{ border: "1px solid #cfe2d3", borderRadius: 16, background: "#ffffff", overflow: "hidden" }}>
                               <summary style={{ cursor: "pointer", listStyle: "none", padding: "11px 12px", background: "linear-gradient(145deg,#eef8ff,#f7fff8)", fontWeight: 900, display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
                                 <span>📍 {area.label}</span>
-                                <span style={{ fontSize: 11, color: "#496052" }}>本社Lv{area.officeLevel} / 解放{unlockedCount}/{area.missions.length} / 派遣中{activeCount}</span>
+                                <span style={{ fontSize: 11, color: "#496052" }}>{getOfficeLevelShortLabelByAreaKey(area.key)}{area.officeLevel} / 解放{unlockedCount}/{area.missions.length} / 派遣中{activeCount}</span>
                               </summary>
                               <div style={{ display: "grid", gap: 8, padding: 10 }}>
                                 {area.missions.map((mission) => {
@@ -33957,7 +35017,7 @@ return (
                                       </div>
                                       <div style={{ fontSize: 11, color: "#5d6a60", marginTop: 4, lineHeight: 1.45 }}>{mission.description}</div>
                                       <div style={{ fontSize: 11, marginTop: 5 }}>推奨：{mission.abilityLabel} / 目標能力：{mission.targetPower} / 報酬：{formatSpecialMissionRewardText(mission.rewards, mission.expReward)}</div>
-                                      {!unlocked && <div style={{ marginTop: 7, fontSize: 11, color: "#8a5a00", fontWeight: 900 }}>本社Lv{requiredLevel}で解放</div>}
+                                      {!unlocked && <div style={{ marginTop: 7, fontSize: 11, color: "#8a5a00", fontWeight: 900 }}>{getOfficeLevelShortLabelByAreaKey(area.key)}{requiredLevel}で解放</div>}
                                       {isActive && <div style={{ marginTop: 7, fontSize: 11, color: "#8a5a00", fontWeight: 900 }}>{completed ? "✅ 完了済み：報酬受取後に再派遣可能" : `⏳ 派遣中：残り ${getSpecialMissionRemainingText(activeDispatch.endAt)}`}</div>}
                                     </button>
                                   );
@@ -34055,9 +35115,13 @@ return (
                   const chapters = [
                     { key: "chapter_1_1", title: "1-1章 創業チュートリアル", sub: "空き家購入・修繕・土地購入・建築をもう一度確認します。", unlocked: true },
                     { key: "chapter_1_2", title: "1-2章 岐阜編", sub: "完成済み自社建物3棟を目指します。", unlocked: progress >= 2 || titleAccountData.unlockedStoryAkari },
-                    { key: "chapter_1_3", title: "1-3章 名古屋準備編", sub: "銀行融資・支店建設・社員配属を確認します。", unlocked: progress >= 3 },
-                    { key: "chapter_1_4", title: "1-4章 名古屋編", sub: "実質月利益50万円以上を目指します。", unlocked: progress >= 4 },
-                    { key: "chapter_kyoto", title: "第3章 京都編", sub: "観光施設を建て、京都の観光経営でライバル会社に挑みます。", unlocked: progress >= 5 },
+                    { key: "chapter_1_3", title: "2-1章 名古屋準備編", sub: "銀行融資・支店建設・社員配属を確認します。", unlocked: progress >= 3 },
+                    { key: "chapter_1_4", title: "2-2章 名古屋編", sub: "実質月利益300万円以上を目指します。", unlocked: progress >= 4 },
+                    { key: "chapter_3_1", title: "3-1章 京都観光チュートリアル", sub: "観光施設3棟を建て、観光需要の基本を確認します。", unlocked: progress >= 5 },
+                    { key: "chapter_3_2", title: "3-2章 京都編", sub: "観光施設5棟＋実質月利益1,000万円以上を目指します。", unlocked: progress >= 5 },
+                    { key: "chapter_4_1", title: "4-1章 大阪工業チュートリアル", sub: "町工場・中規模工場・大規模工場・物流倉庫を建てます。", unlocked: progress >= 6 },
+                    { key: "chapter_4_2", title: "4-2章 大阪編", sub: "実質月利益2,500万円以上を目指します。", unlocked: progress >= 6 },
+                    { key: "chapter_tokyo", title: "第5章 東京編", sub: "70×70の最大規模マップで、実質月利益5,000万円以上を目指します。", unlocked: progress >= 7 },
                   ];
                   return (
                     <>
@@ -34380,7 +35444,7 @@ return (
                   <p style={{ fontSize: 13, lineHeight: 1.7, marginTop: 0 }}>
                     実績・任務報酬とログインボーナス履歴をまとめて確認できます。受取可能な任務は発光します。
                   </p>
-                  <details style={{ marginBottom: 10, borderRadius: 16, border: "1px solid #e8d08a", background: "#fffaf0", overflow: "hidden" }}>
+                  <details open={homeLoginBonusStatus.canClaim} style={{ marginBottom: 10, borderRadius: 16, border: "1px solid #e8d08a", background: "#fffaf0", overflow: "hidden" }}>
                     <summary style={{ cursor: "pointer", listStyle: "none", padding: "10px 12px", fontWeight: 900, display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
                       <span>🎁 ログインボーナス確認</span>
                       <span style={{ fontSize: 11, color: "#8a5a00" }}>{homeLoginBonusStatus.canClaim ? "本日受取可能" : `累計${homeLoginBonusStatus.claimCount}回`}</span>
@@ -34560,8 +35624,21 @@ return (
           {EMPLOYEE_USABLE_ITEM_EFFECTS[employeeItemUseConfirm.itemKey]?.qualificationName && (
             <p style={{ margin: "0 0 8px", fontSize: 12, fontWeight: 900, color: "#8a5a00" }}>🎓 取得資格：{EMPLOYEE_USABLE_ITEM_EFFECTS[employeeItemUseConfirm.itemKey].qualificationName}（同じ社員に同資格は1回のみ）</p>
           )}
+          {employeeItemUseConfirm.examConfig && (
+            <div style={{ padding: 12, borderRadius: 18, background: employeeItemUseConfirm.examSignal?.background ?? "rgba(255,255,255,0.78)", border: `2px solid ${employeeItemUseConfirm.examSignal?.color ?? "#90a4ae"}`, marginBottom: 10, boxShadow: "0 10px 24px rgba(0,0,0,0.08)" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 6 }}>
+                <strong style={{ fontSize: 15 }}>📝 {employeeItemUseConfirm.examConfig.qualificationName}試験</strong>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, fontSize: 12, fontWeight: 900 }}>
+                <div style={{ padding: "8px 10px", borderRadius: 12, background: "rgba(255,255,255,0.78)" }}>判定能力：{employeeItemUseConfirm.examConfig.abilityLabel}</div>
+                <div style={{ padding: "8px 10px", borderRadius: 12, background: "rgba(255,255,255,0.78)", color: employeeItemUseConfirm.examSignal?.color ?? "#1d2b22" }}>期待度：{employeeItemUseConfirm.examSignal?.icon} {employeeItemUseConfirm.examSignal?.label}</div>
+              </div>
+              <p style={{ margin: "8px 0 0", fontSize: 12, lineHeight: 1.5, color: "#4d5b4a", fontWeight: 800 }}>七瀬「{getQualificationExamAkariComment(employeeItemUseConfirm.examSignal)}」</p>
+              <p style={{ margin: "4px 0 0", fontSize: 11, lineHeight: 1.5, color: "#6b7468", fontWeight: 800 }}>参考書を使用すると能力が上昇し、そのまま1回受験します。</p>
+            </div>
+          )}
           <div style={{ padding: 12, borderRadius: 18, background: "rgba(255,255,255,0.78)", border: "1px solid rgba(216,224,216,0.9)", marginBottom: 10 }}>
-            <strong style={{ display: "block", marginBottom: 8 }}>現在能力 → 使用後</strong>
+            <strong style={{ display: "block", marginBottom: 8 }}>{employeeItemUseConfirm.examConfig ? "使用前 → 参考書使用後" : "現在能力 → 使用後"}</strong>
             {renderEmployeeStatComparison(employeeItemUseConfirm.preview)}
             {employeeItemUseConfirm.preview.expGain > 0 && (
               <div style={{ marginTop: 8, padding: "8px 10px", borderRadius: 12, background: "#edf5ef", fontSize: 12, fontWeight: 900 }}>
@@ -34584,7 +35661,7 @@ return (
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             <button type="button" onClick={() => setEmployeeItemUseConfirm(null)} style={{ padding: "10px 14px", borderRadius: 999, border: "1px solid #b8c7b9", background: "#ffffff", color: "#1d2b22", fontWeight: 900, cursor: "pointer" }}>キャンセル</button>
-            <button type="button" onClick={applyEmployeeItemUse} style={{ padding: "10px 14px", borderRadius: 999, border: "none", background: "linear-gradient(145deg,#ffb02e,#ff5a3d)", color: "#ffffff", fontWeight: 900, cursor: "pointer" }}>使用</button>
+            <button type="button" onClick={applyEmployeeItemUse} style={{ padding: "10px 14px", borderRadius: 999, border: "none", background: "linear-gradient(145deg,#ffb02e,#ff5a3d)", color: "#ffffff", fontWeight: 900, cursor: "pointer" }}>{employeeItemUseConfirm.examConfig ? "使用して受験" : "使用"}</button>
           </div>
         </div>
       </div>
@@ -34592,13 +35669,47 @@ return (
 
     {employeeItemUseResult && (
       <div className="popup-log" style={{ zIndex: 19500 }}>
-        <div className="popup-log-card player-rankup-card player-rankup-card-v286" style={{ maxWidth: 540, width: "min(94vw, 540px)", background: "radial-gradient(circle at 50% 0%,#ffffff 0%,#fff9d7 44%,#ffd37a 100%)", border: "2px solid rgba(255,183,50,0.78)", overflow: "hidden" }}>
-          <div className="levelup-celebration-icon-v286 player">✨</div>
-          <div style={{ fontSize: 12, letterSpacing: 3, fontWeight: 900, color: "#8a5a00" }}>ITEM USED</div>
-          <h2 style={{ marginBottom: 4 }}>能力アップ</h2>
-          <p className="employee-gacha-rarity">{employeeItemUseResult.employeeName}に{employeeItemUseResult.item.name}を使用しました</p>
-          {employeeItemUseResult.qualificationName && (
-            <p style={{ margin: "4px 0 0", fontSize: 13, fontWeight: 900, color: "#8a5a00" }}>🎓 {employeeItemUseResult.qualificationName}を取得しました！</p>
+        <div className={`popup-log-card player-rankup-card player-rankup-card-v286 ${employeeItemUseResult.examResult?.passed ? "qualification-exam-pass-rainbow-v363" : ""}`} style={{ maxWidth: 540, width: "min(94vw, 540px)", background: employeeItemUseResult.examResult?.passed ? undefined : "radial-gradient(circle at 50% 0%,#ffffff 0%,#fff9d7 44%,#ffd37a 100%)", border: employeeItemUseResult.examResult?.passed ? undefined : "2px solid rgba(255,183,50,0.78)", overflow: "hidden" }}>
+          {employeeItemUseResult.examResult && employeeExamAnimationStep !== "result" ? (
+            <>
+              <div className={`qualification-exam-animation-v362 exam-${employeeItemUseResult.examResult.signal?.key ?? "green"}`}>
+                <div className="qualification-exam-aura-v362" aria-hidden="true"></div>
+                <div className="qualification-exam-icon-v362">{employeeItemUseResult.examResult.signal?.icon ?? "📝"}</div>
+                <div className="qualification-exam-phase-v362">
+                  {employeeExamAnimationStep === "taking" ? "受験中..." : employeeExamAnimationStep === "grading" ? "採点中..." : "結果発表！"}
+                </div>
+                <div className="qualification-exam-sub-v362">{employeeItemUseResult.examResult.qualificationName}試験</div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="levelup-celebration-icon-v286 player" style={employeeItemUseResult.examResult?.passed ? { filter: "drop-shadow(0 0 22px rgba(255,210,72,0.95))" } : employeeItemUseResult.examResult ? { filter: `drop-shadow(0 0 18px ${employeeItemUseResult.examResult.signal?.color ?? "#ffd24a"})` } : undefined}>{employeeItemUseResult.examResult ? (employeeItemUseResult.examResult.passed ? "🌈" : "❌") : "✨"}</div>
+              <div style={{ fontSize: 12, letterSpacing: 3, fontWeight: 900, color: "#8a5a00" }}>{employeeItemUseResult.examResult ? "QUALIFICATION EXAM" : "ITEM USED"}</div>
+              <h2 style={{ marginBottom: 4 }}>{employeeItemUseResult.examResult ? (employeeItemUseResult.examResult.passed ? "🎉 合格！" : "❌ 不合格") : "能力アップ"}</h2>
+              <p className="employee-gacha-rarity">{employeeItemUseResult.employeeName}に{employeeItemUseResult.item.name}を使用しました</p>
+              {employeeItemUseResult.examResult && (
+                <div style={{ margin: "8px auto 0", padding: "10px 12px", borderRadius: 16, background: "rgba(255,255,255,0.74)", border: employeeItemUseResult.examResult.passed ? "2px solid rgba(255,210,72,0.85)" : "2px solid rgba(120,140,150,0.45)", fontSize: 13, fontWeight: 900 }}>
+                  {employeeItemUseResult.examResult.qualificationName}試験
+                </div>
+              )}
+            </>
+          )}
+          {(!employeeItemUseResult.examResult || employeeExamAnimationStep === "result") && (
+            <>
+              {employeeItemUseResult.qualificationName && (
+                <>
+                  <p style={{ margin: "8px 0 0", fontSize: 13, fontWeight: 900, color: "#8a5a00" }}>🏅 {employeeItemUseResult.qualificationName}を取得しました！</p>
+                  <p style={{ margin: "6px 0 0", fontSize: 12, fontWeight: 900, color: "#1f6b45" }}>七瀬「{getQualificationExamAkariComment(employeeItemUseResult.examResult?.signal, true)}」</p>
+                </>
+              )}
+              {employeeItemUseResult.examResult && !employeeItemUseResult.examResult.passed && (
+                <>
+                  <p style={{ margin: "8px 0 0", fontSize: 13, fontWeight: 900, color: "#52625a" }}>七瀬「{getQualificationExamAkariComment(employeeItemUseResult.examResult?.signal, false)}」</p>
+                  <p style={{ margin: "4px 0 0", fontSize: 12, fontWeight: 800, color: "#52625a" }}>参考書分の能力上昇は反映されています。</p>
+                </>
+              )}
+          {employeeItemUseResult.playerExpGainFromQualification > 0 && (
+            <p style={{ margin: "6px 0 0", fontSize: 12, fontWeight: 900, color: "#1f6b45" }}>ユーザーEXP +{employeeItemUseResult.playerExpGainFromQualification}</p>
           )}
           <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "center", margin: "12px 0" }}>
             <div style={{ transform: "scale(1.04)", filter: "drop-shadow(0 0 14px rgba(255,210,70,0.65))" }}>
@@ -34617,7 +35728,9 @@ return (
               {employeeItemUseResult.awakeningMessages?.map((message, index) => <div key={`aw-${index}`}>・覚醒効果 {message}</div>)}
             </div>
           )}
-          <button onClick={() => setEmployeeItemUseResult(null)}>OK</button>
+              <button onClick={() => setEmployeeItemUseResult(null)}>OK</button>
+            </>
+          )}
         </div>
       </div>
     )}
@@ -34669,7 +35782,28 @@ return (
       </div>
     )}
 
-    {showTitleScreen && employeeRecruitmentOffer && (
+
+    {employeeRecruitmentOffer && employeeRecruitAnimationStep !== "ready" && (() => {
+      const phase = getRecruitDeliveryPhaseText(employeeRecruitAnimationStep);
+      const signal = employeeRecruitmentOffer.announcementSignal ?? { key: "blue", icon: "🔵", label: "通常" };
+      return (
+        <div className="popup-log recruit-delivery-overlay-v363" style={{ zIndex: 19000 }}>
+          <div className={`popup-log-card recruit-delivery-card-v363 recruit-signal-${signal.key}`}>
+            <div className="recruit-delivery-glow-v363" aria-hidden="true"></div>
+            <div className="recruit-delivery-route-v363" aria-hidden="true">
+              <span className="recruit-delivery-mailbox-v363">🏢</span>
+              <span className="recruit-delivery-envelope-v363">✉️</span>
+              <span className="recruit-delivery-mailbox-v363">📬</span>
+            </div>
+            <div className="recruit-delivery-icon-v363">{phase.icon}</div>
+            <h2>{phase.title}</h2>
+            <p>{employeeRecruitAnimationStep === "arrival" ? signal.description : phase.subtitle}</p>
+          </div>
+        </div>
+      );
+    })()}
+
+    {showTitleScreen && employeeRecruitmentOffer && employeeRecruitAnimationStep === "ready" && (
       <div className="popup-log recruit-popup-stage" style={{ zIndex: 12000 }}>
         <div className={`popup-log-card employee-recruitment-card recruit-desk-card recruit-stage-v206 ${getRecruitmentStageClass(employeeRecruitmentOffer.ticketType)}`} style={{ maxHeight: "calc(100dvh - 104px)", overflowY: "auto" }}>
           <div className="recruit-stage-aura-v206"></div>
@@ -34788,7 +35922,66 @@ return (
 
     {!showTitleScreen && (
     <div className="app">
-      {popupLog && (() => {
+      {gameOverInfo && (() => {
+        const gameOverAccountData = readAccountData();
+        const rescueMedals = Math.max(0, Math.round(Number(gameOverAccountData.medals ?? gameOverAccountData.medal ?? 0) || 0));
+        const canRescue = rescueMedals >= GAME_OVER_RESCUE_MEDAL_COST;
+
+        return (
+        <div className="popup-log game-over-overlay-v365">
+          <div className="popup-log-card game-over-card-v365">
+            <div className="game-over-kicker-v365">MANAGEMENT FAILED</div>
+            <h2>💸 GAME OVER</h2>
+            <div className="game-over-reason-v365">{gameOverInfo.reason}</div>
+            <div className="game-over-money-v365">最終資金：{Number(gameOverInfo.finalMoney ?? 0).toLocaleString()}万円</div>
+            <div className="game-over-month-v365">終了時点：{gameOverInfo.monthLabel}</div>
+            <div className="game-over-akari-scene-v365">
+              <img
+                className="game-over-akari-cry-v365"
+                src={AKARI_PORTRAIT_PATHS.cry}
+                alt="七瀬 灯里"
+                loading="lazy"
+              />
+              <div className="game-over-akari-v365">
+                <span className="game-over-akari-icon-v365">七瀬</span>
+                <p>「{gameOverInfo.akariComment}」</p>
+              </div>
+            </div>
+            <p className="game-over-note-v365">所持金がマイナスになったため、このままでは経営終了です。</p>
+            <div className="game-over-rescue-box-v365">
+              <strong>再建支援</strong>
+              <span>メダル{GAME_OVER_RESCUE_MEDAL_COST}枚で所持金を{GAME_OVER_RESCUE_RESTART_MONEY.toLocaleString()}万円に戻して再開できます。</span>
+              <small>所持メダル：{rescueMedals.toLocaleString()}枚</small>
+            </div>
+            <div className="game-over-actions-v365">
+              <button
+                type="button"
+                className="game-over-rescue-button-v365"
+                disabled={!canRescue}
+                onClick={handleGameOverRescue}
+              >
+                メダル{GAME_OVER_RESCUE_MEDAL_COST}枚で再建する
+              </button>
+              <button
+                type="button"
+                className="game-over-title-button-v365"
+                onClick={() => {
+                  setGameOverInfo(null);
+                  setPopupLog(null);
+                  setShowTitleScreen(true);
+                  setActivePanel("home");
+                  writeLastNavigationState({ screen: "home", activePanel: "home", titleModal: null });
+                }}
+              >
+                タイトルへ戻る
+              </button>
+            </div>
+          </div>
+        </div>
+        );
+      })()}
+
+      {!gameOverInfo && popupLog && (() => {
         const monthlyReport = getMonthlyEventHighlights(popupLog);
         return (
           <div className="popup-log">
@@ -34858,7 +36051,7 @@ return (
                 <tr><th>期末現金</th><td>{annualReport.money.toLocaleString()}万円</td></tr>
                 <tr><th>総資産</th><td>{annualReport.assetValue.toLocaleString()}万円</td></tr>
                 <tr><th>プレイヤーランク</th><td>{annualReport.playerRank}</td></tr>
-                <tr><th>シルバーシート</th><td>{annualReport.playerExp} / {annualReport.nextPlayerExp}</td></tr>
+                <tr><th>ユーザーEXP</th><td>{annualReport.playerExp} / {annualReport.nextPlayerExp}</td></tr>
               </tbody>
             </table>
             <button onClick={() => setAnnualReport(null)}>OK</button>
@@ -34910,7 +36103,7 @@ return (
   </div>
 )}
 
-{employeeRecruitmentOffer && (
+{employeeRecruitmentOffer && employeeRecruitAnimationStep === "ready" && (
   <div className="popup-log recruit-popup-stage">
     <div className={`popup-log-card employee-recruitment-card recruit-desk-card recruit-stage-v206 ${getRecruitmentStageClass(employeeRecruitmentOffer.ticketType)}`}>
       <div className="recruit-stage-aura-v206"></div>
@@ -35192,8 +36385,8 @@ return (
   <div className="popup-log">
     <div className="popup-log-card player-rankup-card headquarter-levelup-card-v286">
       <div className="levelup-celebration-icon-v286 hq">🏛</div>
-      <h2>本社レベルアップ！</h2>
-      <p className="employee-gacha-rarity">本社Lv{headquarterLevelUpResult.beforeLevel} → 本社Lv{headquarterLevelUpResult.level}</p>
+      <h2>{currentOfficeLevelFullLabel}アップ！</h2>
+      <p className="employee-gacha-rarity">{currentOfficeLevelShortLabel}{headquarterLevelUpResult.beforeLevel} → {currentOfficeLevelShortLabel}{headquarterLevelUpResult.level}</p>
       <div>
         {(headquarterLevelUpResult.messages ?? []).map((message) => (
           <p key={message}>{message}</p>
@@ -35480,7 +36673,7 @@ return (
 
       <header className="top-header compact-top-header">
         <div className="top-title-wrap">
-          <h1 className="v73-title">箱庭不動産経営シミュレーター
+          <h1 className="v73-title">Rising Estate<br />～箱庭不動産 地方から全国へ～
   {GAME_VERSION} {isDemoMode ? "（デモ版）" : ""}</h1>
         </div>
       </header>
@@ -35530,7 +36723,7 @@ return (
         <div className={`gifu-goal-panel ${hasClearedGifuChapter ? "cleared" : ""}`}>
           <div>
             <strong>{hasClearedGifuChapter ? "岐阜編クリア" : "岐阜編目標"}</strong>
-            <span>完成済み自社建物 {gifuOwnedBuildingCount.toLocaleString()} / {GIFU_CLEAR_BUILDING_COUNT.toLocaleString()}棟</span>
+            <span>建物完成 {gifuOwnedBuildingCount.toLocaleString()} / {GIFU_CLEAR_BUILDING_COUNT.toLocaleString()}棟</span>
           </div>
         </div>
       )}
@@ -35569,15 +36762,37 @@ return (
       {currentGameMode === "story_kyoto" && (
         <div className={`gifu-goal-panel nagoya-goal-panel ${hasClearedKyotoChapter ? "cleared" : ""}`}>
           <div>
-            <strong>{hasClearedKyotoChapter ? "京都編クリア" : hasCompletedKyotoTourismTutorial ? "京都編本編" : "京都編チュートリアル"}</strong>
+            <strong>{hasClearedKyotoChapter ? "3-2章 京都編クリア" : hasCompletedKyotoTourismTutorial ? "3-2章 京都編目標" : "3-1章 京都観光チュートリアル"}</strong>
             {!hasCompletedKyotoTourismTutorial ? (
               <span>観光施設 {kyotoTourismBuildingCount.toLocaleString()} / {KYOTO_TUTORIAL_TOURISM_BUILDING_COUNT.toLocaleString()}棟</span>
             ) : (
-              <span>観光施設 {kyotoTourismBuildingCount.toLocaleString()} / {KYOTO_FINAL_TOURISM_BUILDING_COUNT.toLocaleString()}棟・純資産 {netWorthAfterDebt.toLocaleString()} / {KYOTO_FINAL_NET_WORTH.toLocaleString()}万円</span>
+              <span>観光施設 {kyotoTourismBuildingCount.toLocaleString()} / {KYOTO_FINAL_TOURISM_BUILDING_COUNT.toLocaleString()}棟・実質月利益 {actualMonthlyProfit.toLocaleString()} / {KYOTO_FINAL_MONTHLY_PROFIT.toLocaleString()}万円</span>
             )}
             {hasCompletedKyotoTourismTutorial && !hasClearedKyotoChapter && (
               <span>ライバル：{KYOTO_RIVAL_COMPANY_NAME}</span>
             )}
+          </div>
+        </div>
+      )}
+
+      {currentGameMode === "story_osaka" && (
+        <div className={`gifu-goal-panel nagoya-goal-panel ${hasClearedOsakaChapter ? "cleared" : ""}`}>
+          <div>
+            <strong>{hasClearedOsakaChapter ? "4-2章 大阪編クリア" : hasCompletedOsakaIndustrialTutorial ? "4-2章 大阪編目標" : "4-1章 大阪工業チュートリアル"}</strong>
+            {!hasCompletedOsakaIndustrialTutorial ? (
+              <span>工業施設 {osakaIndustrialBuildingCount.toLocaleString()} / {OSAKA_INDUSTRIAL_BUILDING_KEYS.length.toLocaleString()}種類</span>
+            ) : (
+              <span>実質月利益 {actualMonthlyProfit.toLocaleString()} / {OSAKA_CLEAR_MONTHLY_PROFIT.toLocaleString()}万円</span>
+            )}
+          </div>
+        </div>
+      )}
+
+      {currentGameMode === "story_tokyo" && (
+        <div className={`gifu-goal-panel nagoya-goal-panel ${hasClearedTokyoChapter ? "cleared" : ""}`}>
+          <div>
+            <strong>{hasClearedTokyoChapter ? "東京編クリア" : "東京編目標"}</strong>
+            <span>実質月利益 {actualMonthlyProfit.toLocaleString()} / {TOKYO_CLEAR_MONTHLY_PROFIT.toLocaleString()}万円</span>
           </div>
         </div>
       )}
@@ -35597,12 +36812,32 @@ return (
         </div>
       )}
 
+      {currentGameMode === "story_kyoto" && hasClearedKyotoChapter && !storyEvent && !storySequence && (
+        <div className="story-next-chapter-panel story-first-part-complete-panel">
+          <div>
+            <strong>4-1章 大阪工業チュートリアルへ</strong>
+            <span>次は50×50の大阪編です。まず工業・物流施設を学びます。</span>
+          </div>
+          <button type="button" onClick={startOsakaChapter}>4-1章 大阪編へ進む</button>
+        </div>
+      )}
+
+      {currentGameMode === "story_osaka" && hasClearedOsakaChapter && !storyEvent && !storySequence && (
+        <div className="story-next-chapter-panel story-first-part-complete-panel">
+          <div>
+            <strong>第5章 東京編へ</strong>
+            <span>次は70×70の最大規模マップです。チュートリアルなしの本格経営です。</span>
+          </div>
+          <button type="button" onClick={startTokyoChapter}>東京編へ進む</button>
+        </div>
+      )}
+
 <div className="map-top-hud-v268" aria-label="経営ステータス">
   <button
     type="button"
     className={`map-top-hud-chip-v268 ${isHeadquarterInfoOpen ? "active" : ""}`}
-    title="本社レベル詳細"
-    aria-label="本社レベル詳細"
+    title={`${currentOfficeLevelFullLabel}詳細`}
+    aria-label={`${currentOfficeLevelFullLabel}詳細`}
     onClick={() => {
       setIsHeadquarterInfoOpen((current) => !current);
       setIsDateInfoOpen(false);
@@ -35706,10 +36941,10 @@ return (
 
     {isHeadquarterInfoOpen && (
       <div className="map-top-hud-bubble-v3106" style={{ ...mapTopHudPopupInlineStyle, "--hud-bubble-arrow-left": "28px" }}>
-        <div className="map-top-hud-popup-title-v270"><span>🏢 本社Lv詳細</span><button type="button" aria-label="閉じる" title="閉じる" onClick={() => setIsHeadquarterInfoOpen(false)} style={{ width: 32, minWidth: 32, maxWidth: 32, height: 20, minHeight: 20, maxHeight: 20, borderRadius: 6, padding: 0, lineHeight: 1, boxShadow: "none" }}>×</button></div>
+        <div className="map-top-hud-popup-title-v270"><span>🏢 {currentOfficeLevelShortLabel}詳細</span><button type="button" aria-label="閉じる" title="閉じる" onClick={() => setIsHeadquarterInfoOpen(false)} style={{ width: 32, minWidth: 32, maxWidth: 32, height: 20, minHeight: 20, maxHeight: 20, borderRadius: 6, padding: 0, lineHeight: 1, boxShadow: "none" }}>×</button></div>
         <div className="map-top-hud-popup-grid-v270">
-          <span>現在の本社Lv</span><strong>{headquarterLevel}</strong>
-          <span>本社EXP</span><strong>{headquarterNextLevelInfo.isMaxLevel ? "最大Lv" : `${headquarterNextLevelInfo.exp} / ${headquarterNextLevelInfo.requiredExp}`}</strong>
+          <span>現在の{currentOfficeLevelShortLabel}</span><strong>{headquarterLevel}</strong>
+          <span>{currentOfficeExpLabel}</span><strong>{headquarterNextLevelInfo.isMaxLevel ? "最大Lv" : `${headquarterNextLevelInfo.exp} / ${headquarterNextLevelInfo.requiredExp}`}</strong>
           <span>社員呼び出し枠</span><strong>{employees.length}/{employeeCallLimit}人</strong>
         </div>
         <div className="headquarter-next-reward-v278">
@@ -35726,7 +36961,7 @@ return (
           <span>現在</span><strong>{gameDate.label}</strong>
           <span>経過</span><strong>{month}ヶ月</strong>
           <span>プレイヤーランク</span><strong>{playerRank}</strong>
-          <span>本社Lv</span><strong>{headquarterLevel}</strong>
+          <span>{currentOfficeLevelShortLabel}</span><strong>{headquarterLevel}</strong>
           <span>社員呼び出し枠</span><strong>{employees.length}/{employeeCallLimit}人</strong>
           <span>人口</span><strong>{totalPopulation.toLocaleString()}</strong>
           <span>保管社員</span><strong>{employeeStorage.length}人</strong>
@@ -36266,7 +37501,7 @@ return (
             <div className="smart-section-card office-range-info">
               <div className="smart-section-title">
                 <h3>拠点</h3>
-                <span>{selectedTile.feature === FEATURE.HQ ? `本社Lv${headquarterLevel} / 呼び出し枠 ${employees.length}/${employeeCallLimit}人 / 行動範囲 ${getOfficeActionRange(selectedTile)}マス` : `行動範囲 ${getOfficeActionRange(selectedTile)}マス`}</span>
+                <span>{selectedTile.feature === FEATURE.HQ ? `${currentOfficeLevelShortLabel}${headquarterLevel} / 呼び出し枠 ${employees.length}/${employeeCallLimit}人 / 行動範囲 ${getOfficeActionRange(selectedTile)}マス` : `行動範囲 ${getOfficeActionRange(selectedTile)}マス`}</span>
               </div>
               {(() => {
                 const roles = getOfficeRoleAssignments(selectedTile);
@@ -36398,25 +37633,32 @@ return (
       // v275.4: 社員管理では、そのマップの待機社員だけでなく、
       // アカウント共通の社員保管庫も呼び出し候補に含める。
       // これにより本社Lvで呼び出し枠が増えた時、過去にガチャで獲得した社員も選べる。
+      const currentAssignmentPageFreeMapKey = isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null;
+      const currentAssignmentPageAreaKey = getSpecialMissionAreaKeyFromMode(currentGameMode, currentAssignmentPageFreeMapKey);
       const allAssignableEmployees = mergeEmployeeCollections([
         ...(titleAccountData.employeeVault ?? []),
         ...employees.filter((employee) => employee.id !== 0),
         ...employeeStorage,
       ]).map((employee) => {
         const assignedEmployee = assignedEmployeeById.get(employee.id);
-        if (!assignedEmployee) return employee;
+        if (assignedEmployee) {
+          return {
+            ...employee,
+            officeId: assignedEmployee.officeId ?? "hq",
+            busyUntilMonth: assignedEmployee.busyUntilMonth ?? null,
+            busyActionName: assignedEmployee.busyActionName ?? null,
+            currentAssignment: createEmployeeAssignmentFromGame(assignedEmployee, {
+              currentGameMode,
+              freeMapKey: currentAssignmentPageFreeMapKey,
+              activeSaveSlot,
+            }),
+          };
+        }
 
-        return {
-          ...employee,
-          officeId: assignedEmployee.officeId ?? "hq",
-          busyUntilMonth: assignedEmployee.busyUntilMonth ?? null,
-          busyActionName: assignedEmployee.busyActionName ?? null,
-          currentAssignment: createEmployeeAssignmentFromGame(assignedEmployee, {
-            currentGameMode,
-            freeMapKey: isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null,
-            activeSaveSlot,
-          }) ?? employee.currentAssignment ?? null,
-        };
+        // ここで currentAssignment を勝手に消さない。
+        // 同一フリーマップを最初から開始した時の旧所属解除は、保存統合（mergeAccountDataWithGame）側でのみ行う。
+        // 表示側で消すと、詳細は名古屋支店・一覧は待機のような矛盾が出る。
+        return employee;
       });
       const filteredAssignableEmployees = getFilteredSortedVaultEmployees(allAssignableEmployees, {
         rarityFilter: titleVaultRarityFilter,
@@ -36446,10 +37688,29 @@ return (
         if (bId === "hq") return 1;
         return String(getOfficeName(aId)).localeCompare(String(getOfficeName(bId)), "ja");
       });
+      const isEmployeeAssignedElsewhereOnPage = (employee) => {
+        if (assignedIdSet.has(employee.id)) return false;
+        const assignment = employee?.currentAssignment;
+        if (!assignment) return false;
+        const assignmentAreaKey = getSpecialMissionAreaKeyFromMode(assignment.mode, assignment.freeMapKey);
+        return Boolean(assignmentAreaKey && assignmentAreaKey !== currentAssignmentPageAreaKey);
+      };
       const getCurrentOfficeValue = (employee) => {
-        if (!assignedIdSet.has(employee.id)) return "waiting";
-        const assignedEmployee = assignedEmployeeById.get(employee.id);
-        return assignedEmployee?.officeId ?? employee.officeId ?? "hq";
+        const assignment = employee?.currentAssignment;
+        const assignmentAreaKey = assignment ? getSpecialMissionAreaKeyFromMode(assignment.mode, assignment.freeMapKey) : "";
+        const assignmentOfficeId = assignment?.officeId && !["waiting", "storage", "待機"].includes(String(assignment.officeId))
+          ? String(assignment.officeId)
+          : "";
+
+        if (assignedIdSet.has(employee.id)) {
+          const assignedEmployee = assignedEmployeeById.get(employee.id);
+          const assignedOfficeId = assignedEmployee?.officeId && !["waiting", "storage", "待機"].includes(String(assignedEmployee.officeId))
+            ? String(assignedEmployee.officeId)
+            : "";
+          return assignedOfficeId || (assignmentAreaKey === currentAssignmentPageAreaKey && assignmentOfficeId ? assignmentOfficeId : "waiting");
+        }
+
+        return assignmentAreaKey === currentAssignmentPageAreaKey && assignmentOfficeId ? assignmentOfficeId : "waiting";
       };
       const handleAssignmentChange = (employee, nextOfficeId) => {
         const currentOfficeId = getCurrentOfficeValue(employee);
@@ -36465,21 +37726,40 @@ return (
         assignStoredEmployee(employee, nextOfficeId);
       };
       const getOfficeShortLabel = (officeTile, includeArea = false) => {
-        const officeId = officeTile.officeId ?? "hq";
-        const currentAreaLabel = getGameAreaLabel(currentGameMode, isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null);
-        const baseLabel = (() => {
-          if (officeId === "hq") return "本社";
-          const match = String(officeTile.officeName ?? officeTile.hqName ?? "").match(/\d+/);
-          return match ? `支店${match[0]}` : String(officeTile.officeName ?? officeTile.hqName ?? "支店");
-        })();
-        return includeArea ? `${currentAreaLabel}${baseLabel}` : baseLabel;
+        const officeId = String(officeTile.officeId ?? "hq");
+        const currentFreeMapKey = isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null;
+        const currentAreaKey = getSpecialMissionAreaKeyFromMode(currentGameMode, currentFreeMapKey);
+        const currentAreaLabel = normalizeAreaDisplayName(getGameAreaLabel(currentGameMode, currentFreeMapKey));
+        const areaPrefix = currentAreaLabel && currentAreaLabel !== "未所属"
+          ? currentAreaLabel
+          : normalizeAreaDisplayName(String(officeTile.officeName || "").replace(/(本社|支店)\d*$/g, ""));
+        const isGifuArea = isGifuHeadquarterAreaKey(currentAreaKey) || String(areaPrefix).includes("岐阜");
+
+        if (officeId === "waiting" || officeId === "storage") return "待機";
+
+        // v367:
+        // ・岐阜系は本社表示
+        // ・名古屋編だけは拡張元の岐阜本社を「名古屋編岐阜本社」として区別
+        // ・京都/大阪/東京などは branch_1 をそのまま支店1として表示する
+        if (officeId === "hq") {
+          if (currentGameMode === "story_nagoya" || currentGameMode === "story_nagoya_bridge") {
+            return "名古屋編岐阜本社";
+          }
+          return normalizeAreaDisplayName(`${areaPrefix || "岐阜"}${isGifuArea ? "本社" : "支店1"}`);
+        }
+
+        const rawBranchNumber = Math.max(1, Math.round(Number(
+          officeTile.branchNumber
+          ?? String(officeTile.officeName ?? "").match(/支店(\d+)/)?.[1]
+          ?? String(officeId).match(/branch[_-]?(\d+)/i)?.[1]
+          ?? 1
+        ) || 1));
+        return normalizeAreaDisplayName(`${areaPrefix || "支店"}支店${rawBranchNumber}`);
       };
       const getAssignmentBadgeLabelForPage = (employee, currentOfficeId) => {
-        if (currentOfficeId !== "waiting") {
-          return getOfficeShortLabel(officeOptionMap.get(currentOfficeId) ?? { officeId: currentOfficeId, officeName: getOfficeName(currentOfficeId) }, true);
-        }
-        if (employee?.currentAssignment) return getEmployeeAssignmentLabel(employee.currentAssignment);
-        return "待機";
+        if (isEmployeeAssignedElsewhereOnPage(employee)) return getEmployeeAssignmentStatusText(employee);
+        if (currentOfficeId === "waiting" || currentOfficeId === "storage" || currentOfficeId === "待機") return "待機";
+        return getOfficeShortLabel(officeOptionMap.get(currentOfficeId) ?? { officeId: currentOfficeId, officeName: getOfficeName(currentOfficeId) }, true);
       };
 
       return (
@@ -36498,23 +37778,35 @@ return (
             <div className="employee-assignment-vault-list-v222">
               {filteredAssignableEmployees.map((employee) => {
                 const currentOfficeId = getCurrentOfficeValue(employee);
+                const assignedElsewhereOnPage = isEmployeeAssignedElsewhereOnPage(employee);
                 const abilityTotal = getEmployeeAbilityTotalForVault(employee);
                 return (
                   <div key={employee.id} className={`employee-assignment-vault-card-v222 rarity-card-${String(employee.rarity || "N").toLowerCase()}`}>
-                    <select
-                      className="employee-office-mini-select-v222"
-                      value={currentOfficeId}
-                      onChange={(event) => handleAssignmentChange(employee, event.target.value)}
-                      aria-label={`${employee.name}の配属先`}
-                    >
-                      <option value="waiting">待機</option>
-                      {officeOptions.map((officeTile) => {
-                        const officeId = officeTile.officeId ?? "hq";
-                        return (
-                          <option key={officeId} value={officeId}>{getOfficeShortLabel(officeTile)}</option>
-                        );
-                      })}
-                    </select>
+                    {assignedElsewhereOnPage ? (
+                      <button
+                        type="button"
+                        className="employee-office-mini-select-v222"
+                        disabled
+                        title={`${employee.name}は${getEmployeeAssignmentStatusText(employee)}に配属中です`}
+                      >
+                        {getEmployeeAssignmentStatusText(employee)}
+                      </button>
+                    ) : (
+                      <select
+                        className="employee-office-mini-select-v222"
+                        value={currentOfficeId}
+                        onChange={(event) => handleAssignmentChange(employee, event.target.value)}
+                        aria-label={`${employee.name}の配属先`}
+                      >
+                        <option value="waiting">待機</option>
+                        {officeOptions.map((officeTile) => {
+                          const officeId = officeTile.officeId ?? "hq";
+                          return (
+                            <option key={officeId} value={officeId}>{getOfficeShortLabel(officeTile)}</option>
+                          );
+                        })}
+                      </select>
+                    )}
                     <button
                       type="button"
                       className="employee-assignment-vault-main-v222"
@@ -37026,311 +38318,165 @@ return (
             
 
 {activePanel === "bank" && (
-  <section className="property-section info-section bank-section">
-    <h2>銀行・融資</h2>
+  <section className="property-section info-section bank-section bank-renewal-section">
+    <h2>🏦 銀行融資</h2>
 
-    <div className="player-info-box v74-player-info-box">
+    <div className="bank-hero-card bank-build-style-hero bank-compact-flow-card-v3661">
+      <div className="bank-hero-title-row">
+        <span className="bank-hero-kicker">BANK FINANCE</span>
+        <strong>融資の流れ</strong>
+      </div>
+      <p>相談結果で金額・金利を確認してから、本審査へ進みます。</p>
+      <div className="bank-flow-roadmap compact v3661">
+        <div className="bank-flow-node"><span>①</span><strong>融資相談</strong><small>担当1名</small></div>
+        <b>→</b>
+        <div className="bank-flow-node"><span>②</span><strong>相談結果</strong><small>金額・金利</small></div>
+        <b>→</b>
+        <div className="bank-flow-node"><span>③</span><strong>本審査</strong><small>最大4名</small></div>
+        <b>→</b>
+        <div className="bank-flow-node"><span>④</span><strong>融資実行</strong><small>承認後</small></div>
+      </div>
+    </div>
+
+    <div className="player-info-box v74-player-info-box bank-summary-card">
       <h3>融資状況</h3>
       <div className="player-info-grid">
-        <div>
-          <span>所持金</span>
-          <strong>{money.toLocaleString()}万円</strong>
-        </div>
-        <div>
-          <span>総資産</span>
-          <strong>{Math.round(money + assetValue).toLocaleString()}万円</strong>
-        </div>
-        <div>
-          <span>借入残高</span>
-          <strong>{totalLoanRemaining.toLocaleString()}万円</strong>
-        </div>
-        <div>
-          <span>純資産</span>
-          <strong>{netWorthAfterDebt.toLocaleString()}万円</strong>
-        </div>
-        <div>
-          <span>借入比率</span>
-          <strong>{debtRatio}%</strong>
-        </div>
-        <div>
-          <span>月返済</span>
-          <strong>{totalMonthlyLoanPayment.toLocaleString()}万円</strong>
-        </div>
-        <div>
-          <span>審査中融資</span>
-          <strong>{totalPendingLoanAmount.toLocaleString()}万円</strong>
-        </div>
-        <div>
-          <span>返済前月利益</span>
-          <strong>{monthlyProfit.toLocaleString()}万円</strong>
-        </div>
-        <div>
-          <span>返済後月利益</span>
-          <strong>{(monthlyProfit - totalMonthlyLoanPayment).toLocaleString()}万円</strong>
-        </div>
+        <div><span>借入残高</span><strong>{totalLoanRemaining.toLocaleString()}万円</strong></div>
+        <div><span>月返済</span><strong>{totalMonthlyLoanPayment.toLocaleString()}万円</strong></div>
+        <div><span>返済前月利益</span><strong>{monthlyProfit.toLocaleString()}万円</strong></div>
+        <div><span>返済後月利益</span><strong>{(monthlyProfit - totalMonthlyLoanPayment).toLocaleString()}万円</strong></div>
       </div>
     </div>
 
-    <div className="detail-card">
-      <h3>融資相談</h3>
-      <p>融資相談は、担当社員の営業力・管理力によって銀行から引き出せる見立ての精度が変わります。能力が低い担当だと実際よりかなり保守的な金額になり、優秀な担当ほど実務上限に近い見立てを得られます。</p>
-      <div className="table-scroll">
-        <table className="property-table">
-          <thead>
-            <tr>
-              <th>金融機関</th>
-              <th>標準金利</th>
-              <th>返済期間</th>
-              <th>特徴</th>
-              <th>相談</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.values(BANKS).map((bank) => {
-              const alreadyPending = pendingLoanConsultations.some((consultation) => consultation.bankId === bank.id);
-
-              return (
-                <tr key={`consult-${bank.id}`}>
-                  <td>{bank.name}</td>
-                  <td>{(bank.rate * 100).toFixed(1)}%</td>
-                  <td>{bank.maxYears}年</td>
-                  <td>{bank.description}</td>
-                  <td>
-                    <button
-                      disabled={alreadyPending}
-                      onClick={() => startLoanConsultation(bank.id)}
-                      className={bank.id === "regional" ? getNagoyaTutorialGuideClass("loan-consult") : ""}
-                    >
-                      {alreadyPending ? "相談中" : "相談する"}
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+    <div className="detail-card bank-renewal-card">
+      <h3>① 融資相談</h3>
+      <p>相談担当は1名です。営業・管理が高いほど、銀行の貸出上限に近い見立てを引き出しやすくなります。</p>
+      <div className="bank-card-grid">
+        {Object.values(BANKS).map((bank) => {
+          const alreadyPending = pendingLoanConsultations.some((consultation) => consultation.bankId === bank.id);
+          return (
+            <div className="bank-option-card" key={`bank-card-${bank.id}`}>
+              <div className="bank-option-head">
+                <strong>{bank.name}</strong>
+                <span>{(bank.rate * 100).toFixed(1)}% / {bank.maxYears}年</span>
+              </div>
+              <p>{bank.description}</p>
+              <button
+                disabled={alreadyPending}
+                onClick={() => startLoanConsultation(bank.id)}
+                className={bank.id === "regional" ? getNagoyaTutorialGuideClass("loan-consult") : ""}
+              >
+                {alreadyPending ? "相談中" : "融資相談する"}
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
 
-    <div className="detail-card">
-      <h3>相談中の融資相談</h3>
+    <div className="detail-card bank-renewal-card">
+      <h3>相談中</h3>
       {pendingLoanConsultations.length === 0 ? (
         <p>現在、相談中の銀行はありません。</p>
       ) : (
-        <div className="table-scroll">
-          <table className="property-table">
-            <thead>
-              <tr>
-                <th>金融機関</th>
-                <th>依頼時期</th>
-                <th>残り</th>
-                <th>担当</th>
-                <th>相談力</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pendingLoanConsultations.map((consultation) => (
-                <tr key={consultation.id}>
-                  <td>{consultation.bankName}</td>
-                  <td>{consultation.requestedAt || "-"}</td>
-                  <td>{consultation.monthsLeft}ヶ月</td>
-                  <td>{consultation.employeeName || "-"}</td>
-                  <td>{consultation.consultationPower}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="bank-status-list">
+          {pendingLoanConsultations.map((consultation) => (
+            <div className="bank-status-card" key={consultation.id}>
+              <strong>{consultation.bankName}</strong>
+              <span>残り{consultation.monthsLeft}ヶ月</span>
+              <small>担当：{consultation.employeeName || "-"} / 依頼：{consultation.requestedAt || "-"}</small>
+            </div>
+          ))}
         </div>
       )}
     </div>
 
-    <div className="detail-card">
-      <h3>融資相談結果</h3>
-      <p>相談結果の有効期限は6ヶ月です。相談結果から融資申請した場合、その相談結果は一覧から自動で消えます。</p>
+    <div className="detail-card bank-renewal-card">
+      <h3>② 融資相談結果</h3>
+      <p>銀行担当者から届いた目安です。相談結果の有効期限は6ヶ月です。</p>
       {loanConsultationReports.length === 0 ? (
         <p>まだ融資相談結果はありません。まずは金融機関へ相談してください。</p>
       ) : (
-        <div className="table-scroll">
-          <table className="property-table">
-            <thead>
-              <tr>
-                <th>金融機関</th>
-                <th>結果時期</th>
-                <th>担当</th>
-                <th>相談見立て</th>
-                <th>銀行員コメント</th>
-                <th>申請</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loanConsultationReports.map((report) => {
-                const defaultReportAmount = Math.max(0, Math.round(report.recommendedAmount ?? 0));
-                const reportAmountValue = consultationApplicationAmounts[report.id] ?? String(defaultReportAmount);
-                const reportApplyAmount = Math.max(0, Math.round(Number(reportAmountValue) || 0));
-
-                return (
-                  <tr key={report.id}>
-                    <td>{report.bankName}</td>
-                    <td>{report.reportedAt || "-"}</td>
-                    <td>{report.employeeName || "-"}</td>
-                    <td>{report.estimatedMin.toLocaleString()}万〜{report.estimatedMax.toLocaleString()}万円</td>
-                    <td>
-                      <div>{report.comment}</div>
-                      {(report.riskNotes ?? []).length > 0 && (
-                        <small>注意: {(report.riskNotes ?? []).join("・")}</small>
-                      )}
-                      {report.expiresMonth != null && (
-                        <small>有効期限: あと{Math.max(0, report.expiresMonth - month)}ヶ月</small>
-                      )}
-                    </td>
-                    <td>
-                      <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
-                        <input
-                          type="number"
-                          min="100"
-                          step="100"
-                          value={reportAmountValue}
-                          onChange={(event) => {
-                            const nextValue = event.target.value;
-                            setConsultationApplicationAmounts((current) => ({
-                              ...current,
-                              [report.id]: nextValue,
-                            }));
-                          }}
-                          style={{ width: 110 }}
-                        />
-                        <span>万円</span>
-                        <button
-                          disabled={reportApplyAmount <= 0}
-                          onClick={() => borrowFromBank(report.bankId, reportApplyAmount, report)}
-                          className={getNagoyaTutorialGuideClass("loan-application")}
-                        >
-                          {reportApplyAmount > 0 ? `${reportApplyAmount.toLocaleString()}万円で申請` : "申請不可"}
-                        </button>
-                      </div>
-                      {defaultReportAmount > 0 && reportApplyAmount !== defaultReportAmount && (
-                        <small>相談目安: {defaultReportAmount.toLocaleString()}万円</small>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="bank-report-list">
+          {loanConsultationReports.map((report) => {
+            const outlook = getLoanOutlookMeta(report.outlookLabel);
+            const defaultReportAmount = Math.max(0, Math.round(report.recommendedAmount ?? 0));
+            const reportAmountValue = consultationApplicationAmounts[report.id] ?? String(defaultReportAmount);
+            const reportApplyAmount = Math.max(0, Math.round(Number(reportAmountValue) || 0));
+            const estimatedAnnualRate = Math.max(0, Number(report.estimatedAnnualRate ?? BANKS[report.bankId]?.rate ?? 0) || 0);
+            return (
+              <div className={`bank-report-card ${outlook.className}`} key={report.id}>
+                <div className="bank-report-head">
+                  <div>
+                    <strong>{report.bankName}</strong>
+                    <span>担当：{report.employeeName || "-"} / {report.reportedAt || "-"}</span>
+                  </div>
+                  <div className="bank-outlook-badge">{outlook.icon} {outlook.label}</div>
+                </div>
+                <div className="bank-report-metrics">
+                  <div><span>融資目安</span><strong>{defaultReportAmount.toLocaleString()}万円</strong></div>
+                  <div><span>想定金利</span><strong>{(estimatedAnnualRate * 100).toFixed(1)}%</strong></div>
+                  <div><span>有効期限</span><strong>あと{Math.max(0, (report.expiresMonth ?? month) - month)}ヶ月</strong></div>
+                </div>
+                <div className="bank-officer-comment">
+                  <span>銀行担当者</span>
+                  <p>{report.comment}</p>
+                  {(report.riskNotes ?? []).length > 0 && (
+                    <small>注意：{(report.riskNotes ?? []).join("・")}</small>
+                  )}
+                </div>
+                <div className="bank-apply-row">
+                  <label>
+                    本審査希望額
+                    <input
+                      type="number"
+                      min="100"
+                      step="100"
+                      value={reportAmountValue}
+                      onChange={(event) => {
+                        const nextValue = event.target.value;
+                        setConsultationApplicationAmounts((current) => ({
+                          ...current,
+                          [report.id]: nextValue,
+                        }));
+                      }}
+                    />
+                    万円
+                  </label>
+                  <button
+                    disabled={reportApplyAmount <= 0}
+                    onClick={() => borrowFromBank(report.bankId, reportApplyAmount, report)}
+                    className={getNagoyaTutorialGuideClass("loan-application")}
+                  >
+                    本審査へ進む
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
 
-    <div className="detail-card">
-      <h3>融資申請</h3>
-      <p>融資は即日入金ではなく審査制です。申請自体は原則いつでも可能です。希望額が5,000万円未満なら1ヶ月、5,000万円以上なら2ヶ月、2億円以上なら3ヶ月後に結果が出ます。担当社員の営業・管理・統率によって、承認額や金利が変動します。</p>
-
-      <div className="button-row">
-        <label>
-          借入希望額
-          <input
-            type="number"
-            min="100"
-            step="100"
-            value={loanAmountInput}
-            onChange={(event) => setLoanAmountInput(event.target.value)}
-          />
-          万円
-        </label>
-      </div>
-
-      <div className="table-scroll">
-        <table className="property-table">
-          <thead>
-            <tr>
-              <th>銀行</th>
-              <th>金利</th>
-              <th>期間</th>
-              <th>審査</th>
-              <th>希望額の月返済</th>
-              <th>審査期間</th>
-              <th>特徴</th>
-              <th>申込</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.values(BANKS).map((bank) => {
-              const capacity = loanCapacityByBank[bank.id];
-              const amount = Math.max(0, Math.round(Number(loanAmountInput) || 0));
-              const expectedPayment = calculateMonthlyLoanPayment(amount, bank.rate, bank.maxYears);
-              const reviewMonths = getLoanReviewMonths(amount);
-              const disabled = amount <= 0;
-              const riskLabels = [];
-              if (!capacity?.rankOk) riskLabels.push(`ランク目安:${bank.minRank}以上`);
-              if (!capacity?.dscrOk) riskLabels.push("返済余力弱め");
-              if (!capacity?.debtOk) riskLabels.push("借入比率高め");
-              if (amount > (capacity?.remainingLimit ?? 0)) riskLabels.push("希望額高め");
-              const reason = riskLabels.length > 0
-                ? `要注意 / ${riskLabels.join("・")}`
-                : "申請可 / 見込み良好";
-
-              return (
-                <tr key={bank.id}>
-                  <td>{bank.name}</td>
-                  <td>{(bank.rate * 100).toFixed(1)}%</td>
-                  <td>{bank.maxYears}年</td>
-                  <td>{reason}</td>
-                  <td>{expectedPayment.toLocaleString()}万円/月</td>
-                  <td>{reviewMonths}ヶ月</td>
-                  <td>{bank.description}</td>
-                  <td>
-                    <button
-                      disabled={disabled}
-                      onClick={() => borrowFromBank(bank.id)}
-                      className={bank.id === selectedBankId ? getNagoyaTutorialGuideClass("loan-application") : ""}
-                    >
-                      融資審査を申請
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-
-
-    <div className="detail-card">
-      <h3>審査中の融資申請</h3>
+    <div className="detail-card bank-renewal-card">
+      <h3>本審査中</h3>
       {pendingLoanApplications.length === 0 ? (
         <p>現在、審査中の融資申請はありません。</p>
       ) : (
-        <div className="table-scroll">
-          <table className="property-table">
-            <thead>
-              <tr>
-                <th>銀行</th>
-                <th>申請時期</th>
-                <th>希望額</th>
-                <th>残り審査</th>
-                <th>担当</th>
-                <th>交渉力</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pendingLoanApplications.map((application) => (
-                <tr key={application.id}>
-                  <td>{application.bankName}</td>
-                  <td>{application.appliedAt || "-"}</td>
-                  <td>{application.requestedAmount.toLocaleString()}万円</td>
-                  <td>{application.monthsLeft}ヶ月</td>
-                  <td>{(application.employeeNames ?? []).join("・") || "-"}</td>
-                  <td>{application.negotiationPower}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="bank-status-list">
+          {pendingLoanApplications.map((application) => (
+            <div className="bank-status-card" key={application.id}>
+              <strong>{application.bankName} / {application.requestedAmount.toLocaleString()}万円</strong>
+              <span>残り{application.monthsLeft}ヶ月</span>
+              <small>担当：{(application.employeeNames ?? []).join("・") || "-"}</small>
+              <small>最高営業：{application.salesAverage ?? 0} / 最高管理：{application.managementAverage ?? 0}</small>
+            </div>
+          ))}
         </div>
       )}
     </div>
-    <div className="detail-card">
+
+    <div className="detail-card bank-renewal-card">
       <h3>借入一覧</h3>
       {loans.length === 0 ? (
         <p>現在の借入はありません。</p>
@@ -37398,7 +38544,7 @@ return (
         <div><span>経過</span><strong>{month}ヶ月</strong></div>
         <div><span>プレイヤーランク</span><strong>{playerRank}</strong></div>
         <div><span>ランクEXP</span><strong>{playerExp} / {getPlayerRequiredExp(playerRank)}</strong></div>
-        <div><span>本社Lv</span><strong>{headquarterLevel}</strong></div>
+        <div><span>{currentOfficeLevelShortLabel}</span><strong>{headquarterLevel}</strong></div>
         <div><span>社員呼び出し枠</span><strong>{employees.length}/{employeeCallLimit}人</strong></div>
         <div><span>人口</span><strong>{totalPopulation.toLocaleString()}</strong></div>
         <div><span>保管社員</span><strong>{employeeStorage.length}人</strong></div>
