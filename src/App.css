@@ -11389,3 +11389,1927 @@ th, td {
     font-size: 7.3px !important;
   }
 }
+
+
+/* ===== v371: ホーム全画面寄せ・上部通知/メニュー・SVG下部ナビ ===== */
+.title-home-character-panel-v201.home-scene-panel-v371 {
+  overflow: hidden !important;
+}
+
+.home-scene-panel-v371 .home-title-brand-v201 {
+  position: relative !important;
+  z-index: 8 !important;
+  padding: 18px 18px 6px !important;
+}
+
+.home-top-actions-v371 {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 12;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.home-top-action-button-v371 {
+  position: relative;
+  width: 54px;
+  min-width: 54px;
+  min-height: 64px;
+  padding: 5px 4px 4px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #ffffff !important;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  line-height: 1.1 !important;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.65);
+}
+
+.home-top-action-icon-v371 {
+  width: 42px;
+  height: 42px;
+  display: block;
+  border-radius: 999px;
+  filter: drop-shadow(0 8px 14px rgba(0,0,0,0.38));
+}
+
+.home-top-action-badge-v371 {
+  position: absolute;
+  top: 1px;
+  right: 5px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #ff5b6b, #ff2344);
+  color: #ffffff;
+  border: 2px solid rgba(255,255,255,0.86);
+  font-size: 10px;
+  font-weight: 950;
+  line-height: 13px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.28);
+}
+
+.title-home-character-stage-v201.home-scene-stage-v371 {
+  margin-top: -4px !important;
+  border: none !important;
+  border-radius: 0 0 28px 28px !important;
+  min-height: calc(100dvh - 178px) !important;
+}
+
+.home-akari-portrait-v201.home-akari-portrait-v202.home-akari-full-v371,
+.home-scene-stage-v371 .home-akari-portrait-v201 {
+  width: 112% !important;
+  max-height: min(72dvh, 720px) !important;
+  justify-self: start !important;
+  transform: translateX(-8%) !important;
+}
+
+.home-akari-message-v201.home-akari-message-v371 {
+  left: 38% !important;
+  right: 14px !important;
+  top: clamp(78px, 16dvh, 132px) !important;
+  bottom: auto !important;
+  border-radius: 22px !important;
+  padding: 14px 16px 13px !important;
+  background: rgba(255,253,247,0.94) !important;
+  box-shadow: 0 18px 38px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.85) !important;
+}
+
+.home-akari-message-v201.home-akari-message-v371::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  bottom: -20px;
+  width: 32px;
+  height: 24px;
+  background: rgba(255,253,247,0.94);
+  clip-path: polygon(0 0, 100% 0, 28% 100%);
+  filter: drop-shadow(0 7px 8px rgba(0,0,0,0.16));
+}
+
+.home-lobby-bottom-nav-v2182 {
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+  padding: 8px 9px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+  background: linear-gradient(180deg, rgba(9,22,32,0.72), rgba(6,18,26,0.95)) !important;
+  border-top: 1px solid rgba(255,221,143,0.42) !important;
+  box-shadow: 0 -18px 36px rgba(0,0,0,0.35) !important;
+}
+
+.home-lobby-nav-button-v2182 {
+  min-width: 0 !important;
+  min-height: 62px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,221,143,0.62) !important;
+  background: linear-gradient(180deg, rgba(25,54,70,0.9), rgba(12,30,42,0.98)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 8px 18px rgba(0,0,0,0.28) !important;
+  color: #ffffff !important;
+  overflow: visible !important;
+}
+
+.home-lobby-nav-svg-v371 {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 2px;
+  filter: drop-shadow(0 5px 8px rgba(0,0,0,0.35));
+}
+
+.home-lobby-nav-label-v2182 {
+  font-size: 11px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 430px) {
+  .home-scene-panel-v371 .home-title-brand-v201 {
+    padding: 16px 14px 4px !important;
+  }
+  .home-top-actions-v371 {
+    top: 14px;
+    right: 10px;
+    gap: 5px;
+  }
+  .home-top-action-button-v371 {
+    width: 45px;
+    min-width: 45px;
+    min-height: 58px;
+    font-size: 8px !important;
+  }
+  .home-top-action-icon-v371 {
+    width: 37px;
+    height: 37px;
+  }
+  .home-akari-message-v201.home-akari-message-v371 {
+    left: 32% !important;
+    right: 10px !important;
+    top: clamp(92px, 18dvh, 150px) !important;
+    padding: 12px 13px 11px !important;
+  }
+  .home-akari-message-v201.home-akari-message-v371 div[style*="font-size: 13"] {
+    font-size: 12px !important;
+  }
+  .home-lobby-bottom-nav-v2182 {
+    gap: 3px !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
+  .home-lobby-nav-button-v2182 {
+    min-height: 58px !important;
+    border-radius: 12px !important;
+  }
+  .home-lobby-nav-svg-v371 {
+    width: 27px;
+    height: 27px;
+  }
+  .home-lobby-nav-label-v2182 {
+    font-size: 10px !important;
+  }
+}
+
+
+/* ===== v372: 理想モック寄せ・ホーム全画面レイアウト最終調整 ===== */
+.title-home-shell-v201 {
+  width: min(520px, 100vw) !important;
+  gap: 0 !important;
+}
+
+.title-home-character-panel-v201.home-scene-panel-v371 {
+  min-height: calc(100dvh - 10px) !important;
+  border-radius: 26px !important;
+  padding: 0 !important;
+  background: #071625 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 229, 159, 0.22) !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.46), inset 0 1px 0 rgba(255,255,255,0.14) !important;
+}
+
+.home-scene-panel-v371 .home-title-brand-v201 {
+  position: absolute !important;
+  top: 18px !important;
+  left: 18px !important;
+  right: 168px !important;
+  z-index: 24 !important;
+  padding: 0 !important;
+  pointer-events: auto !important;
+}
+
+.home-company-title-v372 {
+  color: #ffffff !important;
+  font-size: clamp(18px, 5.2vw, 25px) !important;
+  line-height: 1.08 !important;
+  text-shadow: 0 3px 12px rgba(0,0,0,0.75) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+}
+
+.home-scene-panel-v371 .home-lobby-top-status-v2182 {
+  margin-top: 9px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 5px !important;
+  max-width: 100% !important;
+}
+
+.home-scene-panel-v371 .home-lobby-status-pill-v2182 {
+  min-height: 26px !important;
+  padding: 4px 9px !important;
+  border-radius: 999px !important;
+  font-size: clamp(10px, 2.4vw, 12px) !important;
+  line-height: 1 !important;
+  color: #ffffff !important;
+  background: linear-gradient(180deg, rgba(26, 42, 55, 0.88), rgba(12, 24, 34, 0.82)) !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  box-shadow: 0 5px 14px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.18) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.home-top-actions-v371 {
+  top: 16px !important;
+  right: 16px !important;
+  z-index: 28 !important;
+  gap: 8px !important;
+}
+
+.home-top-action-button-v371 {
+  width: 48px !important;
+  min-width: 48px !important;
+  min-height: 62px !important;
+  padding: 0 !important;
+  font-size: 9px !important;
+  letter-spacing: -0.03em !important;
+}
+
+.home-top-action-icon-v371 {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 999px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.26), 0 8px 18px rgba(0,0,0,0.36) !important;
+}
+
+.title-home-character-stage-v201.home-scene-stage-v371 {
+  margin-top: 0 !important;
+  min-height: calc(100dvh - 12px) !important;
+  border-radius: 26px !important;
+  border: none !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  align-items: end !important;
+}
+
+.title-home-character-stage-v201.home-scene-stage-v371::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(4,14,24,0.70) 0%, rgba(4,14,24,0.12) 24%, rgba(4,14,24,0.04) 58%, rgba(4,14,24,0.58) 100%);
+}
+
+.home-akari-spotlight-v208,
+.home-scene-stage-v371 > div[style*="position: absolute"][style*="inset: 0"] {
+  z-index: 2 !important;
+}
+
+.home-akari-portrait-v201.home-akari-portrait-v202.home-akari-full-v372,
+.home-scene-stage-v371 .home-akari-portrait-v201.home-akari-full-v372 {
+  position: relative !important;
+  z-index: 5 !important;
+  width: 136% !important;
+  max-height: min(88dvh, 820px) !important;
+  object-fit: contain !important;
+  object-position: left bottom !important;
+  justify-self: start !important;
+  align-self: end !important;
+  transform: translateX(-24%) !important;
+  filter: drop-shadow(0 18px 24px rgba(0,0,0,0.46)) !important;
+}
+
+.home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+  z-index: 18 !important;
+  left: 43% !important;
+  right: 18px !important;
+  top: clamp(142px, 24dvh, 226px) !important;
+  bottom: auto !important;
+  padding: 16px 18px 15px !important;
+  border-radius: 22px !important;
+  background: rgba(255,253,247,0.96) !important;
+  color: #1d2b22 !important;
+  border: 1px solid rgba(255,255,255,0.82) !important;
+  box-shadow: 0 20px 42px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.92) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.home-akari-message-v201.home-akari-message-v371.home-akari-message-v372::after {
+  left: 18% !important;
+  bottom: -22px !important;
+  width: 38px !important;
+  height: 27px !important;
+}
+
+.home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 strong {
+  color: #9b6713 !important;
+  font-size: 17px !important;
+}
+
+.home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 div[style*="font-size: 13"] {
+  font-size: clamp(14px, 3.3vw, 17px) !important;
+  line-height: 1.55 !important;
+  font-weight: 900 !important;
+}
+
+.title-home-character-stage-v201.home-scene-stage-v371 > button[aria-label="ホーム会話モード切替"] {
+  top: 92px !important;
+  right: 12px !important;
+  z-index: 20 !important;
+}
+
+.home-lobby-bottom-nav-v2182 {
+  left: 12px !important;
+  right: 12px !important;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+  z-index: 35 !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+  padding: 7px !important;
+  border-radius: 20px !important;
+  background: linear-gradient(180deg, rgba(6, 20, 33, 0.62), rgba(2, 11, 20, 0.92)) !important;
+  border: 1px solid rgba(255, 219, 144, 0.36) !important;
+  box-shadow: 0 -16px 38px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.17) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+.home-lobby-bottom-nav-hidden-v261 {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
+}
+
+.home-lobby-nav-button-v2182 {
+  position: relative !important;
+  min-height: 66px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 216, 139, 0.78) !important;
+  background: radial-gradient(circle at 50% 14%, rgba(255,255,255,0.24), rgba(255,255,255,0.06) 34%, rgba(9, 31, 48, 0.94) 76%, rgba(4, 14, 24, 0.98)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.30), inset 0 -1px 0 rgba(0,0,0,0.35), 0 9px 18px rgba(0,0,0,0.34) !important;
+}
+
+.home-lobby-nav-button-v2182::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 16px;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,239,180,0.85), transparent 27%, transparent 70%, rgba(255,210,104,0.66));
+  opacity: 0.54;
+}
+
+.home-lobby-nav-svg-v371 {
+  width: 31px !important;
+  height: 31px !important;
+  margin: 0 auto 2px !important;
+  filter: drop-shadow(0 5px 8px rgba(0,0,0,0.45)) drop-shadow(0 0 8px rgba(255,223,143,0.20)) !important;
+}
+
+.home-lobby-nav-label-v2182 {
+  color: #fff7dc !important;
+  font-size: 11px !important;
+  font-weight: 950 !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.70) !important;
+}
+
+.home-lobby-nav-button-v2182::after {
+  content: attr(data-en);
+}
+
+@media (max-width: 430px) {
+  .title-home-shell-v201 {
+    width: 100vw !important;
+  }
+  .title-home-character-panel-v201.home-scene-panel-v371 {
+    min-height: calc(100dvh - 2px) !important;
+    border-radius: 20px !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+  .home-scene-panel-v371 .home-title-brand-v201 {
+    top: 16px !important;
+    left: 18px !important;
+    right: 150px !important;
+  }
+  .home-company-title-v372 {
+    font-size: 21px !important;
+  }
+  .home-scene-panel-v371 .home-lobby-top-status-v2182 {
+    gap: 4px !important;
+    margin-top: 8px !important;
+  }
+  .home-scene-panel-v371 .home-lobby-status-pill-v2182 {
+    min-height: 22px !important;
+    padding: 3px 7px !important;
+    font-size: 10px !important;
+  }
+  .home-top-actions-v371 {
+    top: 14px !important;
+    right: 9px !important;
+    gap: 5px !important;
+  }
+  .home-top-action-button-v371 {
+    width: 43px !important;
+    min-width: 43px !important;
+    min-height: 56px !important;
+    font-size: 8px !important;
+  }
+  .home-top-action-icon-v371 {
+    width: 39px !important;
+    height: 39px !important;
+  }
+  .title-home-character-stage-v201.home-scene-stage-v371 {
+    min-height: calc(100dvh - 2px) !important;
+    border-radius: 20px !important;
+  }
+  .home-akari-portrait-v201.home-akari-portrait-v202.home-akari-full-v372,
+  .home-scene-stage-v371 .home-akari-portrait-v201.home-akari-full-v372 {
+    width: 148% !important;
+    max-height: min(86dvh, 760px) !important;
+    transform: translateX(-31%) !important;
+  }
+  .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+    left: 37% !important;
+    right: 11px !important;
+    top: clamp(148px, 23dvh, 214px) !important;
+    padding: 13px 13px 12px !important;
+    border-radius: 18px !important;
+  }
+  .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 strong {
+    font-size: 15px !important;
+  }
+  .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 div[style*="font-size: 13"] {
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+  }
+  .title-home-character-stage-v201.home-scene-stage-v371 > button[aria-label="ホーム会話モード切替"] {
+    top: 86px !important;
+    right: 10px !important;
+  }
+  .home-lobby-bottom-nav-v2182 {
+    left: 7px !important;
+    right: 7px !important;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+    gap: 3px !important;
+    padding: 5px !important;
+    border-radius: 17px !important;
+  }
+  .home-lobby-nav-button-v2182 {
+    min-height: 61px !important;
+    border-radius: 13px !important;
+    padding: 4px 1px !important;
+  }
+  .home-lobby-nav-svg-v371 {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  .home-lobby-nav-label-v2182 {
+    font-size: 10px !important;
+  }
+}
+
+@media (max-height: 720px) {
+  .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+    top: 128px !important;
+  }
+  .home-akari-portrait-v201.home-akari-portrait-v202.home-akari-full-v372,
+  .home-scene-stage-v371 .home-akari-portrait-v201.home-akari-full-v372 {
+    max-height: min(84dvh, 700px) !important;
+  }
+  .home-lobby-nav-button-v2182 {
+    min-height: 58px !important;
+  }
+}
+
+/* ===== v373: ホーム理想モック寄せ・プレミアム配置調整 ===== */
+.title-home-character-panel-v201.home-scene-panel-v371 {
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  min-height: 100dvh !important;
+  overflow: hidden !important;
+}
+
+.home-scene-panel-v371 .home-title-brand-v201 {
+  top: 24px !important;
+  left: 22px !important;
+  right: 16px !important;
+  z-index: 32 !important;
+  max-width: calc(100vw - 38px) !important;
+}
+
+.home-company-title-v372 {
+  max-width: calc(100vw - 190px) !important;
+  font-size: clamp(19px, 4.8vw, 25px) !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.04em !important;
+}
+
+.home-scene-panel-v371 .home-lobby-top-status-v2182 {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 7px !important;
+  margin-top: 18px !important;
+  width: calc(100vw - 44px) !important;
+  max-width: 480px !important;
+  overflow: visible !important;
+}
+
+.home-scene-panel-v371 .home-lobby-status-pill-v2182 {
+  flex: 0 0 auto !important;
+  min-height: 28px !important;
+  padding: 5px 10px !important;
+  font-size: clamp(10px, 2.7vw, 13px) !important;
+  font-weight: 950 !important;
+  border: 1px solid rgba(255,255,255,0.24) !important;
+  background: linear-gradient(180deg, rgba(13, 28, 42, 0.78), rgba(5, 14, 25, 0.76)) !important;
+}
+
+.home-top-actions-v371 {
+  top: 22px !important;
+  right: 18px !important;
+  z-index: 34 !important;
+  gap: 10px !important;
+}
+
+.home-top-action-button-v371 {
+  width: 55px !important;
+  min-width: 55px !important;
+  min-height: 72px !important;
+  color: #fff !important;
+  font-weight: 900 !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.72) !important;
+}
+
+.home-top-action-icon-v371 {
+  width: 50px !important;
+  height: 50px !important;
+  padding: 9px !important;
+  border: 1px solid rgba(255, 232, 162, 0.72) !important;
+  background: radial-gradient(circle at 50% 20%, rgba(255,255,255,0.20), rgba(12,28,46,0.76) 56%, rgba(4,12,23,0.94)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 10px 20px rgba(0,0,0,0.38), 0 0 14px rgba(255,218,130,0.16) !important;
+}
+
+.home-top-action-button-v371 span:last-child {
+  margin-top: 2px !important;
+  font-size: 10px !important;
+  white-space: nowrap !important;
+}
+
+.home-top-action-badge-v371,
+.home-lobby-nav-badge-v2182 {
+  background: linear-gradient(180deg, #ff6370, #e52c42) !important;
+  color: white !important;
+  border: 2px solid rgba(255,255,255,0.82) !important;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.34), 0 0 12px rgba(255,70,96,0.42) !important;
+}
+
+.title-home-character-stage-v201.home-scene-stage-v371 {
+  min-height: 100dvh !important;
+  border-radius: 0 !important;
+  border: none !important;
+  background-position: center center !important;
+}
+
+.title-home-character-stage-v201.home-scene-stage-v371::before {
+  background: linear-gradient(180deg, rgba(3,11,22,0.84) 0%, rgba(3,11,22,0.18) 22%, rgba(3,11,22,0.02) 58%, rgba(3,11,22,0.72) 100%) !important;
+}
+
+.home-akari-portrait-v201.home-akari-portrait-v202.home-akari-full-v372,
+.home-scene-stage-v371 .home-akari-portrait-v201.home-akari-full-v372 {
+  width: 118% !important;
+  max-height: min(82dvh, 760px) !important;
+  transform: translateX(-16%) !important;
+  object-position: left bottom !important;
+  filter: drop-shadow(0 18px 24px rgba(0,0,0,0.50)) !important;
+}
+
+.home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+  left: 47% !important;
+  right: 18px !important;
+  top: clamp(168px, 21dvh, 230px) !important;
+  padding: 17px 18px 15px !important;
+  border-radius: 24px !important;
+  background: rgba(255,253,247,0.965) !important;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.36), inset 0 1px 0 rgba(255,255,255,0.94) !important;
+}
+
+.home-akari-message-v201.home-akari-message-v371.home-akari-message-v372::after {
+  left: 16% !important;
+  bottom: -24px !important;
+  width: 42px !important;
+  height: 30px !important;
+}
+
+.home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 strong {
+  font-size: clamp(16px, 4.0vw, 20px) !important;
+}
+
+.home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 div[style*="font-size: 13"] {
+  font-size: clamp(15px, 3.8vw, 19px) !important;
+  line-height: 1.55 !important;
+  font-weight: 950 !important;
+}
+
+.title-home-character-stage-v201.home-scene-stage-v371 > button[aria-label="ホーム会話モード切替"] {
+  top: 138px !important;
+  right: 20px !important;
+  z-index: 24 !important;
+}
+
+.home-lobby-bottom-nav-v2182 {
+  left: 0 !important;
+  right: 0 !important;
+  bottom: calc(0px + env(safe-area-inset-bottom, 0px)) !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+  padding: 8px 8px 10px !important;
+  border-radius: 0 !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  border-top: 1px solid rgba(255, 226, 145, 0.58) !important;
+  background: linear-gradient(180deg, rgba(9, 24, 38, 0.36), rgba(3, 10, 20, 0.94) 24%, rgba(1, 7, 15, 0.98)) !important;
+  box-shadow: 0 -18px 38px rgba(0,0,0,0.46), inset 0 1px 0 rgba(255,255,255,0.16) !important;
+}
+
+.home-lobby-nav-button-v2182 {
+  min-height: 76px !important;
+  border-radius: 15px !important;
+  border: 1px solid rgba(255, 224, 142, 0.86) !important;
+  background: radial-gradient(circle at 50% 12%, rgba(255,255,255,0.25), rgba(255,255,255,0.05) 33%, rgba(10,31,48,0.94) 72%, rgba(3,12,22,1)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.32), inset 0 -1px 0 rgba(0,0,0,0.42), 0 10px 18px rgba(0,0,0,0.38), 0 0 12px rgba(255,212,116,0.16) !important;
+}
+
+.home-lobby-nav-button-v2182::before {
+  opacity: 0.72 !important;
+  background: linear-gradient(135deg, rgba(255,241,180,0.95), transparent 24%, transparent 70%, rgba(255,207,89,0.82)) !important;
+}
+
+.home-lobby-nav-button-v2182::after {
+  display: none !important;
+}
+
+.home-lobby-nav-svg-v371 {
+  width: 35px !important;
+  height: 35px !important;
+  margin: 0 auto 4px !important;
+  filter: drop-shadow(0 6px 9px rgba(0,0,0,0.50)) drop-shadow(0 0 10px rgba(255,224,138,0.24)) !important;
+}
+
+.home-lobby-nav-label-v2182 {
+  font-size: 12px !important;
+  letter-spacing: -0.04em !important;
+  color: #fff7df !important;
+}
+
+@media (max-width: 430px) {
+  .home-scene-panel-v371 .home-title-brand-v201 {
+    top: 25px !important;
+    left: 18px !important;
+    right: 8px !important;
+  }
+  .home-company-title-v372 {
+    max-width: calc(100vw - 174px) !important;
+    font-size: 20px !important;
+  }
+  .home-scene-panel-v371 .home-lobby-top-status-v2182 {
+    margin-top: 18px !important;
+    gap: 5px !important;
+    width: calc(100vw - 32px) !important;
+  }
+  .home-scene-panel-v371 .home-lobby-status-pill-v2182 {
+    min-height: 25px !important;
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+  }
+  .home-top-actions-v371 {
+    top: 21px !important;
+    right: 8px !important;
+    gap: 6px !important;
+  }
+  .home-top-action-button-v371 {
+    width: 48px !important;
+    min-width: 48px !important;
+    min-height: 66px !important;
+  }
+  .home-top-action-icon-v371 {
+    width: 44px !important;
+    height: 44px !important;
+    padding: 8px !important;
+  }
+  .home-top-action-button-v371 span:last-child {
+    font-size: 9px !important;
+  }
+  .title-home-character-stage-v201.home-scene-stage-v371 > button[aria-label="ホーム会話モード切替"] {
+    top: 132px !important;
+    right: 13px !important;
+  }
+  .home-akari-portrait-v201.home-akari-portrait-v202.home-akari-full-v372,
+  .home-scene-stage-v371 .home-akari-portrait-v201.home-akari-full-v372 {
+    width: 120% !important;
+    max-height: min(80dvh, 710px) !important;
+    transform: translateX(-18%) !important;
+  }
+  .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+    left: 43% !important;
+    right: 12px !important;
+    top: clamp(170px, 22dvh, 220px) !important;
+    padding: 15px 14px 13px !important;
+    border-radius: 20px !important;
+  }
+  .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 strong {
+    font-size: 16px !important;
+  }
+  .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 div[style*="font-size: 13"] {
+    font-size: 15px !important;
+    line-height: 1.52 !important;
+  }
+  .home-lobby-bottom-nav-v2182 {
+    left: 0 !important;
+    right: 0 !important;
+    gap: 4px !important;
+    padding: 7px 6px 9px !important;
+  }
+  .home-lobby-nav-button-v2182 {
+    min-height: 70px !important;
+    border-radius: 13px !important;
+    padding: 5px 1px 4px !important;
+  }
+  .home-lobby-nav-svg-v371 {
+    width: 31px !important;
+    height: 31px !important;
+  }
+  .home-lobby-nav-label-v2182 {
+    font-size: 11px !important;
+  }
+}
+
+@media (max-height: 720px) {
+  .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+    top: 150px !important;
+  }
+  .home-akari-portrait-v201.home-akari-portrait-v202.home-akari-full-v372,
+  .home-scene-stage-v371 .home-akari-portrait-v201.home-akari-full-v372 {
+    max-height: min(78dvh, 670px) !important;
+  }
+  .home-lobby-nav-button-v2182 {
+    min-height: 64px !important;
+  }
+}
+
+
+/* ===== v374: ホーム画面構造刷新・完全フルスクリーン化 ===== */
+html body .title-home-overlay-v201 {
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  min-height: 100dvh !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  overflow: hidden !important;
+  background: #020b16 !important;
+}
+
+html body .title-home-shell-v201 {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  min-height: 100dvh !important;
+  max-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  position: relative !important;
+  overflow: hidden !important;
+  border-radius: 0 !important;
+}
+
+html body .title-home-character-panel-v201.home-scene-panel-v371 {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+html body .title-home-character-stage-v201.home-scene-stage-v371 {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  overflow: hidden !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  display: block !important;
+}
+
+html body .title-home-character-stage-v201.home-scene-stage-v371::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  background:
+    linear-gradient(180deg, rgba(2,9,18,0.90) 0%, rgba(2,9,18,0.56) 13%, rgba(2,9,18,0.08) 34%, rgba(2,9,18,0.02) 56%, rgba(2,9,18,0.68) 100%),
+    linear-gradient(90deg, rgba(0,0,0,0.18), transparent 38%, rgba(0,0,0,0.12)) !important;
+}
+
+/* 上部HUD：会社名＋右アイコン＋1列ステータスへ固定 */
+html body .home-scene-panel-v371 .home-title-brand-v201 {
+  position: absolute !important;
+  top: max(18px, env(safe-area-inset-top, 0px)) !important;
+  left: 22px !important;
+  right: 170px !important;
+  z-index: 40 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
+  width: auto !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+}
+
+html body .home-company-title-v372 {
+  display: block !important;
+  max-width: none !important;
+  width: auto !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  font-size: clamp(18px, 4.5vw, 25px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.045em !important;
+  color: #fff !important;
+  text-shadow: 0 3px 13px rgba(0,0,0,0.86), 0 0 12px rgba(255,255,255,0.08) !important;
+}
+
+html body .home-scene-panel-v371 .home-lobby-top-status-v2182 {
+  position: absolute !important;
+  top: 48px !important;
+  left: 0 !important;
+  width: min(370px, calc(100vw - 34px)) !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(82px, 1fr) minmax(76px, 1fr) minmax(70px, 1fr) minmax(58px, .8fr) !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+}
+
+html body .home-scene-panel-v371 .home-lobby-status-pill-v2182 {
+  min-width: 0 !important;
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 4px 7px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  font-size: clamp(10px, 2.55vw, 13px) !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  color: #fff !important;
+  background: linear-gradient(180deg, rgba(18,37,55,0.84), rgba(5,14,25,0.86)) !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 5px 12px rgba(0,0,0,0.30) !important;
+  overflow: hidden !important;
+}
+
+html body .home-top-actions-v371 {
+  position: absolute !important;
+  top: max(16px, env(safe-area-inset-top, 0px)) !important;
+  right: 14px !important;
+  z-index: 42 !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, 50px) !important;
+  gap: 8px !important;
+  align-items: start !important;
+}
+
+html body .home-top-action-button-v371 {
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+  min-height: 70px !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  color: #fff !important;
+  font-weight: 900 !important;
+  text-align: center !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.82) !important;
+  overflow: visible !important;
+}
+
+html body .home-top-action-icon-v371 {
+  width: 48px !important;
+  height: 48px !important;
+  padding: 9px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255, 226, 145, 0.82) !important;
+  background: radial-gradient(circle at 50% 18%, rgba(255,255,255,0.30), rgba(20,39,58,0.82) 56%, rgba(4,12,23,0.96)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.32), 0 9px 18px rgba(0,0,0,0.38), 0 0 15px rgba(255,218,130,0.24) !important;
+}
+
+html body .home-top-action-button-v371 span:last-child {
+  display: block !important;
+  margin-top: 3px !important;
+  font-size: 9px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  letter-spacing: -0.07em !important;
+}
+
+html body .home-top-action-badge-v371 {
+  top: -3px !important;
+  right: -2px !important;
+  min-width: 16px !important;
+  height: 16px !important;
+  padding: 0 4px !important;
+  font-size: 9px !important;
+  z-index: 4 !important;
+}
+
+/* 会話モードは吹き出しから離して右端に小さく */
+html body .title-home-character-stage-v201.home-scene-stage-v371 > button[aria-label="ホーム会話モード切替"] {
+  top: 112px !important;
+  right: 18px !important;
+  z-index: 35 !important;
+  transform: none !important;
+}
+
+/* 七瀬：大きすぎる状態を解除。背景と全身感を見せる */
+html body .home-akari-portrait-v201.home-akari-portrait-v202.home-akari-full-v372,
+html body .home-scene-stage-v371 .home-akari-portrait-v201.home-akari-full-v372 {
+  position: absolute !important;
+  z-index: 8 !important;
+  left: -5.5vw !important;
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+  width: min(76vw, 390px) !important;
+  max-width: none !important;
+  height: auto !important;
+  max-height: calc(100dvh - 172px) !important;
+  object-fit: contain !important;
+  object-position: left bottom !important;
+  transform: none !important;
+  justify-self: auto !important;
+  align-self: auto !important;
+  filter: drop-shadow(0 18px 24px rgba(0,0,0,0.55)) !important;
+}
+
+/* 吹き出し：七瀬の顔に被せず、右上の空間へ */
+html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+  position: absolute !important;
+  z-index: 30 !important;
+  left: auto !important;
+  right: 18px !important;
+  top: clamp(178px, 22dvh, 235px) !important;
+  width: min(48vw, 430px) !important;
+  min-width: 245px !important;
+  bottom: auto !important;
+  padding: 16px 18px 14px !important;
+  border-radius: 23px !important;
+  background: rgba(255,253,247,0.972) !important;
+  color: #1d2b22 !important;
+  box-shadow: 0 24px 46px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.95) !important;
+  border: 1px solid rgba(255,255,255,0.72) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372::after {
+  left: 22% !important;
+  bottom: -24px !important;
+  width: 42px !important;
+  height: 30px !important;
+  background: rgba(255,253,247,0.972) !important;
+  filter: drop-shadow(0 12px 10px rgba(0,0,0,0.18)) !important;
+}
+
+html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 strong {
+  font-size: clamp(16px, 3.9vw, 20px) !important;
+}
+
+html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 div[style*="font-size: 13"] {
+  font-size: clamp(15px, 3.65vw, 19px) !important;
+  line-height: 1.55 !important;
+  font-weight: 920 !important;
+}
+
+/* 下部メニュー：理想側の金枠ガラス風へ */
+html body .home-lobby-bottom-nav-v2182 {
+  position: fixed !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: env(safe-area-inset-bottom, 0px) !important;
+  z-index: 60 !important;
+  width: 100vw !important;
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  padding: 8px 8px 10px !important;
+  border-radius: 0 !important;
+  border: none !important;
+  border-top: 1px solid rgba(255, 226, 145, 0.62) !important;
+  background: linear-gradient(180deg, rgba(7, 19, 31, 0.18), rgba(4, 12, 22, 0.90) 22%, rgba(1, 7, 14, 0.985)) !important;
+  box-shadow: 0 -18px 38px rgba(0,0,0,0.52), inset 0 1px 0 rgba(255,255,255,0.14) !important;
+}
+
+html body .home-lobby-nav-button-v2182 {
+  position: relative !important;
+  min-width: 0 !important;
+  min-height: 78px !important;
+  padding: 7px 2px 5px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 224, 142, 0.90) !important;
+  background: radial-gradient(circle at 50% 10%, rgba(255,255,255,0.30), rgba(255,255,255,0.06) 34%, rgba(10,31,48,0.94) 73%, rgba(2,10,20,1)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.32), inset 0 -1px 0 rgba(0,0,0,0.46), 0 10px 18px rgba(0,0,0,0.42), 0 0 12px rgba(255,212,116,0.18) !important;
+  overflow: visible !important;
+}
+
+html body .home-lobby-nav-button-v2182::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: -1px !important;
+  border-radius: inherit !important;
+  pointer-events: none !important;
+  opacity: .88 !important;
+  background: linear-gradient(135deg, rgba(255,247,200,0.95), transparent 20%, transparent 74%, rgba(255,211,94,0.86)) !important;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0) !important;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0) !important;
+  mask-composite: exclude !important;
+  -webkit-mask-composite: xor !important;
+  padding: 1px !important;
+}
+
+html body .home-lobby-nav-svg-v371 {
+  width: 34px !important;
+  height: 34px !important;
+  margin: 0 auto 5px !important;
+  filter: drop-shadow(0 6px 9px rgba(0,0,0,0.54)) drop-shadow(0 0 10px rgba(255,224,138,0.27)) !important;
+}
+
+html body .home-lobby-nav-label-v2182 {
+  font-size: 12px !important;
+  font-weight: 950 !important;
+  color: #fff7df !important;
+  letter-spacing: -0.045em !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.72) !important;
+}
+
+html body .home-lobby-nav-badge-v2182 {
+  top: -8px !important;
+  right: 5px !important;
+  min-width: 23px !important;
+  height: 23px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(180deg, #ff6370, #e52c42) !important;
+  border: 2px solid rgba(255,255,255,0.86) !important;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.34), 0 0 12px rgba(255,70,96,0.42) !important;
+}
+
+/* 右側の旧ホームコマンドパネルはホーム刷新では完全に隠す */
+html body .title-home-menu-panel-v201 {
+  display: none !important;
+}
+
+@media (max-width: 430px) {
+  html body .home-scene-panel-v371 .home-title-brand-v201 {
+    top: max(18px, env(safe-area-inset-top, 0px)) !important;
+    left: 18px !important;
+    right: 160px !important;
+  }
+  html body .home-company-title-v372 {
+    font-size: clamp(17px, 4.75vw, 21px) !important;
+    letter-spacing: -0.06em !important;
+  }
+  html body .home-scene-panel-v371 .home-lobby-top-status-v2182 {
+    top: 46px !important;
+    width: min(340px, calc(100vw - 30px)) !important;
+    grid-template-columns: 1.07fr 1fr .86fr .75fr !important;
+    gap: 5px !important;
+  }
+  html body .home-scene-panel-v371 .home-lobby-status-pill-v2182 {
+    min-height: 25px !important;
+    height: 25px !important;
+    padding: 3px 5px !important;
+    font-size: 10px !important;
+  }
+  html body .home-top-actions-v371 {
+    top: max(15px, env(safe-area-inset-top, 0px)) !important;
+    right: 10px !important;
+    grid-template-columns: repeat(3, 46px) !important;
+    gap: 5px !important;
+  }
+  html body .home-top-action-button-v371 {
+    width: 46px !important;
+    min-width: 46px !important;
+    max-width: 46px !important;
+    min-height: 66px !important;
+  }
+  html body .home-top-action-icon-v371 {
+    width: 44px !important;
+    height: 44px !important;
+    padding: 8px !important;
+  }
+  html body .home-top-action-button-v371 span:last-child {
+    font-size: 8.5px !important;
+  }
+  html body .title-home-character-stage-v201.home-scene-stage-v371 > button[aria-label="ホーム会話モード切替"] {
+    top: 108px !important;
+    right: 14px !important;
+  }
+  html body .home-akari-portrait-v201.home-akari-portrait-v202.home-akari-full-v372,
+  html body .home-scene-stage-v371 .home-akari-portrait-v201.home-akari-full-v372 {
+    left: -8vw !important;
+    bottom: calc(74px + env(safe-area-inset-bottom, 0px)) !important;
+    width: 79vw !important;
+    max-height: calc(100dvh - 170px) !important;
+  }
+  html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+    right: 14px !important;
+    top: clamp(168px, 22dvh, 218px) !important;
+    width: 48vw !important;
+    min-width: 230px !important;
+    padding: 14px 14px 12px !important;
+    border-radius: 20px !important;
+  }
+  html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 strong {
+    font-size: 16px !important;
+  }
+  html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 div[style*="font-size: 13"] {
+    font-size: 15px !important;
+    line-height: 1.48 !important;
+  }
+  html body .home-lobby-bottom-nav-v2182 {
+    gap: 5px !important;
+    padding: 7px 6px 9px !important;
+  }
+  html body .home-lobby-nav-button-v2182 {
+    min-height: 70px !important;
+    border-radius: 14px !important;
+    padding: 6px 1px 5px !important;
+  }
+  html body .home-lobby-nav-svg-v371 {
+    width: 30px !important;
+    height: 30px !important;
+  }
+  html body .home-lobby-nav-label-v2182 {
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  html body .home-scene-panel-v371 .home-title-brand-v201 {
+    right: 148px !important;
+  }
+  html body .home-company-title-v372 {
+    font-size: 16px !important;
+  }
+  html body .home-top-actions-v371 {
+    grid-template-columns: repeat(3, 42px) !important;
+  }
+  html body .home-top-action-button-v371 { width: 42px !important; min-width: 42px !important; max-width: 42px !important; }
+  html body .home-top-action-icon-v371 { width: 40px !important; height: 40px !important; }
+  html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+    min-width: 214px !important;
+    width: 50vw !important;
+  }
+}
+
+@media (max-height: 720px) {
+  html body .home-akari-portrait-v201.home-akari-portrait-v202.home-akari-full-v372,
+  html body .home-scene-stage-v371 .home-akari-portrait-v201.home-akari-full-v372 {
+    width: min(70vw, 360px) !important;
+    max-height: calc(100dvh - 158px) !important;
+  }
+  html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+    top: 148px !important;
+  }
+  html body .home-lobby-nav-button-v2182 {
+    min-height: 64px !important;
+  }
+}
+
+/* ===== v375: ホーム理想寄せ・上部1列整理 / 会話モード左上 / 七瀬サイズ調整しやすい化 ===== */
+:root {
+  --home-akari-left-v375: -3.5vw;
+  --home-akari-width-v375: min(86vw, 430px);
+  --home-akari-bottom-v375: calc(76px + env(safe-area-inset-bottom, 0px));
+  --home-talk-top-v375: clamp(138px, 17dvh, 178px);
+  --home-talk-right-v375: 18px;
+  --home-talk-width-v375: min(47vw, 430px);
+}
+
+/* 上部を理想画像に近い「会社名＋通貨1列＋右アクション」に再整理 */
+html body .home-scene-panel-v371 .home-title-brand-v201 {
+  top: max(18px, env(safe-area-inset-top, 0px)) !important;
+  left: 18px !important;
+  right: 260px !important;
+  z-index: 50 !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+html body .home-company-title-v372 {
+  max-width: none !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  font-size: clamp(18px, 4vw, 25px) !important;
+  letter-spacing: -0.045em !important;
+}
+
+html body .home-scene-panel-v371 .home-lobby-top-status-v2182 {
+  position: absolute !important;
+  top: max(58px, calc(env(safe-area-inset-top, 0px) + 58px)) !important;
+  left: 18px !important;
+  right: 255px !important;
+  z-index: 48 !important;
+  width: auto !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(102px, 1.16fr) minmax(95px, 1.05fr) minmax(82px, .92fr) minmax(70px, .78fr) !important;
+  gap: 8px !important;
+  align-items: center !important;
+  overflow: visible !important;
+}
+
+html body .home-scene-panel-v371 .home-lobby-status-pill-v2182 {
+  height: 30px !important;
+  min-height: 30px !important;
+  padding: 5px 9px !important;
+  font-size: clamp(10px, 2.65vw, 13px) !important;
+}
+
+html body .home-top-actions-v371 {
+  top: max(20px, env(safe-area-inset-top, 0px)) !important;
+  right: 18px !important;
+  grid-template-columns: repeat(3, 58px) !important;
+  gap: 10px !important;
+  z-index: 55 !important;
+}
+
+html body .home-top-action-button-v371 {
+  width: 58px !important;
+  min-width: 58px !important;
+  max-width: 58px !important;
+  min-height: 76px !important;
+}
+
+html body .home-top-action-icon-v371 {
+  width: 54px !important;
+  height: 54px !important;
+  padding: 10px !important;
+}
+
+html body .home-top-action-button-v371 span:last-child {
+  margin-top: 4px !important;
+  font-size: 10px !important;
+  letter-spacing: -0.04em !important;
+}
+
+/* 会話モード切替：吹き出しの邪魔をしない左上へ */
+html body .title-home-character-stage-v201.home-scene-stage-v371 > button[aria-label="ホーム会話モード切替"] {
+  top: max(104px, calc(env(safe-area-inset-top, 0px) + 104px)) !important;
+  left: 18px !important;
+  right: auto !important;
+  z-index: 45 !important;
+  transform: none !important;
+  min-height: 30px !important;
+  height: 30px !important;
+  padding: 4px 12px !important;
+  border-radius: 999px !important;
+}
+
+/* 七瀬：ここを触れば殿でも大きさ調整可能
+   大きくする => --home-akari-width-v375 を 90vw〜96vw
+   左へ寄せる => --home-akari-left-v375 を -6vw など
+*/
+html body .home-akari-portrait-v201.home-akari-portrait-v202.home-akari-full-v372,
+html body .home-scene-stage-v371 .home-akari-portrait-v201.home-akari-full-v372 {
+  left: var(--home-akari-left-v375) !important;
+  bottom: var(--home-akari-bottom-v375) !important;
+  width: var(--home-akari-width-v375) !important;
+  max-height: calc(100dvh - 160px) !important;
+  object-position: left bottom !important;
+}
+
+/* 吹き出し：理想画像に近く、やや上へ */
+html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+  top: var(--home-talk-top-v375) !important;
+  right: var(--home-talk-right-v375) !important;
+  width: var(--home-talk-width-v375) !important;
+  min-width: 250px !important;
+  padding: 15px 18px 14px !important;
+  border-radius: 22px !important;
+}
+
+html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372::after {
+  left: 20% !important;
+  bottom: -22px !important;
+}
+
+/* 下部メニューは現状維持しつつ少しだけ詰める */
+html body .home-lobby-bottom-nav-v2182 {
+  gap: 7px !important;
+  padding-top: 8px !important;
+}
+
+@media (max-width: 430px) {
+  :root {
+    --home-akari-left-v375: -4.5vw;
+    --home-akari-width-v375: 88vw;
+    --home-talk-top-v375: clamp(144px, 18dvh, 176px);
+    --home-talk-right-v375: 14px;
+    --home-talk-width-v375: 50vw;
+  }
+
+  html body .home-scene-panel-v371 .home-title-brand-v201 {
+    top: max(18px, env(safe-area-inset-top, 0px)) !important;
+    left: 16px !important;
+    right: 184px !important;
+  }
+
+  html body .home-company-title-v372 {
+    font-size: clamp(18px, 5.0vw, 21px) !important;
+    letter-spacing: -0.065em !important;
+  }
+
+  html body .home-top-actions-v371 {
+    top: max(18px, env(safe-area-inset-top, 0px)) !important;
+    right: 10px !important;
+    grid-template-columns: repeat(3, 48px) !important;
+    gap: 6px !important;
+  }
+
+  html body .home-top-action-button-v371 {
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    min-height: 68px !important;
+  }
+
+  html body .home-top-action-icon-v371 {
+    width: 45px !important;
+    height: 45px !important;
+    padding: 8px !important;
+  }
+
+  html body .home-top-action-button-v371 span:last-child {
+    font-size: 8.8px !important;
+  }
+
+  html body .home-scene-panel-v371 .home-lobby-top-status-v2182 {
+    top: max(63px, calc(env(safe-area-inset-top, 0px) + 63px)) !important;
+    left: 16px !important;
+    right: 10px !important;
+    width: auto !important;
+    grid-template-columns: minmax(91px, 1.12fr) minmax(86px, 1.02fr) minmax(74px, .86fr) minmax(62px, .72fr) !important;
+    gap: 6px !important;
+  }
+
+  html body .home-scene-panel-v371 .home-lobby-status-pill-v2182 {
+    height: 27px !important;
+    min-height: 27px !important;
+    padding: 4px 6px !important;
+    font-size: 10px !important;
+  }
+
+  html body .title-home-character-stage-v201.home-scene-stage-v371 > button[aria-label="ホーム会話モード切替"] {
+    top: max(100px, calc(env(safe-area-inset-top, 0px) + 100px)) !important;
+    left: 14px !important;
+    right: auto !important;
+  }
+
+  html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+    min-width: 235px !important;
+    padding: 14px 15px 12px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  :root {
+    --home-akari-width-v375: 86vw;
+    --home-talk-width-v375: 52vw;
+  }
+  html body .home-company-title-v372 {
+    font-size: 17px !important;
+  }
+  html body .home-scene-panel-v371 .home-lobby-top-status-v2182 {
+    grid-template-columns: 1fr 1fr .82fr .70fr !important;
+    gap: 5px !important;
+  }
+}
+
+@media (max-height: 720px) {
+  :root {
+    --home-akari-width-v375: min(82vw, 390px);
+    --home-talk-top-v375: 134px;
+  }
+}
+
+/* ===== v376: 上部HUDチップ可変幅・2段ヘッダー整理版 =====
+   目的：
+   ・1行目は会社名をしっかり表示
+   ・2行目は左にRANK/AP/メダル/シャイン、右にお知らせ/メッセージ/メニュー
+   ・チップは文字量に合わせて横幅を広げ、内部の文字切れを防止
+*/
+:root {
+  --home-header-side-gap-v376: 16px;
+  --home-action-size-v376: 40px;
+  --home-action-gap-v376: 5px;
+  --home-action-block-width-v376: 142px;
+  --home-title-font-v376: clamp(16px, 4.6vw, 20px);
+  --home-status-font-v376: clamp(9px, 2.55vw, 12px);
+}
+
+/* 1行目：会社名。長い場合もまずここを優先する */
+html body .home-scene-panel-v371 .home-title-brand-v201 {
+  top: max(18px, env(safe-area-inset-top, 0px)) !important;
+  left: var(--home-header-side-gap-v376) !important;
+  right: var(--home-header-side-gap-v376) !important;
+  height: 30px !important;
+  z-index: 58 !important;
+  display: flex !important;
+  align-items: center !important;
+  overflow: hidden !important;
+}
+
+html body .home-company-title-v372 {
+  width: 100% !important;
+  max-width: 100% !important;
+  font-size: var(--home-title-font-v376) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.055em !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* 2行目左：ステータスチップ。grid固定幅をやめて、文字量に合わせる */
+html body .home-scene-panel-v371 .home-lobby-top-status-v2182 {
+  position: absolute !important;
+  top: max(58px, calc(env(safe-area-inset-top, 0px) + 58px)) !important;
+  left: var(--home-header-side-gap-v376) !important;
+  right: calc(var(--home-action-block-width-v376) + var(--home-header-side-gap-v376) + 4px) !important;
+  width: auto !important;
+  max-width: none !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 5px !important;
+  overflow: visible !important;
+  z-index: 53 !important;
+}
+
+html body .home-scene-panel-v371 .home-lobby-status-pill-v2182 {
+  flex: 0 0 auto !important;
+  width: max-content !important;
+  min-width: max-content !important;
+  max-width: none !important;
+  height: 27px !important;
+  min-height: 27px !important;
+  padding: 4px 7px !important;
+  border-radius: 999px !important;
+  font-size: var(--home-status-font-v376) !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  gap: 3px !important;
+  letter-spacing: -0.035em !important;
+}
+
+html body .home-scene-panel-v371 .home-lobby-status-pill-v2182 * {
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  flex-shrink: 0 !important;
+}
+
+/* 2行目右：お知らせ/メッセージ/メニュー。少し小さくして固定席を作る */
+html body .home-top-actions-v371 {
+  top: max(44px, calc(env(safe-area-inset-top, 0px) + 44px)) !important;
+  right: var(--home-header-side-gap-v376) !important;
+  grid-template-columns: repeat(3, var(--home-action-size-v376)) !important;
+  gap: var(--home-action-gap-v376) !important;
+  width: var(--home-action-block-width-v376) !important;
+  justify-content: end !important;
+  z-index: 57 !important;
+}
+
+html body .home-top-action-button-v371 {
+  width: var(--home-action-size-v376) !important;
+  min-width: var(--home-action-size-v376) !important;
+  max-width: var(--home-action-size-v376) !important;
+  min-height: 56px !important;
+  padding: 0 !important;
+}
+
+html body .home-top-action-icon-v371 {
+  width: var(--home-action-size-v376) !important;
+  height: var(--home-action-size-v376) !important;
+  padding: 8px !important;
+}
+
+html body .home-top-action-button-v371 span:last-child {
+  margin-top: 2px !important;
+  font-size: 8.2px !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.08em !important;
+  white-space: nowrap !important;
+}
+
+/* 会話モード切替は左上端へ寄せ、HUDとは別物として扱う */
+html body .title-home-character-stage-v201.home-scene-stage-v371 > button[aria-label="ホーム会話モード切替"] {
+  top: max(96px, calc(env(safe-area-inset-top, 0px) + 96px)) !important;
+  left: 14px !important;
+  right: auto !important;
+  z-index: 50 !important;
+}
+
+/* 吹き出しは少し上へ。七瀬の顔に被らないよう右寄せ維持 */
+html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+  top: clamp(126px, 15.5dvh, 160px) !important;
+  right: 16px !important;
+  width: min(54vw, 420px) !important;
+  min-width: 248px !important;
+}
+
+@media (max-width: 430px) {
+  :root {
+    --home-header-side-gap-v376: 14px;
+    --home-action-size-v376: 38px;
+    --home-action-gap-v376: 4px;
+    --home-action-block-width-v376: 126px;
+    --home-title-font-v376: clamp(15px, 4.7vw, 18px);
+    --home-status-font-v376: clamp(8.2px, 2.25vw, 9.6px);
+  }
+
+  html body .home-scene-panel-v371 .home-lobby-top-status-v2182 {
+    top: max(62px, calc(env(safe-area-inset-top, 0px) + 62px)) !important;
+    gap: 4px !important;
+  }
+
+  html body .home-scene-panel-v371 .home-lobby-status-pill-v2182 {
+    height: 25px !important;
+    min-height: 25px !important;
+    padding: 4px 5px !important;
+    gap: 2px !important;
+  }
+
+  html body .home-top-actions-v371 {
+    top: max(42px, calc(env(safe-area-inset-top, 0px) + 42px)) !important;
+  }
+
+  html body .home-top-action-button-v371 {
+    min-height: 54px !important;
+  }
+
+  html body .home-top-action-button-v371 span:last-child {
+    font-size: 7.6px !important;
+  }
+
+  html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+    top: clamp(134px, 16.5dvh, 166px) !important;
+    width: 56vw !important;
+    min-width: 238px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  :root {
+    --home-action-size-v376: 35px;
+    --home-action-block-width-v376: 116px;
+    --home-status-font-v376: 7.8px;
+  }
+
+  html body .home-scene-panel-v371 .home-lobby-status-pill-v2182 {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+}
+
+/* ===== v377: ヘッダーHUD再修正・チップ復活 / 可変幅維持 / 右上SVG内アイコン拡大 =====
+   v376で .home-title-brand-v201 に height:30px + overflow:hidden が入ったため、
+   子要素扱いのステータスチップ行がクリップされて見えなくなっていた。
+   ここでは親のクリップを解除し、2行目を必ず表示する。
+*/
+:root {
+  --home-header-gap-v377: 14px;
+  --home-title-top-v377: max(16px, env(safe-area-inset-top, 0px));
+  --home-title-font-v377: clamp(15px, 4.35vw, 18px);
+  --home-status-top-v377: max(55px, calc(env(safe-area-inset-top, 0px) + 55px));
+  --home-status-font-v377: clamp(8.4px, 2.28vw, 9.8px);
+  --home-action-top-v377: max(39px, calc(env(safe-area-inset-top, 0px) + 39px));
+  --home-action-size-v377: 38px;
+  --home-action-gap-v377: 5px;
+  --home-action-block-v377: 124px;
+}
+
+/* 1行目：会社名。ここで子要素を切らない */
+html body .home-scene-panel-v371 .home-title-brand-v201 {
+  top: var(--home-title-top-v377) !important;
+  left: var(--home-header-gap-v377) !important;
+  right: var(--home-header-gap-v377) !important;
+  height: auto !important;
+  min-height: 28px !important;
+  overflow: visible !important;
+  display: block !important;
+  pointer-events: none !important;
+  z-index: 61 !important;
+}
+
+html body .home-company-title-v372 {
+  width: calc(100vw - 28px) !important;
+  max-width: calc(100vw - 28px) !important;
+  font-size: var(--home-title-font-v377) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.055em !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  padding-right: 4px !important;
+}
+
+/* 2行目左：チップは必ず表示。中身に合わせるが、画面からはみ出す時だけ横スクロール許可 */
+html body .home-scene-panel-v371 .home-lobby-top-status-v2182 {
+  position: fixed !important;
+  top: var(--home-status-top-v377) !important;
+  left: var(--home-header-gap-v377) !important;
+  right: calc(var(--home-action-block-v377) + var(--home-header-gap-v377) + 8px) !important;
+  width: auto !important;
+  max-width: none !important;
+  height: 26px !important;
+  display: flex !important;
+  flex-flow: row nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 4px !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch !important;
+  z-index: 60 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+html body .home-scene-panel-v371 .home-lobby-top-status-v2182::-webkit-scrollbar {
+  display: none !important;
+}
+
+html body .home-scene-panel-v371 .home-lobby-status-pill-v2182 {
+  flex: 0 0 auto !important;
+  width: max-content !important;
+  min-width: max-content !important;
+  max-width: none !important;
+  height: 25px !important;
+  min-height: 25px !important;
+  padding: 3px 6px !important;
+  gap: 2px !important;
+  border-radius: 999px !important;
+  font-size: var(--home-status-font-v377) !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  letter-spacing: -0.045em !important;
+}
+
+html body .home-scene-panel-v371 .home-lobby-status-pill-v2182 * {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+/* 2行目右：丸は今の大きさを維持しつつ、中のSVGだけ大きく見せる */
+html body .home-top-actions-v371 {
+  position: fixed !important;
+  top: var(--home-action-top-v377) !important;
+  right: var(--home-header-gap-v377) !important;
+  width: var(--home-action-block-v377) !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, var(--home-action-size-v377)) !important;
+  gap: var(--home-action-gap-v377) !important;
+  justify-content: end !important;
+  z-index: 62 !important;
+}
+
+html body .home-top-action-button-v371 {
+  width: var(--home-action-size-v377) !important;
+  min-width: var(--home-action-size-v377) !important;
+  max-width: var(--home-action-size-v377) !important;
+  min-height: 54px !important;
+}
+
+html body .home-top-action-icon-v371 {
+  width: var(--home-action-size-v377) !important;
+  height: var(--home-action-size-v377) !important;
+  padding: 5px !important;
+}
+
+html body .home-top-action-icon-v371 img,
+html body .home-top-action-icon-v371 svg {
+  width: 25px !important;
+  height: 25px !important;
+  display: block !important;
+  object-fit: contain !important;
+}
+
+html body .home-top-action-button-v371 span:last-child {
+  font-size: 7.8px !important;
+  margin-top: 2px !important;
+  letter-spacing: -0.08em !important;
+}
+
+/* 会話モード切替は左側に置くが、チップ行とは重ねない */
+html body .title-home-character-stage-v201.home-scene-stage-v371 > button[aria-label="ホーム会話モード切替"] {
+  top: max(91px, calc(env(safe-area-inset-top, 0px) + 91px)) !important;
+  left: 14px !important;
+  right: auto !important;
+  z-index: 55 !important;
+}
+
+/* 吹き出しは上げすぎず、HUDとは距離を取る */
+html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+  top: clamp(136px, 16dvh, 168px) !important;
+}
+
+@media (max-width: 380px) {
+  :root {
+    --home-header-gap-v377: 12px;
+    --home-title-font-v377: clamp(14px, 4.2vw, 16px);
+    --home-status-font-v377: 7.6px;
+    --home-action-size-v377: 35px;
+    --home-action-gap-v377: 4px;
+    --home-action-block-v377: 113px;
+  }
+
+  html body .home-company-title-v372 {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+  }
+
+  html body .home-scene-panel-v371 .home-lobby-status-pill-v2182 {
+    height: 23px !important;
+    min-height: 23px !important;
+    padding: 3px 5px !important;
+  }
+
+  html body .home-top-action-icon-v371 {
+    padding: 4px !important;
+  }
+
+  html body .home-top-action-icon-v371 img,
+  html body .home-top-action-icon-v371 svg {
+    width: 24px !important;
+    height: 24px !important;
+  }
+}
+
+
+/* ===== v378: 通知バッジ前面化・吹き出し上寄せ・会話モード小型化 ===== */
+/* チップと丸アイコン本体のサイズはv377を維持。赤い通知バッジだけ最前面に固定する。 */
+html body .home-top-action-button-v371 {
+  position: relative !important;
+  overflow: visible !important;
+  z-index: 70 !important;
+}
+
+html body .home-top-action-icon-v371 {
+  position: relative !important;
+  z-index: 1 !important;
+  overflow: visible !important;
+}
+
+html body .home-top-action-badge-v371 {
+  position: absolute !important;
+  top: -6px !important;
+  right: -5px !important;
+  z-index: 999 !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  padding: 0 5px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 9.5px !important;
+  line-height: 1 !important;
+  pointer-events: none !important;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.45), 0 0 13px rgba(255,72,94,0.72) !important;
+}
+
+/* 吹き出しは少し上へ。ステータス行・上部アイコンとは重ならない範囲で詰める。 */
+html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+  top: clamp(122px, 14.5dvh, 154px) !important;
+}
+
+/* 会話モード切替はランクチップに近いサイズ感へ。左上で邪魔にならない小型ボタンにする。 */
+html body .title-home-character-stage-v201.home-scene-stage-v371 > button[aria-label="ホーム会話モード切替"] {
+  top: max(96px, calc(env(safe-area-inset-top, 0px) + 96px)) !important;
+  left: 14px !important;
+  right: auto !important;
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  z-index: 57 !important;
+  transform: none !important;
+}
+
+@media (max-width: 380px) {
+  html body .home-akari-message-v201.home-akari-message-v371.home-akari-message-v372 {
+    top: 126px !important;
+  }
+
+  html body .home-top-action-badge-v371 {
+    top: -5px !important;
+    right: -4px !important;
+    min-width: 17px !important;
+    height: 17px !important;
+    font-size: 9px !important;
+  }
+
+  html body .title-home-character-stage-v201.home-scene-stage-v371 > button[aria-label="ホーム会話モード切替"] {
+    top: 94px !important;
+    left: 12px !important;
+    height: 27px !important;
+    min-height: 27px !important;
+    padding: 4px 9px !important;
+    font-size: 10.5px !important;
+  }
+}
+
+
+/* ===== v383: 七瀬モーション復旧（v368-4の呼吸アニメ思想を安全移植） =====
+   v378の見た目・配置は維持し、七瀬画像そのものは消さない。
+   transform は既存CSS/inline styleと競合しやすいため、margin-bottomで上下にふわっと動かす。
+   速さや大きさを変える場合は下の --home-akari-float-* だけ調整。 */
+:root {
+  --home-akari-float-distance-v383: 7px;
+  --home-akari-float-duration-v383: 3.8s;
+}
+
+@keyframes homeAkariBreathV383 {
+  0%, 100% {
+    margin-bottom: 0;
+  }
+  50% {
+    margin-bottom: var(--home-akari-float-distance-v383);
+  }
+}
+
+html body .home-akari-portrait-v201.home-akari-portrait-v202,
+html body .home-akari-portrait-v201.home-akari-full-v372,
+html body .home-scene-stage-v371 .home-akari-portrait-v201.home-akari-full-v372 {
+  animation-name: homeAkariBreathV383 !important;
+  animation-duration: var(--home-akari-float-duration-v383) !important;
+  animation-timing-function: ease-in-out !important;
+  animation-iteration-count: infinite !important;
+  animation-direction: normal !important;
+  animation-fill-mode: both !important;
+  will-change: margin-bottom !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body .home-akari-portrait-v201.home-akari-portrait-v202,
+  html body .home-akari-portrait-v201.home-akari-full-v372,
+  html body .home-scene-stage-v371 .home-akari-portrait-v201.home-akari-full-v372 {
+    animation: none !important;
+    margin-bottom: 0 !important;
+  }
+}

@@ -216,7 +216,7 @@ function getFreeModeSaveKey(slot, mapKey) {
 const SAVE_SLOT_COUNT = 3;
 const DEFAULT_COMPANY_NAME = "箱庭不動産";
 const DEFAULT_SAVE_SLOT = 1;
-const GAME_VERSION = "v367.2-chapter-number-fix";
+const GAME_VERSION = "v372-home-ideal-layout";
 // v244 roadmap: 七瀬レベル帯会話 / イベント会話 / 資産到達会話 / 支店到達会話 / 社員人数会話
 // v245 roadmap: 宅建講座 / 不動産投資講座 / 建築講座 / 税金講座 / 続き付き知識会話強化
 // v247: 七瀬レベル帯・資産/支店/社員イベント会話・知識会話実装版
@@ -324,8 +324,16 @@ const HOME_MISSION_DATA_KEY = "realEstateGameHomeMissions_v1";
 const PRESENT_BOX_HISTORY_KEY = "realEstateGamePresentBoxHistory_v1";
 const LAST_NAVIGATION_STATE_KEY = "realEstateGameLastNavigationState_v1";
 const HOME_AKARI_TALK_MODE_KEY = "realEstateGameHomeAkariTalkMode_v1";
+const TEST_RELEASE_CAMPAIGN_CLAIMED_KEY = "realEstateGameTestReleaseCampaignClaimed_v1";
 
 const SPECIAL_MISSION_POINT_RECOVERY_MS = 5 * 60 * 1000;
+
+function formatHomeCompanyDisplayName(name = DEFAULT_COMPANY_NAME) {
+  const text = String(name || DEFAULT_COMPANY_NAME).trim();
+  if (!text) return DEFAULT_COMPANY_NAME;
+  if (/不動産|地所|リアルティ|プロパティ|開発|会社|株式会社|合同会社/.test(text)) return text;
+  return `${text}不動産株式会社`;
+}
 
 function getActionPointMaxByRank(rank = 1) {
   const safeRank = Math.max(1, Math.round(Number(rank) || 1));
@@ -25730,6 +25738,7 @@ const titleTotalAssets = money + tiles.reduce((sum, tile) => {
   return sum + (tile.landPrice ?? 0) + buildingValue;
 }, 0);
 const titleAccountData = useMemo(() => readAccountData(), [homeAccountRefreshKey, playerRank, playerExp, rookieEmployeeTickets, employeeTickets, premiumEmployeeTickets]);
+const titleReleaseCampaignClaimed = titleAccountData.releaseCampaignClaimed === true || (typeof window !== "undefined" && window.localStorage.getItem(TEST_RELEASE_CAMPAIGN_CLAIMED_KEY) === "true");
 const storyProgressFlags = {
   gifu: hasClearedGifuChapter || titleAccountData.hasClearedGifuChapter === true,
   nagoya: hasClearedNagoyaChapter || titleAccountData.hasClearedNagoyaChapter === true,
@@ -25743,10 +25752,49 @@ const storyProgressFlags = {
 // 現在マップと違う所属（岐阜本社など）を勝手に待機へ変えない。
 const titleAccountEmployeeVault = mergeEmployeeCollections((titleAccountData.employeeVault ?? []).map(normalizeAccountEmployee).filter(Boolean));
 const titleItemInventory = getAccountItemInventory(titleAccountData);
-const titleOwnedItemEntries = HOME_SHOP_ITEMS
+const titleOwnedTicketEntries = [
+  {
+    item: {
+      id: "owned_rookie_employee_ticket",
+      itemKey: "rookieEmployeeTickets",
+      category: "ticket",
+      icon: "✉",
+      name: "社員採用チケット",
+      description: "N〜SSRまで排出される基本の採用チケットです。",
+      effectText: "社員採用で使用できます。",
+    },
+    count: Math.max(0, Math.round(Number(titleAccountData.rookieEmployeeTickets ?? rookieEmployeeTickets) || 0)),
+  },
+  {
+    item: {
+      id: "owned_rare_employee_ticket",
+      itemKey: "employeeTickets",
+      category: "ticket",
+      icon: "📨",
+      name: "レア社員採用チケット",
+      description: "N〜URまで排出される上位採用チケットです。",
+      effectText: "レア社員採用で使用できます。",
+    },
+    count: Math.max(0, Math.round(Number(titleAccountData.employeeTickets ?? employeeTickets) || 0)),
+  },
+  {
+    item: {
+      id: "owned_premium_employee_ticket",
+      itemKey: "premiumEmployeeTickets",
+      category: "ticket",
+      icon: "✨",
+      name: "プレミア社員採用チケット",
+      description: "SR以上確定のプレミア採用チケットです。",
+      effectText: "プレミア社員採用で使用できます。",
+    },
+    count: Math.max(0, Math.round(Number(titleAccountData.premiumEmployeeTickets ?? premiumEmployeeTickets) || 0)),
+  },
+].filter((entry) => entry.count > 0);
+const titleOwnedShopItemEntries = HOME_SHOP_ITEMS
   .filter((item) => item.rewardType === "item" && item.itemKey)
   .map((item) => ({ item, count: Math.max(0, Math.round(Number(titleItemInventory[item.itemKey]) || 0)) }))
   .filter((entry) => entry.count > 0);
+const titleOwnedItemEntries = [...titleOwnedTicketEntries, ...titleOwnedShopItemEntries];
 const titleOwnedItemCount = titleOwnedItemEntries.reduce((sum, entry) => sum + entry.count, 0);
 const titleOwnedItemKindCount = titleOwnedItemEntries.length;
 const titleFounderSelectableEmployees = getFounderSelectableEmployees(titleAccountData);
@@ -28256,7 +28304,7 @@ function renderHomeStatPill(icon, label, value, tone = "default") {
   };
 
   return (
-    <div className="home-stat-pill-v201" style={{ padding: "8px 10px", borderRadius: 999, background: backgrounds[tone] ?? backgrounds.default, border: "1px solid rgba(255,255,255,0.22)", display: "grid", gridTemplateColumns: "auto 1fr", columnGap: 7, alignItems: "center", boxShadow: "0 8px 18px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.25)" }}>
+    <div className="home-stat-pill-v201" style={{ padding: "8px 10px", borderRadius: 999, background: backgrounds[tone] ?? backgrounds.default, border: "none", display: "grid", gridTemplateColumns: "auto 1fr", columnGap: 7, alignItems: "center", boxShadow: "0 8px 18px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.25)" }}>
       <span className="home-stat-icon-v201" style={{ width: 25, height: 25, borderRadius: 999, display: "grid", placeItems: "center", background: "rgba(255,255,255,0.9)", color: "#123524", fontSize: 13, fontWeight: 900 }}>{icon}</span>
       <span style={{ minWidth: 0 }}>
         <span style={{ display: "block", fontSize: 10, opacity: 0.78, lineHeight: 1 }}>{label}</span>
@@ -29444,15 +29492,20 @@ function claimTestReleaseCampaign() {
   }
 
   const accountData = readAccountData();
-  if (accountData.releaseCampaignClaimed === true) {
+  const alreadyClaimed = accountData.releaseCampaignClaimed === true || (typeof window !== "undefined" && window.localStorage.getItem(TEST_RELEASE_CAMPAIGN_CLAIMED_KEY) === "true");
+  if (alreadyClaimed) {
     alert("テスト版リリースキャンペーンは受取済みです。");
     return;
+  }
+
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(TEST_RELEASE_CAMPAIGN_CLAIMED_KEY, "true");
   }
 
   const nextAccountData = {
     ...accountData,
     medals: Math.max(0, Math.round(Number(accountData.medals ?? accountData.medal ?? 0) || 0)) + 100,
-    shine: Math.max(0, Math.round(Number(accountData.shine ?? accountData.shines ?? 0) || 0)) + 10,
+    shine: Math.max(0, Math.round(Number(accountData.shine ?? accountData.shines ?? 0) || 0)) + 100,
     silverSheets: 0,
     goldSheets: 0,
     rainbowSheets: 0,
@@ -29462,8 +29515,8 @@ function claimTestReleaseCampaign() {
 
   writeAccountData(nextAccountData);
   setHomeAccountRefreshKey((current) => current + 1);
-  setLog("テスト版リリースキャンペーン：🏅メダル100・💎シャイン10を受け取りました。");
-  alert("🏅メダル100・💎シャイン10を受け取りました。");
+  setLog("テスト版リリースキャンペーン：🏅メダル100・💎シャイン100を受け取りました。");
+  alert("🎉 テスト版リリースキャンペーン報酬を受け取りました！\n🏅メダル100・💎シャイン100");
 }
 
 function renderHomeShopModal() {
@@ -29525,13 +29578,13 @@ function renderHomeShopModal() {
         </div>
       </div>
 
-      <section style={{ marginBottom: 10, padding: 10, borderRadius: 18, background: titleAccountData.releaseCampaignClaimed ? "linear-gradient(135deg,#eef5ef,#f7fbf7)" : "linear-gradient(135deg,#fff8d8,#e3f6ff)", border: titleAccountData.releaseCampaignClaimed ? "1px solid rgba(198,214,202,0.95)" : "1px solid rgba(255,186,70,0.9)", boxShadow: "0 8px 22px rgba(31,58,38,0.10)", display: "grid", gridTemplateColumns: "1fr auto", gap: 10, alignItems: "center" }}>
-        <span style={{ minWidth: 0 }}>
-          <strong style={{ display: "block", fontSize: 13, color: "#1d2b22" }}>🎉 テスト版リリースキャンペーン</strong>
-          <small style={{ display: "block", marginTop: 3, fontSize: 11, color: "#536357", fontWeight: 800 }}>今だけ 🏅メダル100 ＆ 💎シャイン10 をプレゼント</small>
+      <section style={{ marginBottom: 10, padding: 12, borderRadius: 20, background: titleReleaseCampaignClaimed ? "linear-gradient(135deg,#eef5ef,#f7fbf7)" : "radial-gradient(circle at 12% 10%,#fff7ba 0%,#ffe7a3 28%,#dff7ff 64%,#fff 100%)", border: titleReleaseCampaignClaimed ? "1px solid rgba(198,214,202,0.95)" : "1px solid rgba(255,186,70,0.95)", boxShadow: titleReleaseCampaignClaimed ? "0 8px 22px rgba(31,58,38,0.10)" : "0 12px 26px rgba(255,142,42,0.20)", display: "grid", gridTemplateColumns: "1fr auto", gap: 10, alignItems: "center", position: "relative", overflow: "hidden" }}>
+        <span style={{ minWidth: 0, position: "relative", zIndex: 1 }}>
+          <strong style={{ display: "block", fontSize: 14, color: "#1d2b22" }}>{titleReleaseCampaignClaimed ? "✅ テスト版リリースキャンペーン" : "🎉 テスト版リリースキャンペーン"}</strong>
+          <small style={{ display: "block", marginTop: 3, fontSize: 11, color: "#536357", fontWeight: 900 }}>{titleReleaseCampaignClaimed ? "報酬は受け取り済みです" : "今だけ 🏅メダル100 ＆ 💎シャイン100 をプレゼント"}</small>
         </span>
-        <button type="button" disabled={titleAccountData.releaseCampaignClaimed === true} onClick={claimTestReleaseCampaign} style={{ padding: "8px 13px", borderRadius: 999, border: "none", background: titleAccountData.releaseCampaignClaimed ? "#b8c7b9" : "linear-gradient(145deg,#1d7f4f,#0f5f3a)", color: "#fff", fontWeight: 900, cursor: titleAccountData.releaseCampaignClaimed ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>
-          {titleAccountData.releaseCampaignClaimed ? "受取済み" : "受け取る"}
+        <button type="button" disabled={titleReleaseCampaignClaimed === true} onClick={claimTestReleaseCampaign} style={{ position: "relative", zIndex: 1, padding: "10px 15px", borderRadius: 999, border: "none", background: titleReleaseCampaignClaimed ? "#b8c7b9" : "linear-gradient(145deg,#1d7f4f,#0f5f3a)", color: "#fff", fontWeight: 900, cursor: titleReleaseCampaignClaimed ? "not-allowed" : "pointer", whiteSpace: "nowrap", boxShadow: titleReleaseCampaignClaimed ? "none" : "0 8px 18px rgba(15,95,58,0.24)" }}>
+          {titleReleaseCampaignClaimed ? "受取済み" : "受け取る"}
         </button>
       </section>
 
@@ -34606,28 +34659,29 @@ return (
           className="title-home-shell-v201"
           style={{
             position: "relative",
-            width: "min(520px, calc(100vw - 16px))",
+            width: "100vw",
             display: "grid",
             gridTemplateColumns: "1fr",
-            gap: 10,
+            gap: 0,
             alignItems: "stretch",
           }}
         >
           {/* v217: 重複する右側ショートカットは廃止。ホーム内コマンドに統合。 */}
           <div
-            className="title-home-character-panel-v201"
+            className="title-home-character-panel-v201 home-scene-panel-v371"
             style={{
               borderRadius: 28,
-              padding: 12,
-              background: "rgba(15, 38, 30, 0.9)",
-              boxShadow: "0 24px 70px rgba(0, 0, 0, 0.35)",
-              border: "1px solid rgba(255,255,255,0.22)",
+              padding: 0,
+              background: "transparent",
+              boxShadow: "none",
+              border: "none",
               display: "grid",
-              gap: 12,
+              gap: 0,
+              position: "relative",
             }}
           >
             <div className="home-title-brand-v201">
-              <h1 style={{ margin: 0, fontSize: 22, lineHeight: 1.1, whiteSpace: "nowrap" }}>{playerCompanyName || DEFAULT_COMPANY_NAME} <span style={{ fontSize: 12, opacity: 0.82 }}>{GAME_VERSION}</span></h1>
+              <h1 className="home-company-title-v372" style={{ margin: 0, fontSize: 22, lineHeight: 1.1, whiteSpace: "nowrap" }}>{formatHomeCompanyDisplayName(playerCompanyName || DEFAULT_COMPANY_NAME)}</h1>
               <div className="home-lobby-top-status-v2182" style={{ marginTop: 8 }}>
                 <span className="home-lobby-status-pill-v2182">🏆 RANK {titleAccountData.playerRank ?? 1}</span>
                 <span className="home-lobby-status-pill-v2182">⚡ {titleActionPointText}</span>
@@ -34636,8 +34690,22 @@ return (
               </div>
             </div>
 
+            <div className="home-top-actions-v371" aria-label="ホーム上部メニュー">
+              {[
+                { key: "announcements", label: "お知らせ", iconSrc: "/icons/notice.svg", badge: homeLoginBonusStatus.canClaim || homePresentNoticeCount > 0 ? String(Math.max(1, homePresentNoticeCount)) : "" },
+                { key: "messages", label: "メッセージ", iconSrc: "/icons/message.svg", badge: titleCompletedDispatchCount > 0 ? String(titleCompletedDispatchCount) : "" },
+                { key: "homeMenu", label: "メニュー", iconSrc: "/icons/menu.svg", badge: "" },
+              ].map((item) => (
+                <button key={item.key} type="button" className="home-top-action-button-v371" onClick={(event) => { event.stopPropagation(); setTitleModal(item.key); }}>
+                  {item.badge ? <span className="home-top-action-badge-v371">{item.badge}</span> : null}
+                  <img src={item.iconSrc} alt="" className="home-top-action-icon-v371" />
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+
             <div
-              className="title-home-character-stage-v201 home-akari-stage-v202"
+              className="title-home-character-stage-v201 home-akari-stage-v202 home-scene-stage-v371"
               onClick={handleHomeAkariTap}
               role="button"
               tabIndex={0}
@@ -34648,12 +34716,12 @@ return (
                 }
               }}
               style={{
-                minHeight: "min(64dvh, 620px)",
-                borderRadius: 24,
+                minHeight: "100dvh",
+                borderRadius: 0,
                 backgroundImage: getHomeTimeBackgroundStyle().overlay,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                border: "1px solid rgba(255,255,255,0.16)",
+                border: "none",
                 position: "relative",
                 overflow: "hidden",
                 display: "grid",
@@ -34691,8 +34759,8 @@ return (
                 <img
                   src={AKARI_PORTRAIT_PATHS[getHomeAkariPortraitKey()]}
                   alt="七瀬 灯里"
-                  className="home-akari-portrait-v201 home-akari-portrait-v202"
-                  style={{ position: "relative", width: "92%", maxHeight: "min(58dvh, 560px)", objectFit: "contain", justifySelf: "center", alignSelf: "end", filter: "drop-shadow(0 12px 18px rgba(0,0,0,0.35))" }}
+                  className="home-akari-portrait-v201 home-akari-portrait-v202 home-akari-full-v372"
+                  style={{ position: "relative", width: "88%", maxHeight: "min(76dvh, 720px)", objectFit: "contain", justifySelf: "start", alignSelf: "end", transform: "translateX(-5%)", filter: "drop-shadow(0 12px 18px rgba(0,0,0,0.35))" }}
                 />
               ) : (
                 <div style={{ position: "relative", alignSelf: "center", justifySelf: "center", width: "88%", minHeight: "min(42dvh, 420px)", display: "grid", placeItems: "center", borderRadius: 24, border: "1px dashed rgba(255,255,255,0.35)", background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.88)", fontWeight: 900, textAlign: "center", lineHeight: 1.7 }}>
@@ -34703,12 +34771,13 @@ return (
               )}
               {isHomeAkariMessageVisible ? (
               <div
-                className="home-akari-message-v201 home-akari-message-v208"
+                className="home-akari-message-v201 home-akari-message-v208 home-akari-message-v371 home-akari-message-v372"
                 style={{
                   position: "absolute",
-                  left: 12,
-                  right: 12,
-                  bottom: 4,
+                  left: "45%",
+                  right: 16,
+                  top: "clamp(170px, 23dvh, 230px)",
+                  bottom: "auto",
                   padding: "8px 11px 7px 11px",
                   borderRadius: 16,
                   background: "rgba(255, 253, 247, 0.88)",
@@ -34833,7 +34902,6 @@ return (
               {renderHomeMenuCard({ icon: "店", title: "ショップ", sub: homeCoreFeaturesUnlocked ? "チケット・育成アイテムを交換" : "1-1章完了後に解放", accent: "#fff7df", badge: homeCoreFeaturesUnlocked ? "" : "🔒", onClick: homeCoreFeaturesUnlocked ? () => setTitleModal("shop") : openLockedHomeFeatureNotice })}
               {renderHomeMenuCard({ icon: "🎒", title: "アイテム", sub: homeCoreFeaturesUnlocked ? (titleOwnedItemCount > 0 ? `所持${titleOwnedItemKindCount}種 / 合計${titleOwnedItemCount}個` : "所持アイテム確認") : "1-1章完了後に解放", accent: "#e7f0ff", badge: homeCoreFeaturesUnlocked && titleOwnedItemCount > 0 ? String(titleOwnedItemCount) : "🔒", onClick: homeCoreFeaturesUnlocked ? () => setTitleModal("items") : openLockedHomeFeatureNotice })}
               {renderHomeMenuCard({ icon: "実", title: "実績", sub: homeCoreFeaturesUnlocked ? (homePresentNoticeCount > 0 ? `ログボ/実績 ${homePresentNoticeCount}件確認` : `達成${homeMissionCompletedCount}件・ログボ${homeLoginBonusStatus.claimCount}回`) : "1-1章完了後に解放", accent: "#ffe7e7", badge: homeCoreFeaturesUnlocked && homePresentNoticeCount > 0 ? String(homePresentNoticeCount) : "🔒", onClick: homeCoreFeaturesUnlocked ? () => setTitleModal("missions") : openLockedHomeFeatureNotice })}
-              {renderHomeMenuCard({ icon: "設", title: "設定", sub: "設定・クレジット", accent: "#eeeeee", onClick: () => setTitleModal("settings") })}
             </div>
 
             {/* v217: 下部ナビは重複するため廃止。主要導線はホームコマンドへ集約。 */}
@@ -34865,17 +34933,16 @@ return (
 
         <div className={`home-lobby-bottom-nav-v2182 ${isHomeBottomNavVisible ? "home-lobby-bottom-nav-visible-v261" : "home-lobby-bottom-nav-hidden-v261"}`}>
           {[
-            { icon: "仕", label: "仕事", badge: homeCoreFeaturesUnlocked && titleCompletedDispatchCount > 0 ? String(titleCompletedDispatchCount) : (!homeCoreFeaturesUnlocked ? "!" : ""), variant: "work", action: () => setTitleModal("workSelect") },
-            { icon: "採", label: "採用", badge: homeCoreFeaturesUnlocked && ((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) > 0 ? String((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) : "", variant: "recruit", action: homeCoreFeaturesUnlocked ? () => { setEmployeeRecruitReturnPanel("home"); setTitleModal("recruitHome"); } : openLockedHomeFeatureNotice },
-            { icon: "名", label: "名簿", badge: "", variant: "vault", action: homeCoreFeaturesUnlocked ? () => setTitleModal("accountVault") : openLockedHomeFeatureNotice },
-            { icon: "店", label: "交換", badge: "", variant: "shop", action: homeCoreFeaturesUnlocked ? () => setTitleModal("shop") : openLockedHomeFeatureNotice },
-            { icon: "🎒", label: "アイテム", badge: homeCoreFeaturesUnlocked && titleOwnedItemCount > 0 ? String(titleOwnedItemCount) : "", variant: "items", action: homeCoreFeaturesUnlocked ? () => setTitleModal("items") : openLockedHomeFeatureNotice },
-            { icon: "実", label: "実績", badge: homeCoreFeaturesUnlocked && homePresentNoticeCount > 0 ? String(homePresentNoticeCount) : "", variant: "mission", action: homeCoreFeaturesUnlocked ? () => setTitleModal("missions") : openLockedHomeFeatureNotice },
-            { icon: "⚙", label: "設定", badge: "", variant: "settings", action: () => setTitleModal("settings") },
+            { iconSrc: "/icons/work.svg", label: "仕事", badge: homeCoreFeaturesUnlocked && titleCompletedDispatchCount > 0 ? String(titleCompletedDispatchCount) : (!homeCoreFeaturesUnlocked ? "!" : ""), variant: "work", action: () => setTitleModal("workSelect") },
+            { iconSrc: "/icons/recruit.svg", label: "採用", badge: homeCoreFeaturesUnlocked && ((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) > 0 ? String((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) : "", variant: "recruit", action: homeCoreFeaturesUnlocked ? () => { setEmployeeRecruitReturnPanel("home"); setTitleModal("recruitHome"); } : openLockedHomeFeatureNotice },
+            { iconSrc: "/icons/employees.svg", label: "名簿", badge: "", variant: "vault", action: homeCoreFeaturesUnlocked ? () => setTitleModal("accountVault") : openLockedHomeFeatureNotice },
+            { iconSrc: "/icons/shop.svg", label: "ショップ", badge: "", variant: "shop", action: homeCoreFeaturesUnlocked ? () => setTitleModal("shop") : openLockedHomeFeatureNotice },
+            { iconSrc: "/icons/items.svg", label: "アイテム", badge: homeCoreFeaturesUnlocked && titleOwnedItemCount > 0 ? String(titleOwnedItemCount) : "", variant: "items", action: homeCoreFeaturesUnlocked ? () => setTitleModal("items") : openLockedHomeFeatureNotice },
+            { iconSrc: "/icons/achievement.svg", label: "実績", badge: homeCoreFeaturesUnlocked && homePresentNoticeCount > 0 ? String(homePresentNoticeCount) : "", variant: "mission", action: homeCoreFeaturesUnlocked ? () => setTitleModal("missions") : openLockedHomeFeatureNotice },
           ].map((item) => (
             <button key={item.label} type="button" className={`home-lobby-nav-button-v2182 nav-${item.variant}-v264`} onClick={item.action}>
               {item.badge ? <span className="home-lobby-nav-badge-v2182">{item.badge}</span> : null}
-              <span className="home-lobby-nav-icon-v2182">{item.icon}</span>
+              {item.iconSrc ? <img src={item.iconSrc} alt="" className="home-lobby-nav-svg-v371" /> : <span className="home-lobby-nav-icon-v2182">{item.icon}</span>}
               <span className="home-lobby-nav-label-v2182">{item.label}</span>
             </button>
           ))}
@@ -35337,7 +35404,7 @@ return (
                       <strong>{titleOwnedItemCount}個</strong>
                     </div>
                     <button type="button" onClick={() => setTitleModal("shop")} style={{ padding: 10, borderRadius: 14, background: "#fff7df", border: "1px solid #e8d08a", color: "#1d2b22", textAlign: "center", cursor: "pointer", fontWeight: 900 }}>
-                      交換所へ
+                      ショップへ
                     </button>
                   </div>
                   <div style={{ display: "grid", gap: 8, maxHeight: "min(68dvh, 620px)", overflowY: "auto", paddingRight: 3 }}>
@@ -35364,7 +35431,9 @@ return (
                                   </span>
                                   <span style={{ display: "grid", gap: 5, justifyItems: "end" }}>
                                     <strong style={{ padding: "4px 9px", borderRadius: 999, background: "#edf5ef", border: "1px solid #cfe2d3", fontSize: 12 }}>×{count}</strong>
-                                    {usableByEmployee ? (
+                                    {item.category === "ticket" ? (
+                                      <button type="button" onClick={() => setTitleModal("recruitHome")} style={{ padding: "6px 9px", borderRadius: 999, border: "none", background: "#1d5c3a", color: "#ffffff", fontSize: 11, fontWeight: 900, cursor: "pointer" }}>採用で使う</button>
+                                    ) : usableByEmployee ? (
                                       <button type="button" onClick={() => setTitleModal("accountVault")} style={{ padding: "6px 9px", borderRadius: 999, border: "none", background: "#1d5c3a", color: "#ffffff", fontSize: 11, fontWeight: 900, cursor: "pointer" }}>社員に使う</button>
                                     ) : dispatchSupport ? (
                                       <button type="button" onClick={() => setTitleModal("specialDispatch")} style={{ padding: "6px 9px", borderRadius: 999, border: "none", background: "#2c6fb7", color: "#ffffff", fontSize: 11, fontWeight: 900, cursor: "pointer" }}>任務で使う</button>
@@ -35507,6 +35576,59 @@ return (
                         表示できる任務はありません。
                       </div>
                     )}
+                  </div>
+                </>
+              ) : titleModal === "announcements" ? (
+                <>
+                  <h2 style={{ marginTop: 0 }}>🔔 お知らせ</h2>
+                  <p style={{ fontSize: 13, lineHeight: 1.7, marginTop: 0 }}>運営からの配布、キャンペーン、ログインボーナス、アップデート情報を確認できます。</p>
+                  <div style={{ display: "grid", gap: 8 }}>
+                    <div style={{ padding: 12, borderRadius: 16, background: "linear-gradient(145deg,#fff7df,#ffe5a3)", border: "1px solid #e8d08a", color: "#1d2b22" }}>
+                      <strong>🎉 テスト版リリースキャンペーン</strong>
+                      <div style={{ fontSize: 13, marginTop: 4 }}>今だけ 🏅メダル100 ＆ 💎シャイン100 をプレゼント。</div>
+                    </div>
+                    <div style={{ padding: 12, borderRadius: 16, background: homeLoginBonusStatus.canClaim ? "#fff7df" : "#f3f6f1", border: "1px solid #d8e0d8", color: "#1d2b22" }}>
+                      <strong>🎁 ログインボーナス</strong>
+                      <div style={{ fontSize: 13, marginTop: 4 }}>{homeLoginBonusStatus.canClaim ? homeLoginBonusStatus.rewardText : "本日は受取済みです。"}</div>
+                    </div>
+                    <div style={{ padding: 12, borderRadius: 16, background: "#edf2ff", border: "1px solid #cbd8ff", color: "#1d2b22" }}>
+                      <strong>📝 更新情報</strong>
+                      <div style={{ fontSize: 13, marginTop: 4 }}>ホームUIを全画面寄りに調整し、お知らせ・メッセージ・メニューを追加しました。</div>
+                    </div>
+                  </div>
+                </>
+              ) : titleModal === "messages" ? (
+                <>
+                  <h2 style={{ marginTop: 0 }}>✉️ メッセージ</h2>
+                  <p style={{ fontSize: 13, lineHeight: 1.7, marginTop: 0 }}>七瀬や社員、銀行、派遣担当などゲーム内キャラからの連絡を確認できます。</p>
+                  <div style={{ display: "grid", gap: 8 }}>
+                    {titleCompletedDispatchCount > 0 ? (
+                      <button type="button" onClick={() => setTitleModal("specialDispatch")} style={{ padding: 12, borderRadius: 16, background: "#edf5ef", border: "1px solid #cfe2d3", color: "#1d2b22", textAlign: "left", cursor: "pointer" }}>
+                        <strong>七瀬 灯里</strong>
+                        <div style={{ fontSize: 13, marginTop: 4 }}>社長、派遣任務が完了しています。結果を確認しましょう。</div>
+                      </button>
+                    ) : (
+                      <div style={{ padding: 14, borderRadius: 16, background: "#f3f6f1", border: "1px solid #d8e0d8", color: "#61705f", fontWeight: 800, textAlign: "center" }}>
+                        新しいメッセージはありません。
+                      </div>
+                    )}
+                    <div style={{ padding: 12, borderRadius: 16, background: "#ffffff", border: "1px solid #d8e0d8", color: "#1d2b22" }}>
+                      <strong>七瀬 灯里</strong>
+                      <div style={{ fontSize: 13, marginTop: 4 }}>新しい物件情報や銀行の返答が届いた時は、ここに表示されます。</div>
+                    </div>
+                  </div>
+                </>
+              ) : titleModal === "homeMenu" ? (
+                <>
+                  <h2 style={{ marginTop: 0 }}>☰ メニュー</h2>
+                  <p style={{ fontSize: 13, lineHeight: 1.7, marginTop: 0 }}>設定やデータ管理など、常時使う補助機能をまとめました。</p>
+                  <div style={{ display: "grid", gap: 8 }}>
+                    <button type="button" onClick={() => setTitleModal("settings")} style={{ padding: 12, borderRadius: 16, background: "#edf5ef", border: "1px solid #cfe2d3", color: "#1d2b22", textAlign: "left", fontWeight: 900, cursor: "pointer" }}>⚙ 設定・初期化・開発者用</button>
+                    <button type="button" onClick={() => setTitleModal("missions")} style={{ padding: 12, borderRadius: 16, background: "#fff7df", border: "1px solid #e8d08a", color: "#1d2b22", textAlign: "left", fontWeight: 900, cursor: "pointer" }}>🏆 実績・ログインボーナス</button>
+                    <button type="button" onClick={() => setTitleModal("credits")} style={{ padding: 12, borderRadius: 16, background: "#edf2ff", border: "1px solid #cbd8ff", color: "#1d2b22", textAlign: "left", fontWeight: 900, cursor: "pointer" }}>📘 クレジット</button>
+                    <div style={{ padding: 12, borderRadius: 16, background: "#f3f6f1", border: "1px solid #d8e0d8", color: "#61705f", fontSize: 12, lineHeight: 1.6 }}>
+                      図鑑は社員名簿に統合済みです。社員の収集状況は名簿から確認できます。
+                    </div>
                   </div>
                 </>
               ) : titleModal === "settings" ? (
