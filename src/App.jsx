@@ -3008,6 +3008,7 @@ function getDefaultAccountData() {
     medals: 0,
     shine: 0,
     releaseCampaignClaimed: false,
+    releaseCampaignStoryClearRewards: {},
     silverSheets: 0,
     goldSheets: 0,
     rainbowSheets: 0,
@@ -3046,6 +3047,7 @@ function normalizeAccountData(rawAccountData) {
     medals: safeMedals,
     shine: safeShine,
     releaseCampaignClaimed: parsedAccountData.releaseCampaignClaimed === true,
+    releaseCampaignStoryClearRewards: parsedAccountData.releaseCampaignStoryClearRewards && typeof parsedAccountData.releaseCampaignStoryClearRewards === "object" ? parsedAccountData.releaseCampaignStoryClearRewards : {},
     silverSheets: safeSilverSheets,
     goldSheets: safeGoldSheets,
     rainbowSheets: safeRainbowSheets,
@@ -20104,6 +20106,39 @@ function grantTicketReward(ticketType, count, reason, showPopup = true) {
   setLog(`${reason}：${getTicketName(ticketType)}を${amount}枚獲得しました。`);
 }
 
+function grantStoryClearReleaseCampaignReward(chapterKey, chapterLabel) {
+  if (!chapterKey) return;
+
+  const accountData = readAccountData();
+  const claimedRewards = accountData.releaseCampaignStoryClearRewards && typeof accountData.releaseCampaignStoryClearRewards === "object"
+    ? accountData.releaseCampaignStoryClearRewards
+    : {};
+
+  if (claimedRewards[chapterKey] === true) return;
+
+  const tickets = getAccountTicketCounts(accountData);
+  const nextAccountData = {
+    ...accountData,
+    employeeTickets: tickets.employeeTickets + 2,
+    releaseCampaignStoryClearRewards: {
+      ...claimedRewards,
+      [chapterKey]: true,
+    },
+    updatedAt: new Date().toISOString(),
+  };
+
+  writeAccountData(nextAccountData);
+  setEmployeeTickets(nextAccountData.employeeTickets);
+  setHasEmployeeRecruitNotice(true);
+  setHomeAccountRefreshKey((current) => current + 1);
+  setTicketRewardResult({
+    ticketType: "normal",
+    count: 2,
+    reason: `テスト版リリースキャンペーン：${chapterLabel}クリア`,
+  });
+  setLog(`テスト版リリースキャンペーン：${chapterLabel}クリア報酬としてレア社員採用チケットを2枚獲得しました。`);
+}
+
 
 function resetLocalStorageForFreshStart() {
   if (typeof window === "undefined") return;
@@ -20124,6 +20159,7 @@ function buildInitialAccountData(overrides = {}) {
     medals: 0,
     shine: 0,
     releaseCampaignClaimed: false,
+    releaseCampaignStoryClearRewards: {},
     silverSheets: 0,
     goldSheets: 0,
     rainbowSheets: 0,
@@ -20272,6 +20308,31 @@ function handleDeveloperCommand() {
 
     markSecretCommandUsed("nagoya");
     grantTicketReward("premium", 1, "隠しコマンド：名古屋", true);
+    setDeveloperCommandInput("");
+    return;
+  }
+
+  if (["ライズ", "らいず", "ＲＩＺＥ", "RISE", "rise"].map(normalizeCommandText).includes(command)) {
+    const accountData = readAccountData();
+    const currentUsedCommands = accountData.usedSecretCommands && typeof accountData.usedSecretCommands === "object" ? accountData.usedSecretCommands : usedSecretCommands;
+    if (currentUsedCommands.rize) {
+      alert("このコマンドはすでに使用済みです。使用できるのは1回だけです。");
+      return;
+    }
+
+    const nextUsedCommands = { ...currentUsedCommands, rize: true };
+    const nextAccountData = {
+      ...accountData,
+      medals: Math.max(0, Math.round(Number(accountData.medals ?? accountData.medal ?? 0) || 0)) + 200,
+      shine: Math.max(0, Math.round(Number(accountData.shine ?? accountData.shines ?? 0) || 0)) + 100,
+      usedSecretCommands: nextUsedCommands,
+      updatedAt: new Date().toISOString(),
+    };
+    writeAccountData(nextAccountData);
+    setUsedSecretCommands(nextUsedCommands);
+    setHomeAccountRefreshKey((current) => current + 1);
+    setLog("隠しコマンド：ライズを実行しました。🏅メダル200・💎シャイン100を獲得しました。");
+    alert("ライズコマンドを実行しました。\n🏅メダル：200\n💎シャイン：100");
     setDeveloperCommandInput("");
     return;
   }
@@ -20454,10 +20515,7 @@ async function startBuildPlacement(buildingKey) {
   setSelectedId(null);
   setActivePanel("build");
   setLog(`${building.name}を建設する土地を選択中です。マップ上の緑色の自分の空き土地をクリックしてください。`);
-  alert(`${building.name}を建設する土地を選んでください。
-
-建設可能な土地は緑枠で表示されます。
-建てたい土地をマップ上でクリックすると建設確認に進みます。`);
+  alert(`${building.name}を建設する土地を選んでください。\n\n建設可能な土地は緑枠で表示されます。\n建てたい土地をマップ上でクリックすると建設確認に進みます。`);
 }
 
 function startBranchPlacement() {
@@ -25570,6 +25628,7 @@ useEffect(() => {
   if (!isGifuChapterClearConditionMet || hasClearedGifuChapter) return;
 
   setHasClearedGifuChapter(true);
+  grantStoryClearReleaseCampaignReward("gifu", "岐阜編");
   setStoryEvent(STORY_GIFU_EVENTS.CLEAR);
   setLog("岐阜編の目標を達成しました。建物を3棟完成させました。");
 }, [isGifuChapterClearConditionMet, hasClearedGifuChapter]);
@@ -25627,6 +25686,7 @@ useEffect(() => {
   if (!isNagoyaChapterClearConditionMet || hasClearedNagoyaChapter) return;
 
   setHasClearedNagoyaChapter(true);
+  grantStoryClearReleaseCampaignReward("nagoya", "名古屋編");
   setStoryEvent({
     portrait: "happy",
     title: "名古屋編クリア",
@@ -25848,6 +25908,7 @@ const isKyotoChapterClearConditionMet =
 useEffect(() => {
   if (!isKyotoChapterClearConditionMet || hasClearedKyotoChapter) return;
   setHasClearedKyotoChapter(true);
+  grantStoryClearReleaseCampaignReward("kyoto", "京都編");
   setStoryEvent(STORY_KYOTO_EVENTS.CLEAR);
   setLog("3-2章 京都編の本編目標を達成しました。京都30×30マップと京都の地域任務がフリーモードに解放されました。");
 }, [isKyotoChapterClearConditionMet, hasClearedKyotoChapter]);
@@ -25974,6 +26035,7 @@ const isOsakaChapterClearConditionMet =
 useEffect(() => {
   if (!isOsakaChapterClearConditionMet || hasClearedOsakaChapter) return;
   setHasClearedOsakaChapter(true);
+  grantStoryClearReleaseCampaignReward("osaka", "大阪編");
   setStoryEvent(STORY_OSAKA_EVENTS.CLEAR);
   setLog("大阪編の目標を達成しました。大阪50×50マップと大阪の地域任務がフリーモードに解放されました。");
 }, [isOsakaChapterClearConditionMet, hasClearedOsakaChapter]);
@@ -30465,7 +30527,7 @@ function claimTestReleaseCampaign() {
   writeAccountData(nextAccountData);
   setHomeAccountRefreshKey((current) => current + 1);
   setLog("テスト版リリースキャンペーン：🏅メダル100・💎シャイン100を受け取りました。");
-  alert("🎉 テスト版リリースキャンペーン報酬を受け取りました！\n🏅メダル100・💎シャイン100");
+  alert("🎉 テスト版リリースキャンペーン報酬を受け取りました！\n🏅メダル100・💎シャイン100\n※岐阜/名古屋/京都/大阪編クリア時はレア社員採用チケット2枚を追加で獲得できます。");
 }
 
 function renderHomeShopModal() {
@@ -30530,7 +30592,7 @@ function renderHomeShopModal() {
       <section style={{ marginBottom: 10, padding: 12, borderRadius: 20, background: titleReleaseCampaignClaimed ? "linear-gradient(135deg,#eef5ef,#f7fbf7)" : "radial-gradient(circle at 12% 10%,#fff7ba 0%,#ffe7a3 28%,#dff7ff 64%,#fff 100%)", border: titleReleaseCampaignClaimed ? "1px solid rgba(198,214,202,0.95)" : "1px solid rgba(255,186,70,0.95)", boxShadow: titleReleaseCampaignClaimed ? "0 8px 22px rgba(31,58,38,0.10)" : "0 12px 26px rgba(255,142,42,0.20)", display: "grid", gridTemplateColumns: "1fr auto", gap: 10, alignItems: "center", position: "relative", overflow: "hidden" }}>
         <span style={{ minWidth: 0, position: "relative", zIndex: 1 }}>
           <strong style={{ display: "block", fontSize: 14, color: "#1d2b22" }}>{titleReleaseCampaignClaimed ? "✅ テスト版リリースキャンペーン" : "🎉 テスト版リリースキャンペーン"}</strong>
-          <small style={{ display: "block", marginTop: 3, fontSize: 11, color: "#536357", fontWeight: 900 }}>{titleReleaseCampaignClaimed ? "報酬は受け取り済みです" : "今だけ 🏅メダル100 ＆ 💎シャイン100 をプレゼント"}</small>
+          <small style={{ display: "block", marginTop: 3, fontSize: 11, color: "#536357", fontWeight: 900 }}>{titleReleaseCampaignClaimed ? "報酬は受け取り済みです" : "今だけ 🏅メダル100 ＆ 💎シャイン100 / 章クリアでレアチケット2枚"}</small>
         </span>
         <button type="button" disabled={titleReleaseCampaignClaimed === true} onClick={claimTestReleaseCampaign} style={{ position: "relative", zIndex: 1, padding: "10px 15px", borderRadius: 999, border: "none", background: titleReleaseCampaignClaimed ? "#b8c7b9" : "linear-gradient(145deg,#1d7f4f,#0f5f3a)", color: "#fff", fontWeight: 900, cursor: titleReleaseCampaignClaimed ? "not-allowed" : "pointer", whiteSpace: "nowrap", boxShadow: titleReleaseCampaignClaimed ? "none" : "0 8px 18px rgba(15,95,58,0.24)" }}>
           {titleReleaseCampaignClaimed ? "受取済み" : "受け取る"}
@@ -36565,7 +36627,7 @@ return (
                   <div style={{ display: "grid", gap: 8 }}>
                     <div style={{ padding: 12, borderRadius: 16, background: "linear-gradient(145deg,#fff7df,#ffe5a3)", border: "1px solid #e8d08a", color: "#1d2b22" }}>
                       <strong>🎉 テスト版リリースキャンペーン</strong>
-                      <div style={{ fontSize: 13, marginTop: 4 }}>今だけ 🏅メダル100 ＆ 💎シャイン100 をプレゼント。</div>
+                      <div style={{ fontSize: 13, marginTop: 4 }}>今だけ 🏅メダル100 ＆ 💎シャイン100 / 章クリアでレアチケット2枚。</div>
                     </div>
                     <button type="button" onClick={homeLoginBonusStatus.canClaim ? claimHomeDailyLoginBonus : () => setTitleModal("missions")} style={{ padding: 12, borderRadius: 16, background: homeLoginBonusStatus.canClaim ? "#fff7df" : "#f3f6f1", border: "1px solid #d8e0d8", color: "#1d2b22", textAlign: "left", cursor: "pointer" }}>
                       <strong>🎁 ログインボーナス</strong>
