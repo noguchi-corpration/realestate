@@ -4420,7 +4420,7 @@ th, td {
 
       .profile-new-stamp {
         position: absolute;
-        left: -14px;
+        left: 4px;
         top: -14px;
         z-index: 4;
         font-size: 20px;
@@ -11748,9 +11748,9 @@ th, td {
 }
 
 .home-lobby-bottom-nav-hidden-v261 {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-  pointer-events: auto !important;
+  opacity: 0 !important;
+  transform: translateY(calc(100% + 34px)) !important;
+  pointer-events: none !important;
 }
 
 .home-lobby-nav-button-v2182 {
@@ -12351,7 +12351,7 @@ html body .home-top-action-button-v371 span:last-child {
 
 html body .home-top-action-badge-v371 {
   top: -3px !important;
-  right: -2px !important;
+  left: -2px !important;
   min-width: 16px !important;
   height: 16px !important;
   padding: 0 4px !important;
@@ -13312,4 +13312,3760 @@ html body .home-scene-stage-v371 .home-akari-portrait-v201.home-akari-full-v372 
     animation: none !important;
     margin-bottom: 0 !important;
   }
+}
+
+/* v388: 実績受取済み判定修正・ホーム下部メニュー2秒自動非表示対応 */
+
+/* v390: ホーム通常画面では下部メニュー常時表示、モーダル中だけ2秒後に退避 */
+html body .home-lobby-bottom-nav-v2182.home-lobby-bottom-nav-visible-v261 {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
+}
+html body .home-lobby-bottom-nav-v2182.home-lobby-bottom-nav-hidden-v261 {
+  opacity: 0 !important;
+  transform: translateY(calc(100% + 42px)) !important;
+  pointer-events: none !important;
+}
+
+/* v390: 社員採用演出を色別に強化。青/緑/赤/虹が一目で分かるように光・雷・粒子を追加 */
+.employee-gacha-card-v284 {
+  isolation: isolate;
+  border-width: 5px !important;
+  animation: gachaCardPopV284 0.34s ease-out both, gachaCardPulseV390 1.2s ease-in-out infinite alternate;
+}
+.employee-gacha-card-v284::after {
+  content: "";
+  position: absolute;
+  inset: -18%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.92;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255,255,255,0.95) 0 2px, transparent 3px),
+    radial-gradient(circle at 82% 24%, rgba(255,255,255,0.8) 0 2px, transparent 3px),
+    radial-gradient(circle at 24% 82%, rgba(255,255,255,0.7) 0 2px, transparent 3px),
+    linear-gradient(135deg, transparent 0 42%, rgba(255,255,255,0.72) 44%, transparent 48% 58%, rgba(255,255,255,0.58) 60%, transparent 64%);
+  filter: blur(0.2px) drop-shadow(0 0 10px currentColor);
+  animation: gachaSparkSlideV390 1.05s linear infinite;
+}
+.employee-gacha-card-v284 > * { position: relative; z-index: 2; }
+.employee-gacha-card-v284 .gacha-ticket-ring-v284 {
+  border-width: 6px;
+  animation: gachaRainbowRotateV284 0.75s linear infinite, gachaRingPulseV390 0.62s ease-in-out infinite alternate;
+}
+.employee-gacha-card-v284 .gacha-ticket-flash {
+  position: absolute;
+  inset: -16px;
+  display: grid;
+  place-items: center;
+  font-size: 62px;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 12px currentColor);
+  animation: gachaFlashBurstV390 0.9s ease-in-out infinite;
+}
+.employee-gacha-card-v284.rarity-n,
+.employee-gacha-card-v284.rarity-r {
+  color: #1677ff;
+  border-color: #2388ff !important;
+  background: radial-gradient(circle at 50% 12%, rgba(107,190,255,0.54), rgba(255,255,255,0.98) 38%, rgba(224,242,255,0.98)) !important;
+  box-shadow: 0 0 22px rgba(35,136,255,0.7), inset 0 0 30px rgba(65,160,255,0.22) !important;
+}
+.employee-gacha-card-v284.rarity-hr {
+  color: #10a85a;
+  border-color: #16c96f !important;
+  background: radial-gradient(circle at 50% 12%, rgba(111,255,178,0.6), rgba(255,255,255,0.98) 38%, rgba(223,255,237,0.98)) !important;
+  box-shadow: 0 0 26px rgba(22,201,111,0.76), inset 0 0 34px rgba(22,201,111,0.24) !important;
+}
+.employee-gacha-card-v284.rarity-sr,
+.employee-gacha-card-v284.rarity-ssr {
+  color: #ff3656;
+  border-color: #ff3656 !important;
+  background: radial-gradient(circle at 50% 10%, rgba(255,105,105,0.68), rgba(255,255,255,0.98) 36%, rgba(255,229,229,0.98)) !important;
+  box-shadow: 0 0 34px rgba(255,54,86,0.9), inset 0 0 42px rgba(255,54,86,0.28) !important;
+}
+.employee-gacha-card-v284.rarity-ur,
+.employee-gacha-card-v284.awakened {
+  color: #8f38ff;
+  border: 6px solid transparent !important;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    conic-gradient(from 0deg, #ff3b5c, #ffcc33, #35e36f, #36c8ff, #8f38ff, #ff3b5c) border-box !important;
+  box-shadow: 0 0 42px rgba(143,56,255,0.98), 0 0 24px rgba(54,200,255,0.72), inset 0 0 42px rgba(255,220,90,0.32) !important;
+}
+.employee-gacha-card-v284.rarity-ur::before,
+.employee-gacha-card-v284.awakened::before {
+  opacity: 0.9 !important;
+  animation-duration: 1.4s !important;
+}
+@keyframes gachaCardPulseV390 {
+  from { filter: brightness(1) saturate(1.1); }
+  to { filter: brightness(1.12) saturate(1.35); }
+}
+@keyframes gachaSparkSlideV390 {
+  from { transform: translateX(-12%) rotate(0deg); opacity: 0.45; }
+  50% { opacity: 0.95; }
+  to { transform: translateX(12%) rotate(10deg); opacity: 0.45; }
+}
+@keyframes gachaRingPulseV390 {
+  from { transform: scale(0.94); box-shadow: 0 0 16px currentColor; }
+  to { transform: scale(1.08); box-shadow: 0 0 34px currentColor; }
+}
+@keyframes gachaFlashBurstV390 {
+  0%, 100% { transform: scale(0.75) rotate(-8deg); opacity: 0.18; }
+  45% { transform: scale(1.15) rotate(8deg); opacity: 0.9; }
+}
+
+/* ===== v391: 社員採用は獲得前演出を主役化 ===== */
+/* 配達中〜到着を、ホーム上の小カードではなく画面全体のガチャ演出として表示 */
+html body .recruit-delivery-overlay-v363 {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 19000 !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: max(14px, env(safe-area-inset-top)) 14px max(14px, env(safe-area-inset-bottom)) !important;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255,255,255,0.16), transparent 26%),
+    linear-gradient(180deg, rgba(8,14,30,0.96), rgba(18,24,44,0.98)) !important;
+  backdrop-filter: blur(7px) !important;
+}
+html body .recruit-delivery-card-v363 {
+  width: min(96vw, 860px) !important;
+  min-height: min(82dvh, 720px) !important;
+  padding: clamp(22px, 4vw, 48px) clamp(16px, 4vw, 52px) !important;
+  border-radius: 32px !important;
+  color: #ffffff !important;
+  border: 4px solid rgba(120,170,255,0.88) !important;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(62,139,255,0.34), transparent 31%),
+    radial-gradient(circle at 50% 110%, rgba(255,255,255,0.14), transparent 34%),
+    linear-gradient(180deg, #0b1734, #101931 58%, #071022) !important;
+  box-shadow: 0 0 42px rgba(70,145,255,0.74), 0 30px 90px rgba(0,0,0,0.62) !important;
+  isolation: isolate !important;
+}
+html body .recruit-delivery-card-v363::before,
+html body .recruit-delivery-card-v363::after {
+  content: "";
+  position: absolute;
+  inset: -18%;
+  pointer-events: none;
+  z-index: 0;
+}
+html body .recruit-delivery-card-v363::before {
+  background:
+    repeating-conic-gradient(from 0deg, rgba(255,255,255,0.13) 0deg 8deg, transparent 8deg 20deg),
+    radial-gradient(circle, transparent 38%, rgba(255,255,255,0.12) 39%, transparent 41%);
+  opacity: .55;
+  animation: recruitPreGachaSpinV391 9s linear infinite;
+}
+html body .recruit-delivery-card-v363::after {
+  background:
+    linear-gradient(115deg, transparent 0 42%, rgba(255,255,255,0.55) 48%, transparent 54% 100%),
+    linear-gradient(65deg, transparent 0 44%, rgba(255,255,255,0.22) 49%, transparent 55% 100%);
+  opacity: .52;
+  transform: translateX(-70%);
+  animation: recruitPreGachaSweepV391 1.45s ease-in-out infinite;
+}
+html body .recruit-delivery-card-v363 > * { position: relative !important; z-index: 1 !important; }
+html body .recruit-delivery-glow-v363 {
+  inset: -55% !important;
+  opacity: 1 !important;
+  filter: blur(1px) saturate(1.3) !important;
+  background: radial-gradient(circle at 50% 44%, rgba(73,156,255,0.72), transparent 34%) !important;
+  animation: recruitPreGachaPulseV391 .72s ease-in-out infinite alternate !important;
+}
+html body .recruit-delivery-route-v363 {
+  width: min(680px, 88vw) !important;
+  height: clamp(128px, 24dvh, 220px) !important;
+  margin: 0 auto 6px !important;
+}
+html body .recruit-delivery-mailbox-v363 { font-size: clamp(46px, 8vw, 86px) !important; }
+html body .recruit-delivery-envelope-v363 {
+  font-size: clamp(64px, 13vw, 132px) !important;
+  filter: drop-shadow(0 0 18px rgba(255,255,255,0.55)) drop-shadow(0 16px 22px rgba(0,0,0,0.52)) !important;
+  animation: recruitEnvelopeDeliveryV391 1.05s cubic-bezier(.17,.8,.24,1) both, recruitEnvelopeShakeV391 .22s linear infinite alternate !important;
+}
+html body .recruit-delivery-icon-v363 {
+  width: clamp(78px, 16vw, 128px) !important;
+  height: clamp(78px, 16vw, 128px) !important;
+  font-size: clamp(42px, 9vw, 74px) !important;
+  color: #ffffff !important;
+  background: rgba(255,255,255,0.16) !important;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.64), 0 0 34px rgba(95,160,255,0.76) !important;
+}
+html body .recruit-delivery-card-v363 h2 {
+  font-size: clamp(26px, 5.2vw, 54px) !important;
+  color: #ffffff !important;
+  text-shadow: 0 0 16px rgba(100,170,255,0.85), 0 4px 12px rgba(0,0,0,0.55) !important;
+  letter-spacing: .04em !important;
+}
+html body .recruit-delivery-card-v363 p {
+  max-width: 620px !important;
+  font-size: clamp(13px, 2.6vw, 20px) !important;
+  color: rgba(255,255,255,0.92) !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.45) !important;
+}
+html body .recruit-signal-green {
+  border-color: rgba(67,255,138,0.92) !important;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(59,255,132,0.40), transparent 32%),
+    linear-gradient(180deg, #062718, #102619 58%, #04120c) !important;
+  box-shadow: 0 0 48px rgba(75,255,140,0.84), 0 30px 90px rgba(0,0,0,0.62) !important;
+}
+html body .recruit-signal-green .recruit-delivery-glow-v363 { background: radial-gradient(circle at 50% 44%, rgba(78,255,137,0.84), transparent 35%) !important; }
+html body .recruit-signal-red {
+  border-color: rgba(255,70,88,1) !important;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255,54,83,0.50), transparent 32%),
+    linear-gradient(180deg, #3a0811, #271018 58%, #15040a) !important;
+  box-shadow: 0 0 56px rgba(255,64,92,0.95), 0 0 18px rgba(255,255,255,0.42) inset, 0 30px 90px rgba(0,0,0,0.66) !important;
+}
+html body .recruit-signal-red .recruit-delivery-glow-v363 { background: radial-gradient(circle at 50% 44%, rgba(255,68,92,0.98), transparent 36%) !important; animation-duration: .48s !important; }
+html body .recruit-signal-red .recruit-delivery-card-v363::after,
+html body .recruit-signal-red::after { animation-duration: .95s !important; }
+html body .recruit-signal-rainbow {
+  border-color: rgba(255,237,118,1) !important;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255,255,255,0.24), transparent 24%),
+    conic-gradient(from 0deg, rgba(255,79,98,.58), rgba(255,210,87,.58), rgba(94,234,138,.54), rgba(74,163,255,.58), rgba(156,99,255,.62), rgba(255,79,98,.58)),
+    linear-gradient(180deg, #180b2d, #0b1027) !important;
+  box-shadow: 0 0 68px rgba(255,218,92,0.95), 0 0 42px rgba(140,92,255,0.88), 0 30px 90px rgba(0,0,0,0.72) !important;
+}
+html body .recruit-signal-rainbow .recruit-delivery-glow-v363 {
+  background: conic-gradient(from 0deg, rgba(255,79,98,0.72), rgba(255,210,87,0.82), rgba(94,234,138,0.72), rgba(74,163,255,0.76), rgba(156,99,255,0.82), rgba(255,79,98,0.72)) !important;
+  animation: recruitPreGachaSpinV391 1.35s linear infinite !important;
+}
+html body .recruit-signal-rainbow::before { animation-duration: 3.6s !important; opacity: .78 !important; }
+
+/* 履歴書選択も全画面ステージに。小さいタブではなくガチャ専用ページとして見せる */
+html body .popup-log.recruit-popup-stage {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 18000 !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  padding: 0 !important;
+  background: linear-gradient(180deg, rgba(8,14,30,0.96), rgba(20,25,42,0.98)) !important;
+  backdrop-filter: blur(6px) !important;
+}
+html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card {
+  width: 100vw !important;
+  max-width: none !important;
+  height: 100dvh !important;
+  max-height: none !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  padding: max(18px, env(safe-area-inset-top)) clamp(12px, 4vw, 48px) max(18px, env(safe-area-inset-bottom)) !important;
+  overflow-y: auto !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  border-bottom-width: 5px !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-title-area h2 { font-size: clamp(24px, 5vw, 46px) !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-desk-row {
+  width: min(980px, 100%) !important;
+  margin: 14px auto !important;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)) !important;
+  gap: clamp(10px, 2.4vw, 22px) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card {
+  min-height: clamp(148px, 23dvh, 230px) !important;
+  border-radius: 22px !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card .resume-envelope-visual {
+  transform: scale(1.16) !important;
+  margin-top: 8px !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-wrap {
+  width: min(980px, 100%) !important;
+  margin: 14px auto 0 !important;
+}
+@media (max-width: 600px) {
+  html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-desk-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card {
+    min-height: 142px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card .resume-envelope-visual {
+    transform: scale(0.98) !important;
+  }
+}
+@keyframes recruitPreGachaSpinV391 { to { transform: rotate(360deg); } }
+@keyframes recruitPreGachaPulseV391 { from { transform: scale(.96); opacity: .68; } to { transform: scale(1.08); opacity: 1; } }
+@keyframes recruitPreGachaSweepV391 { 0% { transform: translateX(-72%) rotate(-4deg); opacity: 0; } 30% { opacity: .7; } 100% { transform: translateX(72%) rotate(4deg); opacity: 0; } }
+@keyframes recruitEnvelopeDeliveryV391 { 0% { transform: translateX(-36vw) translateY(-18px) rotate(-18deg) scale(.56); opacity: 0; } 58% { transform: translateX(4vw) translateY(2px) rotate(10deg) scale(1.18); opacity: 1; } 78% { transform: translateX(-1vw) translateY(-5px) rotate(-4deg) scale(1.06); } 100% { transform: translateX(0) translateY(0) rotate(0deg) scale(1); opacity: 1; } }
+@keyframes recruitEnvelopeShakeV391 { from { translate: 0 0; } to { translate: 0 -4px; } }
+
+/* ===== v392: 社員採用ガチャ本格開封演出 ===== */
+.recruit-popup-stage {
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  padding: 0 !important;
+  background:
+    radial-gradient(circle at 50% 12%, rgba(160, 88, 255, 0.28), transparent 34%),
+    radial-gradient(circle at 18% 78%, rgba(24, 111, 255, 0.18), transparent 30%),
+    rgba(3, 5, 14, 0.92) !important;
+}
+
+.recruit-popup-stage .recruit-desk-card.recruit-stage-v206 {
+  width: 100vw !important;
+  max-width: none !important;
+  min-height: 100dvh !important;
+  max-height: 100dvh !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  padding: clamp(14px, 2.4vw, 28px) clamp(14px, 3.2vw, 42px) 24px !important;
+  overflow-y: auto !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.04), transparent 18%),
+    radial-gradient(circle at 50% 0%, rgba(255, 218, 112, 0.18), transparent 28%),
+    radial-gradient(circle at 22% 34%, rgba(136, 68, 255, 0.18), transparent 32%),
+    linear-gradient(180deg, #080914 0%, #101528 54%, #090a12 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255, 225, 142, 0.28) !important;
+}
+
+.recruit-title-area-v206 {
+  position: relative !important;
+  z-index: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  color: #fff4c7 !important;
+  margin-bottom: 18px !important;
+}
+
+.recruit-title-area-v206 h2 {
+  font-size: clamp(24px, 4.8vw, 46px) !important;
+  margin: 2px 0 4px !important;
+  letter-spacing: 0.05em !important;
+  text-shadow: 0 0 18px rgba(255, 218, 112, 0.55) !important;
+}
+
+.recruit-title-area-v206 p,
+.recruit-arrival-text-v206 {
+  color: rgba(255,255,255,0.86) !important;
+}
+
+.recruit-ticket-badge-v206 {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid rgba(255, 220, 122, 0.45) !important;
+  background: rgba(12, 10, 20, 0.78) !important;
+  color: #fff !important;
+  border-radius: 999px !important;
+  padding: 5px 14px !important;
+  box-shadow: 0 0 18px rgba(160, 82, 255, 0.24) !important;
+}
+
+.recruit-envelope-grid.recruit-envelope-desk-row,
+.recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-5,
+.recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-4,
+.recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-3 {
+  position: relative !important;
+  z-index: 2 !important;
+  display: grid !important;
+  grid-template-columns: repeat(var(--recruit-envelope-count, 4), minmax(76px, 1fr)) !important;
+  gap: clamp(8px, 2vw, 26px) !important;
+  align-items: end !important;
+  justify-items: center !important;
+  width: min(100%, 1080px) !important;
+  margin: 14px auto 10px !important;
+  padding: 12px 4px 24px !important;
+  overflow: visible !important;
+}
+
+.recruit-envelope-grid.recruit-envelope-count-3 { --recruit-envelope-count: 3; }
+.recruit-envelope-grid.recruit-envelope-count-4 { --recruit-envelope-count: 4; }
+.recruit-envelope-grid.recruit-envelope-count-5 { --recruit-envelope-count: 5; }
+
+.recruit-envelope-card-v206 {
+  position: relative !important;
+  width: min(100%, 210px) !important;
+  min-width: 0 !important;
+  height: clamp(136px, 20vw, 220px) !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  color: #fff !important;
+  overflow: visible !important;
+  transform-style: preserve-3d !important;
+  filter: drop-shadow(0 16px 28px rgba(0,0,0,0.5)) !important;
+}
+
+.resume-envelope-visual {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  transform-style: preserve-3d !important;
+  overflow: visible !important;
+}
+
+.resume-envelope-back,
+.resume-envelope-body,
+.resume-envelope-flap {
+  border-radius: 10px !important;
+}
+
+.recruit-envelope-card-v206.closed .resume-envelope-paper {
+  opacity: 0 !important;
+  transform: translate(-50%, 42%) scale(0.82) !important;
+  pointer-events: none !important;
+}
+
+.recruit-envelope-card-v206.opened .resume-envelope-flap {
+  transform: rotateX(148deg) !important;
+  transform-origin: top center !important;
+  transition: transform 0.58s cubic-bezier(.2,.9,.2,1.22) !important;
+}
+
+.recruit-envelope-card-v206.opened .resume-envelope-paper {
+  opacity: 1 !important;
+  width: 82% !important;
+  height: 148% !important;
+  left: 50% !important;
+  bottom: 10% !important;
+  transform: translate(-50%, -34%) scale(1) !important;
+  border-radius: 9px !important;
+  box-shadow: 0 0 24px rgba(255,255,255,0.24), 0 22px 38px rgba(0,0,0,0.38) !important;
+  transition: transform 0.62s cubic-bezier(.18,.94,.18,1.12), opacity 0.24s ease !important;
+}
+
+.recruit-envelope-card-v206.closed .envelope-new-stamp {
+  display: none !important;
+}
+
+.recruit-envelope-card-v206.opened .envelope-new-stamp {
+  display: inline-flex !important;
+  z-index: 8 !important;
+  top: -12px !important;
+}
+
+.recruit-envelope-card-v206.opened::before,
+.recruit-profile-panel::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: -20px !important;
+  z-index: -1 !important;
+  border-radius: 24px !important;
+  opacity: 0.95 !important;
+  filter: blur(8px) !important;
+  animation: recruitOpenAuraV392 1.7s ease-in-out infinite alternate !important;
+}
+
+.recruit-envelope-card-v206.opened.recruit-rarity-aura-ur::before,
+.recruit-profile-panel.recruit-rarity-aura-ur::before {
+  background: conic-gradient(from 0deg, #ff2d75, #ffb000, #ffff4d, #3cff68, #22d8ff, #7b4dff, #ff2d75) !important;
+}
+
+.recruit-envelope-card-v206.opened.recruit-rarity-aura-ssr::before,
+.recruit-profile-panel.recruit-rarity-aura-ssr::before {
+  background: radial-gradient(circle, rgba(255, 224, 92, 0.92), rgba(255, 172, 28, 0.58), transparent 68%) !important;
+}
+
+.recruit-envelope-card-v206.opened.recruit-rarity-aura-sr::before,
+.recruit-profile-panel.recruit-rarity-aura-sr::before {
+  background: radial-gradient(circle, rgba(255, 45, 68, 0.92), rgba(255, 85, 32, 0.5), transparent 68%) !important;
+}
+
+.recruit-envelope-card-v206.opened.recruit-rarity-aura-hr::before,
+.recruit-profile-panel.recruit-rarity-aura-hr::before {
+  background: radial-gradient(circle, rgba(86, 255, 102, 0.86), rgba(20, 180, 74, 0.45), transparent 68%) !important;
+}
+
+.recruit-envelope-card-v206.opened.recruit-rarity-aura-r::before,
+.recruit-profile-panel.recruit-rarity-aura-r::before {
+  background: radial-gradient(circle, rgba(68, 157, 255, 0.86), rgba(31, 92, 220, 0.45), transparent 68%) !important;
+}
+
+.recruit-envelope-card-v206.opened.recruit-rarity-aura-n::before,
+.recruit-profile-panel.recruit-rarity-aura-n::before {
+  display: none !important;
+}
+
+.recruit-tap-guide,
+.recruit-required-note-fantasy {
+  position: relative !important;
+  z-index: 2 !important;
+  color: rgba(255,255,255,0.86) !important;
+  text-align: center !important;
+  text-shadow: 0 0 10px rgba(160,82,255,0.5) !important;
+}
+
+.recruit-profile-wrap {
+  position: relative !important;
+  z-index: 3 !important;
+  width: min(100%, 980px) !important;
+  margin: 18px auto 0 !important;
+}
+
+.recruit-profile-panel {
+  position: relative !important;
+  overflow: visible !important;
+  background: linear-gradient(180deg, rgba(255, 248, 224, 0.98), rgba(255, 240, 202, 0.98)) !important;
+  border: 2px solid rgba(255, 220, 145, 0.82) !important;
+  box-shadow: 0 18px 42px rgba(0,0,0,0.38) !important;
+}
+
+@keyframes recruitOpenAuraV392 {
+  from { opacity: 0.55; transform: scale(0.97) rotate(0deg); }
+  to { opacity: 1; transform: scale(1.03) rotate(7deg); }
+}
+
+@media (max-width: 760px) {
+  .recruit-popup-stage .recruit-desk-card.recruit-stage-v206 {
+    padding: 12px 10px 24px !important;
+  }
+
+  .recruit-envelope-grid.recruit-envelope-desk-row,
+  .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-5,
+  .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-4,
+  .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-3 {
+    gap: 6px !important;
+    width: 100% !important;
+    padding-top: 8px !important;
+  }
+
+  .recruit-envelope-card-v206 {
+    height: clamp(98px, 26vw, 130px) !important;
+  }
+
+  .recruit-envelope-card-v206.opened .resume-envelope-paper {
+    height: 162% !important;
+    width: 88% !important;
+    transform: translate(-50%, -32%) scale(1) !important;
+  }
+
+  .recruit-applicant-summary {
+    display: none !important;
+  }
+
+  .recruit-title-area-v206 h2 {
+    font-size: 23px !important;
+  }
+}
+
+/* ===== v393 ガチャ封筒品質再修正：横一列・封筒感・開封前ラベル固定 ===== */
+html body .popup-log.recruit-popup-stage {
+  align-items: stretch !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  background: radial-gradient(circle at 50% 0%, rgba(55,28,88,0.42), rgba(3,5,13,0.94) 62%, rgba(0,0,0,0.98)) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-desk-card.recruit-stage-v206 {
+  width: min(100vw, 1200px) !important;
+  min-height: 100dvh !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  border-radius: 0 !important;
+  padding: clamp(16px, 3vw, 34px) clamp(12px, 3vw, 34px) 34px !important;
+  background:
+    radial-gradient(circle at 50% 8%, rgba(163,95,255,0.34), transparent 34%),
+    radial-gradient(circle at 18% 28%, rgba(255,206,89,0.18), transparent 28%),
+    linear-gradient(180deg, rgba(13,11,25,0.98), rgba(7,8,17,0.98) 58%, rgba(4,4,10,0.99)) !important;
+  border: 1px solid rgba(255,220,140,0.42) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-title-area-v206 {
+  margin-bottom: 10px !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-5,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-4,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-3 {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: clamp(8px, 1.6vw, 22px) !important;
+  width: 100% !important;
+  max-width: 1120px !important;
+  margin: 16px auto 8px !important;
+  padding: 22px 4px 18px !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  -webkit-overflow-scrolling: touch !important;
+  scroll-snap-type: x proximity !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 {
+  flex: 0 0 clamp(128px, 21vw, 220px) !important;
+  width: clamp(128px, 21vw, 220px) !important;
+  height: clamp(94px, 15.5vw, 156px) !important;
+  min-width: clamp(128px, 21vw, 220px) !important;
+  max-width: 220px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  scroll-snap-align: center !important;
+  overflow: visible !important;
+  filter: drop-shadow(0 18px 26px rgba(0,0,0,0.58)) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-visual {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 12px !important;
+  overflow: visible !important;
+  transform: translateZ(0) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-back,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-body {
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255,255,255,0.24) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.34), inset 0 -18px 26px rgba(0,0,0,0.18) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-white .resume-envelope-back,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-white .resume-envelope-body {
+  background: linear-gradient(145deg, #fffdf4 0%, #eee6d8 52%, #cfc8b8 100%) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-brown .resume-envelope-back,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-brown .resume-envelope-body {
+  background: linear-gradient(145deg, #b67c43 0%, #8a572b 54%, #4d2e17 100%) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-black .resume-envelope-back,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-black .resume-envelope-body {
+  background: linear-gradient(145deg, #28232d 0%, #111018 54%, #020207 100%) !important;
+  border-color: rgba(255,215,130,0.28) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-body::before,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-body::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  height: 68% !important;
+  border-radius: 0 0 12px 12px !important;
+  pointer-events: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-body::before {
+  clip-path: polygon(0 0, 50% 58%, 100% 0, 100% 100%, 0 100%) !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(0,0,0,0.12)) !important;
+  border-top: 1px solid rgba(0,0,0,0.22) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-body::after {
+  clip-path: polygon(0 100%, 50% 38%, 100% 100%) !important;
+  background: rgba(255,255,255,0.08) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-flap {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 0 !important;
+  height: 62% !important;
+  border-radius: 12px 12px 4px 4px !important;
+  clip-path: polygon(0 0, 100% 0, 50% 100%) !important;
+  transform-origin: top center !important;
+  z-index: 5 !important;
+  border-top: 1px solid rgba(255,255,255,0.24) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 6px 12px rgba(0,0,0,0.22) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-white .resume-envelope-flap { background: linear-gradient(145deg, #fffaf0, #ddd5c6) !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-brown .resume-envelope-flap { background: linear-gradient(145deg, #c58a4f, #70431f) !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-black .resume-envelope-flap { background: linear-gradient(145deg, #2f2934, #05050b) !important; }
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.closed .resume-envelope-paper {
+  opacity: 0 !important;
+  transform: translate(-50%, 48%) scale(0.72) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.opened .resume-envelope-flap {
+  transform: rotateX(156deg) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.opened .resume-envelope-paper {
+  display: block !important;
+  opacity: 1 !important;
+  z-index: 4 !important;
+  left: 50% !important;
+  bottom: 8% !important;
+  width: 76% !important;
+  height: 170% !important;
+  transform: translate(-50%, -42%) scale(1) !important;
+  border-radius: 8px !important;
+  background: linear-gradient(180deg, #fffdf7, #f6eddc) !important;
+  border: 1px solid rgba(120,95,60,0.32) !important;
+  box-shadow: 0 0 24px rgba(255,255,255,0.32), 0 24px 36px rgba(0,0,0,0.42) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-seal {
+  position: absolute !important;
+  left: 50% !important;
+  top: 53% !important;
+  width: 32px !important;
+  height: 32px !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 9 !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 32% 24%, #fff2bf, #bf7b24 46%, #58330f 100%) !important;
+  border: 1px solid rgba(255,235,170,0.78) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.48) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .recruit-applicant-summary {
+  display: inline-flex !important;
+  position: absolute !important;
+  left: 50% !important;
+  bottom: -34px !important;
+  transform: translateX(-50%) !important;
+  z-index: 12 !important;
+  min-width: 86px !important;
+  justify-content: center !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  background: rgba(4,5,12,0.84) !important;
+  border: 1px solid rgba(255,220,140,0.45) !important;
+  color: #fff4c7 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+  text-shadow: 0 0 10px rgba(170,90,255,0.5) !important;
+  white-space: nowrap !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.opened .envelope-new-stamp {
+  top: -18px !important;
+  left: 4px !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-profile-wrap {
+  width: min(100%, 760px) !important;
+  margin: 42px auto 0 !important;
+}
+
+@media (max-width: 760px) {
+  html body .popup-log.recruit-popup-stage .recruit-desk-card.recruit-stage-v206 {
+    padding: 16px 12px 28px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-5,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-4,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-3 {
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    padding: 18px 8px 40px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 {
+    flex-basis: 136px !important;
+    width: 136px !important;
+    min-width: 136px !important;
+    height: 100px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.opened .resume-envelope-paper {
+    height: 178% !important;
+    width: 78% !important;
+    transform: translate(-50%, -44%) scale(1) !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-title-area-v206 h2 {
+    font-size: 24px !important;
+  }
+}
+
+/* ===== v394 ガチャ演出：モックアップ骨格から作り直し ===== */
+html body .popup-log.recruit-popup-stage {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 24000 !important;
+  display: block !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(191, 107, 255, 0.42), transparent 34%),
+    radial-gradient(circle at 20% 18%, rgba(255, 205, 98, 0.20), transparent 30%),
+    linear-gradient(180deg, #070712 0%, #11101c 44%, #05050b 100%) !important;
+}
+
+html body .popup-log.recruit-popup-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.055) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+    radial-gradient(circle at 30% 25%, rgba(153, 82, 255, 0.22), transparent 22%),
+    radial-gradient(circle at 70% 30%, rgba(255, 215, 112, 0.18), transparent 24%);
+  background-size: 76px 76px, 76px 76px, auto, auto;
+  opacity: 0.75;
+}
+
+html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card.recruit-stage-v206 {
+  position: relative !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: max(12px, env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom)) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #fff8dc !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.09), transparent 16%),
+    radial-gradient(circle at 50% 0%, rgba(255, 231, 164, 0.22), transparent 27%),
+    radial-gradient(circle at 50% 45%, rgba(91, 38, 146, 0.36), transparent 46%),
+    linear-gradient(180deg, rgba(8,8,18,0.92), rgba(3,3,9,0.98)) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-title-area-v206 {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  gap: 10px !important;
+  align-items: start !important;
+  max-width: 1180px !important;
+  margin: 0 auto 10px !important;
+  padding: 6px 8px 8px !important;
+  border-bottom: 1px solid rgba(226, 185, 92, 0.35) !important;
+  text-align: center !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-title-area-v206 .recruit-ornament { display: none !important; }
+html body .popup-log.recruit-popup-stage .recruit-ticket-badge-v206 {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 74px !important;
+  padding: 3px 12px !important;
+  border-radius: 999px !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, #1a1327, #523178) !important;
+  border: 1px solid rgba(255, 214, 133, 0.55) !important;
+  box-shadow: 0 0 16px rgba(170, 89, 255, 0.28) !important;
+  font-size: clamp(11px, 2.4vw, 14px) !important;
+  font-weight: 900 !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-title-area-v206 h2 {
+  margin: 4px 0 2px !important;
+  color: #ffe8aa !important;
+  font-size: clamp(22px, 6vw, 42px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0.04em !important;
+  text-shadow: 0 0 16px rgba(255, 221, 126, 0.35), 0 2px 3px rgba(0,0,0,0.9) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-title-area-v206 p {
+  color: rgba(255,255,255,0.86) !important;
+  margin: 2px 0 !important;
+  font-size: clamp(12px, 3.3vw, 15px) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-main-layout-v394 {
+  width: min(1180px, 100%) !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(126px, 170px) !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-5,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-4,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-3 {
+  width: 100% !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: clamp(6px, 1.8vw, 20px) !important;
+  margin: 8px auto 4px !important;
+  padding: 8px 4px 18px !important;
+  overflow: visible !important;
+  border: 1px solid rgba(255, 218, 141, 0.16) !important;
+  border-radius: 20px !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.035), transparent),
+    radial-gradient(circle at 50% 0%, rgba(162, 94, 255, 0.18), transparent 40%) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 {
+  position: relative !important;
+  flex: 0 0 clamp(58px, 17.5vw, 168px) !important;
+  width: clamp(58px, 17.5vw, 168px) !important;
+  height: clamp(64px, 15.2vw, 150px) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  transform: translateZ(0) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-count-4 .recruit-envelope-card-v206 {
+  flex-basis: clamp(68px, 20.5vw, 190px) !important;
+  width: clamp(68px, 20.5vw, 190px) !important;
+  height: clamp(72px, 17vw, 158px) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-visual {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 22px !important;
+  width: 100% !important;
+  height: 72% !important;
+  aspect-ratio: auto !important;
+  display: block !important;
+  transform: none !important;
+  filter: drop-shadow(0 12px 16px rgba(0,0,0,0.48)) !important;
+}
+
+html body .popup-log.recruit-popup-stage .resume-envelope-back,
+html body .popup-log.recruit-popup-stage .resume-envelope-body,
+html body .popup-log.recruit-popup-stage .resume-envelope-flap {
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: 4px !important;
+}
+
+html body .popup-log.recruit-popup-stage .resume-envelope-back {
+  z-index: 1 !important;
+  background: linear-gradient(145deg, #fcf5e7, #d7cbbb) !important;
+  border: 1px solid rgba(89, 64, 35, 0.38) !important;
+}
+html body .popup-log.recruit-popup-stage .resume-envelope-body {
+  z-index: 4 !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255,255,255,0.16) !important;
+  background: linear-gradient(145deg, #fffaf0, #d8cfc2) !important;
+  clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%) !important;
+}
+html body .popup-log.recruit-popup-stage .resume-envelope-body::before,
+html body .popup-log.recruit-popup-stage .resume-envelope-body::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+}
+html body .popup-log.recruit-popup-stage .resume-envelope-body::before {
+  background: linear-gradient(135deg, rgba(0,0,0,0.18), transparent 37%, transparent 63%, rgba(255,255,255,0.18)) !important;
+  clip-path: polygon(0 0, 50% 52%, 0 100%) !important;
+}
+html body .popup-log.recruit-popup-stage .resume-envelope-body::after {
+  background: linear-gradient(225deg, rgba(0,0,0,0.18), transparent 37%, transparent 63%, rgba(255,255,255,0.18)) !important;
+  clip-path: polygon(100% 0, 50% 52%, 100% 100%) !important;
+}
+html body .popup-log.recruit-popup-stage .resume-envelope-flap {
+  z-index: 5 !important;
+  transform-origin: top center !important;
+  background: linear-gradient(160deg, #fffdf3, #ded4c5) !important;
+  clip-path: polygon(0 0, 100% 0, 50% 58%) !important;
+  box-shadow: inset 0 -8px 14px rgba(0,0,0,0.15) !important;
+  transition: transform 0.48s cubic-bezier(.2,.8,.2,1), filter 0.48s ease !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.opened .resume-envelope-flap {
+  transform: perspective(520px) rotateX(-152deg) !important;
+  filter: brightness(1.2) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-white .resume-envelope-back,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-white .resume-envelope-body { background: linear-gradient(145deg, #fffdf4, #d7cfc3) !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-white .resume-envelope-flap { background: linear-gradient(160deg, #fffaf0, #d7cfc3) !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-brown .resume-envelope-back,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-brown .resume-envelope-body { background: linear-gradient(145deg, #c88b4a, #6d3f1f) !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-brown .resume-envelope-flap { background: linear-gradient(160deg, #d39a58, #75411e) !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-black .resume-envelope-back,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-black .resume-envelope-body { background: linear-gradient(145deg, #2a2630, #05050a) !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-black .resume-envelope-flap { background: linear-gradient(160deg, #34303a, #05050b) !important; }
+
+html body .popup-log.recruit-popup-stage .resume-envelope-paper {
+  position: absolute !important;
+  left: 10% !important;
+  right: 10% !important;
+  top: 12% !important;
+  height: 106% !important;
+  z-index: 3 !important;
+  opacity: 0 !important;
+  transform: translateY(28%) scale(0.94) !important;
+  border-radius: 5px !important;
+  background: linear-gradient(180deg, #fffdf7, #f4ead6) !important;
+  border: 1px solid rgba(154, 112, 45, 0.45) !important;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.34) inset !important;
+  transition: transform 0.62s cubic-bezier(.18,.9,.22,1), opacity 0.28s ease !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.opened .resume-envelope-paper {
+  opacity: 1 !important;
+  transform: translateY(-72%) scale(1) !important;
+}
+html body .popup-log.recruit-popup-stage .resume-paper-title {
+  display: block !important;
+  padding-top: 10% !important;
+  color: #4d3922 !important;
+  font-size: clamp(8px, 1.9vw, 16px) !important;
+  font-weight: 900 !important;
+}
+html body .popup-log.recruit-popup-stage .resume-paper-line,
+html body .popup-log.recruit-popup-stage .resume-paper-line.short {
+  display: block !important;
+  width: 72% !important;
+  height: 4px !important;
+  margin: 10% auto 0 !important;
+  border-radius: 999px !important;
+  background: rgba(118, 97, 65, 0.28) !important;
+}
+html body .popup-log.recruit-popup-stage .resume-paper-line.short { width: 50% !important; margin-top: 8% !important; }
+
+html body .popup-log.recruit-popup-stage .resume-envelope-seal {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  z-index: 8 !important;
+  width: clamp(19px, 4.5vw, 40px) !important;
+  height: clamp(19px, 4.5vw, 40px) !important;
+  transform: translate(-50%, -18%) !important;
+  border-radius: 50% !important;
+  border: 2px solid rgba(255, 230, 148, 0.84) !important;
+  background: radial-gradient(circle at 35% 30%, #fff1b7, #b57725 55%, #5c3215 100%) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.55), 0 0 10px rgba(255,198,80,0.42) !important;
+}
+html body .popup-log.recruit-popup-stage .resume-seal-emblem::before { content: "✿" !important; color: #ffeab2 !important; font-size: clamp(10px, 2.4vw, 22px) !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.opened .resume-envelope-seal { transform: translate(-50%, 58%) scale(0.92) !important; }
+
+html body .popup-log.recruit-popup-stage .recruit-applicant-summary {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 0 !important;
+  transform: translateX(-50%) !important;
+  width: max-content !important;
+  max-width: 120% !important;
+  padding: 1px 6px !important;
+  font-size: clamp(10px, 2.5vw, 18px) !important;
+  font-weight: 900 !important;
+  color: #fff4ce !important;
+  background: transparent !important;
+  border: 0 !important;
+  text-shadow: 0 0 10px rgba(168, 93, 255, 0.75), 0 2px 2px rgba(0,0,0,0.9) !important;
+}
+html body .popup-log.recruit-popup-stage .envelope-black .recruit-applicant-summary { color: #f2a8ff !important; }
+html body .popup-log.recruit-popup-stage .envelope-brown .recruit-applicant-summary { color: #ffd05a !important; }
+html body .popup-log.recruit-popup-stage .envelope-white .recruit-applicant-summary { color: #eee9dd !important; }
+
+html body .popup-log.recruit-popup-stage .envelope-new-stamp {
+  display: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.opened .envelope-new-stamp {
+  display: inline-flex !important;
+  z-index: 12 !important;
+  top: -12px !important;
+  left: 8% !important;
+  transform: rotate(-7deg) !important;
+  font-size: clamp(9px, 2.4vw, 15px) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-tap-guide {
+  grid-column: 1 / -1 !important;
+  margin: 0 auto !important;
+  color: #db88ff !important;
+  text-align: center !important;
+  font-size: clamp(18px, 5vw, 34px) !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.14em !important;
+  text-shadow: 0 0 16px rgba(186, 80, 255, 0.88) !important;
+  animation: recruitTapPulseV394 1.25s ease-in-out infinite alternate !important;
+}
+@keyframes recruitTapPulseV394 { from { opacity: .62; transform: translateY(0); } to { opacity: 1; transform: translateY(3px); } }
+
+html body .popup-log.recruit-popup-stage .recruit-odds-panel-v394,
+html body .popup-log.recruit-popup-stage .recruit-flow-panel-v394 {
+  align-self: stretch !important;
+  border: 1px solid rgba(218, 173, 92, 0.58) !important;
+  border-radius: 14px !important;
+  background: rgba(4, 5, 12, 0.64) !important;
+  box-shadow: 0 0 18px rgba(0,0,0,0.45), inset 0 0 18px rgba(255,255,255,0.035) !important;
+  color: rgba(255,255,255,0.88) !important;
+  padding: 10px !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-side-title-v394 {
+  color: #ffe2a0 !important;
+  text-align: center !important;
+  font-weight: 900 !important;
+  margin-bottom: 8px !important;
+  border-bottom: 1px solid rgba(218, 173, 92, 0.30) !important;
+  padding-bottom: 6px !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-odds-row-v394 {
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  padding: 4px 0 !important;
+  border-bottom: 1px solid rgba(255,255,255,0.09) !important;
+  font-size: clamp(12px, 3vw, 16px) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-rate-button-v394 {
+  width: 100% !important;
+  margin-top: 8px !important;
+  min-height: 34px !important;
+  color: #ffe8b4 !important;
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(235, 194, 113, 0.54) !important;
+  border-radius: 999px !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-flow-panel-v394 div:not(.recruit-side-title-v394) {
+  display: grid !important;
+  grid-template-columns: 24px 1fr !important;
+  gap: 7px !important;
+  align-items: center !important;
+  padding: 6px 0 !important;
+  font-size: clamp(11px, 2.6vw, 15px) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-flow-panel-v394 b {
+  display: grid !important;
+  place-items: center !important;
+  width: 22px !important;
+  height: 22px !important;
+  color: #fff !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #7c35ff, #e675ff) !important;
+  box-shadow: 0 0 10px rgba(181, 89, 255, 0.58) !important;
+}
+
+html body .popup-log.recruit-popup-stage .rarity-text-ur { color: #ef78ff !important; text-shadow: 0 0 8px #9affff !important; }
+html body .popup-log.recruit-popup-stage .rarity-text-ssr { color: #ffd65f !important; }
+html body .popup-log.recruit-popup-stage .rarity-text-sr { color: #ff5a64 !important; }
+html body .popup-log.recruit-popup-stage .rarity-text-hr { color: #78f06b !important; }
+html body .popup-log.recruit-popup-stage .rarity-text-r { color: #54a5ff !important; }
+html body .popup-log.recruit-popup-stage .rarity-text-n { color: #c7c1b8 !important; }
+
+html body .popup-log.recruit-popup-stage .recruit-profile-wrap {
+  width: min(1060px, calc(100vw - 24px)) !important;
+  margin: 10px auto 0 !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 220px) !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-panel {
+  border-radius: 16px !important;
+  border: 1px solid rgba(231, 197, 118, 0.78) !important;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45), inset 0 0 30px rgba(255,255,255,0.05) !important;
+  background: linear-gradient(145deg, rgba(255, 247, 225, 0.98), rgba(249, 232, 183, 0.96)) !important;
+  color: #20170f !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-rarity-aura-ur { box-shadow: 0 0 28px rgba(182,72,255,.65), 0 0 44px rgba(74,221,255,.45) !important; }
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-rarity-aura-ssr { box-shadow: 0 0 34px rgba(255,207,64,.82), 0 0 64px rgba(255,207,64,.34) !important; }
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-rarity-aura-sr { box-shadow: 0 0 34px rgba(255,64,76,.76), 0 0 58px rgba(255,64,76,.32) !important; }
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-rarity-aura-hr { box-shadow: 0 0 30px rgba(83,255,89,.72), 0 0 54px rgba(83,255,89,.30) !important; }
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-rarity-aura-r { box-shadow: 0 0 28px rgba(71,150,255,.76), 0 0 50px rgba(71,150,255,.30) !important; }
+
+@media (max-width: 700px) {
+  html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card.recruit-stage-v206 {
+    padding-top: max(8px, env(safe-area-inset-top)) !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-title-area-v206 {
+    grid-template-columns: 1fr !important;
+    text-align: left !important;
+    margin-bottom: 6px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-title-area-v206 h2 {
+    font-size: clamp(24px, 7.4vw, 34px) !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-title-area-v206 .recruit-odds-panel-v394 {
+    display: none !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-main-layout-v394 {
+    grid-template-columns: 1fr !important;
+    gap: 4px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-flow-panel-v394 {
+    display: none !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-5,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-4,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-3 {
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    padding: 8px 3px 16px !important;
+    border-radius: 16px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 {
+    flex-basis: calc((100vw - 40px) / 5) !important;
+    width: calc((100vw - 40px) / 5) !important;
+    height: calc((100vw - 40px) / 5 * 0.92) !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-count-4 .recruit-envelope-card-v206 {
+    flex-basis: calc((100vw - 36px) / 4) !important;
+    width: calc((100vw - 36px) / 4) !important;
+    height: calc((100vw - 36px) / 4 * 0.88) !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-applicant-summary {
+    font-size: 10px !important;
+    letter-spacing: -0.02em !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-profile-wrap {
+    grid-template-columns: 1fr !important;
+    width: calc(100vw - 24px) !important;
+    gap: 8px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-hire-side p { display: none !important; }
+  html body .popup-log.recruit-popup-stage .recruit-required-note { display: none !important; }
+}
+
+/* ===== v397 社員採用：画像準拠・既存仕様維持の封筒演出再構築 ===== */
+.recruit-popup-stage .recruit-desk-card {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 246, 207, 0.92), rgba(255, 255, 255, 0.72) 32%, transparent 52%),
+    linear-gradient(180deg, #f6dfb8 0%, #c99258 42%, #7a4d2c 100%) !important;
+  border: 3px solid rgba(96, 55, 27, 0.72) !important;
+  box-shadow: 0 26px 80px rgba(26, 13, 5, 0.48), inset 0 0 0 1px rgba(255,255,255,0.55) !important;
+  color: #2b1608 !important;
+}
+
+.recruit-title-area-v206 h2,
+.recruit-title-area-v206 p {
+  color: #2b1608 !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.42);
+}
+
+.recruit-envelope-desk-row {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(74px, 1fr)) !important;
+  gap: clamp(8px, 2vw, 16px) !important;
+  align-items: start !important;
+  justify-items: center !important;
+  margin: 12px auto 8px !important;
+  width: min(100%, 560px) !important;
+}
+
+.recruit-envelope-count-5.recruit-envelope-desk-row {
+  grid-template-columns: repeat(5, minmax(62px, 1fr)) !important;
+  width: min(100%, 640px) !important;
+}
+
+.recruit-envelope-card-v206 {
+  width: clamp(72px, 19vw, 118px) !important;
+  min-height: clamp(126px, 31vw, 178px) !important;
+  padding: 6px 5px 8px !important;
+  border: 0 !important;
+  border-radius: 18px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #2b1608 !important;
+  display: grid !important;
+  justify-items: center !important;
+  align-content: start !important;
+  gap: 6px !important;
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.recruit-envelope-card-v206.closed {
+  animation: recruitEnvelopeEntranceV206 0.54s ease both, recruitEnvelopeIdleV206 3.2s ease-in-out infinite !important;
+}
+
+.recruit-envelope-card-v206.selected {
+  filter: drop-shadow(0 0 18px rgba(255,236,166,0.88));
+}
+
+.recruit-sealed-envelope-visual {
+  width: clamp(64px, 17vw, 102px) !important;
+  height: clamp(104px, 27vw, 150px) !important;
+  display: block !important;
+  position: relative !important;
+  border-radius: 10px 10px 16px 16px !important;
+  transform: rotate(-1deg);
+  filter: drop-shadow(0 12px 18px rgba(37,18,4,0.32));
+}
+
+.recruit-envelope-card-v206:nth-child(even) .recruit-sealed-envelope-visual { transform: rotate(1.2deg); }
+
+.recruit-sealed-envelope-visual .resume-envelope-paper,
+.recruit-envelope-card-v206.closed .resume-envelope-paper {
+  display: none !important;
+}
+
+.recruit-sealed-envelope-visual .resume-envelope-back,
+.recruit-sealed-envelope-visual .resume-envelope-body {
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: 10px 10px 16px 16px !important;
+  border: 2px solid rgba(90, 58, 31, 0.34) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.45), inset 0 -20px 34px rgba(72,36,12,0.12) !important;
+}
+
+.recruit-envelope-card-v206.envelope-white .recruit-sealed-envelope-visual .resume-envelope-back,
+.recruit-envelope-card-v206.envelope-white .recruit-sealed-envelope-visual .resume-envelope-body {
+  background: linear-gradient(160deg, #fffdf2 0%, #ead9ad 52%, #c6a76f 100%) !important;
+}
+
+.recruit-envelope-card-v206.envelope-brown .recruit-sealed-envelope-visual .resume-envelope-back,
+.recruit-envelope-card-v206.envelope-brown .recruit-sealed-envelope-visual .resume-envelope-body {
+  background: linear-gradient(160deg, #c9904f 0%, #875321 56%, #4b2b12 100%) !important;
+  border-color: rgba(57, 30, 10, 0.68) !important;
+}
+
+.recruit-envelope-card-v206.envelope-black .recruit-sealed-envelope-visual .resume-envelope-back,
+.recruit-envelope-card-v206.envelope-black .recruit-sealed-envelope-visual .resume-envelope-body {
+  background: linear-gradient(160deg, #2a2830 0%, #111014 58%, #050506 100%) !important;
+  border-color: rgba(255, 219, 126, 0.48) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 0 18px rgba(255,211,107,0.22) !important;
+}
+
+.recruit-sealed-envelope-visual .resume-envelope-flap {
+  display: block !important;
+  position: absolute !important;
+  left: 8% !important;
+  right: 8% !important;
+  top: 8% !important;
+  height: 42% !important;
+  clip-path: polygon(0 0, 100% 0, 50% 100%) !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.44), rgba(80,42,13,0.18)) !important;
+  border-radius: 6px !important;
+  opacity: 0.9 !important;
+}
+
+.recruit-sealed-envelope-visual .resume-envelope-seal {
+  position: absolute !important;
+  left: 50% !important;
+  top: 46% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 30%, #ff7777, #c91125 62%, #7c0714) !important;
+  border: 2px solid rgba(255, 240, 205, 0.85) !important;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.28), inset 0 0 0 1px rgba(255,255,255,0.28) !important;
+}
+
+.recruit-envelope-card-v206.envelope-black .resume-envelope-seal {
+  background: radial-gradient(circle at 35% 30%, #ffe8a6, #c89024 62%, #69410b) !important;
+}
+
+.recruit-sealed-envelope-visual .resume-envelope-shine {
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: inherit !important;
+  background: linear-gradient(120deg, transparent 18%, rgba(255,255,255,0.28) 42%, transparent 58%) !important;
+  opacity: 0.5 !important;
+  pointer-events: none !important;
+}
+
+.recruit-new-stamp.envelope-new-stamp {
+  position: absolute !important;
+  top: -6px !important;
+  right: -8px !important;
+  z-index: 5 !important;
+  font-size: 11px !important;
+  padding: 4px 7px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(145deg, #ff365a, #b80023) !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.24) !important;
+  transform: rotate(9deg) !important;
+}
+
+.recruit-envelope-card-v206.closed .recruit-applicant-summary {
+  padding: 3px 8px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 248, 226, 0.9) !important;
+  border: 1px solid rgba(86, 49, 18, 0.24) !important;
+  color: #3f230d !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+}
+
+.recruit-opened-resume-card {
+  width: clamp(78px, 20vw, 128px) !important;
+  min-height: clamp(128px, 32vw, 180px) !important;
+  border-radius: 12px !important;
+  background: linear-gradient(180deg, #fffdfa 0%, #f6efe3 100%) !important;
+  padding: 8px 7px !important;
+  display: grid !important;
+  grid-template-rows: auto auto auto 1fr !important;
+  gap: 6px !important;
+  color: #2b1608 !important;
+  border: 4px solid transparent !important;
+  box-shadow: 0 16px 28px rgba(30, 13, 3, 0.30), inset 0 0 0 1px rgba(112,70,33,0.16) !important;
+  animation: recruitOpenResumePopV397 0.36s cubic-bezier(.2,1.35,.3,1) both !important;
+}
+
+.recruit-opened-resume-card.rarity-n { border-color: #d7c8ae !important; }
+.recruit-opened-resume-card.rarity-r { border-color: #368cff !important; box-shadow: 0 16px 28px rgba(30,13,3,0.28), 0 0 18px rgba(54,140,255,0.45) !important; }
+.recruit-opened-resume-card.rarity-hr { border-color: #28b463 !important; box-shadow: 0 16px 28px rgba(30,13,3,0.28), 0 0 18px rgba(40,180,99,0.45) !important; }
+.recruit-opened-resume-card.rarity-sr { border-color: #ff3333 !important; box-shadow: 0 16px 28px rgba(30,13,3,0.28), 0 0 20px rgba(255,51,51,0.56) !important; }
+.recruit-opened-resume-card.rarity-ssr { border-color: #ffd23f !important; box-shadow: 0 16px 28px rgba(30,13,3,0.30), 0 0 24px rgba(255,210,63,0.74) !important; }
+.recruit-opened-resume-card.rarity-ur {
+  background: linear-gradient(#fffdfa, #f6efe3) padding-box, conic-gradient(#ff3151, #ffd23f, #43e37d, #33b7ff, #9b5cff, #ff3151) border-box !important;
+  border-color: transparent !important;
+  box-shadow: 0 16px 28px rgba(30,13,3,0.30), 0 0 28px rgba(155,92,255,0.82) !important;
+}
+
+.recruit-opened-resume-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 4px !important;
+  border-bottom: 1px solid rgba(90, 58, 31, 0.22) !important;
+  padding-bottom: 4px !important;
+}
+
+.recruit-opened-resume-top strong { font-size: 13px !important; letter-spacing: 0.08em !important; }
+.recruit-opened-resume-top em { font-style: normal !important; font-size: 10px !important; font-weight: 900 !important; }
+.recruit-opened-resume-name { font-size: 12px !important; font-weight: 900 !important; line-height: 1.25 !important; }
+.recruit-opened-resume-stats { font-size: 10px !important; line-height: 1.35 !important; font-weight: 800 !important; }
+.recruit-opened-resume-note { align-self: end !important; font-size: 10px !important; color: #8a5a24 !important; font-weight: 900 !important; }
+
+.recruit-profile-panel.recruit-rarity-aura-n { border-color: #d7c8ae !important; box-shadow: 0 12px 26px rgba(0,0,0,0.12) !important; }
+.recruit-profile-panel.recruit-rarity-aura-r { border-color: #368cff !important; box-shadow: 0 12px 26px rgba(0,0,0,0.12), 0 0 18px rgba(54,140,255,0.45) !important; }
+.recruit-profile-panel.recruit-rarity-aura-hr { border-color: #28b463 !important; box-shadow: 0 12px 26px rgba(0,0,0,0.12), 0 0 18px rgba(40,180,99,0.45) !important; }
+.recruit-profile-panel.recruit-rarity-aura-sr { border-color: #ff3333 !important; box-shadow: 0 12px 26px rgba(0,0,0,0.12), 0 0 20px rgba(255,51,51,0.56) !important; }
+.recruit-profile-panel.recruit-rarity-aura-ssr { border-color: #ffd23f !important; box-shadow: 0 12px 26px rgba(0,0,0,0.12), 0 0 24px rgba(255,210,63,0.74) !important; }
+.recruit-profile-panel.recruit-rarity-aura-ur {
+  background: linear-gradient(#ffffff, #ffffff) padding-box, conic-gradient(#ff3151, #ffd23f, #43e37d, #33b7ff, #9b5cff, #ff3151) border-box !important;
+  border: 4px solid transparent !important;
+  box-shadow: 0 12px 26px rgba(0,0,0,0.12), 0 0 28px rgba(155,92,255,0.82) !important;
+}
+
+@keyframes recruitOpenResumePopV397 {
+  0% { transform: translateY(8px) scale(0.72) rotate(-2deg); opacity: 0; }
+  72% { transform: translateY(-4px) scale(1.06) rotate(1deg); opacity: 1; }
+  100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .recruit-popup-stage .popup-log-card.employee-recruitment-card {
+    width: min(96vw, 430px) !important;
+    padding: 12px 9px !important;
+  }
+
+  .recruit-envelope-desk-row,
+  .recruit-envelope-count-5.recruit-envelope-desk-row {
+    grid-template-columns: repeat(4, minmax(64px, 1fr)) !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  .recruit-envelope-count-5.recruit-envelope-desk-row {
+    grid-template-columns: repeat(5, minmax(54px, 1fr)) !important;
+  }
+
+  .recruit-envelope-card-v206 {
+    width: 100% !important;
+    min-height: 118px !important;
+    padding: 4px 2px 6px !important;
+  }
+
+  .recruit-sealed-envelope-visual {
+    width: 58px !important;
+    height: 96px !important;
+  }
+
+  .recruit-opened-resume-card {
+    width: 66px !important;
+    min-height: 106px !important;
+    padding: 6px 4px !important;
+    gap: 4px !important;
+  }
+
+  .recruit-opened-resume-name { font-size: 10px !important; }
+  .recruit-opened-resume-stats { font-size: 8px !important; }
+  .recruit-opened-resume-top strong { font-size: 10px !important; }
+  .recruit-opened-resume-top em { font-size: 8px !important; }
+}
+
+/* ===== v398 社員採用：縦封筒・表記削除・履歴書カード修正 ===== */
+html body .popup-log.recruit-popup-stage .recruit-envelope-desk-row,
+html body .app .popup-log.recruit-popup-stage .recruit-envelope-desk-row,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(74px, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  max-width: 680px !important;
+  margin: 12px auto 10px !important;
+  overflow: visible !important;
+  align-items: start !important;
+  justify-items: center !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206,
+html body .app .popup-log.recruit-popup-stage .recruit-envelope-card-v206 {
+  width: min(23vw, 150px) !important;
+  min-width: 74px !important;
+  height: auto !important;
+  min-height: 142px !important;
+  padding: 4px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 18px !important;
+  display: grid !important;
+  place-items: start center !important;
+  overflow: visible !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .recruit-applicant-summary,
+html body .app .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .recruit-applicant-summary {
+  display: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-visual.recruit-sealed-envelope-visual,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-visual,
+html body .app .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-visual.recruit-sealed-envelope-visual,
+html body .app .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-visual {
+  width: min(20vw, 132px) !important;
+  min-width: 68px !important;
+  height: min(31vw, 198px) !important;
+  min-height: 110px !important;
+  aspect-ratio: 2 / 3 !important;
+  position: relative !important;
+  display: block !important;
+  border-radius: 10px 10px 18px 18px !important;
+  transform: rotate(-1deg) !important;
+  filter: drop-shadow(0 14px 20px rgba(0,0,0,0.42)) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206:nth-child(even) .resume-envelope-visual {
+  transform: rotate(1deg) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-back,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-body,
+html body .app .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-back,
+html body .app .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-body {
+  position: absolute !important;
+  inset: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 10px 10px 18px 18px !important;
+  clip-path: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-flap,
+html body .app .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-flap {
+  position: absolute !important;
+  left: 8% !important;
+  right: 8% !important;
+  top: 8% !important;
+  width: auto !important;
+  height: 42% !important;
+  clip-path: polygon(0 0, 100% 0, 50% 100%) !important;
+  border-radius: 7px !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-seal,
+html body .app .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-seal {
+  left: 50% !important;
+  top: 47% !important;
+  width: clamp(22px, 6vw, 38px) !important;
+  height: clamp(22px, 6vw, 38px) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-opened-resume-card,
+html body .app .popup-log.recruit-popup-stage .recruit-opened-resume-card {
+  width: min(23vw, 150px) !important;
+  min-width: 74px !important;
+  min-height: 142px !important;
+  padding: 6px !important;
+  border-radius: 12px !important;
+  display: grid !important;
+  grid-template-rows: auto 1fr !important;
+  gap: 5px !important;
+  background: linear-gradient(180deg, #fffdf6 0%, #f4ead7 100%) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-opened-resume-body {
+  display: grid !important;
+  grid-template-rows: auto 1fr !important;
+  gap: 5px !important;
+  align-items: start !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-opened-resume-photo {
+  width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  background: linear-gradient(145deg, #f8f0df, #d9c39c) !important;
+  border: 1px solid rgba(80,50,20,0.28) !important;
+  display: grid !important;
+  place-items: center !important;
+  font-weight: 900 !important;
+  font-size: 22px !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-opened-resume-photo img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-opened-resume-info {
+  display: grid !important;
+  gap: 3px !important;
+  text-align: left !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-opened-resume-name {
+  font-size: clamp(10px, 2.8vw, 14px) !important;
+  line-height: 1.15 !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-opened-resume-stats {
+  font-size: clamp(8px, 2.2vw, 11px) !important;
+  line-height: 1.25 !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-opened-resume-top strong { font-size: clamp(10px, 2.5vw, 13px) !important; }
+html body .popup-log.recruit-popup-stage .recruit-opened-resume-top em { font-size: clamp(8px, 2.2vw, 11px) !important; }
+@media (max-width: 600px) {
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 {
+    width: calc((100vw - 58px) / 4) !important;
+    min-width: 0 !important;
+    min-height: 118px !important;
+    padding: 2px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-visual.recruit-sealed-envelope-visual,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-visual {
+    width: calc((100vw - 74px) / 4) !important;
+    min-width: 0 !important;
+    height: calc(((100vw - 74px) / 4) * 1.52) !important;
+    min-height: 96px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-opened-resume-card {
+    width: calc((100vw - 58px) / 4) !important;
+    min-width: 0 !important;
+    min-height: 118px !important;
+    padding: 4px !important;
+  }
+}
+
+
+/* ===== v405 社員採用選択画面：画像背景＋透明クリック領域＋数字マスク ===== */
+.recruit-selection-screen-v402 {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 99999 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: auto !important;
+  background: #050914 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.recruit-selection-stage-v402 {
+  position: relative;
+  width: 100vw;
+  max-width: 430px;
+  aspect-ratio: 2 / 3;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #050914;
+}
+
+.recruit-selection-bg-v402 {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+  z-index: 0;
+  pointer-events: none;
+}
+
+
+/* v406: 数字なし背景画像を使用するため、黒マスクは廃止。
+   数字は背景画像の空欄スロットへReactで直接重ねる。 */
+
+.recruit-hotspot-v402 {
+  position: absolute;
+  z-index: 20;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: rgba(255,255,255,0.001) !important;
+  box-shadow: none !important;
+  color: transparent !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(255,255,255,0.18);
+}
+
+.recruit-hotspot-v402:active {
+  transform: none !important;
+  background: rgba(255,255,255,0.12) !important;
+}
+
+.recruit-currency-v402,
+.recruit-ticket-count-v402,
+.recruit-shine-cost-v402 {
+  position: absolute;
+  z-index: 10;
+  color: #ffffff;
+  font-weight: 900;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.95), 0 0 8px rgba(0,0,0,0.75);
+  pointer-events: none;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.recruit-currency-v402 { font-size: clamp(12px, 3.5vw, 17px); text-align: right; letter-spacing: 0.02em; }
+.recruit-currency-shine-v402 { right: 10.0%; top: 2.25%; width: 18.0%; }
+.recruit-currency-medal-v402 { right: 10.0%; top: 5.35%; width: 18.0%; }
+
+.recruit-ticket-count-v402 { right: 6.8%; width: 9.8%; font-size: clamp(12px, 3.4vw, 17px); text-align: right; }
+.recruit-shine-cost-v402 { right: 10.6%; width: 8.0%; font-size: clamp(12px, 3.4vw, 17px); color: #ffffff; text-align: center; }
+.recruit-ticket-count-rookie-v402 { top: 30.9%; }
+.recruit-ticket-count-normal-v402 { top: 50.6%; }
+.recruit-ticket-count-premium-v402 { top: 70.9%; }
+.recruit-shine-cost-rookie-v402 { top: 40.6%; }
+.recruit-shine-cost-normal-v402 { top: 60.3%; }
+.recruit-shine-cost-premium-v402 { top: 79.8%; }
+
+.recruit-hotspot-back-v402 { left: 2.2%; top: 1.2%; width: 8.5%; height: 5.5%; }
+.recruit-hotspot-help-v402 { left: 47%; top: 1.2%; width: 7.5%; height: 5.0%; }
+.recruit-hotspot-ticket-list-v402 { left: 25%; top: 23.0%; width: 24%; height: 5.1%; }
+.recruit-hotspot-shop-v402 { left: 50%; top: 23.0%; width: 24%; height: 5.1%; }
+.recruit-hotspot-history-v402 { left: 63%; top: 88.4%; width: 25%; height: 4.2%; }
+
+.recruit-hotspot-ticket-0-v402 { left: 4.3%; top: 39.8%; width: 29.5%; height: 6.0%; }
+.recruit-hotspot-ten-0-v402 { left: 35.0%; top: 39.8%; width: 29.5%; height: 6.0%; }
+.recruit-hotspot-shine-0-v402 { left: 72.5%; top: 42.8%; width: 22.0%; height: 5.2%; }
+.recruit-hotspot-ticket-1-v402 { left: 4.3%; top: 59.6%; width: 29.5%; height: 6.0%; }
+.recruit-hotspot-ten-1-v402 { left: 35.0%; top: 59.6%; width: 29.5%; height: 6.0%; }
+.recruit-hotspot-shine-1-v402 { left: 72.5%; top: 62.4%; width: 22.0%; height: 5.2%; }
+.recruit-hotspot-ticket-2-v402 { left: 4.3%; top: 79.2%; width: 29.5%; height: 6.0%; }
+.recruit-hotspot-ten-2-v402 { left: 35.0%; top: 79.2%; width: 29.5%; height: 6.0%; }
+.recruit-hotspot-shine-2-v402 { left: 72.5%; top: 82.0%; width: 22.0%; height: 5.2%; }
+
+body:has(.recruit-selection-screen-v402) .home-bottom-nav,
+body:has(.recruit-selection-screen-v402) .bottom-menu,
+body:has(.recruit-selection-screen-v402) .map-bottom-menu {
+  display: none !important;
+}
+
+/* ===== v407 社員採用封筒演出：画像素材版 ===== */
+.recruit-popup-stage {
+  background: rgba(2, 6, 16, 0.74) !important;
+  align-items: stretch !important;
+  padding: max(10px, env(safe-area-inset-top, 0px)) 8px max(10px, env(safe-area-inset-bottom, 0px)) !important;
+}
+
+.employee-recruitment-card.recruit-desk-card.recruit-stage-v206 {
+  width: min(96vw, 460px) !important;
+  max-width: 460px !important;
+  min-height: min(92dvh, 820px) !important;
+  max-height: calc(100dvh - 20px) !important;
+  overflow-y: auto !important;
+  position: relative !important;
+  padding: 14px 12px 18px !important;
+  border-radius: 24px !important;
+  color: #fff9df !important;
+  border: 1px solid rgba(255, 222, 132, 0.46) !important;
+  background:
+    linear-gradient(180deg, rgba(4, 8, 19, 0.22), rgba(6, 7, 12, 0.52) 46%, rgba(7, 4, 8, 0.72)),
+    url('/recruit_office_desk_bg_v407.jpg') center center / cover no-repeat !important;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.58), inset 0 0 0 1px rgba(255,255,255,0.08) !important;
+}
+
+.employee-recruitment-card.recruit-desk-card.recruit-stage-v206::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(circle at 50% 18%, rgba(255,230,160,0.18), transparent 38%), linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.38));
+  z-index: 0;
+}
+
+.employee-recruitment-card.recruit-desk-card.recruit-stage-v206 > * {
+  position: relative;
+  z-index: 1;
+}
+
+.recruit-stage-aura-v206,
+.recruit-stage-light-v206,
+.recruit-desk-decoration,
+.recruit-sparkle {
+  display: none !important;
+}
+
+.recruit-title-area-v206 {
+  margin: 0 0 8px !important;
+  padding: 10px 12px !important;
+  border-radius: 18px !important;
+  background: linear-gradient(180deg, rgba(10,13,24,0.76), rgba(10,10,16,0.48)) !important;
+  border: 1px solid rgba(255,220,138,0.28) !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25) !important;
+  text-align: center !important;
+  color: #fff9df !important;
+}
+
+.recruit-title-area-v206 h2 {
+  margin: 4px 0 2px !important;
+  font-size: 20px !important;
+  line-height: 1.12 !important;
+  color: #fff9df !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.65) !important;
+}
+
+.recruit-title-area-v206 p,
+.recruit-arrival-text-v206 {
+  margin: 2px 0 !important;
+  font-size: 12px !important;
+  color: rgba(255,249,223,0.88) !important;
+}
+
+.recruit-ticket-badge-v206 {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, rgba(255,238,170,0.95), rgba(177,114,32,0.88)) !important;
+  color: #2a1606 !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: .04em !important;
+  border: 1px solid rgba(255,247,204,0.7) !important;
+}
+
+.recruit-envelope-grid.recruit-envelope-desk-row {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+  align-items: end !important;
+  justify-items: center !important;
+  min-height: 245px !important;
+  margin: 10px 0 10px !important;
+  padding: 62px 5px 10px !important;
+  border-radius: 22px !important;
+  background: linear-gradient(180deg, rgba(255,246,206,0.07), rgba(6,4,8,0.24) 48%, rgba(55,26,9,0.35)) !important;
+  border: 1px solid rgba(255,220,138,0.18) !important;
+  box-shadow: inset 0 14px 32px rgba(0,0,0,0.18), 0 10px 26px rgba(0,0,0,0.22) !important;
+}
+
+.recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.recruit-envelope-card-v206 {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: 76px !important;
+  height: 170px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: transparent !important;
+  overflow: visible !important;
+  transform-origin: center bottom !important;
+  touch-action: manipulation !important;
+}
+
+.recruit-envelope-card-v206.closed {
+  animation: recruitEnvelopeAssetEntranceV407 .46s cubic-bezier(.2,1.25,.36,1) both, recruitEnvelopeAssetIdleV407 3.4s ease-in-out infinite !important;
+}
+
+.recruit-envelope-card-v206.selected {
+  transform: translateY(-10px) scale(1.13) !important;
+  z-index: 8 !important;
+  filter: drop-shadow(0 16px 18px rgba(0,0,0,0.48)) !important;
+}
+
+.recruit-envelope-card-v206.opened {
+  animation: recruitEnvelopeOpenPopV407 .32s cubic-bezier(.2,1.35,.32,1) both !important;
+}
+
+.recruit-envelope-card-v206 .resume-envelope-visual,
+.recruit-envelope-card-v206 .recruit-opened-resume-card {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-repeat: no-repeat !important;
+  background-position: center bottom !important;
+  background-size: contain !important;
+  filter: drop-shadow(0 12px 12px rgba(0,0,0,0.34)) !important;
+  color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.recruit-envelope-card-v206 .resume-envelope-visual > *,
+.recruit-envelope-card-v206 .recruit-opened-resume-card > * {
+  display: none !important;
+}
+
+.recruit-envelope-card-v206.envelope-white.closed .resume-envelope-visual { background-image: url('/recruit_env_white_closed_v407.png') !important; }
+.recruit-envelope-card-v206.envelope-white.opened .recruit-opened-resume-card { background-image: url('/recruit_env_white_open_v407.png') !important; }
+.recruit-envelope-card-v206.envelope-brown.closed .resume-envelope-visual { background-image: url('/recruit_env_brown_closed_v407.png') !important; }
+.recruit-envelope-card-v206.envelope-brown.opened .recruit-opened-resume-card { background-image: url('/recruit_env_brown_open_v407.png') !important; }
+.recruit-envelope-card-v206.envelope-black.closed .resume-envelope-visual { background-image: url('/recruit_env_black_closed_v407.png') !important; }
+.recruit-envelope-card-v206.envelope-black.opened .recruit-opened-resume-card { background-image: url('/recruit_env_black_open_v407.png') !important; }
+
+.recruit-new-stamp.envelope-new-stamp,
+.recruit-new-stamp.profile-new-stamp {
+  display: block !important;
+  width: 46px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: url('/recruit_new_badge_v407.png') center center / contain no-repeat !important;
+  color: transparent !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+.recruit-new-stamp.envelope-new-stamp {
+  position: absolute !important;
+  top: 7px !important;
+  right: -9px !important;
+  z-index: 10 !important;
+  transform: rotate(7deg) !important;
+  filter: drop-shadow(0 5px 7px rgba(0,0,0,0.45)) !important;
+}
+
+.recruit-new-stamp.profile-new-stamp {
+  position: absolute !important;
+  top: -8px !important;
+  right: -8px !important;
+  z-index: 4 !important;
+}
+
+.recruit-tap-guide {
+  margin: 8px auto 10px !important;
+  width: fit-content !important;
+  max-width: 92% !important;
+  padding: 7px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(6, 9, 18, 0.66) !important;
+  border: 1px solid rgba(255,220,138,0.3) !important;
+  color: #fff8d6 !important;
+  font-weight: 900 !important;
+  font-size: 12px !important;
+  text-align: center !important;
+}
+
+.recruit-profile-wrap {
+  display: grid !important;
+  gap: 10px !important;
+  margin-top: 8px !important;
+}
+
+.recruit-profile-panel {
+  display: grid !important;
+  grid-template-columns: 108px minmax(0, 1fr) !important;
+  gap: 10px !important;
+  padding: 10px !important;
+  border-radius: 20px !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(244,239,226,0.92)) !important;
+  color: #1a1720 !important;
+  border: 1px solid rgba(255,225,142,0.58) !important;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35) !important;
+}
+
+.recruit-profile-photo {
+  position: relative !important;
+  min-height: 132px !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  background: linear-gradient(145deg, #eef3ff, #ffffff 55%, #f8e8c0) !important;
+  border: 1px solid rgba(105,82,35,0.24) !important;
+}
+
+.recruit-character-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+}
+
+.recruit-profile-header h3 {
+  margin: 0 0 4px !important;
+  font-size: 17px !important;
+  color: #19151b !important;
+}
+
+.recruit-stat-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 5px !important;
+  margin: 7px 0 !important;
+}
+
+.recruit-stat-grid div {
+  padding: 6px 3px !important;
+  border-radius: 11px !important;
+  background: linear-gradient(180deg, #fffaf0, #efe2c2) !important;
+  border: 1px solid rgba(119,88,32,0.18) !important;
+  text-align: center !important;
+}
+
+.recruit-stat-grid span {
+  display: block !important;
+  font-size: 10px !important;
+  color: #72552b !important;
+  font-weight: 900 !important;
+}
+
+.recruit-stat-grid strong {
+  display: block !important;
+  font-size: 16px !important;
+  color: #221709 !important;
+}
+
+.recruit-special-box-expanded {
+  padding: 7px !important;
+  border-radius: 14px !important;
+  background: rgba(18,20,31,0.06) !important;
+  border: 1px solid rgba(50,45,36,0.12) !important;
+}
+
+.recruit-special-label {
+  display: inline-block !important;
+  margin-bottom: 4px !important;
+  font-size: 10px !important;
+  color: #795b25 !important;
+  font-weight: 900 !important;
+}
+
+.recruit-special-list {
+  display: grid !important;
+  gap: 4px !important;
+}
+
+.recruit-special-item {
+  display: grid !important;
+  gap: 1px !important;
+  padding: 5px 6px !important;
+  border-radius: 10px !important;
+  background: #fffdf6 !important;
+  border: 1px solid rgba(176,137,63,0.18) !important;
+}
+
+.recruit-special-item strong { font-size: 11px !important; color: #221709 !important; }
+.recruit-special-item small { font-size: 9px !important; color: #5b5360 !important; line-height: 1.25 !important; }
+
+.recruit-hire-side {
+  display: grid !important;
+  gap: 4px !important;
+  text-align: center !important;
+}
+
+.recruit-hire-button {
+  width: 100% !important;
+  padding: 12px 14px !important;
+  border: none !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #ffef9a, #c78a24 54%, #7b4212) !important;
+  color: #1f1003 !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.65) !important;
+}
+
+.recruit-hire-side p,
+.recruit-required-note {
+  margin: 0 !important;
+  font-size: 10px !important;
+  color: rgba(255,248,214,0.86) !important;
+}
+
+.recruit-delivery-card-v363 {
+  width: min(92vw, 420px) !important;
+  color: #fff8d6 !important;
+  background:
+    linear-gradient(180deg, rgba(7,9,18,0.28), rgba(8,6,10,0.68)),
+    url('/recruit_office_desk_bg_v407.jpg') center center / cover no-repeat !important;
+  border: 1px solid rgba(255,220,138,0.42) !important;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.54) !important;
+}
+
+@keyframes recruitEnvelopeAssetEntranceV407 {
+  from { opacity: 0; transform: translateY(-28px) scale(.82) rotate(-3deg); }
+  to { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+}
+
+@keyframes recruitEnvelopeAssetIdleV407 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-3px) rotate(.6deg); }
+}
+
+@keyframes recruitEnvelopeOpenPopV407 {
+  from { opacity: .76; transform: translateY(-8px) scale(.92); }
+  to { opacity: 1; transform: translateY(-8px) scale(1.07); }
+}
+
+@media (max-width: 420px) {
+  .employee-recruitment-card.recruit-desk-card.recruit-stage-v206 {
+    width: 98vw !important;
+    padding: 10px 8px 14px !important;
+    border-radius: 20px !important;
+  }
+
+  .recruit-envelope-grid.recruit-envelope-desk-row {
+    min-height: 218px !important;
+    padding-top: 52px !important;
+    gap: 3px !important;
+  }
+
+  .recruit-envelope-card-v206 {
+    max-width: 66px !important;
+    height: 150px !important;
+  }
+
+  .recruit-profile-panel {
+    grid-template-columns: 92px minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .recruit-profile-photo {
+    min-height: 116px !important;
+  }
+
+  .recruit-stat-grid strong { font-size: 14px !important; }
+  .recruit-special-item small { display: none !important; }
+}
+
+
+/* ===== v408 adjustments: 最新白封筒差し替え・採用画面下部注記削除 ===== */
+.recruit-selection-stage-v402 {
+  background: #070708 !important;
+  overflow: hidden !important;
+}
+.recruit-selection-bg-v402 {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+}
+.recruit-envelope-card-v206.envelope-white.closed .resume-envelope-visual {
+  background-image: url('/recruit_env_white_closed_v407.png') !important;
+}
+.recruit-envelope-card-v206.envelope-white.opened .recruit-opened-resume-card {
+  background-image: url('/recruit_env_white_open_v407.png') !important;
+}
+
+/* ===== v409 社員採用演出 実画像・社長室背景・NEW表示・期待色修正 ===== */
+html body .popup-log.recruit-popup-stage {
+  background: rgba(0, 0, 0, 0.72) !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+}
+
+html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card,
+html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card.recruit-stage-v206 {
+  background-image:
+    linear-gradient(180deg, rgba(0,0,0,0.34), rgba(0,0,0,0.56)),
+    url('/recruit_office_desk_bg_v407.jpg') !important;
+  background-size: cover !important;
+  background-position: center top !important;
+  background-repeat: no-repeat !important;
+  color: #fff8dc !important;
+}
+
+html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card::before,
+html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card::after {
+  display: none !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row {
+  background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.28)) !important;
+  border: 1px solid rgba(255, 218, 141, 0.30) !important;
+  box-shadow: inset 0 0 32px rgba(0,0,0,0.32), 0 10px 28px rgba(0,0,0,0.28) !important;
+  backdrop-filter: none !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 {
+  height: clamp(94px, 25vw, 220px) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-count-4 .recruit-envelope-card-v206 {
+  height: clamp(104px, 27vw, 236px) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-visual {
+  left: 50% !important;
+  right: auto !important;
+  bottom: 18px !important;
+  width: 88% !important;
+  height: 88% !important;
+  transform: translateX(-50%) !important;
+  background-size: contain !important;
+  background-position: center bottom !important;
+  background-repeat: no-repeat !important;
+  filter: drop-shadow(0 12px 16px rgba(0,0,0,0.50)) !important;
+}
+
+html body .popup-log.recruit-popup-stage .resume-envelope-back,
+html body .popup-log.recruit-popup-stage .resume-envelope-body,
+html body .popup-log.recruit-popup-stage .resume-envelope-flap,
+html body .popup-log.recruit-popup-stage .resume-envelope-paper,
+html body .popup-log.recruit-popup-stage .resume-envelope-seal,
+html body .popup-log.recruit-popup-stage .resume-envelope-shine {
+  display: none !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-white.closed .resume-envelope-visual {
+  background-image: url('/recruit_env_white_closed_v407.png') !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-white.opened .resume-envelope-visual {
+  background-image: url('/recruit_env_white_open_v407.png') !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-brown.closed .resume-envelope-visual {
+  background-image: url('/recruit_env_brown_closed_v407.png') !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-brown.opened .resume-envelope-visual {
+  background-image: url('/recruit_env_brown_open_v407.png') !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-black.closed .resume-envelope-visual {
+  background-image: url('/recruit_env_black_closed_v407.png') !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-black.opened .resume-envelope-visual {
+  background-image: url('/recruit_env_black_open_v407.png') !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.closed .envelope-new-stamp,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .envelope-new-stamp {
+  display: inline-flex !important;
+  position: absolute !important;
+  z-index: 30 !important;
+  top: 2px !important;
+  left: 2px !important;
+  width: clamp(30px, 8vw, 64px) !important;
+  height: clamp(30px, 8vw, 64px) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  color: #fff !important;
+  background: radial-gradient(circle at 35% 28%, #ff6f4d, #ce1b16 62%, #7b0704 100%) !important;
+  border: 2px solid rgba(255, 226, 120, 0.96) !important;
+  box-shadow: 0 0 0 2px rgba(110,0,0,0.36), 0 6px 12px rgba(0,0,0,0.42), 0 0 12px rgba(255,72,48,0.60) !important;
+  font-size: clamp(9px, 2.4vw, 16px) !important;
+  font-weight: 1000 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1 !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.65) !important;
+  transform: rotate(-13deg) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.opened .envelope-new-stamp {
+  display: none !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-applicant-summary {
+  bottom: 0 !important;
+  color: #fff4ce !important;
+  background: rgba(0,0,0,0.54) !important;
+  border: 1px solid rgba(255,214,124,0.38) !important;
+  border-radius: 999px !important;
+  padding: 2px 7px !important;
+  font-size: clamp(9px, 2.4vw, 15px) !important;
+  max-width: 150% !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-profile-wrap {
+  background: rgba(5, 5, 10, 0.70) !important;
+  border: 1px solid rgba(255, 218, 141, 0.32) !important;
+  border-radius: 18px !important;
+  padding: 10px !important;
+}
+
+html body .recruit-delivery-card-v363.recruit-signal-sealed {
+  border-color: rgba(82, 156, 255, 0.70) !important;
+  box-shadow: 0 0 28px rgba(74, 163, 255, 0.35), 0 24px 70px rgba(20, 35, 80, 0.28) !important;
+}
+html body .recruit-signal-sealed .recruit-delivery-glow-v363 {
+  background: radial-gradient(circle at 50% 44%, rgba(74,163,255,0.72), transparent 36%) !important;
+}
+
+@media (max-width: 600px) {
+  html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card,
+  html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card.recruit-stage-v206 {
+    background-position: center top !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row {
+    padding-top: 10px !important;
+    padding-bottom: 26px !important;
+  }
+}
+
+
+/* ===== v409.1: 社長室背景・縦封筒画像・NEW表示を強制適用 ===== */
+html body .popup-log.recruit-popup-stage {
+  background: rgba(0,0,0,0.82) !important;
+  backdrop-filter: blur(2px) !important;
+}
+html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card,
+html body .popup-log.recruit-popup-stage .recruit-desk-card.recruit-stage-v206 {
+  background-image:
+    linear-gradient(180deg, rgba(2, 4, 12, 0.35), rgba(2, 3, 9, 0.84) 58%, rgba(0, 0, 0, 0.96)),
+    url('/recruit_office_desk_bg_v407.jpg') !important;
+  background-size: cover !important;
+  background-position: center top !important;
+  background-repeat: no-repeat !important;
+  color: #fff !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-title-area-v206 {
+  width: min(92vw, 520px) !important;
+  margin: 10px auto 16px !important;
+  padding: 12px 16px !important;
+  border-radius: 24px !important;
+  border: 1px solid rgba(255,220,140,.42) !important;
+  background: rgba(6, 7, 16, .64) !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,.38) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-5,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-4,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-3 {
+  width: min(96vw, 980px) !important;
+  max-width: 980px !important;
+  margin: 16px auto 10px !important;
+  padding: clamp(12px, 2.4vw, 22px) clamp(6px, 2vw, 18px) !important;
+  border-radius: 24px !important;
+  background: rgba(5, 6, 14, .52) !important;
+  border: 1px solid rgba(255,220,140,.28) !important;
+  box-shadow: inset 0 0 32px rgba(20, 0, 55, .28), 0 18px 42px rgba(0,0,0,.36) !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: clamp(8px, 2.2vw, 22px) !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 {
+  position: relative !important;
+  flex: 0 0 clamp(54px, 15.6vw, 112px) !important;
+  width: clamp(54px, 15.6vw, 112px) !important;
+  height: auto !important;
+  aspect-ratio: 0.56 / 1 !important;
+  min-width: clamp(54px, 15.6vw, 112px) !important;
+  max-width: 112px !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: contain !important;
+  overflow: visible !important;
+  filter: drop-shadow(0 12px 18px rgba(0,0,0,.65)) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-visual,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .recruit-applicant-summary {
+  display: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-white.closed { background-image: url('/recruit_env_white_closed_v407.png') !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-white.opened { background-image: url('/recruit_env_white_open_v407.png') !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-brown.closed { background-image: url('/recruit_env_brown_closed_v407.png') !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-brown.opened { background-image: url('/recruit_env_brown_open_v407.png') !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-black.closed { background-image: url('/recruit_env_black_closed_v407.png') !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-black.opened { background-image: url('/recruit_env_black_open_v407.png') !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.selected {
+  transform: translateY(-6px) scale(1.12) !important;
+  filter: drop-shadow(0 0 18px rgba(255,225,140,.92)) drop-shadow(0 18px 28px rgba(0,0,0,.72)) !important;
+  z-index: 5 !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-new-stamp.envelope-new-stamp,
+html body .popup-log.recruit-popup-stage .recruit-new-stamp.profile-new-stamp {
+  position: absolute !important;
+  z-index: 8 !important;
+  display: block !important;
+  width: 46px !important;
+  height: 31px !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  background: url('/recruit_new_badge_v407.png') center/contain no-repeat !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-indent: -9999px !important;
+  transform: rotate(-12deg) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-new-stamp.envelope-new-stamp {
+  left: -14px !important;
+  top: -12px !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-new-stamp.profile-new-stamp {
+  left: 8px !important;
+  top: 8px !important;
+}
+@media (max-width: 420px) {
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-5,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-4,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-3 {
+    justify-content: flex-start !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-new-stamp.envelope-new-stamp {
+    width: 38px !important;
+    height: 25px !important;
+    left: -10px !important;
+    top: -8px !important;
+  }
+}
+
+/* v409.1: 配達中の期待度色を画面全体で分かるように強調 */
+html body .recruit-delivery-card-v363.recruit-signal-rainbow {
+  border-color: rgba(255, 240, 160, .9) !important;
+  box-shadow: 0 0 34px rgba(255,210,80,.66), 0 0 58px rgba(150,80,255,.44) !important;
+}
+html body .recruit-delivery-card-v363.recruit-signal-red {
+  border-color: rgba(255, 82, 92, .88) !important;
+  box-shadow: 0 0 34px rgba(255,70,90,.58) !important;
+}
+html body .recruit-delivery-card-v363.recruit-signal-green {
+  border-color: rgba(80, 255, 150, .82) !important;
+  box-shadow: 0 0 28px rgba(80,255,150,.45) !important;
+}
+
+
+/* ===== v409.2 強制修正: 社長室背景・封筒画像・NEWバッジ ===== */
+html body .popup-log.recruit-popup-stage {
+  background: rgba(0,0,0,.86) !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+}
+html body .popup-log.recruit-popup-stage .employee-recruitment-card.recruit-desk-card,
+html body .popup-log.recruit-popup-stage .recruit-desk-card.recruit-stage-v206 {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  min-height: 100dvh !important;
+  max-height: 100dvh !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  background-image: linear-gradient(180deg, rgba(3,5,14,.22), rgba(2,3,9,.78) 58%, rgba(0,0,0,.96)), url('/recruit_office_desk_bg_v407.jpg') !important;
+  background-size: cover !important;
+  background-position: center top !important;
+  background-repeat: no-repeat !important;
+  color: #fff8dc !important;
+  overflow-y: auto !important;
+}
+html body .popup-log.recruit-popup-stage .employee-recruitment-card.recruit-desk-card::before,
+html body .popup-log.recruit-popup-stage .employee-recruitment-card.recruit-desk-card::after,
+html body .popup-log.recruit-popup-stage .recruit-stage-aura-v206,
+html body .popup-log.recruit-popup-stage .recruit-stage-light-v206,
+html body .popup-log.recruit-popup-stage .recruit-desk-decoration,
+html body .popup-log.recruit-popup-stage .recruit-sparkle {
+  display: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row {
+  width: min(96vw, 980px) !important;
+  margin: 16px auto 10px !important;
+  padding: clamp(12px,2.4vw,22px) clamp(6px,2vw,18px) !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  gap: clamp(8px, 2.2vw, 22px) !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  border-radius: 24px !important;
+  background: rgba(5,6,14,.52) !important;
+  border: 1px solid rgba(255,220,140,.28) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 {
+  position: relative !important;
+  flex: 0 0 clamp(54px, 15.6vw, 112px) !important;
+  width: clamp(54px, 15.6vw, 112px) !important;
+  height: auto !important;
+  aspect-ratio: .56 / 1 !important;
+  min-width: clamp(54px, 15.6vw, 112px) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center bottom !important;
+  overflow: visible !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .resume-envelope-visual,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206 .recruit-applicant-summary { display: none !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-white.closed { background-image: url('/recruit_env_white_closed_v407.png') !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-white.opened { background-image: url('/recruit_env_white_open_v407.png') !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-brown.closed { background-image: url('/recruit_env_brown_closed_v407.png') !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-brown.opened { background-image: url('/recruit_env_brown_open_v407.png') !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-black.closed { background-image: url('/recruit_env_black_closed_v407.png') !important; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-card-v206.envelope-black.opened { background-image: url('/recruit_env_black_open_v407.png') !important; }
+html body .popup-log.recruit-popup-stage .recruit-new-stamp.envelope-new-stamp,
+html body .popup-log.recruit-popup-stage .recruit-new-stamp.profile-new-stamp {
+  display: block !important;
+  position: absolute !important;
+  z-index: 50 !important;
+  width: 46px !important;
+  height: 31px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: url('/recruit_new_badge_v407.png') center/contain no-repeat !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  text-indent: -9999px !important;
+  transform: rotate(-12deg) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-new-stamp.envelope-new-stamp { left: -14px !important; top: -12px !important; }
+html body .popup-log.recruit-popup-stage .recruit-new-stamp.profile-new-stamp { left: 8px !important; top: 8px !important; }
+@media (max-width: 420px) {
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row { justify-content: flex-start !important; }
+  html body .popup-log.recruit-popup-stage .recruit-new-stamp.envelope-new-stamp { width: 38px !important; height: 25px !important; left: -10px !important; top: -8px !important; }
+}
+
+
+/* ===== v409.3 実表示修正: 社長室背景 / NEW / 配達色を最終上書き ===== */
+html body .popup-log.recruit-popup-stage {
+  background: rgba(0, 0, 0, 0.42) !important;
+  backdrop-filter: blur(2px) !important;
+}
+html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card.recruit-stage-v206.recruit-office-bg-force-v4093,
+html body .popup-log.recruit-popup-stage .recruit-desk-card.recruit-stage-v206.recruit-office-bg-force-v4093,
+html body .recruit-popup-stage .recruit-desk-card.recruit-stage-v206.recruit-office-bg-force-v4093 {
+  background-image:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.30) 34%, rgba(0, 0, 0, 0.72) 100%),
+    url('/recruit_office_desk_bg_v407.jpg') !important;
+  background-size: cover !important;
+  background-position: center top !important;
+  background-repeat: no-repeat !important;
+  background-color: #080604 !important;
+  color: #fff8dc !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-desk-row {
+  background: rgba(10, 6, 2, 0.18) !important;
+  border: 1px solid rgba(255, 220, 130, 0.20) !important;
+  border-radius: 22px !important;
+  box-shadow: inset 0 0 38px rgba(0, 0, 0, 0.25), 0 18px 38px rgba(0,0,0,0.18) !important;
+  overflow: visible !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 {
+  position: relative !important;
+  overflow: visible !important;
+  background-color: transparent !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center bottom !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  isolation: isolate !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206::before,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206::after {
+  pointer-events: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.closed.is-new-applicant-v4093::after {
+  content: "NEW" !important;
+  position: absolute !important;
+  top: -8px !important;
+  left: -8px !important;
+  z-index: 50 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 36px !important;
+  min-height: 24px !important;
+  padding: 4px 7px !important;
+  border-radius: 999px !important;
+  border: 2px solid #ffd977 !important;
+  background: linear-gradient(180deg, #ff3b2f, #b9100c) !important;
+  color: #fff7bf !important;
+  font-size: 12px !important;
+  font-weight: 1000 !important;
+  line-height: 1 !important;
+  letter-spacing: .02em !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.55) !important;
+  box-shadow: 0 0 12px rgba(255, 210, 80, .72), 0 5px 12px rgba(0,0,0,.38) !important;
+  transform: rotate(-12deg) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card .recruit-new-stamp.envelope-new-stamp {
+  position: absolute !important;
+  top: -8px !important;
+  left: -8px !important;
+  right: auto !important;
+  z-index: 60 !important;
+  display: inline-flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+  transform: rotate(-12deg) scale(.88) !important;
+}
+html body .recruit-delivery-card-v363.recruit-signal-blue,
+html body .recruit-delivery-card-v363.recruit-signal-sealed {
+  border-color: rgba(90, 165, 255, 0.92) !important;
+}
+html body .recruit-delivery-card-v363.recruit-signal-green,
+html body .recruit-signal-green {
+  border-color: rgba(67,255,138,0.98) !important;
+  background: radial-gradient(circle at 50% 42%, rgba(59,255,132,0.46), transparent 32%), linear-gradient(180deg, #062718, #102619 58%, #04120c) !important;
+  box-shadow: 0 0 48px rgba(75,255,140,0.90), 0 30px 90px rgba(0,0,0,0.62) !important;
+}
+html body .recruit-delivery-card-v363.recruit-signal-red,
+html body .recruit-signal-red {
+  border-color: rgba(255,70,88,1) !important;
+  background: radial-gradient(circle at 50% 42%, rgba(255,54,83,0.55), transparent 32%), linear-gradient(180deg, #3a0811, #271018 58%, #15040a) !important;
+  box-shadow: 0 0 58px rgba(255,64,92,0.98), 0 0 18px rgba(255,255,255,0.42) inset, 0 30px 90px rgba(0,0,0,0.66) !important;
+}
+html body .recruit-delivery-card-v363.recruit-signal-rainbow,
+html body .recruit-signal-rainbow {
+  border-color: rgba(255,237,118,1) !important;
+  background: radial-gradient(circle at 50% 42%, rgba(255,255,255,0.24), transparent 24%), conic-gradient(from 0deg, rgba(255,79,98,.62), rgba(255,210,87,.62), rgba(94,234,138,.58), rgba(74,163,255,.62), rgba(156,99,255,.66), rgba(255,79,98,.62)), linear-gradient(180deg, #180b2d, #0b1027) !important;
+  box-shadow: 0 0 70px rgba(255,218,92,0.98), 0 0 42px rgba(140,92,255,0.88), 0 30px 90px rgba(0,0,0,0.72) !important;
+}
+html body .recruit-delivery-card-v363.recruit-signal-red .recruit-delivery-glow-v363,
+html body .recruit-signal-red .recruit-delivery-glow-v363 {
+  background: radial-gradient(circle at 50% 44%, rgba(255,68,92,0.98), transparent 36%) !important;
+}
+html body .recruit-delivery-card-v363.recruit-signal-rainbow .recruit-delivery-glow-v363,
+html body .recruit-signal-rainbow .recruit-delivery-glow-v363 {
+  background: conic-gradient(from 0deg, rgba(255,79,98,0.72), rgba(255,210,87,0.82), rgba(94,234,138,0.72), rgba(74,163,255,0.76), rgba(156,99,255,0.82), rgba(255,79,98,0.72)) !important;
+}
+@media (max-width: 600px) {
+  html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card.recruit-stage-v206.recruit-office-bg-force-v4093 {
+    background-position: center top !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card.closed.is-new-applicant-v4093::after {
+    top: -6px !important;
+    left: -6px !important;
+    font-size: 10px !important;
+    min-width: 30px !important;
+    min-height: 20px !important;
+    padding: 3px 5px !important;
+  }
+}
+
+/* ===== v409.4 採用演出の最終調整：封筒色固定 / NEW小型化 / カード色を白系へ統一 ===== */
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 {
+  background-blend-mode: normal !important;
+  filter: drop-shadow(0 12px 18px rgba(0,0,0,.62)) !important;
+  opacity: 1 !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206::before,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206::after {
+  content: none !important;
+  display: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206.opened,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206.closed,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206.recruit-envelope-neutral {
+  box-shadow: none !important;
+  outline-color: rgba(255, 215, 103, .9) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .recruit-new-stamp.envelope-new-stamp {
+  display: block !important;
+  position: absolute !important;
+  right: -4px !important;
+  top: -7px !important;
+  left: auto !important;
+  width: 34px !important;
+  height: 22px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: url('/recruit_new_badge_v407.png') center/contain no-repeat !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  text-indent: -9999px !important;
+  transform: rotate(-8deg) !important;
+  z-index: 80 !important;
+  pointer-events: none !important;
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,.45)) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206:not(.is-new-applicant-v4093) .recruit-new-stamp.envelope-new-stamp {
+  display: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-panel,
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-profile-neutral,
+html body .popup-log.recruit-popup-stage .recruit-profile-panel[class*="recruit-rarity-aura-"] {
+  background: linear-gradient(180deg, rgba(255,251,238,.98), rgba(246,237,214,.98)) !important;
+  color: #1f1a12 !important;
+  border: 2px solid rgba(196, 158, 88, .72) !important;
+  box-shadow: 0 16px 32px rgba(0,0,0,.28) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-panel::before,
+html body .popup-log.recruit-popup-stage .recruit-profile-panel::after {
+  content: none !important;
+  display: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-photo .profile-new-stamp,
+html body .popup-log.recruit-popup-stage .recruit-new-stamp.profile-new-stamp {
+  display: block !important;
+  position: absolute !important;
+  right: -6px !important;
+  top: -8px !important;
+  left: auto !important;
+  width: 38px !important;
+  height: 24px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: url('/recruit_new_badge_v407.png') center/contain no-repeat !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  text-indent: -9999px !important;
+  transform: rotate(-7deg) !important;
+  z-index: 20 !important;
+  pointer-events: none !important;
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,.45)) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-stat-grid div,
+html body .popup-log.recruit-popup-stage .recruit-special-box-expanded,
+html body .popup-log.recruit-popup-stage .recruit-special-item {
+  background: rgba(255,255,255,.78) !important;
+  color: #2a2217 !important;
+  border-color: rgba(196, 158, 88, .32) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-special-label {
+  background: rgba(111, 82, 50, .82) !important;
+  color: #fff6dd !important;
+}
+html body .recruit-delivery-card-v363.recruit-signal-gold,
+html body .recruit-signal-gold {
+  border-color: rgba(255, 216, 82, 1) !important;
+  background: radial-gradient(circle at 50% 42%, rgba(255,216,82,0.58), transparent 34%), linear-gradient(180deg, #3a2705, #1f1708 58%, #100a02) !important;
+  box-shadow: 0 0 64px rgba(255, 210, 72, .98), 0 0 18px rgba(255,255,255,.36) inset, 0 30px 90px rgba(0,0,0,.66) !important;
+}
+html body .recruit-delivery-card-v363.recruit-signal-gold .recruit-delivery-glow-v363,
+html body .recruit-signal-gold .recruit-delivery-glow-v363 {
+  background: radial-gradient(circle at 50% 44%, rgba(255,216,82,0.98), transparent 36%) !important;
+}
+@media (max-width: 600px) {
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .recruit-new-stamp.envelope-new-stamp {
+    right: -3px !important;
+    top: -6px !important;
+    width: 30px !important;
+    height: 19px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-new-stamp.profile-new-stamp {
+    right: -5px !important;
+    top: -7px !important;
+    width: 32px !important;
+    height: 20px !important;
+  }
+}
+
+/* ===== v409.5 採用封筒表示の実体修正 =====
+   原因: 旧CSS生成封筒（resume-envelope-visual）と画像背景封筒が同時表示されて二重化していた。
+   対応: 封筒はbuttonのbackground-imageのみ。旧生成パーツと旧赤NEW擬似バッジを完全停止。 */
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 {
+  background-color: transparent !important;
+  background-size: contain !important;
+  background-position: center bottom !important;
+  background-repeat: no-repeat !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,.56)) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206::before,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206::after,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.closed.is-new-applicant-v4093::after,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .resume-envelope-visual,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .recruit-sealed-envelope-visual,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .recruit-open-envelope-visual,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .resume-envelope-back,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .resume-envelope-flap,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .resume-envelope-body,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .resume-envelope-seal,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .resume-envelope-shine,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .recruit-new-stamp.envelope-new-stamp {
+  content: none !important;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .recruit-new-badge-clean-v4095 {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: absolute !important;
+  left: -2px !important;
+  top: -6px !important;
+  z-index: 100 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 34px !important;
+  height: 20px !important;
+  border-radius: 999px !important;
+  border: 1.5px solid rgba(255, 239, 160, .95) !important;
+  background: linear-gradient(180deg, #fff1a8 0%, #e2b13f 38%, #8f5a13 100%) !important;
+  color: #7a160d !important;
+  font-size: 9px !important;
+  font-weight: 1000 !important;
+  line-height: 1 !important;
+  text-indent: 0 !important;
+  letter-spacing: .02em !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,.45) !important;
+  transform: rotate(-8deg) !important;
+  box-shadow: 0 0 8px rgba(255, 214, 80, .55), 0 3px 5px rgba(0,0,0,.38) !important;
+  pointer-events: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206:not(.is-new-applicant-v4093) .recruit-new-badge-clean-v4095 {
+  display: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-photo .profile-new-badge-clean-v4095,
+html body .popup-log.recruit-popup-stage .profile-new-badge-clean-v4095 {
+  display: inline-flex !important;
+  position: absolute !important;
+  right: -4px !important;
+  top: -6px !important;
+  z-index: 30 !important;
+  width: 38px !important;
+  height: 22px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  border: 1.5px solid rgba(255,239,160,.95) !important;
+  background: linear-gradient(180deg, #fff1a8 0%, #e2b13f 38%, #8f5a13 100%) !important;
+  color: #7a160d !important;
+  font-size: 10px !important;
+  font-weight: 1000 !important;
+  transform: rotate(-7deg) !important;
+  box-shadow: 0 0 8px rgba(255,214,80,.55), 0 3px 5px rgba(0,0,0,.38) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-photo .recruit-new-stamp.profile-new-stamp,
+html body .popup-log.recruit-popup-stage .recruit-new-stamp.profile-new-stamp {
+  display: none !important;
+}
+@media (max-width: 600px) {
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .recruit-new-badge-clean-v4095 {
+    width: 30px !important;
+    height: 18px !important;
+    right: -1px !important;
+    top: -5px !important;
+    font-size: 8px !important;
+  }
+  html body .popup-log.recruit-popup-stage .profile-new-badge-clean-v4095 {
+    width: 34px !important;
+    height: 20px !important;
+    right: -4px !important;
+    top: -6px !important;
+    font-size: 9px !important;
+  }
+}
+
+/* ===== v409.6 NEWリボン画像・封筒整列・配送文字削除 ===== */
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-5,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-4,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-3 {
+  display: grid !important;
+  grid-template-columns: repeat(var(--recruit-envelope-count, 4), minmax(0, 1fr)) !important;
+  gap: clamp(4px, 2vw, 12px) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 16px 10px 18px !important;
+  overflow: visible !important;
+  justify-items: center !important;
+  align-items: end !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-count-3 { --recruit-envelope-count: 3; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-count-4 { --recruit-envelope-count: 4; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-count-5 { --recruit-envelope-count: 5; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-count-4 .recruit-envelope-card.recruit-envelope-card-v206 {
+  width: min(18vw, 92px) !important;
+  height: min(30vw, 150px) !important;
+  min-width: 0 !important;
+  max-width: 92px !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-count-5 .recruit-envelope-card.recruit-envelope-card-v206 {
+  width: min(15.8vw, 74px) !important;
+  height: min(27vw, 134px) !important;
+  min-width: 0 !important;
+  max-width: 74px !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .recruit-new-badge-clean-v4095 {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: absolute !important;
+  right: -13px !important;
+  top: -11px !important;
+  z-index: 120 !important;
+  width: 54px !important;
+  height: 26px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: url('/recruit_new_badge_v407.png') center / contain no-repeat !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.45)) !important;
+  transform: rotate(-6deg) !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  text-indent: -9999px !important;
+  pointer-events: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206:not(.is-new-applicant-v4093) .recruit-new-badge-clean-v4095 {
+  display: none !important;
+}
+html body .popup-log.recruit-popup-stage .profile-new-badge-clean-v4095,
+html body .popup-log.recruit-popup-stage .recruit-profile-photo .profile-new-badge-clean-v4095 {
+  display: block !important;
+  position: absolute !important;
+  right: -10px !important;
+  top: -11px !important;
+  z-index: 40 !important;
+  width: 62px !important;
+  height: 30px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: url('/recruit_new_badge_v407.png') center / contain no-repeat !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.45)) !important;
+  transform: rotate(-6deg) !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  text-indent: -9999px !important;
+  pointer-events: none !important;
+}
+/* 配送演出は色だけで示す。文言で期待度を出さない。 */
+html body .recruit-delivery-card-v363 h2,
+html body .recruit-delivery-card-v363 p {
+  color: #fff8df !important;
+}
+@media (max-width: 420px) {
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-5,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row.recruit-envelope-count-4 {
+    gap: 3px !important;
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-count-4 .recruit-envelope-card.recruit-envelope-card-v206 {
+    width: min(17.4vw, 78px) !important;
+    height: min(29vw, 128px) !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-count-5 .recruit-envelope-card.recruit-envelope-card-v206 {
+    width: min(14.2vw, 62px) !important;
+    height: min(25vw, 112px) !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 .recruit-new-badge-clean-v4095 {
+    right: -10px !important;
+    top: -9px !important;
+    width: 44px !important;
+    height: 22px !important;
+  }
+  html body .popup-log.recruit-popup-stage .profile-new-badge-clean-v4095 {
+    width: 56px !important;
+    height: 27px !important;
+    right: -8px !important;
+    top: -10px !important;
+  }
+}
+
+
+
+
+/* ===== v409.11 採用結果画面：透過カード・画像枠撤去・NEW欠け修正版 =====
+   方針：前回追記を積み増さず、採用結果の原因CSSをこのブロックへ置き換え。
+   ・画像外側の額縁を撤去してNEWバッジ欠けを防止
+   ・社員画像は縦横比固定、特性量で伸びない/下がらない
+   ・カード本体を半透明化し、背景を活かす
+   ・特性説明フォントと余白を圧縮 */
+
+html body .popup-log.recruit-popup-stage {
+  background: transparent !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  overflow: hidden !important;
+}
+
+html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card,
+html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card.recruit-stage-v206,
+html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card.recruit-office-bg-force-v4093 {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  max-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 6px 8px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  background-clip: border-box !important;
+}
+
+html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card::before,
+html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card::after,
+html body .popup-log.recruit-popup-stage .recruit-envelope-desk-row::before,
+html body .popup-log.recruit-popup-stage .recruit-envelope-desk-row::after,
+html body .popup-log.recruit-popup-stage .recruit-profile-wrap::before,
+html body .popup-log.recruit-popup-stage .recruit-profile-wrap::after,
+html body .popup-log.recruit-popup-stage .recruit-hire-side::before,
+html body .popup-log.recruit-popup-stage .recruit-hire-side::after {
+  display: none !important;
+  content: none !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-title-area.recruit-title-compact-v4098 {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 24px !important;
+  margin: 0 0 4px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-title-area.recruit-title-compact-v4098 h2,
+html body .popup-log.recruit-popup-stage .recruit-title-area.recruit-title-compact-v4098 .recruit-ticket-badge-v206,
+html body .popup-log.recruit-popup-stage .recruit-title-area.recruit-title-compact-v4098 .recruit-ornament {
+  display: none !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-title-area.recruit-title-compact-v4098 .recruit-arrival-text-v206 {
+  margin: 0 !important;
+  padding: 3px 14px !important;
+  border-radius: 999px !important;
+  color: #fff6cd !important;
+  font-size: clamp(13px, 3.4vw, 16px) !important;
+  font-weight: 900 !important;
+  line-height: 1.2 !important;
+  background: rgba(0,0,0,0.25) !important;
+  border: 1px solid rgba(255,228,150,0.32) !important;
+  box-shadow: none !important;
+}
+
+/* 封筒列：外側の黒い半透明枠を消す */
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid,
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row,
+html body .popup-log.recruit-popup-stage .recruit-envelope-desk-row {
+  width: min(94vw, 680px) !important;
+  margin: 3px auto 8px !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(var(--recruit-envelope-count, 4), minmax(0, 1fr)) !important;
+  gap: clamp(6px, 2.2vw, 18px) !important;
+  align-items: center !important;
+  justify-items: center !important;
+  background: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-count-3 { --recruit-envelope-count: 3; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-count-4 { --recruit-envelope-count: 4; }
+html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-count-5 { --recruit-envelope-count: 5; }
+
+html body .popup-log.recruit-popup-stage .recruit-envelope-card,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206,
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-neutral {
+  width: clamp(70px, 17vw, 112px) !important;
+  height: clamp(86px, 21vw, 136px) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  overflow: visible !important;
+  filter: drop-shadow(0 8px 10px rgba(0,0,0,0.55)) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-envelope-card.selected {
+  transform: translateY(-4px) scale(1.035) !important;
+  filter: drop-shadow(0 9px 12px rgba(0,0,0,0.62)) drop-shadow(0 0 10px rgba(255,230,150,0.62)) !important;
+}
+
+/* 採用カード外側：黒い半透明台紙を消す */
+html body .popup-log.recruit-popup-stage .recruit-profile-wrap {
+  width: min(94vw, 650px) !important;
+  margin: 6px auto 0 !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 8px !important;
+  background: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  overflow: visible !important;
+}
+
+/* 社員データカード：背景を活かすため本体を半透明化 */
+html body .popup-log.recruit-popup-stage .recruit-profile-panel,
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-profile-neutral {
+  position: relative !important;
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: 150px minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: 10px !important;
+  margin: 0 !important;
+  padding: 10px !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: calc(100dvh - 235px) !important;
+  overflow: hidden !important;
+  border: 4px solid rgba(255,255,255,0.94) !important;
+  border-radius: 24px !important;
+  background: linear-gradient(145deg, rgba(255,253,243,0.72), rgba(255,246,220,0.58)) !important;
+  box-shadow: 0 9px 26px rgba(0,0,0,0.28), inset 0 0 0 1px rgba(255,255,255,0.28) !important;
+  backdrop-filter: blur(1.5px) saturate(1.04) !important;
+}
+
+/* 画像外側の額縁を撤去。NEWバッジを切らない */
+html body .popup-log.recruit-popup-stage .recruit-profile-photo {
+  position: relative !important;
+  align-self: start !important;
+  justify-self: start !important;
+  width: 150px !important;
+  min-width: 150px !important;
+  max-width: 150px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-items: start center !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* 実画像は縦横比固定。height:100% を廃止して縦伸びを根本回避 */
+html body .popup-log.recruit-popup-stage .recruit-profile-photo > img.recruit-character-image,
+html body .popup-log.recruit-popup-stage img.recruit-character-image {
+  width: 100% !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: 180px !important;
+  display: block !important;
+  object-fit: contain !important;
+  object-position: center top !important;
+  aspect-ratio: auto !important;
+  border-radius: 12px !important;
+  transform: none !important;
+  background: transparent !important;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.22) !important;
+}
+
+/* 画像なし社員の一文字アバターも固定。外枠は作らない */
+html body .popup-log.recruit-popup-stage .recruit-profile-photo > .recruit-avatar,
+html body .popup-log.recruit-popup-stage .recruit-avatar {
+  width: 118px !important;
+  height: 148px !important;
+  min-width: 118px !important;
+  min-height: 148px !important;
+  max-width: 118px !important;
+  max-height: 148px !important;
+  aspect-ratio: auto !important;
+  display: grid !important;
+  place-items: start center !important;
+  padding-top: 14px !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  transform: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-avatar span {
+  line-height: 1 !important;
+}
+
+html body .popup-log.recruit-popup-stage .profile-new-badge-clean-v4095 {
+  position: absolute !important;
+  top: -12px !important;
+  left: 2px !important;
+  right: auto !important;
+  z-index: 12 !important;
+  transform: rotate(-10deg) scale(0.84) !important;
+  pointer-events: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-photo .employee-awakening-stars,
+html body .popup-log.recruit-popup-stage .recruit-profile-photo .employee-rarity-stars,
+html body .popup-log.recruit-popup-stage .recruit-profile-photo [class*="awakening"],
+html body .popup-log.recruit-popup-stage .recruit-profile-photo .employee-awakening-stars-v284 {
+  position: absolute !important;
+  left: 5px !important;
+  bottom: 5px !important;
+  z-index: 13 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-profile-main {
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: calc(100dvh - 260px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  align-self: start !important;
+  padding: 0 2px 0 0 !important;
+  display: grid !important;
+  gap: 7px !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-profile-main::-webkit-scrollbar {
+  width: 3px !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-main::-webkit-scrollbar-thumb {
+  background: rgba(130,92,38,0.42) !important;
+  border-radius: 999px !important;
+}
+
+/* 名前はカード透過でも消えないよう、薄い見出しチップを敷く */
+html body .popup-log.recruit-popup-stage .recruit-profile-header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 4px 7px 5px !important;
+  border-bottom: 1px solid rgba(87,60,28,0.2) !important;
+  border-radius: 10px !important;
+  background: linear-gradient(90deg, rgba(255,255,255,0.72), rgba(255,250,232,0.42)) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-header h3 {
+  margin: 0 !important;
+  color: #1b130b !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.62) !important;
+  font-size: clamp(18px, 5.15vw, 27px) !important;
+  line-height: 1.08 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-job-badge { display: none !important; }
+html body .popup-log.recruit-popup-stage .employee-rarity-label {
+  min-width: 40px !important;
+  font-size: clamp(19px, 5.45vw, 29px) !important;
+  line-height: 1 !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.7) !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-stat-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  margin: 0 !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-stat-grid div {
+  min-height: 0 !important;
+  padding: 6px 8px !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,0.72) !important;
+  backdrop-filter: blur(1px) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-stat-grid strong { font-size: clamp(16px, 4.6vw, 22px) !important; }
+
+html body .popup-log.recruit-popup-stage .recruit-special-box {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  padding: 6px !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+  border-radius: 12px !important;
+  background: rgba(255,255,255,0.44) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-special-label,
+html body .popup-log.recruit-popup-stage .recruit-special-box span {
+  padding: 4px 7px !important;
+  font-size: 12px !important;
+  line-height: 1.1 !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-special-list {
+  display: grid !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-special-item {
+  display: grid !important;
+  gap: 2px !important;
+  padding: 6px 8px !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,0.72) !important;
+  border: 1px solid rgba(99,60,25,0.13) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-special-item strong {
+  font-size: clamp(13px, 3.55vw, 17px) !important;
+  line-height: 1.1 !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-special-item small {
+  font-size: clamp(10px, 2.85vw, 13px) !important;
+  line-height: 1.22 !important;
+  white-space: normal !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-hire-side {
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  display: grid !important;
+  justify-items: center !important;
+  gap: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-hire-button {
+  width: min(100%, 600px) !important;
+  min-width: 0 !important;
+  min-height: 48px !important;
+  border-radius: 18px !important;
+  font-size: clamp(15px, 4.2vw, 18px) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-hire-side p,
+html body .popup-log.recruit-popup-stage .recruit-required-note-fantasy {
+  display: none !important;
+}
+
+/* レアリティ別：カード本体を透過しつつ色とエフェクトを残す */
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-profile-rarity-n,
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-profile-rarity-r,
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-profile-rarity-hr {
+  border-color: rgba(255,255,255,0.94) !important;
+  background: linear-gradient(145deg, rgba(255,253,245,0.70), rgba(255,248,226,0.54)) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-profile-rarity-sr {
+  border-color: transparent !important;
+  background:
+    linear-gradient(145deg, rgba(255,244,242,0.72), rgba(255,210,205,0.50)) padding-box,
+    linear-gradient(135deg, #6f000c, #c9001e 18%, #ff6675 38%, #8d0013 57%, #f02540 78%, #560008) border-box !important;
+  box-shadow: 0 0 25px rgba(255,32,60,0.58), 0 12px 32px rgba(0,0,0,0.28) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-profile-rarity-ssr {
+  border-color: transparent !important;
+  background:
+    linear-gradient(145deg, rgba(255,252,229,0.74), rgba(255,230,155,0.52)) padding-box,
+    linear-gradient(135deg, #8c6100, #ffe58b 18%, #fff8d2 38%, #c98e09 57%, #ffd45a 78%, #765000) border-box !important;
+  box-shadow: 0 0 34px rgba(255,210,87,0.72), 0 12px 34px rgba(0,0,0,0.3) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-profile-rarity-ur {
+  border-color: transparent !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.70), rgba(235,245,255,0.50)) padding-box,
+    linear-gradient(120deg, #ff3559, #ffb000, #fff04a, #36e46f, #39c8ff, #8758ff, #ff4fd0, #ff3559) border-box !important;
+  background-size: auto, 260% 260% !important;
+  animation: recruitCardRainbowBorderV40911 2.8s linear infinite !important;
+  box-shadow: 0 0 36px rgba(126,92,255,0.55), 0 0 25px rgba(53,199,255,0.36), 0 12px 38px rgba(0,0,0,0.32) !important;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-profile-rarity-sr::after,
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-profile-rarity-ssr::after,
+html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-profile-rarity-ur::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+  border-radius: 20px !important;
+  z-index: 0 !important;
+  opacity: 0.68 !important;
+  background-image:
+    radial-gradient(circle at 16% 20%, rgba(255,255,255,0.95) 0 1px, transparent 2px),
+    radial-gradient(circle at 72% 28%, rgba(255,255,255,0.72) 0 1px, transparent 2px),
+    radial-gradient(circle at 36% 78%, rgba(255,255,255,0.58) 0 1px, transparent 2px),
+    linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.22) 44%, transparent 58%);
+  background-size: 48px 38px, 58px 46px, 66px 52px, 220% 100%;
+  animation: recruitCardGlitterV40911 3.2s linear infinite !important;
+  mix-blend-mode: screen;
+}
+html body .popup-log.recruit-popup-stage .recruit-profile-panel > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+@keyframes recruitCardGlitterV40911 {
+  0% { background-position: 0 0, 0 0, 0 0, -160% 0; opacity: 0.36; }
+  50% { opacity: 0.78; }
+  100% { background-position: 48px 38px, -58px 46px, 66px -52px, 160% 0; opacity: 0.36; }
+}
+@keyframes recruitCardRainbowBorderV40911 {
+  0% { background-position: 0 0, 0% 50%; }
+  100% { background-position: 0 0, 260% 50%; }
+}
+
+@media (max-width: 760px) {
+  html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card,
+  html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card.recruit-stage-v206,
+  html body .popup-log.recruit-popup-stage .popup-log-card.employee-recruitment-card.recruit-desk-card.recruit-office-bg-force-v4093 {
+    padding: 6px 6px calc(7px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-grid.recruit-envelope-desk-row,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-desk-row {
+    width: min(94vw, 650px) !important;
+    margin-bottom: 7px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card,
+  html body .popup-log.recruit-popup-stage .recruit-envelope-card.recruit-envelope-card-v206 {
+    width: clamp(64px, 18vw, 88px) !important;
+    height: clamp(82px, 22vw, 108px) !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-profile-wrap {
+    width: min(92vw, 650px) !important;
+    margin-top: 4px !important;
+    gap: 7px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-profile-panel,
+  html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-profile-neutral {
+    grid-template-columns: 114px minmax(0, 1fr) !important;
+    gap: 8px !important;
+    padding: 8px !important;
+    max-height: calc(100dvh - 228px) !important;
+    border-radius: 22px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-profile-photo {
+    width: 114px !important;
+    min-width: 114px !important;
+    max-width: 114px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-profile-photo > img.recruit-character-image,
+  html body .popup-log.recruit-popup-stage img.recruit-character-image {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 170px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-profile-photo > .recruit-avatar,
+  html body .popup-log.recruit-popup-stage .recruit-avatar {
+    width: 92px !important;
+    height: 132px !important;
+    min-width: 92px !important;
+    min-height: 132px !important;
+    max-width: 92px !important;
+    max-height: 132px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-profile-main {
+    max-height: calc(100dvh - 250px) !important;
+    gap: 6px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-stat-grid div {
+    padding: 5px 7px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-special-box {
+    padding: 5px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  html body .popup-log.recruit-popup-stage .recruit-profile-panel,
+  html body .popup-log.recruit-popup-stage .recruit-profile-panel.recruit-profile-neutral {
+    grid-template-columns: 104px minmax(0, 1fr) !important;
+    max-height: calc(100dvh - 224px) !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-profile-photo {
+    width: 104px !important;
+    min-width: 104px !important;
+    max-width: 104px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-profile-photo > img.recruit-character-image,
+  html body .popup-log.recruit-popup-stage img.recruit-character-image {
+    max-height: 158px !important;
+  }
+  html body .popup-log.recruit-popup-stage .recruit-profile-main {
+    max-height: calc(100dvh - 244px) !important;
+  }
+}
+
+/* ===== v410.1 社員採用カード：キャラ画像NEWバッジ左寄せ調整 =====
+   画像の顔・上部と被りにくいよう、写真枠の左外側へ逃がす。
+   封筒側のNEWバッジは対象外。 */
+html body .popup-log.recruit-popup-stage .recruit-profile-photo .profile-new-badge-left-edge-v4101,
+html body .popup-log.recruit-popup-stage .profile-new-badge-left-edge-v4101 {
+  left: -14px !important;
+  right: auto !important;
+  top: -12px !important;
+  transform: rotate(-10deg) scale(0.82) !important;
+  transform-origin: center center !important;
+  z-index: 45 !important;
+}
+@media (max-width: 420px) {
+  html body .popup-log.recruit-popup-stage .recruit-profile-photo .profile-new-badge-left-edge-v4101,
+  html body .popup-log.recruit-popup-stage .profile-new-badge-left-edge-v4101 {
+    left: -16px !important;
+    top: -11px !important;
+    transform: rotate(-10deg) scale(0.78) !important;
+  }
+}
+
+
+/* v414.6: マップから開く社員採用を、マップ上の埋め込みパネルではなく専用ページとして表示 */
+.map-recruit-page-v414 {
+  width: 100%;
+  max-width: 100%;
+  min-height: calc(100dvh - 72px);
+  padding: 10px 10px calc(84px + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #f6faf8 0%, #edf3ef 100%);
+  overflow-x: hidden;
+}
+
+.map-recruit-page-header-v414 {
+  width: min(100%, 980px);
+  margin: 0 auto 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(24, 70, 48, 0.16);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+}
+
+.map-recruit-page-header-v414 h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.15;
+  color: #173626;
+}
+
+.map-recruit-page-header-v414 p {
+  margin: 3px 0 0;
+  font-size: 11px;
+  line-height: 1.35;
+  color: rgba(23,54,38,0.72);
+}
+
+.map-recruit-page-back-v414 {
+  flex: 0 0 auto;
+  min-height: 34px !important;
+  padding: 6px 10px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(24,70,48,0.22) !important;
+  background: #ffffff !important;
+  color: #173626 !important;
+  font-weight: 900 !important;
+  font-size: 12px !important;
+}
+
+.map-recruit-page-v414 .recruit-selection-screen-v402 {
+  width: min(100%, 980px);
+  margin: 0 auto;
+}
+
+.map-recruit-page-v414 .recruit-selection-stage-v402 {
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  .map-recruit-page-v414 {
+    min-height: calc(100dvh - 32px);
+    padding: 6px 6px calc(62px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .map-recruit-page-header-v414 {
+    padding: 7px 8px;
+    gap: 7px;
+    border-radius: 12px;
+  }
+
+  .map-recruit-page-header-v414 h2 {
+    font-size: 15px;
+  }
+
+  .map-recruit-page-header-v414 p {
+    font-size: 10px;
+  }
+
+  .map-recruit-page-back-v414 {
+    min-height: 28px !important;
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+  }
+}
+
+/* ===== v414.7 マップ専用社員採用ページ調整 =====
+   ・透明クリック領域を完全透明化
+   ・採用背景を画面下まで伸ばし、マップ下部メニューを画像上に重ねる
+*/
+body:has(.map-recruit-page-v414) .map-bottom-menu-v268 {
+  z-index: 100010 !important;
+}
+
+/* v414.8: マップ社員採用ページでも通常マップ同様、下部メニューは2秒後に自動で隠す。
+   タップ・スクロール・ホイール操作で React 側の showMapBottomNavTemporarily が再表示する。 */
+body:has(.map-recruit-page-v414) .map-bottom-menu-v268.auto-hidden-v272 {
+  transform: translateY(calc(100% + 16px)) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+@media (min-width: 901px) {
+  body:has(.map-recruit-page-v414) .map-bottom-menu-v268.auto-hidden-v272 {
+    transform: translateX(-50%) translateY(calc(100% + 16px)) !important;
+  }
+}
+
+.map-recruit-page-v414 {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 99990 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  background: #050914 !important;
+}
+
+.map-recruit-page-v414 .map-recruit-page-header-v414 {
+  display: none !important;
+}
+
+.map-recruit-page-v414 .recruit-selection-screen-v402 {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 99991 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #050914 !important;
+}
+
+.map-recruit-page-v414 .recruit-selection-stage-v402 {
+  position: relative !important;
+  width: 100vw !important;
+  max-width: 430px !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  aspect-ratio: auto !important;
+  margin: 0 auto !important;
+  overflow: hidden !important;
+  background: #050914 !important;
+}
+
+.map-recruit-page-v414 .recruit-selection-bg-v402 {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: fill !important;
+  display: block !important;
+}
+
+.map-recruit-page-v414 button.recruit-hotspot-v402,
+.map-recruit-page-v414 .recruit-hotspot-v402,
+.map-recruit-page-v414 .recruit-hotspot-v402:active,
+.map-recruit-page-v414 .recruit-hotspot-v402:focus,
+.map-recruit-page-v414 .recruit-hotspot-v402:focus-visible {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.map-recruit-page-v414 .recruit-hotspot-v402::before,
+.map-recruit-page-v414 .recruit-hotspot-v402::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* v414.10 ユーザーランクボタン */
+.home-rank-pill-button-v414 {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.44) !important;
+  background: rgba(255,255,255,0.82) !important;
+  color: #1d2b22 !important;
+  cursor: pointer;
+  font: inherit;
+  line-height: 1.1;
+}
+
+.home-rank-pill-button-v414:active {
+  transform: scale(0.98);
+}
+
+
+/* v414.11: ホーム上部のユーザーランクチップを七瀬タップ領域より優先して押せるようにする */
+html body .home-scene-panel-v371 .home-title-brand-v201 {
+  pointer-events: auto !important;
+}
+
+html body .home-scene-panel-v371 .home-lobby-top-status-v2182 {
+  pointer-events: auto !important;
+  z-index: 30000 !important;
+}
+
+html body .home-scene-panel-v371 .home-lobby-status-pill-v2182.home-rank-pill-button-v414,
+html body .home-rank-pill-button-v414 {
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 30001 !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+}
+
+html body .home-action-grid-v201 .home-menu-card-v201,
+html body .home-action-grid-v201 button {
+  pointer-events: auto !important;
 }

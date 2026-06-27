@@ -216,7 +216,7 @@ function getFreeModeSaveKey(slot, mapKey) {
 const SAVE_SLOT_COUNT = 3;
 const DEFAULT_COMPANY_NAME = "箱庭不動産";
 const DEFAULT_SAVE_SLOT = 1;
-const GAME_VERSION = "v372-home-ideal-layout";
+const GAME_VERSION = "v414.11-home-user-rank-button-fix";
 // v244 roadmap: 七瀬レベル帯会話 / イベント会話 / 資産到達会話 / 支店到達会話 / 社員人数会話
 // v245 roadmap: 宅建講座 / 不動産投資講座 / 建築講座 / 税金講座 / 続き付き知識会話強化
 // v247: 七瀬レベル帯・資産/支店/社員イベント会話・知識会話実装版
@@ -296,7 +296,69 @@ const GAME_VERSION = "v372-home-ideal-layout";
 // v310.5: 建設パネル高さを内容条件別に固定・HUD詳細をインライン絶対配置化
 // v310.6: HUD詳細を1行HUD外の吹き出し表示へ移動・建設パネル高さ再圧縮
 const BASE_EMPLOYEE_SALARY = 15;
-const EMPLOYEE_SALARY_GROWTH_RATE = 1.05;
+const EMPLOYEE_SALARY_GROWTH_RATE = 1.05; // 旧互換メモ：v411以降の実計算は getEmployeeSalaryGrowthRateByLevel を使用
+const EMPLOYEE_SALARY_FIXED_RAISE_AFTER_LEVEL_100 = 5;
+
+const INITIAL_STATION_LAND_PRICE_TARGETS = {
+  gifu: 3000,
+  nagoya: 6000,
+  kyoto: 6000,
+  osaka: 10000,
+  tokyo: 15000,
+  free_15: 3000,
+  free_30: 6000,
+  free_kyoto: 6000,
+  free_50: 10000,
+  free_70: 15000,
+};
+
+function getInitialStationLandPriceTarget(mapKey = "free_70") {
+  return INITIAL_STATION_LAND_PRICE_TARGETS[mapKey] ?? INITIAL_STATION_LAND_PRICE_TARGETS.free_70;
+}
+
+function applyInitialStationLandPriceTargets(tiles = [], stationTargets = [], minPrice = 70) {
+  const targets = (Array.isArray(stationTargets) ? stationTargets : [])
+    .filter((station) => station && Number.isFinite(Number(station.x)) && Number.isFinite(Number(station.y)) && Number(station.targetPrice) > 0)
+    .map((station) => ({
+      x: Number(station.x),
+      y: Number(station.y),
+      targetPrice: Math.round(Number(station.targetPrice)),
+    }));
+
+  if (targets.length === 0) return tiles;
+
+  const rawStationPriceByKey = new Map();
+  targets.forEach((station) => {
+    const stationTile = tiles.find((tile) => tile.x === station.x && tile.y === station.y);
+    const rawPrice = Math.max(1, Math.round(Number(stationTile?.landPrice) || station.targetPrice));
+    rawStationPriceByKey.set(`${station.x},${station.y}`, rawPrice);
+  });
+
+  return tiles.map((tile) => {
+    if (!tile) return tile;
+
+    const nearestStation = targets.reduce((best, station) => {
+      const distance = getDistance(tile.x, tile.y, station.x, station.y);
+      if (!best || distance < best.distance) return { station, distance };
+      return best;
+    }, null)?.station;
+
+    if (!nearestStation) return tile;
+
+    const rawStationPrice = rawStationPriceByKey.get(`${nearestStation.x},${nearestStation.y}`) ?? nearestStation.targetPrice;
+    const scale = nearestStation.targetPrice / Math.max(1, rawStationPrice);
+    const isStationTile = tile.x === nearestStation.x && tile.y === nearestStation.y;
+    const nextPrice = isStationTile
+      ? nearestStation.targetPrice
+      : Math.round((Number(tile.landPrice) || minPrice) * scale);
+
+    return {
+      ...tile,
+      landPrice: Math.max(minPrice, nextPrice),
+    };
+  });
+}
+
 const GIFU_CLEAR_BUILDING_COUNT = 3;
 const NAGOYA_CLEAR_MONTHLY_PROFIT = 300;
 const KYOTO_TUTORIAL_TOURISM_BUILDING_COUNT = 3;
@@ -316,6 +378,156 @@ const DEV_DEMO_SHEET_GRANT_KEY = "devDemoSheetsGranted_v299";
 const MEDAL_TO_SHINE_RATE = 100;
 const OFFICE_EMPLOYEE_ASSIGN_LIMIT = 999;
 const HQ_BRANCH_UNLOCK_LEVEL = 3;
+
+const COMPANY_EVALUATION_BRANCH_UNLOCK_POINTS = 500;
+const COMPANY_EVALUATION_EMPLOYEE_LIMIT_TABLE = [
+  { points: 0, limit: 3 },
+  { points: 300, limit: 4 },
+  { points: 800, limit: 5 },
+  { points: 1500, limit: 6 },
+  { points: 2500, limit: 7 },
+  { points: 4000, limit: 8 },
+  { points: 6000, limit: 9 },
+  { points: 9000, limit: 10 },
+  { points: 12000, limit: 11 },
+  { points: 15000, limit: 12 },
+];
+
+const COMPANY_EVALUATION_BUILDING_UNLOCK_POINTS = {
+  house_1f: 0,
+  apt_2f_family: 0,
+  convenience: 0,
+  house_2f: 100,
+  restaurant: 100,
+  house_3f: 300,
+  apt_2f_single: 300,
+  souvenir_shop: 500,
+  small_factory: 500,
+  apt_3f_single: 800,
+  drugstore: 800,
+  ryokan: 1200,
+  warehouse: 1200,
+  supermarket: 1800,
+  mansion_5f: 2500,
+  medium_factory: 2500,
+  business_hotel: 3500,
+  hot_spring: 5000,
+  logistics_center: 5000,
+  mansion_7f: 7000,
+  commercial_big: 10000,
+  large_factory: 15000,
+  hq_apartment: 0,
+};
+
+const COMPANY_EVALUATION_UNLOCK_TABLE = [
+  { points: 0, label: "平屋戸建・2階建アパート・コンビニ" },
+  { points: 100, label: "2階建戸建・飲食店" },
+  { points: 300, label: "3階建戸建・社宅アパート / 配属枠4人" },
+  { points: 500, label: "土産物店・町工場 / 支店建設" },
+  { points: 800, label: "3階建アパート・ドラッグストア / 配属枠5人" },
+  { points: 1200, label: "旅館・物流倉庫" },
+  { points: 1500, label: "配属枠6人" },
+  { points: 1800, label: "スーパー" },
+  { points: 2500, label: "5階建マンション・中規模工場 / 配属枠7人" },
+  { points: 3500, label: "ビジネスホテル" },
+  { points: 4000, label: "配属枠8人" },
+  { points: 5000, label: "温泉施設・物流センター" },
+  { points: 6000, label: "配属枠9人" },
+  { points: 7000, label: "7階建マンション" },
+  { points: 9000, label: "配属枠10人" },
+  { points: 10000, label: "大型商業施設" },
+  { points: 12000, label: "配属枠11人" },
+  { points: 15000, label: "大規模工場 / 配属枠12人" },
+];
+
+function getEmployeeCallBaseLimitByCompanyEvaluation(points = 0) {
+  const safePoints = Math.max(0, Math.round(Number(points) || 0));
+  let limit = 3;
+  COMPANY_EVALUATION_EMPLOYEE_LIMIT_TABLE.forEach((entry) => {
+    if (safePoints >= entry.points) limit = entry.limit;
+  });
+  if (safePoints > 15000) {
+    limit += Math.floor((safePoints - 15000) / 5000);
+  }
+  return Math.max(3, limit);
+}
+
+function getRequiredCompanyEvaluationPointsForBuilding(buildingKey) {
+  return COMPANY_EVALUATION_BUILDING_UNLOCK_POINTS[buildingKey] ?? 0;
+}
+
+function isBuildingUnlockedForCompanyEvaluation(buildingKey, points = 0) {
+  return Math.max(0, Math.round(Number(points) || 0)) >= getRequiredCompanyEvaluationPointsForBuilding(buildingKey);
+}
+
+function getNextCompanyEvaluationUnlock(points = 0) {
+  const safePoints = Math.max(0, Math.round(Number(points) || 0));
+  return COMPANY_EVALUATION_UNLOCK_TABLE.find((entry) => safePoints < entry.points) ?? null;
+}
+
+function getCompanyEvaluationStageName(points = 0) {
+  const safePoints = Math.max(0, Math.round(Number(points) || 0));
+  if (safePoints >= 15000) return "地域代表企業";
+  if (safePoints >= 7000) return "地域有力企業";
+  if (safePoints >= 2500) return "中堅企業";
+  if (safePoints >= 800) return "成長企業";
+  if (safePoints >= 300) return "地域密着企業";
+  return "創業期";
+}
+
+function calculateCompanyEvaluationPointsFromSnapshot({ hqPlaced = false, tiles = [], totalPopulation = 0, monthlyProfit = 0 } = {}) {
+  if (!hqPlaced) return 0;
+
+  const isInitialOfficeTile = (tile) => {
+    if (!tile) return false;
+    return (tile.feature === FEATURE.HQ || tile.feature === FEATURE.BRANCH) &&
+      (tile.isInitialOfficeSetup === true || tile.excludeFromOfficeLevelExp === true);
+  };
+
+  const mainPlayerTiles = (Array.isArray(tiles) ? tiles : []).filter((tile) => {
+    if (!tile || tile.owner !== OWNER.PLAYER || tile.buildingMainId) return false;
+    // v414.2: 岐阜の初期本社、名古屋/京都/大阪/東京の初期支店は開始地点であり、経営実績ではない。
+    // そのため、土地・建物・支店実績だけでなく、付属部屋の人口/家賃も会社評価ptから完全に除外する。
+    if (isInitialOfficeTile(tile)) return false;
+    return true;
+  });
+
+  const landCount = mainPlayerTiles.filter((tile) => !tile.building && tile.feature !== FEATURE.HQ && tile.feature !== FEATURE.BRANCH).length;
+  const buildingTiles = mainPlayerTiles.filter((tile) => tile.building && tile.feature !== FEATURE.HQ && tile.feature !== FEATURE.BRANCH);
+  const normalBuildingCount = buildingTiles.filter((tile) => !tile.buildingStatus && !tile.branchUnderConstruction).length;
+  const usedBuildingKeys = new Set(buildingTiles.map((tile) => tile.building).filter(Boolean));
+  const branchCount = mainPlayerTiles.filter((tile) => tile.feature === FEATURE.BRANCH && !tile.branchUnderConstruction).length;
+  const repairQualityBonus = buildingTiles.reduce((sum, tile) => sum + Math.max(0, Math.floor(((Number(tile.condition) || 100) - 100) / 10)), 0);
+
+  const evaluationPopulation = buildingTiles.reduce((sum, tile) => {
+    return sum + (Array.isArray(tile.rooms) ? tile.rooms.reduce((roomSum, room) => roomSum + (Number(room?.people) || 0), 0) : 0);
+  }, 0);
+  const evaluationMonthlyIncome = buildingTiles.reduce((sum, tile) => {
+    return sum + (Array.isArray(tile.rooms) ? tile.rooms.reduce((roomSum, room) => {
+      if (!room?.occupied) return roomSum;
+      return roomSum + (Number(room.contractRent ?? room.rent) || 0);
+    }, 0) : 0);
+  }, 0);
+
+  const population = Math.max(0, Math.round(evaluationPopulation || 0));
+  const profit = Math.max(0, Math.round(evaluationMonthlyIncome || 0));
+  const populationMilestonePoints = [
+    [100, 20], [300, 40], [500, 60], [1000, 100], [3000, 200],
+  ].reduce((sum, [threshold, value]) => sum + (population >= threshold ? value : 0), 0);
+  const profitMilestonePoints = [
+    [100, 20], [300, 40], [500, 60], [1000, 100], [3000, 200],
+  ].reduce((sum, [threshold, value]) => sum + (profit >= threshold ? value : 0), 0);
+
+  return Math.max(0,
+    landCount * 5 +
+    normalBuildingCount * 30 +
+    usedBuildingKeys.size * 20 +
+    branchCount * 100 +
+    repairQualityBonus * 5 +
+    populationMilestonePoints +
+    profitMilestonePoints
+  );
+}
 const GAME_OVER_RESCUE_MEDAL_COST = 50;
 const GAME_OVER_RESCUE_RESTART_MONEY = 10000;
 
@@ -327,6 +539,57 @@ const HOME_AKARI_TALK_MODE_KEY = "realEstateGameHomeAkariTalkMode_v1";
 const TEST_RELEASE_CAMPAIGN_CLAIMED_KEY = "realEstateGameTestReleaseCampaignClaimed_v1";
 
 const SPECIAL_MISSION_POINT_RECOVERY_MS = 5 * 60 * 1000;
+const SPECIAL_MISSION_ROTATION_MS = 2 * 60 * 60 * 1000;
+const SPECIAL_MISSION_ROTATION_OFFER_COUNT = 3;
+
+function getSpecialMissionRotationInfo(nowMs = Date.now()) {
+  const safeNow = Math.max(0, Number(nowMs) || Date.now());
+  const rotationIndex = Math.floor(safeNow / SPECIAL_MISSION_ROTATION_MS);
+  const nextRefreshAt = (rotationIndex + 1) * SPECIAL_MISSION_ROTATION_MS;
+  return { rotationIndex, nextRefreshAt };
+}
+
+function createSeededHash(text = "") {
+  let hash = 2166136261;
+  const source = String(text || "");
+  for (let index = 0; index < source.length; index += 1) {
+    hash ^= source.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function createRotatingSpecialMissionOffers(areas = [], activeDispatches = [], nowMs = Date.now(), offerCount = SPECIAL_MISSION_ROTATION_OFFER_COUNT) {
+  const { rotationIndex, nextRefreshAt } = getSpecialMissionRotationInfo(nowMs);
+  const activeMissionIds = new Set((Array.isArray(activeDispatches) ? activeDispatches : []).map((dispatch) => dispatch?.missionId).filter(Boolean));
+  const candidates = (Array.isArray(areas) ? areas : []).flatMap((area) => {
+    const officeLevel = Math.max(1, Math.round(Number(area?.officeLevel) || 1));
+    return (Array.isArray(area?.missions) ? area.missions : [])
+      .filter((mission) => officeLevel >= getSpecialMissionUnlockLevel(mission))
+      .filter((mission) => !activeMissionIds.has(mission.id))
+      .map((mission) => ({ mission, area }));
+  });
+
+  const shuffled = candidates
+    .map((entry) => ({ ...entry, order: createSeededHash(`${rotationIndex}:${entry.mission.id}:${entry.area?.key ?? ""}`) }))
+    .sort((a, b) => a.order - b.order);
+
+  return {
+    rotationIndex,
+    nextRefreshAt,
+    offers: shuffled.slice(0, Math.max(1, Math.round(Number(offerCount) || SPECIAL_MISSION_ROTATION_OFFER_COUNT))),
+    totalCandidateCount: candidates.length,
+  };
+}
+
+function formatSpecialMissionRefreshRemaining(nextRefreshAt = 0, nowMs = Date.now()) {
+  const remainingMs = Math.max(0, Number(nextRefreshAt) - Number(nowMs));
+  const totalMinutes = Math.ceil(remainingMs / 60000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  if (hours > 0) return `${hours}時間${minutes}分`;
+  return `${Math.max(1, minutes)}分`;
+}
 
 function formatHomeCompanyDisplayName(name = DEFAULT_COMPANY_NAME) {
   const text = String(name || DEFAULT_COMPANY_NAME).trim();
@@ -1086,19 +1349,51 @@ function writeLastNavigationState(navigationState) {
   }
 }
 
-const LOGIN_BONUS_REWARDS = [
-  { day: 1, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
-  { day: 2, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
-  { day: 3, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
-  { day: 4, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
-  { day: 5, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
-  { day: 6, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉", text: "社員採用チケット ×1" },
-  { day: 7, type: "employeeTicket", name: "レア社員採用チケット", count: 1, icon: "📨", text: "レア社員採用チケット ×1" },
-];
+function createLoginBonusBundle(day, bonusReward = null) {
+  const baseReward = { day, type: "rookieTicket", name: "社員採用チケット", count: 1, icon: "✉️", text: "社員採用チケット ×1" };
+  if (!bonusReward) return baseReward;
+
+  const rewards = [baseReward, { ...bonusReward, day }];
+  return {
+    day,
+    type: "bundle",
+    name: `${baseReward.name}＋${bonusReward.name}`,
+    count: rewards.reduce((sum, reward) => sum + Math.max(0, Math.round(Number(reward.count) || 0)), 0),
+    icon: bonusReward.icon ?? "🎁",
+    text: rewards.map((reward) => reward.text).join(" / "),
+    rewards,
+  };
+}
+
+const LOGIN_BONUS_REWARDS = Array.from({ length: 30 }, (_, index) => {
+  const day = index + 1;
+
+  if (day === 5) return createLoginBonusBundle(day, { type: "item", itemKey: "manual_sales", name: "営業マニュアル", count: 1, icon: "📘", text: "営業マニュアル ×1" });
+  if (day === 10 || day === 20) return createLoginBonusBundle(day, { type: "medals", name: "メダル", count: 100, icon: "🏅", text: "メダル ×100" });
+  if (day === 15) return createLoginBonusBundle(day, { type: "item", itemKey: "manual_construction", name: "建築マニュアル", count: 1, icon: "📗", text: "建築マニュアル ×1" });
+  if (day === 25) return createLoginBonusBundle(day, { type: "item", itemKey: "manual_management", name: "管理マニュアル", count: 1, icon: "📙", text: "管理マニュアル ×1" });
+  if (day === 30) return createLoginBonusBundle(day, { type: "rookieTicket", name: "30日達成ボーナス", count: 50, icon: "👥", text: "社員採用チケット ×50" });
+  if (day % 7 === 0) return createLoginBonusBundle(day, { type: "employeeTicket", name: "レア社員採用チケット", count: 1, icon: "📨", text: "レア社員採用チケット ×1" });
+
+  return createLoginBonusBundle(day);
+});
+
+function getLoginBonusRewardParts(reward = {}) {
+  return Array.isArray(reward.rewards) && reward.rewards.length > 0 ? reward.rewards : [reward];
+}
 
 function getLoginBonusRewardByCount(claimCount = 0) {
   const safeClaimCount = Math.max(0, Math.round(Number(claimCount) || 0));
   return LOGIN_BONUS_REWARDS[safeClaimCount % LOGIN_BONUS_REWARDS.length] ?? LOGIN_BONUS_REWARDS[0];
+}
+
+function getLoginBonusPreviewRewards(claimCount = 0, displayCount = 7) {
+  const safeClaimCount = Math.max(0, Math.round(Number(claimCount) || 0));
+  const safeDisplayCount = Math.max(1, Math.round(Number(displayCount) || 7));
+  return Array.from({ length: safeDisplayCount }, (_, index) => ({
+    ...getLoginBonusRewardByCount(safeClaimCount + index),
+    previewIndex: index + 1,
+  }));
 }
 
 function readPresentBoxHistory() {
@@ -1197,7 +1492,8 @@ function getDailyLoginBonusStatus() {
     rewardName: reward.name,
     rewardCount: reward.count,
     rewardText: reward.text,
-    weeklyRewards: LOGIN_BONUS_REWARDS,
+    weeklyRewards: getLoginBonusPreviewRewards(bonusData.claimCount, 7),
+    allRewards: LOGIN_BONUS_REWARDS,
   };
 }
 
@@ -1238,9 +1534,31 @@ function writeHomeMissionData(missionData) {
 
 
 
+function getEmployeeSalaryGrowthRateByLevel(nextLevel) {
+  const safeNextLevel = Math.max(2, Math.round(Number(nextLevel) || 2));
+
+  // v411: 給与は序盤だけ大きく伸び、レベルが上がるほど昇給率を抑える。
+  // Lv100以降は複利を止め、月給の暴騰を防ぐため固定昇給にする。
+  if (safeNextLevel <= 20) return 1.10;
+  if (safeNextLevel <= 50) return 1.035;
+  if (safeNextLevel <= 80) return 1.022;
+  if (safeNextLevel <= 100) return 1.017;
+  return 1;
+}
+
 function calculateEmployeeSalaryByLevel(level) {
   const safeLevel = Math.max(1, Math.round(Number(level) || 1));
-  return Math.max(1, Math.round(BASE_EMPLOYEE_SALARY * Math.pow(EMPLOYEE_SALARY_GROWTH_RATE, safeLevel - 1)));
+  let salary = BASE_EMPLOYEE_SALARY;
+
+  for (let nextLevel = 2; nextLevel <= safeLevel; nextLevel += 1) {
+    if (nextLevel > 100) {
+      salary += EMPLOYEE_SALARY_FIXED_RAISE_AFTER_LEVEL_100;
+    } else {
+      salary *= getEmployeeSalaryGrowthRateByLevel(nextLevel);
+    }
+  }
+
+  return Math.max(1, Math.round(salary));
 }
 
 
@@ -1560,7 +1878,7 @@ const STORY_NAGOYA_EVENTS = {
   BRANCH_COMPLETE: {
     portrait: "happy_4",
     title: "支店完成",
-    text: "支店が完成しました！ 次は社員を支店へ配属しましょう。配属できる社員が足りない場合は、下部メニューの『社員』から社員採用を行い、その後に社員配属で支店へ1人以上置いてください。",
+    text: "支店が完成しました！ 次は社員を支店へ配属しましょう。配属できる社員が足りない場合は、ホームの社員採用で社員を増やしてから、マップ下部メニューの『社員』で社員配属を行ってください。",
   },
   BRANCH_EMPLOYEE_ASSIGNED: {
     portrait: "happy_4",
@@ -1792,7 +2110,7 @@ function getStoryNagoyaAdviceText(step) {
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_LOAN_APPLICATION) return "融資審査中です。翌月へ進めて結果を待ちましょう。承認されたら、条件を確認して借入を実行してください。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.BUILD_BRANCH) return "次は支店です。名古屋マップ上に用意された自社の空き地を使って、支店建設を体験しましょう。建設メニューの「支店」を選び、赤枠で案内される操作に進んでください。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.WAIT_BRANCH) return "支店を建設中です。完成すると、その周辺が新しい活動範囲になります。翌月へ進めて完成を待ちましょう。";
-  if (step === STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE) return "支店に配属できる社員が足りない場合は、下部メニューの『社員』から社員採用を行ってください。社員を採用したら、社員配属で完成した支店へ1人以上配属しましょう。";
+  if (step === STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE) return "支店に配属できる社員が足りない場合は、ホームの社員採用で社員を増やしてください。社員を採用したら、マップ下部メニューの『社員』で完成した支店へ1人以上配属しましょう。";
   if (step === STORY_NAGOYA_TUTORIAL_STEPS.COMPLETE) return "銀行融資で資金を作り、支店で活動範囲を広げ、社員を支店へ配属する流れまで確認できました。いよいよ名古屋編の本格スタートです。";
   return "銀行融資と支店建設を順番に体験しましょう。";
 }
@@ -2021,8 +2339,12 @@ function createStoryTutorialMap() {
     }
   }
 
+  const adjustedTiles = applyInitialStationLandPriceTargets(tiles, [
+    { x: stationX, y: stationY, targetPrice: getInitialStationLandPriceTarget("gifu") },
+  ], 80);
+
   return {
-    tiles: recalculateTileZonesByFacilities(tiles),
+    tiles: recalculateTileZonesByFacilities(adjustedTiles),
     stationX,
     stationY,
     stationPositions,
@@ -2248,8 +2570,12 @@ function createGifuStoryMap() {
     { x: 2, y: 12 },
   ]);
 
+  const adjustedTiles = applyInitialStationLandPriceTargets(tiles, [
+    { x: stationX, y: stationY, targetPrice: getInitialStationLandPriceTarget("gifu") },
+  ], 80);
+
   return {
-    tiles: recalculateTileZonesByFacilities(tiles),
+    tiles: recalculateTileZonesByFacilities(adjustedTiles),
     stationX,
     stationY,
     stationPositions,
@@ -2616,8 +2942,13 @@ function createNagoyaStoryMap(gifuSourceTiles = []) {
     { x: 25, y: 12 },
   ]);
 
+  const adjustedTiles = applyInitialStationLandPriceTargets(tiles, [
+    { x: gifuStationX, y: gifuStationY, targetPrice: getInitialStationLandPriceTarget("gifu") },
+    { x: nagoyaStationX, y: nagoyaStationY, targetPrice: getInitialStationLandPriceTarget("nagoya") },
+  ], 80);
+
   return {
-    tiles: recalculateTileZonesByFacilities(tiles),
+    tiles: recalculateTileZonesByFacilities(adjustedTiles),
     stationX,
     stationY,
     stationPositions,
@@ -11288,7 +11619,7 @@ export const employeeMaster = [
   },
   {
     id: 680,
-    name: "フレデリカ・スターリング",
+    name: "フレデリカ・ルーク",
     gender: "female",
     rarity: "SR",
     level: 1,
@@ -11367,7 +11698,7 @@ export const employeeMaster = [
     awakeningMax: 0,
     leadership: 81,
     sales: 99,
-    construction: 68,
+    construction: 64,
     management: 98,
     salary: 103,
     officeId: "storage",
@@ -11441,9 +11772,9 @@ export const employeeMaster = [
     awakeningMax: 0,
     leadership: 96,
     sales: 85,
-    construction: 78,
+    construction: 70,
     management: 98,
-    salary: 134,
+    salary: 100,
     officeId: "storage",
     graphicCode: "SSR004",
     specialNames: [
@@ -11476,8 +11807,8 @@ export const employeeMaster = [
     exp: 0,
     awakening: 0,
     awakeningMax: 0,
-    leadership: 71,
-    sales: 90,
+    leadership: 90,
+    sales: 66,
     construction: 94,
     management: 83,
     salary: 103,
@@ -11517,7 +11848,7 @@ export const employeeMaster = [
     sales: 87,
     construction: 88,
     management: 76,
-    salary: 113,
+    salary: 93,
     officeId: "storage",
     graphicCode: "SSR006",
     specialNames: [
@@ -11554,7 +11885,7 @@ export const employeeMaster = [
     sales: 80,
     construction: 92,
     management: 93,
-    salary: 133,
+    salary: 93,
     officeId: "storage",
     graphicCode: "SSR007",
     specialNames: [
@@ -11624,10 +11955,10 @@ export const employeeMaster = [
     exp: 0,
     awakening: 0,
     awakeningMax: 0,
-    leadership: 94,
-    sales: 77,
-    construction: 76,
-    management: 92,
+    leadership: 74,
+    sales: 95,
+    construction: 90,
+    management: 71,
     salary: 112,
     officeId: "storage",
     graphicCode: "SSR009",
@@ -11702,7 +12033,7 @@ export const employeeMaster = [
     sales: 89,
     construction: 80,
     management: 70,
-    salary: 106,
+    salary: 96,
     officeId: "storage",
     graphicCode: "SSR011",
     specialNames: [
@@ -11735,10 +12066,10 @@ export const employeeMaster = [
     exp: 0,
     awakening: 0,
     awakeningMax: 0,
-    leadership: 98,
-    sales: 69,
+    leadership: 94,
+    sales: 72,
     construction: 77,
-    management: 76,
+    management: 87,
     salary: 80,
     officeId: "storage",
     graphicCode: "SSR012",
@@ -11772,8 +12103,8 @@ export const employeeMaster = [
     exp: 0,
     awakening: 0,
     awakeningMax: 0,
-    leadership: 85,
-    sales: 83,
+    leadership: 90,
+    sales: 90,
     construction: 78,
     management: 67,
     salary: 80,
@@ -11812,8 +12143,8 @@ export const employeeMaster = [
     leadership: 93,
     sales: 94,
     construction: 85,
-    management: 91,
-    salary: 132,
+    management: 87,
+    salary: 99,
     officeId: "storage",
     graphicCode: "SSR014",
     specialNames: [
@@ -11846,11 +12177,11 @@ export const employeeMaster = [
     exp: 0,
     awakening: 0,
     awakeningMax: 0,
-    leadership: 68,
-    sales: 66,
-    construction: 92,
-    management: 93,
-    salary: 86,
+    leadership: 82,
+    sales: 86,
+    construction: 88,
+    management: 96,
+    salary: 95,
     officeId: "storage",
     graphicCode: "SSR015",
     specialNames: [
@@ -11883,11 +12214,11 @@ export const employeeMaster = [
     exp: 0,
     awakening: 0,
     awakeningMax: 0,
-    leadership: 86,
-    sales: 88,
-    construction: 97,
-    management: 98,
-    salary: 110,
+    leadership: 101,
+    sales: 95,
+    construction: 100,
+    management: 101,
+    salary: 120,
     officeId: "storage",
     graphicCode: "UR001",
     specialNames: [
@@ -11925,10 +12256,10 @@ export const employeeMaster = [
     awakening: 0,
     awakeningMax: 0,
     leadership: 100,
-    sales: 82,
-    construction: 89,
-    management: 105,
-    salary: 110,
+    sales: 100,
+    construction: 99,
+    management: 101,
+    salary: 133,
     officeId: "storage",
     graphicCode: "UR002",
     specialNames: [
@@ -11965,11 +12296,11 @@ export const employeeMaster = [
     exp: 0,
     awakening: 0,
     awakeningMax: 0,
-    leadership: 87,
-    sales: 97,
-    construction: 91,
-    management: 96,
-    salary: 115,
+    leadership: 91,
+    sales: 105,
+    construction: 110,
+    management: 92,
+    salary: 122,
     officeId: "storage",
     graphicCode: "UR003",
     specialNames: [
@@ -12006,10 +12337,10 @@ export const employeeMaster = [
     exp: 0,
     awakening: 0,
     awakeningMax: 0,
-    leadership: 82,
-    sales: 99,
-    construction: 96,
-    management: 108,
+    leadership: 105,
+    sales: 91,
+    construction: 103,
+    management: 99,
     salary: 135,
     officeId: "storage",
     graphicCode: "UR004",
@@ -12047,11 +12378,11 @@ export const employeeMaster = [
     exp: 0,
     awakening: 0,
     awakeningMax: 0,
-    leadership: 97,
-    sales: 95,
-    construction: 92,
-    management: 98,
-    salary: 139,
+    leadership: 103,
+    sales: 97,
+    construction: 90,
+    management: 106,
+    salary: 129,
     officeId: "storage",
     graphicCode: "UR005",
     specialNames: [
@@ -12701,8 +13032,12 @@ function createKyotoStoryMap() {
     { x: 18, y: 22 },
   ]);
 
+  const adjustedTiles = applyInitialStationLandPriceTargets(tiles, [
+    { x: stationX, y: stationY, targetPrice: getInitialStationLandPriceTarget("kyoto") },
+  ], 70);
+
   return {
-    tiles: recalculateTileZonesByFacilities(tiles),
+    tiles: recalculateTileZonesByFacilities(adjustedTiles),
     stationX,
     stationY,
     stationPositions,
@@ -13235,8 +13570,13 @@ initialRivalCompanyIds.forEach((companyId, index) => {
   placedRivalOffices.push(rivalOfficeTile);
 });
 
+const adjustedTiles = applyInitialStationLandPriceTargets(tiles, stationPositions.map((station) => ({
+  ...station,
+  targetPrice: getInitialStationLandPriceTarget(normalizeFreeModeKey(freeMapMode)),
+})), 70);
+
 return {
-  tiles: recalculateTileZonesByFacilities(tiles),
+  tiles: recalculateTileZonesByFacilities(adjustedTiles),
   stationX,
   stationY,
   stationPositions,
@@ -15796,6 +16136,7 @@ const [employeeItemUseConfirm, setEmployeeItemUseConfirm] = useState(null);
 const [employeeItemUseResult, setEmployeeItemUseResult] = useState(null);
 const [employeeExamAnimationStep, setEmployeeExamAnimationStep] = useState("result");
 const [homeMissionFilter, setHomeMissionFilter] = useState("claimable");
+const [homeLoginBonusClaimResult, setHomeLoginBonusClaimResult] = useState(null);
 const [isHomeBottomNavVisible, setIsHomeBottomNavVisible] = useState(false);
 const homeBottomNavHideTimerRef = useRef(null);
 const [isMapBottomNavVisible, setIsMapBottomNavVisible] = useState(true);
@@ -15836,7 +16177,7 @@ const hideHomeBottomNavSoon = useCallback(() => {
 
   homeBottomNavHideTimerRef.current = window.setTimeout(() => {
     setIsHomeBottomNavVisible(false);
-  }, 1500);
+  }, 2000);
 }, []);
 
 const showHomeBottomNavTemporarily = useCallback(() => {
@@ -15845,7 +16186,13 @@ const showHomeBottomNavTemporarily = useCallback(() => {
 }, [hideHomeBottomNavSoon]);
 
 useEffect(() => {
-  if (currentScreen !== "home") {
+  const shouldAutoHideHomeBottomNav = currentScreen === "home" && Boolean(titleModal);
+
+  if (!shouldAutoHideHomeBottomNav) {
+    if (homeBottomNavHideTimerRef.current) {
+      window.clearTimeout(homeBottomNavHideTimerRef.current);
+      homeBottomNavHideTimerRef.current = null;
+    }
     setIsHomeBottomNavVisible(true);
     return undefined;
   }
@@ -15860,7 +16207,7 @@ useEffect(() => {
   window.addEventListener("wheel", handleHomeInteraction, { passive: true });
   document.addEventListener("scroll", handleHomeInteraction, { passive: true, capture: true });
 
-  hideHomeBottomNavSoon();
+  showHomeBottomNavTemporarily();
 
   return () => {
     window.removeEventListener("pointerdown", handleHomeInteraction);
@@ -15871,31 +16218,10 @@ useEffect(() => {
 
     if (homeBottomNavHideTimerRef.current) {
       window.clearTimeout(homeBottomNavHideTimerRef.current);
-    }
-  };
-}, [currentScreen, showHomeBottomNavTemporarily, hideHomeBottomNavSoon]);
-
-useEffect(() => {
-  if (homeBottomNavHideTimerRef.current) {
-    window.clearTimeout(homeBottomNavHideTimerRef.current);
-    homeBottomNavHideTimerRef.current = null;
-  }
-
-  setIsHomeBottomNavVisible(true);
-
-  if (titleModal) {
-    homeBottomNavHideTimerRef.current = window.setTimeout(() => {
-      setIsHomeBottomNavVisible(false);
-    }, 1500);
-  }
-
-  return () => {
-    if (homeBottomNavHideTimerRef.current) {
-      window.clearTimeout(homeBottomNavHideTimerRef.current);
       homeBottomNavHideTimerRef.current = null;
     }
   };
-}, [titleModal]);
+}, [currentScreen, titleModal, showHomeBottomNavTemporarily]);
 
 
 const hideMapBottomNavSoon = useCallback(() => {
@@ -15906,7 +16232,7 @@ const hideMapBottomNavSoon = useCallback(() => {
     if (!isMainMenuOpen && !isMapInfoMenuOpen && !isMapEmployeeMenuOpen) {
       setIsMapBottomNavVisible(false);
     }
-  }, 1500);
+  }, 2000);
 }, [isMainMenuOpen, isMapInfoMenuOpen, isMapEmployeeMenuOpen]);
 
 const showMapBottomNavTemporarily = useCallback(() => {
@@ -16902,26 +17228,30 @@ const activeOfficeTiles = useMemo(() => {
   return officeTiles.filter((officeTile) => getOfficeActionRange(officeTile) > 0);
 }, [officeTiles]);
 
-// v277: プレイヤーランクとは別に、マップ内の会社成長度として本社Lvを扱う。
-// 本社EXPはマップ内の実績から算出し、Lvアップごとに社員呼び出し枠+1。Lv3で支店建設解放。
+// v414: 本社Lv/支店Lvを、マップ専用の「会社評価ポイント」に置き換える。
+// 会社評価はマップ内の土地・建物・人口・利益・支店実績から算出し、社員配属枠と建物解放に使う。
 const completedPlayerBuildingCountForHqLevel = useMemo(() => {
-  return playerMainBuildings.filter((tile) => tile.building && !tile.buildingStatus && !tile.branchUnderConstruction).length;
+  return playerMainBuildings.filter((tile) => {
+    if (tile.excludeFromOfficeLevelExp || tile.isInitialOfficeSetup) return false;
+    return tile.building && !tile.buildingStatus && !tile.branchUnderConstruction;
+  }).length;
 }, [playerMainBuildings]);
 
-const headquarterExpTotal = useMemo(() => {
-  if (!hqPlaced) return 0;
+const companyEvaluationPointTotal = useMemo(() => {
+  return calculateCompanyEvaluationPointsFromSnapshot({
+    hqPlaced,
+    tiles,
+    totalPopulation,
+    monthlyProfit: actualMonthlyProfit,
+  });
+}, [hqPlaced, tiles, totalPopulation, actualMonthlyProfit]);
 
-  const buildingExp = completedPlayerBuildingCountForHqLevel * 80;
-  const monthExp = Math.max(0, Math.round(Number(month) || 0)) * 8;
-  const populationExp = Math.floor(Math.max(0, Number(totalPopulation) || 0) / 50);
-  const profitExp = Math.floor(Math.max(0, Number(actualMonthlyProfit) || 0) / 10);
-
-  return Math.max(0, buildingExp + monthExp + populationExp + profitExp);
-}, [hqPlaced, completedPlayerBuildingCountForHqLevel, month, totalPopulation, actualMonthlyProfit]);
+// 旧処理互換用。特別任務など、まだLv参照が残る箇所では評価ptから疑似Lvを算出して使う。
+const headquarterExpTotal = companyEvaluationPointTotal;
 
 const headquarterNextLevelInfo = useMemo(() => {
   let level = 1;
-  let exp = Math.max(0, Math.round(Number(headquarterExpTotal) || 0));
+  let exp = Math.max(0, Math.round(Number(companyEvaluationPointTotal) || 0));
 
   while (level < 20 && exp >= getPlayerRequiredExp(level)) {
     exp -= getPlayerRequiredExp(level);
@@ -16932,53 +17262,56 @@ const headquarterNextLevelInfo = useMemo(() => {
     level,
     exp,
     requiredExp: getPlayerRequiredExp(level),
-    totalExp: headquarterExpTotal,
+    totalExp: companyEvaluationPointTotal,
     nextLevel: Math.min(20, level + 1),
     isMaxLevel: level >= 20,
   };
-}, [headquarterExpTotal]);
+}, [companyEvaluationPointTotal]);
 
 const headquarterLevel = headquarterNextLevelInfo.level;
 
 const currentOfficeAreaKey = getSpecialMissionAreaKeyFromMode(currentGameMode, isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null);
-const currentOfficeLevelShortLabel = getOfficeLevelShortLabelByAreaKey(currentOfficeAreaKey);
-const currentOfficeLevelFullLabel = getOfficeLevelFullLabelByAreaKey(currentOfficeAreaKey);
-const currentOfficeExpLabel = getOfficeExpLabelByAreaKey(currentOfficeAreaKey);
+const currentOfficeLevelShortLabel = "会社評価";
+const currentOfficeLevelFullLabel = "会社評価ポイント";
+const currentOfficeExpLabel = "評価pt";
+const companyEvaluationStageName = getCompanyEvaluationStageName(companyEvaluationPointTotal);
+const nextCompanyEvaluationUnlock = getNextCompanyEvaluationUnlock(companyEvaluationPointTotal);
+
+const employeeCallBaseLimit = useMemo(() => {
+  return getEmployeeCallBaseLimitByCompanyEvaluation(companyEvaluationPointTotal);
+}, [companyEvaluationPointTotal]);
 
 const employeeCallLimit = useMemo(() => {
-  return Math.max(3, 2 + headquarterLevel + branchCount);
-}, [headquarterLevel, branchCount]);
+  return Math.max(3, employeeCallBaseLimit + branchCount * 2);
+}, [employeeCallBaseLimit, branchCount]);
 
 const headquarterNextLevelRewardText = useMemo(() => {
-  if (headquarterNextLevelInfo.isMaxLevel) {
-    return "最大Lvです";
+  if (!nextCompanyEvaluationUnlock) {
+    const nextEmployeePoint = 15000 + (Math.floor(Math.max(0, companyEvaluationPointTotal - 15000) / 5000) + 1) * 5000;
+    return `${nextEmployeePoint.toLocaleString()}ptで社員配属枠 +1`;
   }
 
-  const nextLevel = headquarterLevel + 1;
-  const rewards = ["社員呼び出し枠 +1"];
+  return `${nextCompanyEvaluationUnlock.points.toLocaleString()}pt：${nextCompanyEvaluationUnlock.label}`;
+}, [companyEvaluationPointTotal, nextCompanyEvaluationUnlock]);
 
-  if (headquarterLevel < HQ_BRANCH_UNLOCK_LEVEL && nextLevel >= HQ_BRANCH_UNLOCK_LEVEL) {
-    rewards.push("支店建設解放");
-  }
-
-  return rewards.join(" / ");
-}, [headquarterLevel, headquarterNextLevelInfo.isMaxLevel]);
-
-const isBranchUnlockedByHqLevel = headquarterLevel >= HQ_BRANCH_UNLOCK_LEVEL;
+const isBranchUnlockedByHqLevel = companyEvaluationPointTotal >= COMPANY_EVALUATION_BRANCH_UNLOCK_POINTS;
 const [headquarterLevelUpResult, setHeadquarterLevelUpResult] = useState(null);
-const previousHeadquarterLevelRef = useRef(headquarterLevel);
+const previousCompanyEvaluationPointRef = useRef(companyEvaluationPointTotal);
 
 useEffect(() => {
-  const previousLevel = previousHeadquarterLevelRef.current;
-  if (headquarterLevel > previousLevel) {
-    const messages = [`${currentOfficeLevelShortLabel}${previousLevel} → ${currentOfficeLevelShortLabel}${headquarterLevel}に上がりました。`, `社員呼び出し枠が${employeeCallLimit}人になりました。`];
-    if (previousLevel < HQ_BRANCH_UNLOCK_LEVEL && headquarterLevel >= HQ_BRANCH_UNLOCK_LEVEL) {
-      messages.push("支店建設が解放されました。建設メニューから支店を建てられます。");
+  const previousPoints = previousCompanyEvaluationPointRef.current;
+  if (companyEvaluationPointTotal > previousPoints) {
+    const gainedEvaluationPoints = companyEvaluationPointTotal - previousPoints;
+    grantPlayerRankExpFromCompanyEvaluation(gainedEvaluationPoints, "会社評価ポイント");
+    const crossedUnlocks = COMPANY_EVALUATION_UNLOCK_TABLE.filter((entry) => previousPoints < entry.points && companyEvaluationPointTotal >= entry.points);
+    if (crossedUnlocks.length > 0) {
+      const messages = crossedUnlocks.map((entry) => `${entry.points.toLocaleString()}pt到達：${entry.label}が解放されました。`);
+      messages.push(`社員配属枠は現在${employeeCallLimit}人です。`);
+      setHeadquarterLevelUpResult({ beforeLevel: previousPoints, level: companyEvaluationPointTotal, messages, isCompanyEvaluation: true });
     }
-    setHeadquarterLevelUpResult({ beforeLevel: previousLevel, level: headquarterLevel, messages });
   }
-  previousHeadquarterLevelRef.current = headquarterLevel;
-}, [headquarterLevel, employeeCallLimit]);
+  previousCompanyEvaluationPointRef.current = companyEvaluationPointTotal;
+}, [companyEvaluationPointTotal, employeeCallLimit]);
 
 function getEmployeeAssignedCountForOffice(officeId, employeeList = employees) {
   const targetOfficeId = officeId ?? "hq";
@@ -17030,12 +17363,12 @@ useEffect(() => {
     const newOverflowEmployees = overflowEmployees.filter((employee) => !currentStorageIds.has(employee.id));
     return [...currentStorage, ...newOverflowEmployees];
   });
-  setLog(`社員呼び出し枠は現在${employeeCallLimit}人です。枠を超えた社員${overflowEmployees.length}人を社員保管庫へ戻しました。`);
+  setLog(`社員配属枠は現在${employeeCallLimit}人です。枠を超えた社員${overflowEmployees.length}人を社員保管庫へ戻しました。`);
 }, [activeOfficeTiles, employees, employeeCallLimit]);
 
 const employeeLimit = employeeCallLimit;
 
-const employeeLimitText = ` / 呼び出し枠${employees.length}/${employeeCallLimit}人（${currentOfficeLevelShortLabel}${headquarterLevel}・支店${branchCount}店）`;
+const employeeLimitText = ` / 配属枠${employees.length}/${employeeCallLimit}人（会社評価${companyEvaluationPointTotal.toLocaleString()}pt・支店${branchCount}店）`;
 
 const nextBranchRequiredEmployeeCount = useMemo(() => {
   return 0;
@@ -18322,44 +18655,58 @@ function getEmployeeGrowthLimit(employee) {
 
 
 function getPlayerRankUnlocks(rank) {
-  const unlocks = [];
-
-  if (rank === 2) unlocks.push("3階建て戸建てが建築可能");
-  if (rank === 3) unlocks.push("コンビニ・飲食店が建築可能");
-  if (rank === 4) unlocks.push("町工場が建築可能 / 建物売却が可能");
-  if (rank === 5) unlocks.push("アパート全般が建築可能");
-  if (rank === 6) unlocks.push("ドラッグストア・スーパー・倉庫が建築可能");
-  if (rank === 7) unlocks.push("マンション全般が建築可能");
-  if (rank === 8) unlocks.push("全建物が解放");
-
-  return unlocks;
+  // v414.10: 建物解放はマップ専用の会社評価ポイントへ移行。
+  // ユーザーランクはアカウント共通の累積成長・報酬用として扱う。
+  return [];
 }
 
 function getPlayerRankUnlockSummary(fromRank, toRank) {
-  const messages = [];
-
-  for (let rank = fromRank + 1; rank <= toRank; rank++) {
-    const unlocks = getPlayerRankUnlocks(rank);
-    if (unlocks.length > 0) {
-      messages.push(`Rank${rank}: ${unlocks.join(" / ")}`);
-    }
-  }
-
-  return messages;
+  return [];
 }
 
+function getPlayerRankRewardForRank(rank) {
+  const safeRank = Math.max(2, Math.round(Number(rank) || 2));
+  if (safeRank % 10 === 0) {
+    return { type: "shine", icon: "💎", label: "シャイン", count: 50 };
+  }
+  if (safeRank % 5 === 0) {
+    return { type: "normal", icon: "🎫", label: "レア社員採用チケット", count: 1 };
+  }
+
+  const cycle = (safeRank - 2) % 4;
+  if (cycle === 0 || cycle === 2) {
+    return { type: "rookie", icon: "✉", label: "社員採用チケット", count: 1 };
+  }
+  if (cycle === 1) {
+    return { type: "medals", icon: "🏅", label: "メダル", count: 30 };
+  }
+  return { type: "medals", icon: "🏅", label: "メダル", count: 50 };
+}
+
+function getPlayerRankRewardText(rank) {
+  const reward = getPlayerRankRewardForRank(rank);
+  return `${reward.icon} ${reward.label} ×${reward.count}`;
+}
+
+function getUpcomingPlayerRankRewards(currentRank = 1, count = 8) {
+  const safeRank = Math.max(1, Math.round(Number(currentRank) || 1));
+  const rows = [];
+  for (let rank = safeRank + 1; rank <= safeRank + Math.max(1, count); rank += 1) {
+    rows.push({ rank, reward: getPlayerRankRewardForRank(rank) });
+  }
+  return rows;
+}
 
 function getPlayerRankTicketRewards(fromRank, toRank) {
-  const rewards = { rookie: 0, normal: 0, premium: 0 };
+  const rewards = { rookie: 0, normal: 0, premium: 0, medals: 0, shine: 0 };
 
   for (let rank = Math.max(2, fromRank + 1); rank <= toRank; rank += 1) {
-    if (rank % 10 === 0) {
-      rewards.premium += 1;
-    } else if (rank % 5 === 0) {
-      rewards.normal += 1;
-    } else {
-      rewards.rookie += 1;
-    }
+    const reward = getPlayerRankRewardForRank(rank);
+    if (reward.type === "rookie") rewards.rookie += reward.count;
+    if (reward.type === "normal") rewards.normal += reward.count;
+    if (reward.type === "premium") rewards.premium += reward.count;
+    if (reward.type === "medals") rewards.medals += reward.count;
+    if (reward.type === "shine") rewards.shine += reward.count;
   }
 
   return rewards;
@@ -18370,6 +18717,8 @@ function formatPlayerRankTicketRewardLog(rewards) {
   if ((rewards.rookie ?? 0) > 0) messages.push(`社員採用チケット+${rewards.rookie}枚`);
   if ((rewards.normal ?? 0) > 0) messages.push(`レア社員採用チケット+${rewards.normal}枚`);
   if ((rewards.premium ?? 0) > 0) messages.push(`プレミア社員採用チケット+${rewards.premium}枚`);
+  if ((rewards.medals ?? 0) > 0) messages.push(`メダル+${rewards.medals}`);
+  if ((rewards.shine ?? 0) > 0) messages.push(`シャイン+${rewards.shine}`);
   return messages;
 }
 
@@ -18995,7 +19344,9 @@ function grantEmployeesExp(employeeIds, gainedExp, reason) {
   employeesRef.current = nextEmployees;
   setEmployees(nextEmployees);
 
-  if (totalPlayerGainedExp > 0) {
+  // v414.10: ユーザーランクEXPは会社評価ポイントの増加分から加算する。
+  // 社員EXP獲得時に直接ユーザーEXPを増やす旧処理は停止する。
+  if (false && totalPlayerGainedExp > 0) {
     const beforePlayerRank = playerRankRef.current;
     const beforePlayerExp = playerExpRef.current;
     const playerResult = applyPlayerRankExp(beforePlayerRank, beforePlayerExp, totalPlayerGainedExp);
@@ -19051,6 +19402,62 @@ function grantEmployeeExp(employeeId, gainedExp, reason) {
   grantEmployeesExp([employeeId], gainedExp, reason);
 }
 
+function grantPlayerRankExpFromCompanyEvaluation(gainedPoints, reason = "会社評価") {
+  const gainedExp = Math.max(0, Math.round(Number(gainedPoints) || 0));
+  if (gainedExp <= 0) return;
+
+  const beforePlayerRank = playerRankRef.current;
+  const beforePlayerExp = playerExpRef.current;
+  const playerResult = applyPlayerRankExp(beforePlayerRank, beforePlayerExp, gainedExp);
+
+  playerRankRef.current = playerResult.rank;
+  playerExpRef.current = playerResult.exp;
+  setPlayerRank(playerResult.rank);
+  setPlayerExp(playerResult.exp);
+
+  const resultMessages = [`ユーザーランクEXP +${gainedExp}（${reason}） / 現在EXP ${playerResult.exp}/${getPlayerRequiredExp(playerResult.rank)}`];
+
+  if (playerResult.rankUpCount > 0) {
+    const isTutorialNoReward = isStoryTutorialActive();
+    const rankRewards = getPlayerRankTicketRewards(beforePlayerRank, playerResult.rank);
+    const rewardMessages = isTutorialNoReward ? [] : formatPlayerRankTicketRewardLog(rankRewards);
+
+    if (!isTutorialNoReward) {
+      if ((rankRewards.rookie ?? 0) > 0) setRookieEmployeeTickets((current) => current + rankRewards.rookie);
+      if ((rankRewards.normal ?? 0) > 0) setEmployeeTickets((current) => current + rankRewards.normal);
+      if ((rankRewards.premium ?? 0) > 0) setPremiumEmployeeTickets((current) => current + rankRewards.premium);
+      if ((rankRewards.medals ?? 0) > 0 || (rankRewards.shine ?? 0) > 0) {
+        const accountData = readAccountData();
+        writeAccountData({
+          ...accountData,
+          medals: Math.max(0, Math.round(Number(accountData.medals ?? accountData.medal ?? 0) || 0)) + (rankRewards.medals ?? 0),
+          shine: Math.max(0, Math.round(Number(accountData.shine ?? accountData.shines ?? 0) || 0)) + (rankRewards.shine ?? 0),
+        });
+        setHomeAccountRefreshKey((current) => current + 1);
+      }
+    }
+
+    setPlayerRankUpResult({
+      beforeRank: beforePlayerRank,
+      rank: playerResult.rank,
+      ticketCount: isTutorialNoReward ? 0 : ((rankRewards.rookie ?? 0) + (rankRewards.normal ?? 0) + (rankRewards.premium ?? 0)),
+      ticketType: (rankRewards.normal ?? 0) > 0 ? "normal" : "rookie",
+      ticketRewards: isTutorialNoReward ? { rookie: 0, normal: 0, premium: 0, medals: 0, shine: 0 } : rankRewards,
+      tutorialNoTicketReward: isTutorialNoReward,
+      unlockMessages: [],
+      specialMissionUnlocks: getNewSpecialMissionUnlocks(beforePlayerRank, playerResult.rank),
+    });
+
+    resultMessages.push(
+      isTutorialNoReward
+        ? `ユーザーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。`
+        : `ユーザーランクが${beforePlayerRank}→${playerResult.rank}に上がりました。${rewardMessages.join(" / ") || "報酬なし"}。`
+    );
+  }
+
+  setLog((current) => `${resultMessages.join("\n")}${current ? `\n${current}` : ""}`);
+}
+
 function recruitRookieEmployees() {
   if (isStoryTutorialActive()) {
     showStoryTutorialBlockedMessage();
@@ -19093,38 +19500,83 @@ function getRecruitEnvelopeLabel(envelopeType) {
   return "白封筒";
 }
 
+function getRecruitRarityAuraClass(rarity = "N") {
+  const key = String(rarity || "N").toLowerCase();
+  return `recruit-rarity-aura-${key}`;
+}
+
 function getRecruitmentAnnouncementSignal(applicants = [], ticketType = "normal") {
-  const rarityOrders = { N: 1, R: 2, HR: 3, SR: 4, SSR: 5, UR: 6 };
-  const highestOrder = (Array.isArray(applicants) ? applicants : []).reduce((maxOrder, applicant) => {
-    return Math.max(maxOrder, rarityOrders[applicant?.rarity] ?? 1);
-  }, 1);
-  const roll = Math.random() * 100;
+  // v409.4: 配達中の色は「中身そのもの」ではなく期待度演出。
+  // 青/緑でもSSR/URの可能性は残す。虹だけはUR入りを確定にする。
+  const list = Array.isArray(applicants) ? applicants : [];
+  const rarities = list.map((applicant) => String(applicant?.rarity || "N").toUpperCase());
+  const hasUr = rarities.includes("UR");
+  const hasSsr = rarities.includes("SSR");
+  const hasSr = rarities.includes("SR");
+  const hasHr = rarities.includes("HR");
+  const seedText = `${ticketType}:${list.map((applicant) => `${applicant?.id || ""}-${applicant?.rarity || ""}`).join("|")}`;
+  const roll = createSeededHash(seedText) % 100;
 
-  if (highestOrder >= 5) {
-    if (roll < 24) return { key: "rainbow", icon: "🌈", label: "特別な気配", title: "応募書類到着！", description: "封筒がまばゆく輝いています。すごい履歴書が入っているかもしれません。" };
-    if (roll < 58) return { key: "red", icon: "🔴", label: "かなり期待", title: "応募書類到着！", description: "封筒から強い光が漏れています。期待できそうです。" };
-    if (roll < 82) return { key: "green", icon: "🟢", label: "少し期待", title: "応募書類到着！", description: "封筒がやわらかく光っています。良い出会いがありそうです。" };
-    return { key: "blue", icon: "🔵", label: "通常", title: "応募書類到着！", description: "封筒が届きました。中身を確認してみましょう。" };
+  if (hasUr && roll < 30) {
+    return { key: "rainbow", icon: "🌈", label: "虹色の光", title: "UR 確定", description: "虹色の光が走りました。UR応募が含まれています。" };
   }
-
-  if (highestOrder >= 4) {
-    if (roll < 42) return { key: "red", icon: "🔴", label: "かなり期待", title: "応募書類到着！", description: "封筒から強い光が漏れています。期待できそうです。" };
-    if (roll < 76) return { key: "green", icon: "🟢", label: "少し期待", title: "応募書類到着！", description: "封筒がやわらかく光っています。良い出会いがありそうです。" };
-    return { key: "blue", icon: "🔵", label: "通常", title: "応募書類到着！", description: "封筒が届きました。中身を確認してみましょう。" };
+  if (hasSsr || hasUr) {
+    if (roll < 62) return { key: "gold", icon: "🟡", label: "金色の光", title: "SSR+ 期待大", description: "金色の光が走りました。SSR以上にかなり期待できます。" };
+    if (roll < 84) return { key: "red", icon: "🔴", label: "赤い光", title: "SR+ 確定", description: "赤い光が走りました。SR以上の応募書類が届きます。" };
+    if (roll < 94) return { key: "green", icon: "🟢", label: "緑の光", title: "HR+ 期待", description: "緑の光です。上位レアが混ざる可能性もあります。" };
+    return { key: "blue", icon: "🔵", label: "青い光", title: "応募書類到着", description: "青い光です。通常枠ですが、SSR/URが混ざる可能性もあります。" };
   }
-
-  if (highestOrder >= 3) {
-    if (roll < 48) return { key: "green", icon: "🟢", label: "少し期待", title: "応募書類到着！", description: "封筒がやわらかく光っています。良い出会いがありそうです。" };
-    return { key: "blue", icon: "🔵", label: "通常", title: "応募書類到着！", description: "封筒が届きました。中身を確認してみましょう。" };
+  if (hasSr || ticketType === "premium") {
+    if (roll < 78) return { key: "red", icon: "🔴", label: "赤い光", title: "SR+ 確定", description: "赤い光が走りました。SR以上の応募書類が届きます。" };
+    if (roll < 92) return { key: "green", icon: "🟢", label: "緑の光", title: "HR+ 期待", description: "緑の光です。SR以上が混ざる可能性があります。" };
+    return { key: "blue", icon: "🔵", label: "青い光", title: "応募書類到着", description: "青い光です。通常枠ですが、SR以上が混ざる可能性もあります。" };
   }
-
-  return { key: "blue", icon: "🔵", label: "通常", title: "応募書類到着！", description: "封筒が届きました。中身を確認してみましょう。" };
+  if (hasHr) {
+    if (roll < 72) return { key: "green", icon: "🟢", label: "緑の光", title: "HR+ 期待", description: "緑の光が見えました。HR以上に少し期待できます。" };
+    return { key: "blue", icon: "🔵", label: "青い光", title: "応募書類到着", description: "青い光です。通常枠ですが、上位レアが混ざる可能性もあります。" };
+  }
+  return { key: "blue", icon: "🔵", label: "青い光", title: "応募書類到着", description: "青い光です。通常枠ですが、上位レアが混ざる可能性もあります。" };
 }
 
 function getRecruitDeliveryPhaseText(step = "delivery") {
   if (step === "delivery") return { title: "応募書類配達中...", subtitle: "本社宛ての大封筒が近づいています。", icon: "📮" };
-  if (step === "arrival") return { title: "応募書類到着！", subtitle: "封筒が届きました。光の色はあくまで期待演出です。", icon: "📬" };
-  return { title: "応募書類到着！", subtitle: "封筒が届きました。光の色はあくまで期待演出です。", icon: "📬" };
+  if (step === "arrival") return { title: "応募書類到着！", subtitle: "封筒が届きました。タップして開封してください。", icon: "📬" };
+  return { title: "応募書類到着！", subtitle: "封筒が届きました。タップして開封してください。", icon: "📬" };
+}
+
+const RECRUIT_OFFICE_DESK_BACKGROUND_STYLE_V409 = {
+  backgroundImage: "linear-gradient(180deg, rgba(3, 5, 14, 0.22), rgba(2, 3, 9, 0.78) 58%, rgba(0, 0, 0, 0.96)), url('/recruit_office_desk_bg_v407.jpg')",
+  backgroundSize: "cover",
+  backgroundPosition: "center top",
+  backgroundRepeat: "no-repeat",
+  color: "#fff8dc",
+};
+
+function getRecruitEnvelopeImageUrlV409(applicant = {}) {
+  const type = String(applicant.envelopeType || "white");
+  const state = applicant.opened ? "open" : "closed";
+  if (type === "black") return `/recruit_env_black_${state}_v407.png`;
+  if (type === "brown") return `/recruit_env_brown_${state}_v407.png`;
+  return `/recruit_env_white_${state}_v407.png`;
+}
+
+function getRecruitEnvelopeButtonStyleV409(applicant = {}, index = 0) {
+  return {
+    animationDelay: `${index * 90}ms`,
+    backgroundImage: `url('${getRecruitEnvelopeImageUrlV409(applicant)}')`,
+    backgroundSize: "contain",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center bottom",
+    backgroundColor: "transparent",
+    border: 0,
+    boxShadow: "none",
+    filter: "drop-shadow(0 12px 18px rgba(0,0,0,0.65))",
+  };
+}
+
+function shouldShowEnvelopeNewBadgeV409(applicant = {}) {
+  // v409.4: NEWは未所持社員だけ。封筒を開く前から表示し、既所持には出さない。
+  return Boolean(applicant.isNewApplicant);
 }
 
 function createRecruitmentApplicants(ticketType) {
@@ -19159,6 +19611,8 @@ function createRecruitmentApplicants(ticketType) {
       envelopeId: `${ticketType}-${Date.now()}-${index}-${normalizedEmployee.id}`,
       envelopeType,
       opened: false,
+      // v409.2: 封筒段階でNEW判定を固定保持する。後段の描画で判定ズレが起きないようにする。
+      isNewApplicant: !findOwnedEmployeeById(normalizedEmployee.id),
     };
   });
 }
@@ -19236,6 +19690,175 @@ function openRecruitEnvelope(envelopeId) {
   });
 }
 
+
+const RECRUIT_SELECTION_PLANS_V402 = [
+  { key: "rookie", label: "ノーマル社員採用", ticketLabel: "ノーマル採用チケット", ticketCountKey: "rookieEmployeeTickets", shineCost: 1 },
+  { key: "normal", label: "レア社員採用", ticketLabel: "レア採用チケット", ticketCountKey: "employeeTickets", shineCost: 10 },
+  { key: "premium", label: "プレミア社員採用", ticketLabel: "プレミア採用チケット", ticketCountKey: "premiumEmployeeTickets", shineCost: 100 },
+];
+
+function getRecruitSelectionTicketCountV402(ticketType, accountData = readAccountData()) {
+  const counts = getAccountTicketCounts(accountData);
+  if (ticketType === "rookie") return Math.max(0, Math.round(Number(counts.rookieEmployeeTickets) || 0));
+  if (ticketType === "premium") return Math.max(0, Math.round(Number(counts.premiumEmployeeTickets) || 0));
+  return Math.max(0, Math.round(Number(counts.employeeTickets) || 0));
+}
+
+function moveToRecruitEnvelopeFlowV402(ticketType, applicants, source = "home", shineCost = 0) {
+  const announcementSignal = getRecruitmentAnnouncementSignal(applicants, ticketType);
+  setEmployeeCandidates([]);
+  setEmployeeGachaResult(null);
+  setEmployeeRecruitAnimationStep("delivery");
+  setEmployeeRecruitmentOffer({
+    ticketType,
+    applicants,
+    selectedEnvelopeId: null,
+    source,
+    announcementSignal,
+  });
+
+  if (source === "map") {
+    setShowTitleScreen(false);
+    setTitleModal(null);
+    setActivePanel("mapEmployeeRecruitPage");
+    setEmployeeRecruitReturnPanel("map");
+    setTitleVaultDetailEmployee(null);
+    setIsMapEmployeeMenuOpen(false);
+    setIsMainMenuOpen(false);
+    setIsMapInfoMenuOpen(false);
+  } else {
+    setShowTitleScreen(true);
+    setEmployeeRecruitReturnPanel("home");
+    setTitleModal(null);
+    setTitleVaultDetailEmployee(null);
+  }
+
+  const costText = shineCost > 0 ? `シャイン${shineCost}` : getTicketName(ticketType);
+  setLog(`${source === "map" ? "マップ" : "ホーム"}で${costText}を使い、履歴書が${applicants.length}通届きました。`);
+}
+
+function startEmployeeRecruitmentByShineV402(ticketType, source = "home") {
+  const plan = RECRUIT_SELECTION_PLANS_V402.find((entry) => entry.key === ticketType) ?? RECRUIT_SELECTION_PLANS_V402[0];
+  const accountData = readAccountData();
+  const currentShine = Math.max(0, Math.round(Number(accountData.shine ?? accountData.shines ?? 0) || 0));
+  if (currentShine < plan.shineCost) {
+    alert(`シャインが足りません。必要数：${plan.shineCost} / 所持：${currentShine}`);
+    return;
+  }
+
+  const ok = window.confirm(`${plan.label}をシャイン${plan.shineCost}で開始しますか？\n\nこのあと封筒演出へ進みます。`);
+  if (!ok) return;
+
+  const applicants = createRecruitmentApplicants(ticketType);
+  if (applicants.length === 0) {
+    alert("応募者を生成できませんでした");
+    return;
+  }
+
+  writeAccountData({
+    ...accountData,
+    shine: currentShine - plan.shineCost,
+    updatedAt: new Date().toISOString(),
+  });
+  setHomeAccountRefreshKey((current) => current + 1);
+  moveToRecruitEnvelopeFlowV402(ticketType, applicants, source, plan.shineCost);
+}
+
+function startEmployeeRecruitmentTenPullV402(ticketType, source = "home") {
+  const plan = RECRUIT_SELECTION_PLANS_V402.find((entry) => entry.key === ticketType) ?? RECRUIT_SELECTION_PLANS_V402[0];
+  const ticketCount = getRecruitSelectionTicketCountV402(ticketType);
+  if (ticketCount < 10) {
+    alert(`${plan.ticketLabel}が足りません。10回引くには10枚必要です。\n所持：${ticketCount}枚`);
+    return;
+  }
+  alert("10回採用は、次工程の封筒演出・履歴書公開側を10回対応にしてから接続します。今回は採用選択画面だけのため、誤消費防止で未実行にしています。");
+}
+
+function openRecruitSelectionHelpV402() {
+  alert("社員採用の入口画面です。\n\n・チケットで引く：採用チケットを1枚消費して封筒演出へ進みます。\n・10回引く：今回は選択画面のみのため未接続です。\n・シャインで採用：ノーマル1 / レア10 / プレミア100を消費して封筒演出へ進みます。\n\nメダルは直接採用には使わず、ショップでチケット交換に使用します。");
+}
+
+function renderRecruitSelectionImageOverlayV402(source = "home") {
+  const accountData = source === "home" ? titleAccountData : readAccountData();
+  const ticketCounts = getAccountTicketCounts(accountData);
+  const medals = Math.max(0, Math.round(Number(accountData.medals ?? accountData.medal ?? 0) || 0));
+  const shine = Math.max(0, Math.round(Number(accountData.shine ?? accountData.shines ?? 0) || 0));
+  const closeScreen = () => {
+    if (source === "map") {
+      setActivePanel("home");
+      setEmployeeRecruitReturnPanel("map");
+      setIsMapEmployeeMenuOpen(false);
+      setIsMainMenuOpen(false);
+      setIsMapInfoMenuOpen(false);
+    } else {
+      setTitleModal(null);
+      setTitleVaultDetailEmployee(null);
+    }
+  };
+  const openShop = () => {
+    if (source === "map") {
+      setShowTitleScreen(true);
+      setTitleModal("shop");
+      setActivePanel("home");
+      setIsMapEmployeeMenuOpen(false);
+      setIsMainMenuOpen(false);
+      setIsMapInfoMenuOpen(false);
+    } else {
+      setTitleModal("shop");
+    }
+  };
+  const openHistory = () => alert("採用履歴は今後このボタンから表示します。今回は採用選択画面のみの接続です。");
+
+  return (
+    <div className="recruit-selection-screen-v402" aria-label="社員採用選択画面">
+      <div className="recruit-selection-stage-v402">
+        <img className="recruit-selection-bg-v402" src="/recruit_selection_bg_v399.jpg" alt="" aria-hidden="true" />
+
+        <button type="button" className="recruit-hotspot-v402 recruit-hotspot-back-v402" onClick={closeScreen} aria-label="戻る" />
+      <button type="button" className="recruit-hotspot-v402 recruit-hotspot-help-v402" onClick={openRecruitSelectionHelpV402} aria-label="ヘルプ" />
+      <button type="button" className="recruit-hotspot-v402 recruit-hotspot-ticket-list-v402" onClick={openShop} aria-label="チケット一覧" />
+      <button type="button" className="recruit-hotspot-v402 recruit-hotspot-shop-v402" onClick={openShop} aria-label="ショップ" />
+      <button type="button" className="recruit-hotspot-v402 recruit-hotspot-history-v402" onClick={openHistory} aria-label="採用履歴" />
+
+      <div className="recruit-currency-v402 recruit-currency-shine-v402">{shine.toLocaleString()}</div>
+      <div className="recruit-currency-v402 recruit-currency-medal-v402">{medals.toLocaleString()}</div>
+
+      {RECRUIT_SELECTION_PLANS_V402.map((plan, index) => {
+        const ticketCount = plan.key === "rookie"
+          ? ticketCounts.rookieEmployeeTickets
+          : plan.key === "premium"
+            ? ticketCounts.premiumEmployeeTickets
+            : ticketCounts.employeeTickets;
+        return (
+          <React.Fragment key={plan.key}>
+            <div className={`recruit-ticket-count-v402 recruit-ticket-count-${plan.key}-v402`}>{ticketCount}</div>
+            <div className={`recruit-shine-cost-v402 recruit-shine-cost-${plan.key}-v402`}>{plan.shineCost}</div>
+            <button
+              type="button"
+              className={`recruit-hotspot-v402 recruit-hotspot-ticket-${index}-v402`}
+              onClick={() => startHomeEmployeeRecruitmentByTicket(plan.key, source)}
+              aria-label={`${plan.label}をチケットで引く`}
+            />
+            <button
+              type="button"
+              className={`recruit-hotspot-v402 recruit-hotspot-ten-${index}-v402`}
+              onClick={() => startEmployeeRecruitmentTenPullV402(plan.key, source)}
+              aria-label={`${plan.label}を10回引く`}
+            />
+            <button
+              type="button"
+              className={`recruit-hotspot-v402 recruit-hotspot-shine-${index}-v402`}
+              onClick={() => startEmployeeRecruitmentByShineV402(plan.key, source)}
+              aria-label={`${plan.label}をシャインで採用`}
+            />
+          </React.Fragment>
+        );
+      })}
+      </div>
+    </div>
+  );
+}
+
 function returnAfterEmployeeRecruitment() {
   const source = employeeRecruitmentOffer?.source === "home" ? "home" : "map";
   setTitleVaultDetailEmployee(null);
@@ -19252,8 +19875,8 @@ function returnAfterEmployeeRecruitment() {
 
   setShowTitleScreen(false);
   setTitleModal(null);
-  setActivePanel("employeeRecruit");
-  setEmployeeRecruitReturnPanel("employeeRecruit");
+  setActivePanel("home");
+  setEmployeeRecruitReturnPanel("map");
 }
 
 function cancelEmployeeRecruitmentOffer() {
@@ -19270,11 +19893,18 @@ function cancelEmployeeRecruitmentOffer() {
 }
 
 function findOwnedEmployeeById(employeeId) {
-  const assignedEmployee = employees.find((employee) => employee.id === employeeId);
+  const targetId = Number(employeeId);
+  const isSameEmployeeId = (employee) => Number(employee?.id) === targetId;
+
+  const assignedEmployee = employees.find(isSameEmployeeId);
   if (assignedEmployee) return { employee: assignedEmployee, location: "assigned" };
 
-  const storedEmployee = employeeStorage.find((employee) => employee.id === employeeId);
+  const storedEmployee = employeeStorage.find(isSameEmployeeId);
   if (storedEmployee) return { employee: storedEmployee, location: "storage" };
+
+  const accountData = readAccountData();
+  const accountVaultEmployee = (Array.isArray(accountData?.employeeVault) ? accountData.employeeVault : []).find(isSameEmployeeId);
+  if (accountVaultEmployee) return { employee: accountVaultEmployee, location: "accountVault" };
 
   return null;
 }
@@ -19417,7 +20047,7 @@ function confirmRecruitApplicant(applicant) {
   setEmployeeRecruitAnimationStep("ready");
 
   setLog(
-    `${hiredEmployee.name}（${hiredEmployee.rarity}）を採用しました。社員保管庫に追加しました。配属する場合は社員配置から呼び出してください。現在の呼び出し枠:${employees.length}/${employeeCallLimit}人。`
+    `${hiredEmployee.name}（${hiredEmployee.rarity}）を採用しました。社員保管庫に追加しました。配属する場合は社員配置から呼び出してください。現在の配属枠:${employees.length}/${employeeCallLimit}人。`
   );
 }
 
@@ -19586,6 +20216,29 @@ function handleDeveloperCommand() {
     setDeveloperCommandInput("");
     return;
   }
+  if (command === normalizeCommandText("七瀬")) {
+    const accountData = readAccountData();
+    const nextAccountData = {
+      ...accountData,
+      rookieEmployeeTickets: 999,
+      employeeTickets: 999,
+      premiumEmployeeTickets: 999,
+      medals: 9999,
+      shine: 9999,
+      updatedAt: new Date().toISOString(),
+    };
+    writeAccountData(nextAccountData);
+    setRookieEmployeeTickets(999);
+    setEmployeeTickets(999);
+    setPremiumEmployeeTickets(999);
+    setHomeAccountRefreshKey((current) => current + 1);
+    setHasEmployeeRecruitNotice(true);
+    setLog("開発者コマンド：七瀬を実行しました。社員チケット999枚、レア社員チケット999枚、プレミア社員チケット999枚、メダル9999、シャイン9999を付与しました。");
+    alert("七瀬コマンドを実行しました。\n社員チケット：999枚\nレア社員チケット：999枚\nプレミア社員チケット：999枚\nメダル：9999\nシャイン：9999");
+    setDeveloperCommandInput("");
+    return;
+  }
+
 
   if (["瑞穂", "水穂", "みずほ", "ミズホ"].map(normalizeCommandText).includes(command)) {
     if (usedSecretCommands.mizuho) {
@@ -19668,7 +20321,7 @@ function assignStoredEmployee(employee, officeId) {
   }
 
   if (currentEmployees.length >= employeeCallLimit) {
-    alert(`社員呼び出し枠が満員です。現在の上限は${employeeCallLimit}人です。先に社員を保管庫へ戻すか、本社Lvを上げてください。`);
+    alert(`社員配属枠が満員です。現在の上限は${employeeCallLimit}人です。先に社員を保管庫へ戻すか、会社評価ポイントを上げてください。`);
     return;
   }
 
@@ -19688,7 +20341,7 @@ function assignStoredEmployee(employee, officeId) {
     employeeStorage.filter((item) => item.id !== employee.id)
   );
 
-  setLog(`${employee.name}を${officeName}へ呼び出しました。呼び出し枠:${currentEmployees.length + 1}/${employeeCallLimit}人。`);
+  setLog(`${employee.name}を${officeName}へ呼び出しました。配属枠:${currentEmployees.length + 1}/${employeeCallLimit}人。`);
 }
 
 function unassignEmployee(employee) {
@@ -19826,7 +20479,7 @@ function startBranchPlacement() {
   }
 
   if (currentGameMode !== "story_nagoya_bridge" && !isInitialRemoteBranchSetup && !isBranchUnlockedByHqLevel) {
-    alert(`支店建設は本社Lv${HQ_BRANCH_UNLOCK_LEVEL}から解放されます。現在の本社Lvは${headquarterLevel}です。`);
+    alert(`支店建設は会社評価${COMPANY_EVALUATION_BRANCH_UNLOCK_POINTS.toLocaleString()}ptで解放されます。現在の会社評価は${companyEvaluationPointTotal.toLocaleString()}ptです。`);
     return;
   }
 
@@ -20108,6 +20761,8 @@ function placeHQ(hqTypeKey) {
       hqType: hqTypeKey,
       hqName: hqType.name,
       hqCost: hqType.cost,
+      isInitialOfficeSetup: true,
+      excludeFromOfficeLevelExp: true,
       building: hqTypeKey === "apartment" ? "hq_apartment" : null,
       buildingMainId: null,
       rooms,
@@ -20154,7 +20809,7 @@ async function placeBranch(targetTile = selectedTile) {
   }
 
   if (currentGameMode !== "story_nagoya_bridge" && !isInitialRemoteBranchSetup && !isBranchUnlockedByHqLevel) {
-    alert(`支店建設は本社Lv${HQ_BRANCH_UNLOCK_LEVEL}から解放されます。現在の本社Lvは${headquarterLevel}です。`);
+    alert(`支店建設は会社評価${COMPANY_EVALUATION_BRANCH_UNLOCK_POINTS.toLocaleString()}ptで解放されます。現在の会社評価は${companyEvaluationPointTotal.toLocaleString()}ptです。`);
     return false;
   }
 
@@ -20231,6 +20886,8 @@ async function placeBranch(targetTile = selectedTile) {
         officeName,
         branchNumber: nextBranchNumber,
         officeRange: BRANCH_ACTION_RANGE,
+        isInitialOfficeSetup: true,
+        excludeFromOfficeLevelExp: true,
         branchUnderConstruction: false,
         branchBuildRemaining: 0,
         branchStandardMonths: 0,
@@ -20331,6 +20988,8 @@ async function placeBranch(targetTile = selectedTile) {
         officeName,
         branchNumber: nextBranchNumber,
         officeRange: 0,
+        isInitialOfficeSetup: isNagoyaTutorialBranchTarget,
+        excludeFromOfficeLevelExp: isNagoyaTutorialBranchTarget,
         branchUnderConstruction: true,
         branchBuildRemaining: branchBuildMonths,
         branchStandardMonths: BRANCH_OFFICE_BASE_MONTHS,
@@ -20381,8 +21040,9 @@ async function placeBranch(targetTile = selectedTile) {
       }
     }
 
-    if (!isBuildingUnlockedForRank(buildingKey, playerRank)) {
-      alert(`${building.name}はプレイヤーランク${getRequiredRankForBuilding(buildingKey)}で解放されます。`);
+    if (!isBuildingUnlockedForCompanyEvaluation(buildingKey, companyEvaluationPointTotal)) {
+      const requiredEvaluationPoints = getRequiredCompanyEvaluationPointsForBuilding(buildingKey);
+      alert(`${building.name}は会社評価${requiredEvaluationPoints.toLocaleString()}ptで解放されます。現在の会社評価は${companyEvaluationPointTotal.toLocaleString()}ptです。`);
       return false;
     }
 
@@ -21915,6 +22575,24 @@ if (tile.owner === OWNER.OTHER && tile.building && !tile.buildingMainId) {
   }
 
   // 他人の空地が売りに出る
+  // v414.3: 売地・売り建物が初期配置のまま固定化しないように、
+  // 毎月、他人所有の空地が低確率で売りに出る市場流動性を復元する。
+  // 道路沿いや建物がある周辺は売りに出やすくし、何年も動かない土地が自然に出るようにする。
+  if (tile.owner === OWNER.OTHER && !tile.building && !tile.buildingMainId && isBuildableTile(tile)) {
+    const roadNearby = hasRoadNearForNextMonth(tile.x, tile.y);
+    const nearbyBuildingCount = countNearbyMainBuildingsForNextMonth(tile.x, tile.y, 3);
+    const saleChance = Math.min(0.025, 0.004 + (roadNearby ? 0.006 : 0) + Math.min(0.010, nearbyBuildingCount * 0.0015));
+
+    if (Math.random() < saleChance) {
+      eventLog.push(`売り土地が出ました (${tile.x},${tile.y})`);
+
+      return {
+        ...tile,
+        owner: OWNER.SALE,
+      };
+    }
+  }
+
 // 他人の既存建物が少しずつ発展する
 if (tile.owner === OWNER.OTHER && tile.building && !tile.buildingMainId) {
   const current = tile.building;
@@ -25390,7 +26068,7 @@ useEffect(() => {
     setNagoyaTutorialStep(STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE);
     setStoryEvent(STORY_NAGOYA_EVENTS.BRANCH_COMPLETE);
     setActivePanel("employee");
-    setLog("支店が完成しました。社員が足りない場合は、下部メニューの『社員』→『社員採用』で採用し、その後『社員配属』で支店へ配属しましょう。");
+    setLog("支店が完成しました。社員が足りない場合はホームの社員採用で増やし、マップ下部メニューの『社員』から支店へ配属しましょう。");
     return;
   }
 
@@ -25828,6 +26506,13 @@ const titleRainbowSheet = 0;
 const titleSpecialMissionData = normalizeSpecialMissionData(titleAccountData.specialMissionData, titleAccountData.playerRank ?? 1);
 const titleActionPointMax = getActionPointMaxByRank(titleAccountData.playerRank ?? 1);
 const titleActionPointText = `${titleSpecialMissionData.actionPoints.toLocaleString()}/${titleActionPointMax.toLocaleString()}`;
+const titleUserRank = Math.max(1, Math.round(Number(titleAccountData.playerRank ?? playerRank) || 1));
+const titleUserRankExp = Math.max(0, Math.round(Number(titleAccountData.playerExp ?? playerExp) || 0));
+const titleUserRankRequiredExp = getPlayerRequiredExp(titleUserRank);
+const titleUserRankProgressRate = Math.max(0, Math.min(100, Math.round((titleUserRankExp / Math.max(1, titleUserRankRequiredExp)) * 100)));
+const titleNextUserRank = titleUserRank + 1;
+const titleNextUserRankReward = getPlayerRankRewardForRank(titleNextUserRank);
+const titleUpcomingUserRankRewards = getUpcomingPlayerRankRewards(titleUserRank, 8);
 const titleSpecialMissionAreaKey = getSpecialMissionAreaKeyFromMode(currentGameMode);
 const titleSpecialMissionAreaLabel = getSpecialMissionAreaLabelFromMode(currentGameMode);
 const titleAllActiveDispatches = titleSpecialMissionData.activeDispatches ?? [];
@@ -25865,6 +26550,8 @@ const titleActiveDispatches = titleAllActiveDispatches;
 const titleDispatchBusyEmployeeIds = new Set(titleAllActiveDispatches.flatMap((dispatch) => dispatch.employeeIds ?? []));
 const titleActiveSpecialMissionIds = new Set(titleActiveDispatches.map((dispatch) => dispatch.missionId).filter(Boolean));
 const titleCompletedDispatchCount = titleActiveDispatches.filter((dispatch) => Number(dispatch.endAt) <= Date.now()).length;
+const titleSpecialMissionRotation = createRotatingSpecialMissionOffers(titleSpecialMissionAreas, titleActiveDispatches, Date.now());
+const titleSpecialMissionRefreshText = formatSpecialMissionRefreshRemaining(titleSpecialMissionRotation.nextRefreshAt);
 const titleSelectedSpecialMission = titleAreaSpecialDispatchMissions.find((mission) => mission.id === titleSpecialMissionSelectedMissionId) ?? null;
 const titleSelectedMissionAreaKey = titleSelectedSpecialMission?.areaKey ?? titleSpecialMissionAreaKey;
 const titleSelectedMissionAreaLabel = titleSelectedSpecialMission?.areaLabel ?? titleSpecialMissionAreaLabel;
@@ -27137,10 +27824,43 @@ function getHomeTimeGreeting() {
 
 function getAkariStoryPhase() {
   if (!titleStoryAkari) return "notJoined";
+  if (hasClearedTokyoChapter || currentGameMode === "story_tokyo" || currentGameMode === "free_70") return "tokyo";
+  if (hasClearedOsakaChapter || currentGameMode === "story_osaka" || currentGameMode === "free_50") return "osaka";
+  if (hasClearedKyotoChapter || currentGameMode === "story_kyoto" || currentGameMode === "free_kyoto") return "kyoto";
   if (hasClearedNagoyaChapter || currentGameMode === "story_cleared") return "afterNagoya";
-  if (currentGameMode === "story_nagoya" || currentGameMode === "story_nagoya_bridge") return "nagoya";
-  if (currentGameMode === "story_gifu" || hasClearedGifuChapter) return "gifu";
+  if (currentGameMode === "story_nagoya" || currentGameMode === "story_nagoya_bridge" || currentGameMode === "free_30") return "nagoya";
+  if (currentGameMode === "story_gifu" || hasClearedGifuChapter || currentGameMode === "free_15") return "gifu";
   return "rookie";
+}
+
+function getAkariStoryPhaseRank(phase = getAkariStoryPhase()) {
+  const phaseOrder = {
+    notJoined: 0,
+    rookie: 1,
+    gifu: 2,
+    nagoya: 3,
+    afterNagoya: 3,
+    kyoto: 4,
+    osaka: 5,
+    tokyo: 6,
+  };
+  return phaseOrder[phase] ?? 0;
+}
+
+function isHomeAkariTalkAllowedForStoryProgress(message) {
+  const phaseRank = getAkariStoryPhaseRank();
+  const text = `${message?.title ?? ""} ${message?.text ?? ""} ${(message?.pages ?? []).join(" ")}`;
+
+  if (phaseRank < 3 && /名古屋/.test(text)) return false;
+  if (phaseRank < 4 && /京都|観光需要|古都/.test(text)) return false;
+  if (phaseRank < 5 && /大阪|浪速|梅田|工業集積/.test(text)) return false;
+  if (phaseRank < 6 && /東京|首都圏|湾岸|山手/.test(text)) return false;
+
+  return true;
+}
+
+function filterHomeTalkMessagesByStoryProgress(messages) {
+  return messages.filter(isHomeAkariTalkAllowedForStoryProgress);
 }
 
 function getAkariMaturityStage() {
@@ -27157,6 +27877,10 @@ function getAkariPhaseGreeting() {
   if (phase === "rookie") return tone === "morning" ? "お、おはようございます、社長。今日も一つずつ覚えていきます！" : "社長、私もまだ勉強中ですが、今日もよろしくお願いします！";
   if (phase === "gifu") return "社長、岐阜での仕事にも少しずつ慣れてきました。街が変わっていくのを見ると嬉しいですね。";
   if (phase === "nagoya") return "社長、名古屋は岐阜より競争が激しそうです。慎重に、でも前向きに進めましょう。";
+  if (phase === "afterNagoya") return "社長、名古屋での経験を次につなげましょう。新しい街へ進む準備、できています。";
+  if (phase === "kyoto") return "社長、京都編ですね。観光需要と街並みのバランスを見ながら、丁寧に進めましょう。";
+  if (phase === "osaka") return "社長、大阪は動きの速い市場になりそうです。工業・物流・商業のつながりを意識したいですね。";
+  if (phase === "tokyo") return "社長、ついに東京・首都圏規模です。支店戦略と資金繰りを、いつも以上に慎重に見ていきましょう。";
   return "社長、今日もお疲れ様です。仕事の話も、少しだけ雑談も、いつでも聞きますよ。";
 }
 
@@ -27442,7 +28166,7 @@ function getHomeExtraGameAkariTalkMessages() {
     createAkariTalk("古い建物は安く買えることがあります。\nただし修繕費まで含めて判断しましょう。", "think", { category: "game" }),
     createAkariTalk("月送り前には、工事中・融資中・空室を確認しておくと安心です。", "normal_2", { category: "game" }),
     createAkariTalk("社員が待機中なら給与は発生しません。\nただし行動には参加できないので注意です。", "serious_1", { category: "game" }),
-    createAkariTalk("社員は本社Lvに応じた呼び出し枠の範囲で配属できます。\n最初は3人、会社が育つと少しずつ呼び出せる人数が増えます。", "think", { category: "game" }),
+    createAkariTalk("社員は会社評価ポイントに応じた配属枠の範囲で配置できます。\n最初は3人、会社評価が上がると少しずつ配属できる人数が増えます。", "think", { category: "game" }),
     createAkariTalk("社員名簿で能力を見比べると、誰を育てるか決めやすいですよ。", "happy_1", { category: "game" }),
     createAkariTalk("広いマップほど、支店の位置が重要になります。\n先に道路や駅との距離も見ておきましょう。", "serious", { category: "game" }),
     createAkariTalk("資金に余裕がある時ほど、無駄遣いに注意です。\n大きい投資ほど失敗も大きくなります。", "serious_1", { category: "game" }),
@@ -27972,7 +28696,7 @@ function getHomeRegionalAkariTalkMessages() {
     );
   }
 
-  if (mode.includes("nagoya") || (currentMapSize > 15 && currentMapSize <= 50)) {
+  if (mode.includes("nagoya") || mode === "free_30") {
     messages.push(
       createAkariTalk("名古屋圏は市場が大きい分、競争も激しそうです。", "serious_1", { category: "chat" }),
       createAkariTalk("名古屋では、駅周辺の商業地と住宅地の使い分けが重要になりそうです。", "think", { category: "game" }),
@@ -27980,7 +28704,23 @@ function getHomeRegionalAkariTalkMessages() {
     );
   }
 
-  if (currentMapSize >= 70) {
+  if (mode.includes("kyoto") || mode === "free_kyoto") {
+    messages.push(
+      createAkariTalk("京都では観光需要をどう活かすかが大事になりそうです。", "happy_1", { category: "chat" }),
+      createAkariTalk("京都編では、観光施設の近くに商業・宿泊系の需要を重ねる発想が効きそうです。", "think", { category: "game" }),
+      createAkariTalk("古い街並みの価値を残しながら収益化する。京都らしい難しさですね。", "serious_1", { category: "knowledge" })
+    );
+  }
+
+  if (mode.includes("osaka") || mode === "free_50") {
+    messages.push(
+      createAkariTalk("大阪では、商業と工業の勢いをどう取り込むかが鍵になりそうです。", "serious", { category: "chat" }),
+      createAkariTalk("工場や物流倉庫の周辺は、住宅需要や商業収益にも波及します。配置をよく見たいですね。", "think", { category: "game" }),
+      createAkariTalk("動きの速い市場ほど、買う前の出口戦略が大切になります。", "serious_1", { category: "knowledge" })
+    );
+  }
+
+  if (mode.includes("tokyo") || mode === "free_70" || currentMapSize >= 70) {
     messages.push(
       createAkariTalk("首都圏規模のマップは、支店戦略がほぼ必須ですね。", "serious", { category: "game" }),
       createAkariTalk("広い市場では、全部を一度に見るよりエリアを絞る方が判断しやすいです。", "think", { category: "knowledge" }),
@@ -27994,6 +28734,160 @@ function getHomeRegionalAkariTalkMessages() {
   );
 
   return messages;
+}
+
+
+function getHomeAfterNagoyaAkariTalkMessages() {
+  return [
+    createAkariTalk("名古屋で支店運営を経験したことで、会社の見え方が一段変わりましたね。", "proud", { category: "chat" }),
+    createAkariTalk("次の地域へ進む前に、社員さんの配属と役職を一度整理しておきましょう。", "think", { category: "game" }),
+    createAkariTalk("支店が増えるほど、誰をどこに置くかが経営判断になります。", "serious", { category: "knowledge" }),
+    createAkariTalk("岐阜で基礎を作って、名古屋で広げる。この流れ、会社らしくなってきました。", "happy_2", { category: "chat" }),
+    createAkariTalk("次の街では、今までと違う需要の見方が必要になりそうです。", "normal_2", { category: "chat" }),
+    createAkariTalk("採用チケットが残っているなら、次の展開前に仲間を増やすのも手です。", "happy_1", { category: "game" }),
+    createAkariTalk("月次利益が安定している時ほど、油断せず固定費を確認したいですね。", "serious_1", { category: "knowledge" }),
+    createAkariTalk("大きな地域へ出る前は、資金・人材・空室率の三つを見直すと安心です。", "think", { category: "game" }),
+    createAkariTalk("社長、会社が大きくなるほど、最初の小さな成功が大事に思えてきますね。", "smile", { category: "chat" }),
+    createAkariTalk("次の挑戦に備えて、今日は社内の体制づくりを優先しても良さそうです。", "normal_1", { category: "game" }),
+    createAkariTalk("支店経営は、地図を見る力だけでなく、人を見る力も必要なんですね。", "think", { category: "knowledge" }),
+    createAkariTalk("社長、そろそろ新しい市場の情報も集めておきましょう。", "serious", { category: "chat" }),
+    createAkariTalk("名古屋で得た実績は、きっと次の銀行相談でも信用になります。", "happy_3", { category: "knowledge" }),
+    createAkariTalk("拠点を広げる時は、利益だけでなく管理の手が届くかも大切です。", "serious_1", { category: "knowledge" }),
+    createAkariTalk("今のうちに、育成アイテムで主力社員さんを伸ばしておくのも良いですね。", "normal_3", { category: "game" }),
+    createAkariTalk("次の章へ進む前の準備期間って、会社の地力が出る気がします。", "smile", { category: "chat" }),
+    createAkariTalk("社長、焦らずいきましょう。準備できた会社は、次の街でも強いです。", "happy_4", { category: "chat" }),
+    createAkariTalk("土地を買う前に、どの社員さんが動ける地域か確認しておくと安心です。", "think", { category: "game" }),
+  ];
+}
+
+function getHomeKyotoAkariTalkMessages() {
+  return [
+    createAkariTalk("京都は、観光需要と生活需要が重なる場所を見つけるのが鍵になりそうです。", "think", { category: "game" }),
+    createAkariTalk("歴史ある街では、建物を壊すだけでなく活かす発想も大切ですね。", "serious_1", { category: "knowledge" }),
+    createAkariTalk("社長、京都編では観光地の近くにどんな施設を置くか、よく考えたいです。", "normal_2", { category: "game" }),
+    createAkariTalk("古い町家を再生して、人が集まる場所にできたら素敵ですね。", "happy_1", { category: "chat" }),
+    createAkariTalk("京都の街並みに合う開発を考えると、ただ高収益を狙うだけでは足りなさそうです。", "serious", { category: "knowledge" }),
+    createAkariTalk("観光シーズンは収益が伸びそうですが、波がある分、安定収入も欲しいですね。", "think", { category: "knowledge" }),
+    createAkariTalk("駅から観光地までの動線を見ると、商業施設の候補地が見えてきそうです。", "normal_3", { category: "game" }),
+    createAkariTalk("京都支店では、営業力だけでなく地域を読む管理力も必要になりそうです。", "serious_1", { category: "game" }),
+    createAkariTalk("社長、観光地の近くは地価が高くても、収益性で取り返せる可能性があります。", "think", { category: "knowledge" }),
+    createAkariTalk("でも高い土地ほど、失敗した時の痛みも大きいです。買う前に収支を見ましょう。", "serious", { category: "game" }),
+    createAkariTalk("神社やお寺の周辺は、人の流れが読みやすい反面、景観との相性も考えたいですね。", "formal", { category: "knowledge" }),
+    createAkariTalk("京都では、小さな商業施設でも立地が良ければ強みになりそうです。", "happy_2", { category: "game" }),
+    createAkariTalk("修学旅行や観光客の流れを考えると、季節ごとの売上変動もありそうです。", "think", { category: "knowledge" }),
+    createAkariTalk("住宅地は観光地から少し離れた静かな場所にも需要がありそうですね。", "normal_1", { category: "game" }),
+    createAkariTalk("社長、京都の物件は“雰囲気”も価値になる気がします。", "smile", { category: "chat" }),
+    createAkariTalk("古都の魅力を残しながら利益を出す……難しいけれど、やりがいがあります。", "happy_3", { category: "chat" }),
+    createAkariTalk("観光施設の近くに店舗を置く時は、周辺の住宅需要も一緒に見たいです。", "serious_1", { category: "game" }),
+    createAkariTalk("京都編では、派手な大型開発より、要所を押さえる開発が強そうです。", "think", { category: "game" }),
+    createAkariTalk("古い建物は修繕費が重くなりやすいので、購入前に余裕資金を残しましょう。", "serious", { category: "knowledge" }),
+    createAkariTalk("京都の夜の灯りって、物件の見え方まで変えてしまいそうですね。", "shy", { category: "chat" }),
+    createAkariTalk("観光需要が強い地域ほど、空室対策の考え方も変わりそうです。", "think", { category: "knowledge" }),
+    createAkariTalk("社長、支店の営業範囲を見ながら、無理なく買える土地を探しましょう。", "normal_2", { category: "game" }),
+    createAkariTalk("京都支店の社員さんには、地域の魅力を伝える営業トークも磨いてほしいです。", "happy_1", { category: "chat" }),
+    createAkariTalk("観光地近くの土地は、収益だけでなく維持管理の手間も見ておきたいですね。", "serious_1", { category: "knowledge" }),
+    createAkariTalk("学校や駅との距離も大切です。観光だけに寄せすぎると生活需要を逃すかもしれません。", "think", { category: "game" }),
+    createAkariTalk("社長、京都では一棟ごとの個性を見たくなりますね。", "smile", { category: "chat" }),
+    createAkariTalk("町の雰囲気に合う建物を増やせると、会社の評判も上がりそうです。", "happy_2", { category: "chat" }),
+    createAkariTalk("古い街ほど、道路や区画のクセが収益に影響しそうです。地図をよく見ましょう。", "serious", { category: "game" }),
+    createAkariTalk("観光需要は魅力的ですが、固定費は毎月かかります。安定収入との組み合わせが大事です。", "formal", { category: "knowledge" }),
+    createAkariTalk("京都編の目標に向けて、観光系の建物数と月次利益を確認しておきましょう。", "normal_3", { category: "game" }),
+    createAkariTalk("社長、こういう街では“早く大きく”より“丁寧に強く”が似合いそうです。", "happy_4", { category: "chat" }),
+    createAkariTalk("京都で学べるのは、数字だけではない不動産の価値かもしれません。", "proud", { category: "knowledge" }),
+    createAkariTalk("観光地に近すぎる場所、少し離れた場所。それぞれに役割がありそうです。", "think", { category: "game" }),
+    createAkariTalk("社長、今日の京都支店の動き、私も一緒に確認します。", "happy_1", { category: "chat" }),
+    createAkariTalk("古い建物の再生は、修繕担当の能力がかなり効いてきそうですね。", "serious_1", { category: "game" }),
+    createAkariTalk("京都の商業地は、観光客だけでなく地元の人にも使われる形が理想ですね。", "normal_2", { category: "knowledge" }),
+    createAkariTalk("街の歴史を壊さず、会社の利益も作る。社長、腕の見せどころです。", "proud_1", { category: "chat" }),
+    createAkariTalk("京都編では、無理な連続投資より、完成後の収益確認を挟みたいです。", "serious", { category: "game" }),
+    createAkariTalk("観光需要のある街は、イベントや季節の波も想像しながら配置したいですね。", "think", { category: "knowledge" }),
+    createAkariTalk("社長、京都の支店が軌道に乗ったら、会社の格がまた上がりそうです。", "happy_3", { category: "chat" }),
+    createAkariTalk("京都では、住宅・商業・観光の三つを混ぜすぎず、役割を分けると見やすいです。", "formal", { category: "game" }),
+    createAkariTalk("物件の価値は、建物そのものだけでなく“周りに何があるか”で変わります。京都だと特に感じますね。", "think", { category: "knowledge" }),
+  ];
+}
+
+function getHomeOsakaAkariTalkMessages() {
+  return [
+    createAkariTalk("大阪では、工業・物流・商業をつなげる配置が大きな利益につながりそうです。", "think", { category: "game" }),
+    createAkariTalk("京都で観光需要を学んだ後だと、大阪の商業需要の勢いがよく見えますね。", "happy_2", { category: "chat" }),
+    createAkariTalk("社長、大阪編はスピード感があります。資金繰りの確認はいつも以上に大事です。", "serious", { category: "game" }),
+    createAkariTalk("物流倉庫の周辺に商業収益が乗ると、街全体が動き出す感じがします。", "normal_2", { category: "game" }),
+    createAkariTalk("工場の近くは働く人が増えて、住宅需要にもつながりそうです。", "think", { category: "knowledge" }),
+    createAkariTalk("大阪支店では、営業力のある社員さんを前に出したいですね。", "serious_1", { category: "game" }),
+    createAkariTalk("商業地は魅力的ですが、地価が高いほど返済計画も重くなります。", "formal", { category: "knowledge" }),
+    createAkariTalk("社長、勢いで買う前に、月次利益がどれだけ伸びるか確認しましょう。", "serious", { category: "game" }),
+    createAkariTalk("大阪では、人と物の流れを見るのが大事になりそうです。", "normal_3", { category: "knowledge" }),
+    createAkariTalk("大きな商業圏では、駅周辺の一等地と周辺住宅地の使い分けが効きそうです。", "think", { category: "game" }),
+    createAkariTalk("社長、大阪の街は元気ですね。私まで背筋が伸びます。", "happy_4", { category: "chat" }),
+    createAkariTalk("大阪編は攻めの投資が似合いますが、守りの管理体制も忘れたくないです。", "serious_1", { category: "knowledge" }),
+    createAkariTalk("工業施設は単体の収益だけでなく、周辺への波及で評価したいですね。", "think", { category: "game" }),
+    createAkariTalk("京都とは違う意味で、街の個性がはっきりしています。配置の考え方も変えましょう。", "normal_1", { category: "chat" }),
+    createAkariTalk("大阪支店の範囲外に良い土地があっても、まずは支店戦略からですね。", "serious", { category: "game" }),
+    createAkariTalk("商業施設を増やすなら、人口と工業需要の伸びも一緒に見たいです。", "think", { category: "game" }),
+    createAkariTalk("社長、ライバル企業の動きも見ながら進めましょう。大きい市場ほど競争も強いです。", "serious_1", { category: "chat" }),
+    createAkariTalk("大阪では、土地を寝かせず早く収益化する判断も大切になりそうです。", "formal", { category: "knowledge" }),
+    createAkariTalk("社員さんの行動力をどこに使うか、毎月の優先順位を決めたいですね。", "normal_2", { category: "game" }),
+    createAkariTalk("社長、派手な開発ほど完成後の管理も大変です。管理担当も育てましょう。", "think", { category: "knowledge" }),
+    createAkariTalk("大阪編では、複数の収益源を組み合わせると安定しそうです。", "happy_1", { category: "game" }),
+    createAkariTalk("支店長候補の社員さんが育っているか、一度確認してみませんか？", "normal_3", { category: "game" }),
+    createAkariTalk("大阪のような広い市場では、全部を取りに行くより勝てる場所を決めたいです。", "serious", { category: "knowledge" }),
+    createAkariTalk("社長、京都で丁寧さを学んで、大阪で勢いを学ぶ感じですね。", "smile", { category: "chat" }),
+    createAkariTalk("工場・物流・商業の順で需要を育てると、街づくりの流れが作れそうです。", "think", { category: "game" }),
+    createAkariTalk("大阪編の月次利益目標は高いです。小さな黒字を積むだけでなく、大きな柱も必要ですね。", "serious_1", { category: "game" }),
+    createAkariTalk("返済額が増えすぎると、利益が伸びても手元資金が苦しくなります。", "formal", { category: "knowledge" }),
+    createAkariTalk("社長、今の会社なら大きな案件にも挑めます。でも、確認は一つずつです。", "proud", { category: "chat" }),
+    createAkariTalk("大阪支店の社員配置、営業・建築・管理のバランスを見ておきましょう。", "normal_2", { category: "game" }),
+    createAkariTalk("商業施設を建てる時は、周囲の住宅需要が育っているかも見たいです。", "think", { category: "knowledge" }),
+    createAkariTalk("社長、大阪で利益の柱ができたら、次の大市場へ進む土台になりますね。", "happy_3", { category: "chat" }),
+  ];
+}
+
+function getHomeTokyoAkariTalkMessages() {
+  return [
+    createAkariTalk("東京・首都圏では、支店ごとに役割を分けないと全体を見切れなさそうです。", "serious_1", { category: "game" }),
+    createAkariTalk("地価が高い地域では、買えることより買った後に回せることが大切です。", "think", { category: "knowledge" }),
+    createAkariTalk("社長、ついに首都圏です。最初の岐阜の事務所を思うと、本当に大きくなりましたね。", "happy_4", { category: "chat" }),
+    createAkariTalk("東京編では、駅近の価値がより強く出そうです。周辺施設も細かく見ましょう。", "normal_3", { category: "game" }),
+    createAkariTalk("高層ビルが並ぶ市場では、一件の判断ミスも金額が大きくなります。", "serious", { category: "knowledge" }),
+    createAkariTalk("首都圏では、住宅・商業・工業のエリア分けがかなり重要になりそうです。", "think", { category: "game" }),
+    createAkariTalk("社長、全国展開の会社らしくなってきました。私ももっと頼れる社員になります。", "proud", { category: "chat" }),
+    createAkariTalk("東京の市場は大きいですが、ライバル企業も強いはずです。油断はできません。", "serious_1", { category: "chat" }),
+    createAkariTalk("大規模マップでは、全体を見る日と、一つの支店に集中する日を分けても良さそうです。", "normal_2", { category: "game" }),
+    createAkariTalk("首都圏の土地は高額になりやすいので、融資相談の準備も大事ですね。", "formal", { category: "knowledge" }),
+    createAkariTalk("社長、ここまで来ると社員育成がそのまま会社の限界値になります。", "think", { category: "game" }),
+    createAkariTalk("東京編では、採用・育成・配属の三つを回し続けたいです。", "serious", { category: "game" }),
+    createAkariTalk("湾岸エリアのような場所は、大型開発の夢がありますね。もちろん資金計画込みで、です。", "happy_2", { category: "chat" }),
+    createAkariTalk("山手側のような中心地は、地価も需要も別格になりそうです。", "think", { category: "knowledge" }),
+    createAkariTalk("社長、首都圏では“安いから買う”より“勝てるから買う”を意識したいです。", "serious_1", { category: "knowledge" }),
+    createAkariTalk("支店長、工事責任者、管理責任者。東京編では役職の意味がさらに大きくなりますね。", "normal_3", { category: "game" }),
+    createAkariTalk("高額物件は、収益化までの時間も考えておかないと資金が詰まりそうです。", "formal", { category: "knowledge" }),
+    createAkariTalk("社長、東京の地図は広いです。今日はどのエリアから攻めますか？", "happy_1", { category: "chat" }),
+    createAkariTalk("首都圏編では、人口の伸びと商業需要の伸びをセットで見たいですね。", "think", { category: "game" }),
+    createAkariTalk("大阪で作った利益の柱が、東京での挑戦を支えてくれます。", "proud_1", { category: "chat" }),
+    createAkariTalk("東京では、少しの地価差が大きな投資額の差になります。比較は丁寧にしましょう。", "serious", { category: "knowledge" }),
+    createAkariTalk("社長、首都圏で黒字を積めたら、もう立派な全国企業ですね。", "happy_3", { category: "chat" }),
+    createAkariTalk("大きな市場では、空室率の小さな変化も収益に響きます。管理力が問われますね。", "think", { category: "knowledge" }),
+    createAkariTalk("東京編は、一つの正解を探すより、複数の勝ち筋を作る方が強そうです。", "serious_1", { category: "game" }),
+    createAkariTalk("駅前商業、郊外住宅、湾岸開発。エリアごとに戦略を変えたいです。", "normal_2", { category: "game" }),
+    createAkariTalk("社長、ここまで来ても基本は同じです。買う、直す、貸す、管理する。丁寧にいきましょう。", "smile", { category: "chat" }),
+    createAkariTalk("首都圏では、社員さんの移動や配属制限も忘れず確認してくださいね。", "serious", { category: "game" }),
+    createAkariTalk("高い土地ほど、出口戦略もセットで考える必要があります。", "formal", { category: "knowledge" }),
+    createAkariTalk("東京の夜景を見ていると、会社の成長を実感しますね。", "shy", { category: "chat" }),
+    createAkariTalk("首都圏編では、支店を増やすタイミングが攻略の分かれ目になりそうです。", "think", { category: "game" }),
+    createAkariTalk("社長、無理な拡大は危険です。でも、勝負所では思い切りも必要ですね。", "serious_1", { category: "chat" }),
+    createAkariTalk("東京市場では、情報を先に取った会社が強いです。特別任務も活用したいですね。", "normal_3", { category: "game" }),
+    createAkariTalk("大規模開発は、建築担当の能力差が工期と費用に大きく出そうです。", "think", { category: "knowledge" }),
+    createAkariTalk("社長、首都圏の一等地に自社物件が並ぶ日を想像すると、わくわくします。", "happy_4", { category: "chat" }),
+    createAkariTalk("東京編では、一ヶ月ごとの収支確認を習慣にしたいです。", "formal", { category: "game" }),
+    createAkariTalk("広いマップほど、見落としが増えます。重要な土地はメモするくらいの気持ちで見たいですね。", "serious", { category: "knowledge" }),
+    createAkariTalk("社長、私たちの会社の物語も、ずいぶん遠くまで来ましたね。", "proud", { category: "chat" }),
+    createAkariTalk("首都圏で戦うなら、資金だけでなく信用も武器になります。過去の実績を活かしましょう。", "think", { category: "knowledge" }),
+    createAkariTalk("東京編の高い目標も、一件ずつ積み上げれば届くはずです。", "happy_1", { category: "game" }),
+    createAkariTalk("社長、今日は攻める日ですか？ それとも整える日ですか？ どちらも大事です。", "normal_1", { category: "chat" }),
+    createAkariTalk("首都圏の物件は金額が大きい分、成功した時の会社成長も大きいですね。", "happy_2", { category: "knowledge" }),
+    createAkariTalk("最後の大市場だからこそ、最初に覚えた基本を忘れないようにしたいです。", "serious_1", { category: "chat" }),
+  ];
 }
 
 function getHomeCourseAkariTalkMessages() {
@@ -28141,6 +29035,46 @@ function getHomeAkariTalkMessages() {
       createAkariTalk("岐阜で学んだことは、名古屋でもきっと役に立ちます。焦らず進めましょう。", "normal_2", { category: "chat" }),
       ticketTotal > 0 ? createAkariTalk("採用チケットがあります。都市部の展開に向けて、人材も厚くしたいですね。", "think", { category: "game" }) : createAkariTalk("資金と人員、どちらも大事ですね。バランスを見ながら進めましょう。", "serious", { category: "game" }),
     ];
+  } else if (phase === "afterNagoya") {
+    phaseMessages = [
+      ...getHomeAfterNagoyaAkariTalkMessages(),
+      createAkariTalk(getAkariPhaseGreeting(), "happy_2", { category: "chat" }),
+      createAkariTalk("名古屋で支店経営を経験できたのは大きいですね。次は新しい需要のある街にも挑戦できそうです。", "proud", { category: "chat" }),
+      createAkariTalk("次の街へ進む前に、社員配置と採用チケットを確認しておきましょう。", "think", { category: "game" }),
+      createAkariTalk("社長、岐阜と名古屋で学んだことを、次のエリアでも活かしましょう。", "normal_3", { category: "chat" }),
+    ];
+  } else if (phase === "kyoto") {
+    phaseMessages = [
+      ...getHomeKyotoAkariTalkMessages(),
+      createAkariTalk(getAkariPhaseGreeting(), "normal_2", { category: "chat" }),
+      createAkariTalk("京都は、ただ建てればいいというより、街の雰囲気に合う開発が大切になりそうです。", "think", { category: "chat" }),
+      createAkariTalk("観光需要がある場所では、商業施設や宿泊系の収益も意識したいですね。", "serious", { category: "game" }),
+      createAkariTalk("古い建物を活かす再生も、京都らしい不動産経営になりそうです。", "happy_1", { category: "knowledge" }),
+      createAkariTalk("社長、京都編では焦って広げすぎず、観光地との距離を見ながら投資したいです。", "serious_1", { category: "game" }),
+      createAkariTalk("京都の街並みって、歩くだけで物件の見え方が変わりそうですね。", "smile", { category: "chat" }),
+      createAkariTalk("観光地の近くは収益チャンスがありますが、地価や修繕費も重くなりやすいです。慎重に見ましょう。", "think", { category: "knowledge" }),
+      createAkariTalk("京都支店の社員さんには、営業だけでなく管理の力も求められそうです。", "normal_1", { category: "game" }),
+    ];
+  } else if (phase === "osaka") {
+    phaseMessages = [
+      ...getHomeOsakaAkariTalkMessages(),
+      createAkariTalk(getAkariPhaseGreeting(), "serious", { category: "chat" }),
+      createAkariTalk("大阪では、工業・物流・商業がつながる配置を考えると伸びそうです。", "think", { category: "game" }),
+      createAkariTalk("スピード感のある市場では、資金を使い切らない判断も大事ですね。", "serious_1", { category: "knowledge" }),
+      createAkariTalk("京都で観光需要を見た後だと、大阪の商業圏の見方も変わってきますね。", "happy_2", { category: "chat" }),
+      createAkariTalk("工場の周辺に住宅需要、物流の周辺に商業収益。波及効果を見逃したくないです。", "normal_2", { category: "game" }),
+      createAkariTalk("社長、大阪編は攻めたくなりますけど、月次利益と返済予定は毎回確認しましょう。", "serious", { category: "game" }),
+    ];
+  } else if (phase === "tokyo") {
+    phaseMessages = [
+      ...getHomeTokyoAkariTalkMessages(),
+      createAkariTalk(getAkariPhaseGreeting(), "proud", { category: "chat" }),
+      createAkariTalk("東京・首都圏では、ひとつの支店だけで全部を見るのは難しそうです。エリア分担が大切ですね。", "serious_1", { category: "game" }),
+      createAkariTalk("地価が高い市場では、買えるかより、買った後に回せるかを先に見たいです。", "think", { category: "knowledge" }),
+      createAkariTalk("社長、ここまで来ると本当に全国展開ですね。最初の岐阜の事務所が懐かしいです。", "happy_4", { category: "chat" }),
+      createAkariTalk("首都圏編では、駅近・商業地・住宅地の差がより大きく出そうです。", "normal_3", { category: "game" }),
+      createAkariTalk("大きな案件ほど、社員の得意分野を合わせたいですね。営業、建築、管理、全部必要です。", "serious", { category: "game" }),
+    ];
   } else {
     phaseMessages = [
       createAkariTalk(getAkariPhaseGreeting(), "happy_2", { category: "chat" }),
@@ -28152,7 +29086,7 @@ function getHomeAkariTalkMessages() {
     ];
   }
 
-  return applyHomeAkariTalkMode([...phaseMessages, ...commonMessages]);
+  return applyHomeAkariTalkMode(filterHomeTalkMessagesByStoryProgress([...phaseMessages, ...commonMessages]));
 }
 
 function getHomeAkariMessageParts() {
@@ -28412,8 +29346,8 @@ function startHomeEmployeeRecruitmentByTicket(ticketType, source = "home") {
   if (source === "map") {
     setShowTitleScreen(false);
     setTitleModal(null);
-    setActivePanel("employeeRecruit");
-    setEmployeeRecruitReturnPanel("employeeRecruit");
+    setActivePanel("mapEmployeeRecruitPage");
+    setEmployeeRecruitReturnPanel("map");
     setTitleVaultDetailEmployee(null);
     setIsMapEmployeeMenuOpen(false);
     setIsMainMenuOpen(false);
@@ -29010,22 +29944,27 @@ function getHomeMissionItems() {
     const safeCurrent = Math.max(0, Math.round(Number(mission.current) || 0));
     const safeTarget = Math.max(1, Math.round(Number(mission.target) || 1));
     const completed = safeCurrent >= safeTarget;
-    const claimed = claimedMissionIds.has(mission.id);
+    // v388: 旧データで「未達成なのにclaimedだけtrue」になっている場合、
+    // 表示上は受取済みにしない。受取済みは必ず completed && claimed の時だけ。
+    const claimed = completed && claimedMissionIds.has(mission.id);
+    const displayCurrent = safeCurrent;
 
     return {
       ...mission,
-      current: safeCurrent,
+      current: displayCurrent,
       target: safeTarget,
       completed,
       claimed,
-      progressRate: Math.max(0, Math.min(100, Math.round((safeCurrent / safeTarget) * 100))),
+      progressRate: Math.max(0, Math.min(100, Math.round((displayCurrent / safeTarget) * 100))),
     };
   });
 }
 
-const homeMissionItems = homeCoreFeaturesUnlocked ? getHomeMissionItems().filter((mission) => !mission.claimed) : [];
+const homeMissionItems = homeCoreFeaturesUnlocked ? getHomeMissionItems() : [];
 const homeMissionClaimableCount = homeMissionItems.filter((mission) => mission.completed && !mission.claimed).length;
 const homeMissionCompletedCount = homeMissionItems.filter((mission) => mission.completed).length;
+const homeMissionInProgressCount = homeMissionItems.filter((mission) => !mission.completed).length;
+const homeMissionClaimedCount = homeMissionItems.filter((mission) => mission.completed && mission.claimed).length;
 const sortedHomeMissionItems = [...homeMissionItems].sort((a, b) => {
   const aClaimable = a.completed && !a.claimed ? 1 : 0;
   const bClaimable = b.completed && !b.claimed ? 1 : 0;
@@ -29037,12 +29976,22 @@ const sortedHomeMissionItems = [...homeMissionItems].sort((a, b) => {
 const visibleHomeMissionItems = sortedHomeMissionItems.filter((mission) => {
   if (homeMissionFilter === "claimable") return mission.completed && !mission.claimed;
   if (homeMissionFilter === "completed") return mission.completed;
+  if (homeMissionFilter === "progress") return !mission.completed;
   return true;
 });
 const homePresentBoxHistory = readPresentBoxHistory();
 const homeLoginBonusHistory = homePresentBoxHistory.filter((item) => item?.source === "ログインボーナス");
 const homePresentNoticeCount = homeCoreFeaturesUnlocked ? ((homeLoginBonusStatus.canClaim ? 1 : 0) + homeMissionClaimableCount) : 0;
-const titleFullPageModal = ["founderSelect", "recruitHome", "accountVault", "items", "presentBox", "missions", "shop", "settings", "specialDispatch"].includes(titleModal);
+const titleFullPageModal = ["storySelect", "freeMapSelect", "founderSelect", "recruitHome", "accountVault", "items", "presentBox", "missions", "shop", "settings", "specialDispatch", "userRank"].includes(titleModal);
+
+function openHomeUserRankPage(event = null) {
+  if (event) {
+    event.preventDefault?.();
+    event.stopPropagation?.();
+  }
+  setTitleModal("userRank");
+}
+
 
 function claimHomeMissionReward(missionId) {
   const mission = getHomeMissionItems().find((item) => item.id === missionId);
@@ -29679,6 +30628,7 @@ function renderHomeShopModal() {
 
 function renderHomeMissionCard(mission) {
   const isClaimable = mission.completed && !mission.claimed;
+  const isSafelyClaimed = mission.completed && mission.claimed;
 
   return (
     <div key={mission.id} className={isClaimable ? "home-mission-card-v205 claimable" : "home-mission-card-v205"} style={{ padding: 12, borderRadius: 16, background: isClaimable ? "linear-gradient(145deg,#fff7df,#ffe6a6)" : mission.claimed ? "#edf3ed" : "#f7faf7", border: isClaimable ? "1px solid #e8c85f" : "1px solid #d8e0d8", color: "#1d2b22", display: "grid", gap: 8 }}>
@@ -29688,8 +30638,8 @@ function renderHomeMissionCard(mission) {
           <strong style={{ display: "block", fontSize: 14 }}>{mission.title}</strong>
           <span style={{ display: "block", fontSize: 10, opacity: 0.72, marginTop: 2 }}>{mission.group} / メダル +{mission.rewardExp}{mission.rewardGoldSheets ? ` / シャイン +${mission.rewardGoldSheets}` : ""}</span>
         </span>
-        <span style={{ padding: "4px 8px", borderRadius: 999, background: mission.claimed ? "#7a8a7a" : isClaimable ? "#ff4d5d" : "#b8c7b9", color: "#ffffff", fontSize: 10, fontWeight: 900 }}>
-          {mission.claimed ? "受取済" : isClaimable ? "達成" : `${mission.progressRate}%`}
+        <span style={{ padding: "4px 8px", borderRadius: 999, background: isSafelyClaimed ? "#7a8a7a" : isClaimable ? "#ff4d5d" : "#b8c7b9", color: "#ffffff", fontSize: 10, fontWeight: 900 }}>
+          {isSafelyClaimed ? "受取済" : isClaimable ? "達成" : `${mission.progressRate}%`}
         </span>
       </div>
       <div style={{ fontSize: 12, opacity: 0.78, lineHeight: 1.45 }}>{mission.description}</div>
@@ -29699,7 +30649,7 @@ function renderHomeMissionCard(mission) {
       <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 8, alignItems: "center", fontSize: 12 }}>
         <span>{Math.min(mission.current, mission.target).toLocaleString()} / {mission.target.toLocaleString()}</span>
         <button type="button" disabled={!isClaimable} onClick={() => claimHomeMissionReward(mission.id)} style={{ padding: "7px 10px", borderRadius: 999, border: "none", background: isClaimable ? "linear-gradient(145deg,#ffb02e,#ff5a3d)" : "#c8d0c8", color: "#ffffff", fontWeight: 900, cursor: isClaimable ? "pointer" : "not-allowed", opacity: isClaimable ? 1 : 0.65 }}>
-          {mission.claimed ? "受取済" : isClaimable ? "報酬受取" : "進行中"}
+          {isSafelyClaimed ? "受取済" : isClaimable ? "報酬受取" : "進行中"}
         </button>
       </div>
     </div>
@@ -29720,6 +30670,7 @@ function claimHomeDailyLoginBonus() {
   }
 
   const reward = currentStatus.reward;
+  const rewardParts = getLoginBonusRewardParts(reward);
   const accountData = readAccountData();
   const tickets = getAccountTicketCounts(accountData);
   const nextTickets = {
@@ -29728,19 +30679,33 @@ function claimHomeDailyLoginBonus() {
     premiumEmployeeTickets: tickets.premiumEmployeeTickets,
   };
 
-  if (reward.type === "rookieTicket") {
-    nextTickets.rookieEmployeeTickets += reward.count;
-  } else if (reward.type === "employeeTicket") {
-    nextTickets.employeeTickets += reward.count;
-  } else if (reward.type === "premiumTicket") {
-    nextTickets.premiumEmployeeTickets += reward.count;
-  }
+  rewardParts.forEach((part) => {
+    if (part.type === "rookieTicket") {
+      nextTickets.rookieEmployeeTickets += Math.max(0, Math.round(Number(part.count) || 0));
+    } else if (part.type === "employeeTicket") {
+      nextTickets.employeeTickets += Math.max(0, Math.round(Number(part.count) || 0));
+    } else if (part.type === "premiumTicket") {
+      nextTickets.premiumEmployeeTickets += Math.max(0, Math.round(Number(part.count) || 0));
+    }
+  });
+
+  const currentItems = accountData.items && typeof accountData.items === "object" ? accountData.items : {};
+  const rewardMedals = rewardParts.reduce((sum, part) => sum + (part.type === "medals" ? Math.max(0, Math.round(Number(part.count) || 0)) : 0), 0);
+  const nextItems = rewardParts.reduce((items, part) => {
+    if (part.type !== "item" || !part.itemKey) return items;
+    return {
+      ...items,
+      [part.itemKey]: Math.max(0, Math.round(Number(items[part.itemKey]) || 0)) + Math.max(0, Math.round(Number(part.count) || 0)),
+    };
+  }, currentItems);
 
   const nextAccountData = {
     ...accountData,
     rookieEmployeeTickets: nextTickets.rookieEmployeeTickets,
     employeeTickets: nextTickets.employeeTickets,
     premiumEmployeeTickets: nextTickets.premiumEmployeeTickets,
+    medals: Math.max(0, Math.round(Number(accountData.medals ?? accountData.medal ?? 0) || 0)) + rewardMedals,
+    items: nextItems,
     updatedAt: new Date().toISOString(),
   };
 
@@ -29752,12 +30717,14 @@ function claimHomeDailyLoginBonus() {
     rewardName: reward.name,
     rewardCount: reward.count,
     rewardType: reward.type,
+    itemKey: reward.itemKey ?? "",
     rewardText: reward.text,
     updatedAt: new Date().toISOString(),
   });
 
-  if (reward.type === "money") {
-    setMoney((current) => current + reward.count);
+  const rewardMoney = rewardParts.reduce((sum, part) => sum + (part.type === "money" ? Math.max(0, Math.round(Number(part.count) || 0)) : 0), 0);
+  if (rewardMoney > 0) {
+    setMoney((current) => current + rewardMoney);
   }
 
   setRookieEmployeeTickets(nextTickets.rookieEmployeeTickets);
@@ -29769,8 +30736,17 @@ function claimHomeDailyLoginBonus() {
     text: reward.text,
     icon: reward.icon,
     type: reward.type,
+    itemKey: reward.itemKey ?? "",
     count: reward.count,
   });
+  setHomeLoginBonusClaimResult({
+    icon: reward.icon ?? "🎁",
+    title: "ログインボーナスを受け取りました",
+    text: reward.text,
+    day: currentStatus.cycleDay,
+    date: currentStatus.todayKey,
+  });
+  setHomeMissionFilter("claimable");
   setLog(`ログインボーナスとして${reward.text}を受け取りました。`);
   setTitleModal("missions");
 }
@@ -29894,7 +30870,7 @@ function getNagoyaTutorialGuideClass(guideTarget) {
 
   if (guideTarget === "employee-recruit" &&
     nagoyaTutorialStep === STORY_NAGOYA_TUTORIAL_STEPS.ASSIGN_BRANCH_EMPLOYEE &&
-    activePanel !== "employeeRecruit"
+    activePanel !== "mapEmployeeRecruitPage"
   ) {
     return "story-ui-target-guide";
   }
@@ -32148,7 +33124,7 @@ return (
 
 .home-lobby-bottom-nav-v2182 { position: absolute; left: 8px; right: 8px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 60; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: clamp(3px, 1vw, 7px); padding: clamp(5px, 1.4vw, 8px); border-radius: 28px; background: linear-gradient(180deg, rgba(19, 45, 38, 0.94), rgba(6, 20, 18, 0.93)); border: 1px solid rgba(255,255,255,0.30); box-shadow: 0 -10px 34px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.18); backdrop-filter: blur(14px); overflow: visible; transition: transform 0.28s ease, opacity 0.28s ease; }
           .home-lobby-bottom-nav-v2182::before { content: ""; position: absolute; inset: 4px; border-radius: 24px; pointer-events: none; background: linear-gradient(90deg, rgba(255,255,255,0.12), transparent 28%, rgba(255,232,150,0.12) 50%, transparent 72%, rgba(255,255,255,0.10)); opacity: 0.75; }
-          .home-lobby-bottom-nav-hidden-v261 { opacity: 0; transform: translateY(calc(100% + 34px)); pointer-events: none; }
+          .home-lobby-bottom-nav-hidden-v261 { opacity: 0 !important; transform: translateY(calc(100% + 34px)) !important; pointer-events: none !important; }
           .home-lobby-bottom-nav-visible-v261 { opacity: 1; transform: translateY(0); }
 
           .home-lobby-screen-v262 {
@@ -32278,7 +33254,7 @@ return (
               grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
             }
             .home-lobby-bottom-nav-v2182.home-lobby-bottom-nav-hidden-v261 {
-              opacity: 0.08 !important;
+              opacity: 0 !important;
               transform: translateX(-50%) translateY(calc(100% + 18px)) !important;
               pointer-events: none !important;
             }
@@ -34682,8 +35658,8 @@ return (
           >
             <div className="home-title-brand-v201">
               <h1 className="home-company-title-v372" style={{ margin: 0, fontSize: 22, lineHeight: 1.1, whiteSpace: "nowrap" }}>{formatHomeCompanyDisplayName(playerCompanyName || DEFAULT_COMPANY_NAME)}</h1>
-              <div className="home-lobby-top-status-v2182" style={{ marginTop: 8 }}>
-                <span className="home-lobby-status-pill-v2182">🏆 RANK {titleAccountData.playerRank ?? 1}</span>
+              <div className="home-lobby-top-status-v2182" style={{ marginTop: 8, pointerEvents: "auto" }}>
+                <button type="button" className="home-lobby-status-pill-v2182 home-rank-pill-button-v414" onClick={openHomeUserRankPage} onPointerDown={(event) => event.stopPropagation()} onTouchStart={(event) => event.stopPropagation()} style={{ pointerEvents: "auto" }}>🏆 RANK {titleAccountData.playerRank ?? 1}</button>
                 <span className="home-lobby-status-pill-v2182">⚡ {titleActionPointText}</span>
                 <span className="home-lobby-status-pill-v2182">🏅 {titleMedals.toLocaleString()}</span>
                 <span className="home-lobby-status-pill-v2182">💎 {titleShine.toLocaleString()}</span>
@@ -34894,6 +35870,7 @@ return (
             </div>
 
             <div className="home-action-grid-v201 home-action-grid-v203 home-action-grid-v217" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
+              {renderHomeMenuCard({ icon: "🏆", title: "ユーザーランク", sub: `Rank${titleUserRank} / あと${Math.max(0, titleUserRankRequiredExp - titleUserRankExp).toLocaleString()}pt`, accent: "#e7f0ff", featured: true, badge: getPlayerRankRewardText(titleNextUserRank), onClick: openHomeUserRankPage })}
               {renderHomeMenuCard({ icon: "物", title: "ストーリー", sub: homeCoreFeaturesUnlocked ? "物語を進める" : "まずは1-1章から開始", accent: "#fff0bf", featured: true, badge: !homeCoreFeaturesUnlocked ? "START" : "", onClick: continueStoryFromTitle })}
               {renderHomeMenuCard({ icon: "経", title: "フリー", sub: isFreeModeUnlocked() ? (hasSaveData ? "保存中の会社へ戻る" : "自由経営を開始") : "1-1章完了後に解放", accent: "#dff2e7", featured: true, badge: isFreeModeUnlocked() ? "" : "🔒", onClick: continueFreeFromTitle })}
               {renderHomeMenuCard({ icon: "⚡", title: "特別任務", sub: homeCoreFeaturesUnlocked ? `行動P ${titleActionPointText}・派遣中${titleActiveDispatches.length}件` : "1-1章完了後に解放", accent: "#dff0ff", featured: homeCoreFeaturesUnlocked, badge: homeCoreFeaturesUnlocked && titleCompletedDispatchCount > 0 ? "完了" : homeCoreFeaturesUnlocked ? "" : "🔒", onClick: homeCoreFeaturesUnlocked ? () => setTitleModal("specialDispatch") : openLockedHomeFeatureNotice })}
@@ -34931,7 +35908,7 @@ return (
         </div>
         )}
 
-        <div className={`home-lobby-bottom-nav-v2182 ${isHomeBottomNavVisible ? "home-lobby-bottom-nav-visible-v261" : "home-lobby-bottom-nav-hidden-v261"}`}>
+        <div className={`home-lobby-bottom-nav-v2182 ${(!titleModal || isHomeBottomNavVisible) ? "home-lobby-bottom-nav-visible-v261" : "home-lobby-bottom-nav-hidden-v261"}`}>
           {[
             { iconSrc: "/icons/work.svg", label: "仕事", badge: homeCoreFeaturesUnlocked && titleCompletedDispatchCount > 0 ? String(titleCompletedDispatchCount) : (!homeCoreFeaturesUnlocked ? "!" : ""), variant: "work", action: () => setTitleModal("workSelect") },
             { iconSrc: "/icons/recruit.svg", label: "採用", badge: homeCoreFeaturesUnlocked && ((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) > 0 ? String((titleAccountData.rookieEmployeeTickets ?? 0) + (titleAccountData.employeeTickets ?? 0) + (titleAccountData.premiumEmployeeTickets ?? 0)) : "", variant: "recruit", action: homeCoreFeaturesUnlocked ? () => { setEmployeeRecruitReturnPanel("home"); setTitleModal("recruitHome"); } : openLockedHomeFeatureNotice },
@@ -34967,7 +35944,7 @@ return (
           >
             <div
               style={{
-                width: titleFullPageModal ? "100vw" : titleModal === "freeMapSelect" ? "min(420px, calc(100vw - 28px))" : titleModal === "founderSelect" || titleModal === "missions" ? "min(720px, 94vw)" : "min(420px, 92vw)",
+                width: titleFullPageModal ? "100vw" : titleModal === "freeMapSelect" ? "min(420px, calc(100vw - 28px))" : titleModal === "founderSelect" || titleModal === "missions" || titleModal === "userRank" ? "min(720px, 94vw)" : "min(420px, 92vw)",
                 height: titleFullPageModal ? "100svh" : "auto",
                 maxHeight: titleFullPageModal ? "100svh" : titleModal === "freeMapSelect" ? "min(82dvh, 620px)" : "min(90dvh, 760px)",
                 overflowY: "auto",
@@ -34979,7 +35956,51 @@ return (
                 textAlign: "left",
               }}
             >
-              {titleModal === "workSelect" ? (
+              {titleModal === "userRank" ? (
+                <>
+                  <h2 style={{ margin: "0 0 6px", fontSize: 24 }}>🏆 ユーザーランク</h2>
+                  <p style={{ margin: "0 0 12px", fontSize: 12, color: "#5d6a60", lineHeight: 1.6 }}>
+                    ユーザーランクは、各マップで獲得した会社評価ポイントの累計で上昇します。ランクアップすると、採用チケット・メダル・シャインなどを獲得できます。
+                  </p>
+
+                  <div style={{ padding: 16, borderRadius: 22, background: "linear-gradient(145deg,#edf2ff,#ffffff)", border: "1px solid #cbd8ff", boxShadow: "0 12px 30px rgba(40,80,160,0.12)", display: "grid", gap: 10 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                      <strong style={{ fontSize: 28 }}>Rank {titleUserRank}</strong>
+                      <span style={{ fontSize: 12, fontWeight: 900, color: "#3d5f9f" }}>{titleUserRankExp.toLocaleString()} / {titleUserRankRequiredExp.toLocaleString()}pt</span>
+                    </div>
+                    <div style={{ height: 14, borderRadius: 999, background: "#dfe7f6", overflow: "hidden", border: "1px solid rgba(60,90,150,0.15)" }}>
+                      <div style={{ width: `${titleUserRankProgressRate}%`, height: "100%", borderRadius: 999, background: "linear-gradient(90deg,#4a90e2,#8fd8ff)", boxShadow: "0 0 12px rgba(74,144,226,0.35)" }} />
+                    </div>
+                    <div style={{ fontSize: 13, fontWeight: 900, color: "#1d3f75" }}>
+                      あと{Math.max(0, titleUserRankRequiredExp - titleUserRankExp).toLocaleString()}ptで Rank{titleNextUserRank}！
+                    </div>
+                  </div>
+
+                  <div style={{ marginTop: 12, padding: 14, borderRadius: 20, background: "linear-gradient(145deg,#fff7df,#fffdf5)", border: "1px solid #e8c85f", display: "grid", gap: 6 }}>
+                    <strong style={{ fontSize: 15 }}>🎁 次のランクアップ報酬</strong>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                      <span style={{ fontWeight: 900 }}>Rank{titleNextUserRank}</span>
+                      <span style={{ fontSize: 18, fontWeight: 900 }}>{titleNextUserRankReward.icon} {titleNextUserRankReward.label} ×{titleNextUserRankReward.count}</span>
+                    </div>
+                  </div>
+
+                  <div style={{ marginTop: 12 }}>
+                    <h3 style={{ margin: "0 0 8px", fontSize: 16 }}>今後の報酬一覧</h3>
+                    <div style={{ display: "grid", gap: 7 }}>
+                      {titleUpcomingUserRankRewards.map(({ rank, reward }) => (
+                        <div key={rank} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, padding: "9px 11px", borderRadius: 14, background: rank % 10 === 0 ? "linear-gradient(145deg,#dff8ff,#ffffff)" : rank % 5 === 0 ? "linear-gradient(145deg,#edf5ef,#ffffff)" : "#f6f8f6", border: "1px solid #d8e0d8" }}>
+                          <strong>Rank{rank}</strong>
+                          <span style={{ fontWeight: 900 }}>{reward.icon} {reward.label} ×{reward.count}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={{ marginTop: 12, padding: 12, borderRadius: 16, background: "#f3f6f1", border: "1px solid #d8e0d8", fontSize: 12, lineHeight: 1.6, color: "#5d6a60" }}>
+                    建物解放はユーザーランクではなく、プレイ中マップの会社評価ポイントで行います。ユーザーランクは全マップ共通の累積成長と報酬用です。
+                  </div>
+                </>
+              ) : titleModal === "workSelect" ? (
                 <>
                   <h2 style={{ marginTop: 0 }}>仕事を選択</h2>
                   <div style={{ display: "grid", gap: 10 }}>
@@ -35058,41 +36079,35 @@ return (
 
                   {!titleSelectedSpecialMission ? (
                     <>
-                      <h3 style={{ fontSize: 15, margin: "0 0 8px" }}>任務選択（地域別）</h3>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
+                        <h3 style={{ fontSize: 15, margin: 0 }}>現在発生中の業務依頼</h3>
+                        <span style={{ fontSize: 11, color: "#496052", fontWeight: 900 }}>更新まで {titleSpecialMissionRefreshText}</span>
+                      </div>
+                      <p style={{ margin: "0 0 10px", fontSize: 11, color: "#5d6a60", lineHeight: 1.55 }}>
+                        2時間ごとに、解放済み地域・解放済み難度の中からランダムに依頼が発生します。全地域を毎回開く必要はありません。
+                      </p>
                       <div style={{ display: "grid", gap: 9 }}>
-                        {titleSpecialMissionAreas.map((area) => {
-                          const unlockedCount = area.missions.filter((mission) => area.officeLevel >= getSpecialMissionUnlockLevel(mission)).length;
-                          const activeCount = titleActiveDispatches.filter((dispatch) => dispatch.areaKey === area.key).length;
+                        {titleSpecialMissionRotation.offers.length > 0 ? titleSpecialMissionRotation.offers.map(({ mission, area }) => {
+                          const activeDispatch = titleActiveDispatches.find((dispatch) => dispatch.missionId === mission.id);
+                          const isActive = Boolean(activeDispatch);
+                          const completed = activeDispatch && Number(activeDispatch.endAt) <= Date.now();
                           return (
-                            <details key={area.key} style={{ border: "1px solid #cfe2d3", borderRadius: 16, background: "#ffffff", overflow: "hidden" }}>
-                              <summary style={{ cursor: "pointer", listStyle: "none", padding: "11px 12px", background: "linear-gradient(145deg,#eef8ff,#f7fff8)", fontWeight: 900, display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
-                                <span>📍 {area.label}</span>
-                                <span style={{ fontSize: 11, color: "#496052" }}>{getOfficeLevelShortLabelByAreaKey(area.key)}{area.officeLevel} / 解放{unlockedCount}/{area.missions.length} / 派遣中{activeCount}</span>
-                              </summary>
-                              <div style={{ display: "grid", gap: 8, padding: 10 }}>
-                                {area.missions.map((mission) => {
-                                  const requiredLevel = getSpecialMissionUnlockLevel(mission);
-                                  const unlocked = area.officeLevel >= requiredLevel;
-                                  const activeDispatch = titleActiveDispatches.find((dispatch) => dispatch.missionId === mission.id);
-                                  const isActive = Boolean(activeDispatch);
-                                  const completed = activeDispatch && Number(activeDispatch.endAt) <= Date.now();
-                                  return (
-                                    <button key={mission.id} type="button" disabled={!unlocked || isActive} onClick={() => { setTitleSpecialMissionSelectedMissionId(mission.id); setTitleSpecialMissionSelectedIds([]); setTitleSpecialMissionSupportItemKey(null); setTitleVaultSortKey("total"); }} style={{ padding: 12, borderRadius: 16, border: isActive ? "2px solid #e8c85f" : unlocked ? "1px solid #cfe2d3" : "1px solid #d8d8d8", background: isActive ? "#fff8df" : unlocked ? "#ffffff" : "#f0f0f0", opacity: unlocked ? 1 : 0.62, textAlign: "left", color: "#1d2b22", cursor: unlocked && !isActive ? "pointer" : "not-allowed" }}>
-                                      <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
-                                        <strong>{mission.icon} {mission.name} <span style={{ fontSize: 11, color: "#777" }}>{mission.difficulty}</span></strong>
-                                        <span style={{ fontSize: 11, fontWeight: 900 }}>消費{mission.cost} / {mission.durationMinutes}分</span>
-                                      </div>
-                                      <div style={{ fontSize: 11, color: "#5d6a60", marginTop: 4, lineHeight: 1.45 }}>{mission.description}</div>
-                                      <div style={{ fontSize: 11, marginTop: 5 }}>推奨：{mission.abilityLabel} / 目標能力：{mission.targetPower} / 報酬：{formatSpecialMissionRewardText(mission.rewards, mission.expReward)}</div>
-                                      {!unlocked && <div style={{ marginTop: 7, fontSize: 11, color: "#8a5a00", fontWeight: 900 }}>{getOfficeLevelShortLabelByAreaKey(area.key)}{requiredLevel}で解放</div>}
-                                      {isActive && <div style={{ marginTop: 7, fontSize: 11, color: "#8a5a00", fontWeight: 900 }}>{completed ? "✅ 完了済み：報酬受取後に再派遣可能" : `⏳ 派遣中：残り ${getSpecialMissionRemainingText(activeDispatch.endAt)}`}</div>}
-                                    </button>
-                                  );
-                                })}
+                            <button key={mission.id} type="button" disabled={isActive} onClick={() => { setTitleSpecialMissionSelectedMissionId(mission.id); setTitleSpecialMissionSelectedIds([]); setTitleSpecialMissionSupportItemKey(null); setTitleVaultSortKey("total"); }} style={{ padding: 12, borderRadius: 16, border: isActive ? "2px solid #e8c85f" : "1px solid #cfe2d3", background: isActive ? "#fff8df" : "#ffffff", textAlign: "left", color: "#1d2b22", cursor: !isActive ? "pointer" : "not-allowed" }}>
+                              <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                                <strong>{mission.icon} {mission.name} <span style={{ fontSize: 11, color: "#777" }}>{mission.difficulty}</span></strong>
+                                <span style={{ fontSize: 11, fontWeight: 900 }}>消費{mission.cost} / {mission.durationMinutes}分</span>
                               </div>
-                            </details>
+                              <div style={{ fontSize: 11, color: "#496052", marginTop: 4, fontWeight: 900 }}>発生地域：{area.label} / {getOfficeLevelShortLabelByAreaKey(area.key)}{area.officeLevel}</div>
+                              <div style={{ fontSize: 11, color: "#5d6a60", marginTop: 4, lineHeight: 1.45 }}>{mission.description}</div>
+                              <div style={{ fontSize: 11, marginTop: 5 }}>推奨：{mission.abilityLabel} / 目標能力：{mission.targetPower} / 報酬：{formatSpecialMissionRewardText(mission.rewards, mission.expReward)}</div>
+                              {isActive && <div style={{ marginTop: 7, fontSize: 11, color: "#8a5a00", fontWeight: 900 }}>{completed ? "✅ 完了済み：報酬受取後に再派遣可能" : `⏳ 派遣中：残り ${getSpecialMissionRemainingText(activeDispatch.endAt)}`}</div>}
+                            </button>
                           );
-                        })}
+                        }) : (
+                          <div style={{ padding: 14, borderRadius: 16, background: "#f3f6f1", border: "1px solid #d8e0d8", color: "#61705f", fontSize: 12, lineHeight: 1.6, textAlign: "center", fontWeight: 800 }}>
+                            現在受けられる業務依頼がありません。社員配属・支店レベル・派遣中任務を確認してください。
+                          </div>
+                        )}
                       </div>
                     </>
                   ) : (
@@ -35345,47 +36360,7 @@ return (
                   );
                 })()
               ) : titleModal === "recruitHome" ? (
-                <>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                    <h2 style={{ margin: 0, fontSize: 20 }}>社員採用</h2>
-                    <span style={{ fontSize: 12, fontWeight: 900, color: "#31563f", background: "#edf5ef", border: "1px solid #cfe2d3", borderRadius: 999, padding: "4px 8px" }}>採用チケットで履歴書確認</span>
-                  </div>
-                  <div className="home-recruit-pass-grid-v2184" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 6, marginBottom: 8 }}>
-                    {[
-                      ["rookie", titleAccountData.rookieEmployeeTickets ?? 0, "低確率・毎日用"],
-                      ["normal", titleAccountData.employeeTickets ?? 0, "URまで排出"],
-                      ["premium", titleAccountData.premiumEmployeeTickets ?? 0, "SR以上確定"],
-                    ].map(([ticketType, ticketCount, description]) => {
-                      const brand = getRecruitmentBrand(ticketType);
-                      const disabled = Number(ticketCount) < 1;
-                      return (
-                        <button
-                          key={ticketType}
-                          type="button"
-                          className={`home-recruit-pass-button-v206 home-recruit-pass-button-v2184 ${brand.className}`}
-                          disabled={disabled}
-                          onClick={() => startHomeEmployeeRecruitmentByTicket(ticketType, "home")}
-                          style={{
-                            border: `1px solid ${brand.borderColor}`,
-                            background: brand.buttonGradient,
-                            opacity: disabled ? 0.55 : 1,
-                            cursor: disabled ? "not-allowed" : "pointer",
-                          }}
-                        >
-                          <span className="home-recruit-pass-icon-v2184">{brand.icon}</span>
-                          <strong>{brand.menuName}</strong>
-                          <small>{description}</small>
-                          <em>{ticketCount}枚</em>
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <div className="home-recruit-odds-compact-v2184">
-                    <span><strong>{getRecruitmentMenuName("rookie")}:</strong> {getTicketOddsText("rookie")}</span>
-                    <span><strong>{getRecruitmentMenuName("normal")}:</strong> {getTicketOddsText("normal")}</span>
-                    <span><strong>{getRecruitmentMenuName("premium")}:</strong> {getTicketOddsText("premium")}</span>
-                  </div>
-                </>
+                renderRecruitSelectionImageOverlayV402("home")
               ) : titleModal === "shop" ? (
                 renderHomeShopModal()
               ) : titleModal === "items" ? (
@@ -35456,7 +36431,7 @@ return (
                 <>
                   <h2 style={{ marginTop: 0 }}>🎁 プレゼントBOX</h2>
                   <p style={{ fontSize: 13, lineHeight: 1.7, marginTop: 0 }}>
-                    v210では7日サイクルのログインボーナスと受取履歴を追加しました。報酬がある日はホームとBOXが光ります。
+                    30日サイクルのログインボーナスを確認できます。今日から7日先までの予定を表示します。
                   </p>
                   <div className="present-box-stage-v210" style={{ padding: 14, borderRadius: 22, background: homeLoginBonusStatus.canClaim ? "radial-gradient(circle at 50% 0%,#fff7c8 0%,#ffd4e2 42%,#fff7df 100%)" : "linear-gradient(145deg,#f3f6f1,#e6efe5)", border: homeLoginBonusStatus.canClaim ? "1px solid #e8c85f" : "1px solid #d8e0d8", color: "#1d2b22", display: "grid", gap: 10, position: "relative", overflow: "hidden" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center", position: "relative", zIndex: 1 }}>
@@ -35513,7 +36488,7 @@ return (
                   <p style={{ fontSize: 13, lineHeight: 1.7, marginTop: 0 }}>
                     実績・任務報酬とログインボーナス履歴をまとめて確認できます。受取可能な任務は発光します。
                   </p>
-                  <details open={homeLoginBonusStatus.canClaim} style={{ marginBottom: 10, borderRadius: 16, border: "1px solid #e8d08a", background: "#fffaf0", overflow: "hidden" }}>
+                  <details open style={{ marginBottom: 10, borderRadius: 16, border: "1px solid #e8d08a", background: "#fffaf0", overflow: "hidden" }}>
                     <summary style={{ cursor: "pointer", listStyle: "none", padding: "10px 12px", fontWeight: 900, display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
                       <span>🎁 ログインボーナス確認</span>
                       <span style={{ fontSize: 11, color: "#8a5a00" }}>{homeLoginBonusStatus.canClaim ? "本日受取可能" : `累計${homeLoginBonusStatus.claimCount}回`}</span>
@@ -35524,7 +36499,7 @@ return (
                         <span>{homeLoginBonusStatus.rewardText}</span>
                       </div>
                       <div style={{ display: "grid", gap: 6 }}>
-                        <strong style={{ fontSize: 12 }}>7日間ログインボーナス予定</strong>
+                        <strong style={{ fontSize: 12 }}>次の7日分ログインボーナス予定</strong>
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(7, minmax(0, 1fr))", gap: 5 }}>
                           {homeLoginBonusStatus.weeklyRewards.map((reward) => {
                             const isToday = reward.day === homeLoginBonusStatus.cycleDay;
@@ -35543,16 +36518,20 @@ return (
                           本日のログインボーナスを受け取る
                         </button>
                       )}
-                      <div style={{ display: "grid", gap: 6, maxHeight: 120, overflowY: "auto" }}>
-                        {homeLoginBonusHistory.length > 0 ? homeLoginBonusHistory.slice(0, 5).map((item) => (
-                          <div key={item.id} style={{ display: "grid", gridTemplateColumns: "30px 1fr", gap: 8, alignItems: "center", padding: 8, borderRadius: 12, background: "#ffffff", border: "1px solid #ead79a" }}>
-                            <span style={{ width: 30, height: 30, borderRadius: 10, display: "grid", placeItems: "center", background: "#fff7df" }}>{item.icon ?? "🎁"}</span>
-                            <span><strong style={{ fontSize: 12 }}>{item.text ?? item.name}</strong><small style={{ display: "block", color: "#61705f" }}>{item.source ?? "報酬"} / {item.date ?? ""}</small></span>
-                          </div>
-                        )) : <div style={{ fontSize: 12, color: "#61705f" }}>まだ受取履歴はありません。</div>}
-                      </div>
+                      <div style={{ fontSize: 12, color: "#61705f", fontWeight: 800 }}>累計ログイン受取：{homeLoginBonusStatus.claimCount}回</div>
                     </div>
                   </details>
+
+                  {homeLoginBonusClaimResult && (
+                    <div style={{ marginBottom: 10, padding: 14, borderRadius: 18, background: "linear-gradient(145deg,#fff7df,#ffe4a3)", border: "2px solid #f0b83a", boxShadow: "0 10px 24px rgba(143,95,0,0.16)", color: "#1d2b22", display: "grid", gridTemplateColumns: "44px 1fr auto", gap: 10, alignItems: "center" }}>
+                      <span style={{ width: 44, height: 44, borderRadius: 16, background: "#ffffff", display: "grid", placeItems: "center", fontSize: 24, boxShadow: "0 5px 12px rgba(0,0,0,0.12)" }}>{homeLoginBonusClaimResult.icon}</span>
+                      <span style={{ minWidth: 0 }}>
+                        <strong style={{ display: "block", fontSize: 15 }}>{homeLoginBonusClaimResult.title}</strong>
+                        <span style={{ display: "block", fontSize: 13, marginTop: 2, fontWeight: 900, color: "#8a5a00" }}>Day {homeLoginBonusClaimResult.day} / {homeLoginBonusClaimResult.text}</span>
+                      </span>
+                      <button type="button" onClick={() => setHomeLoginBonusClaimResult(null)} style={{ minHeight: 30, padding: "5px 10px", borderRadius: 999, border: "none", background: "#1d5c3a", color: "#ffffff", fontSize: 12, fontWeight: 900, cursor: "pointer" }}>OK</button>
+                    </div>
+                  )}
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
                     <button type="button" onClick={() => setHomeMissionFilter("claimable")} style={{ padding: 10, borderRadius: 14, background: homeMissionFilter === "claimable" ? "#fff0b8" : "#fff7df", border: homeMissionFilter === "claimable" ? "2px solid #d8a900" : "1px solid #e8d08a", textAlign: "center", cursor: "pointer", color: "#1d2b22" }}>
                       <div style={{ fontSize: 11, color: "#8a5a00", fontWeight: 900 }}>受取可能</div>
@@ -35562,11 +36541,12 @@ return (
                       <div style={{ fontSize: 11, color: "#31563f", fontWeight: 900 }}>達成済み</div>
                       <strong>{homeMissionCompletedCount}件</strong>
                     </button>
-                    <button type="button" onClick={() => setHomeMissionFilter("all")} style={{ padding: 10, borderRadius: 14, background: homeMissionFilter === "all" ? "#dfe8ff" : "#edf2ff", border: homeMissionFilter === "all" ? "2px solid #5b76c9" : "1px solid #cbd8ff", textAlign: "center", cursor: "pointer", color: "#1d2b22" }}>
-                      <div style={{ fontSize: 11, color: "#314c8a", fontWeight: 900 }}>任務総数</div>
-                      <strong>{homeMissionItems.length}件</strong>
+                    <button type="button" onClick={() => setHomeMissionFilter("progress")} style={{ padding: 10, borderRadius: 14, background: homeMissionFilter === "progress" ? "#dfe8ff" : "#edf2ff", border: homeMissionFilter === "progress" ? "2px solid #5b76c9" : "1px solid #cbd8ff", textAlign: "center", cursor: "pointer", color: "#1d2b22" }}>
+                      <div style={{ fontSize: 11, color: "#314c8a", fontWeight: 900 }}>進行中</div>
+                      <strong>{homeMissionInProgressCount}件</strong>
                     </button>
                   </div>
+                  <div style={{ margin: "-2px 0 10px", fontSize: 12, color: "#61705f", fontWeight: 800, textAlign: "center" }}>受取済み報酬：{homeMissionClaimedCount}件 / 登録実績：{homeMissionItems.length}件</div>
                   <button type="button" disabled={homeMissionClaimableCount <= 0} onClick={claimAllHomeMissionRewards} style={{ width: "100%", marginBottom: 10, padding: "11px 14px", borderRadius: 999, border: "none", background: homeMissionClaimableCount > 0 ? "linear-gradient(145deg,#ffb02e,#ff5a3d)" : "#c8d0c8", color: "#ffffff", fontSize: 15, fontWeight: 900, cursor: homeMissionClaimableCount > 0 ? "pointer" : "not-allowed", opacity: homeMissionClaimableCount > 0 ? 1 : 0.68 }}>
                     🎁 まとめて受け取る{homeMissionClaimableCount > 0 ? `（${homeMissionClaimableCount}件）` : ""}
                   </button>
@@ -35587,10 +36567,10 @@ return (
                       <strong>🎉 テスト版リリースキャンペーン</strong>
                       <div style={{ fontSize: 13, marginTop: 4 }}>今だけ 🏅メダル100 ＆ 💎シャイン100 をプレゼント。</div>
                     </div>
-                    <div style={{ padding: 12, borderRadius: 16, background: homeLoginBonusStatus.canClaim ? "#fff7df" : "#f3f6f1", border: "1px solid #d8e0d8", color: "#1d2b22" }}>
+                    <button type="button" onClick={homeLoginBonusStatus.canClaim ? claimHomeDailyLoginBonus : () => setTitleModal("missions")} style={{ padding: 12, borderRadius: 16, background: homeLoginBonusStatus.canClaim ? "#fff7df" : "#f3f6f1", border: "1px solid #d8e0d8", color: "#1d2b22", textAlign: "left", cursor: "pointer" }}>
                       <strong>🎁 ログインボーナス</strong>
-                      <div style={{ fontSize: 13, marginTop: 4 }}>{homeLoginBonusStatus.canClaim ? homeLoginBonusStatus.rewardText : "本日は受取済みです。"}</div>
-                    </div>
+                      <div style={{ fontSize: 13, marginTop: 4 }}>{homeLoginBonusStatus.canClaim ? `${homeLoginBonusStatus.rewardText} / タップで受取` : "本日は受取済みです。確認画面を開きます。"}</div>
+                    </button>
                     <div style={{ padding: 12, borderRadius: 16, background: "#edf2ff", border: "1px solid #cbd8ff", color: "#1d2b22" }}>
                       <strong>📝 更新情報</strong>
                       <div style={{ fontSize: 13, marginTop: 4 }}>ホームUIを全画面寄りに調整し、お知らせ・メッセージ・メニューを追加しました。</div>
@@ -35896,8 +36876,8 @@ return (
             } else {
               setShowTitleScreen(false);
               setTitleModal(null);
-              setActivePanel("employeeRecruit");
-              setEmployeeRecruitReturnPanel("employeeRecruit");
+              setActivePanel("mapEmployeeRecruitPage");
+              setEmployeeRecruitReturnPanel("map");
             }
           }}>OK</button>
         </div>
@@ -35907,7 +36887,7 @@ return (
 
     {employeeRecruitmentOffer && employeeRecruitAnimationStep !== "ready" && (() => {
       const phase = getRecruitDeliveryPhaseText(employeeRecruitAnimationStep);
-      const signal = employeeRecruitmentOffer.announcementSignal ?? { key: "blue", icon: "🔵", label: "通常" };
+      const signal = employeeRecruitmentOffer.announcementSignal ?? { key: "sealed", icon: "📬", label: "応募書類" };
       return (
         <div className="popup-log recruit-delivery-overlay-v363" style={{ zIndex: 19000 }}>
           <div className={`popup-log-card recruit-delivery-card-v363 recruit-signal-${signal.key}`}>
@@ -35919,7 +36899,7 @@ return (
             </div>
             <div className="recruit-delivery-icon-v363">{phase.icon}</div>
             <h2>{phase.title}</h2>
-            <p>{employeeRecruitAnimationStep === "arrival" ? signal.description : phase.subtitle}</p>
+            <p>{phase.subtitle}</p>
           </div>
         </div>
       );
@@ -35927,34 +36907,30 @@ return (
 
     {showTitleScreen && employeeRecruitmentOffer && employeeRecruitAnimationStep === "ready" && (
       <div className="popup-log recruit-popup-stage" style={{ zIndex: 12000 }}>
-        <div className={`popup-log-card employee-recruitment-card recruit-desk-card recruit-stage-v206 ${getRecruitmentStageClass(employeeRecruitmentOffer.ticketType)}`} style={{ maxHeight: "calc(100dvh - 104px)", overflowY: "auto" }}>
+        <div className={`popup-log-card employee-recruitment-card recruit-desk-card recruit-stage-v206 recruit-office-bg-force-v4093 ${getRecruitmentStageClass(employeeRecruitmentOffer.ticketType)}`} style={{ ...RECRUIT_OFFICE_DESK_BACKGROUND_STYLE_V409, minHeight: "100dvh", maxHeight: "100dvh", overflowY: "auto" }}>
           <div className="recruit-stage-aura-v206"></div>
-          <div className="recruit-title-area recruit-title-area-v206">
-            <div>
-              <span className="recruit-ticket-badge-v206">{getRecruitmentBrand(employeeRecruitmentOffer.ticketType).badge}</span>
-              <h2>{getRecruitmentBrand(employeeRecruitmentOffer.ticketType).stageTitle}</h2>
-              <p className="recruit-arrival-text-v206">履歴書が{employeeRecruitmentOffer.applicants.length}通届きました</p>
-            </div>
+          <div className="recruit-title-area recruit-title-area-v206 recruit-title-compact-v4098">
+            <p className="recruit-arrival-text-v206">履歴書が{employeeRecruitmentOffer.applicants.length}通届きました</p>
           </div>
           <div className={`recruit-envelope-grid recruit-envelope-desk-row recruit-envelope-count-${employeeRecruitmentOffer.applicants.length}`}>
             {employeeRecruitmentOffer.applicants.map((applicant, index) => {
-              const isNewApplicant = !findOwnedEmployeeById(applicant.id);
+              const isNewApplicant = applicant.isNewApplicant ?? !findOwnedEmployeeById(applicant.id);
+              const showEnvelopeNewBadge = shouldShowEnvelopeNewBadgeV409(applicant);
               return (
                 <button
                   key={applicant.envelopeId}
                   type="button"
-                  className={`recruit-envelope-card recruit-envelope-card-v206 envelope-${applicant.envelopeType} ${applicant.opened ? "opened" : "closed"} ${employeeRecruitmentOffer.selectedEnvelopeId === applicant.envelopeId ? "selected" : ""}`}
-                  style={{ animationDelay: `${index * 90}ms` }}
+                  className={`recruit-envelope-card recruit-envelope-card-v206 envelope-${applicant.envelopeType} recruit-envelope-neutral ${applicant.opened ? "opened" : "closed"} ${employeeRecruitmentOffer.selectedEnvelopeId === applicant.envelopeId ? "selected" : ""} ${showEnvelopeNewBadge ? "is-new-applicant-v4093" : ""}`}
+                  style={getRecruitEnvelopeButtonStyleV409(applicant, index)}
                   onClick={() => openRecruitEnvelope(applicant.envelopeId)}
                   aria-label={`履歴書${index + 1}を開封する`}
                 >
-                  {isNewApplicant && <span className="recruit-new-stamp envelope-new-stamp">NEW!</span>}
-                  <span className="resume-envelope-visual" aria-hidden="true">
-                    <span className="resume-envelope-back"></span>
-                    <span className="resume-envelope-paper"><span className="resume-paper-title">履歴書</span><span className="resume-paper-line"></span><span className="resume-paper-line short"></span></span>
-                    <span className="resume-envelope-flap"></span><span className="resume-envelope-body"></span><span className="resume-envelope-seal"><span className="resume-seal-emblem" aria-hidden="true"></span></span><span className="resume-envelope-shine"></span>
-                  </span>
-                  <span className="recruit-applicant-summary">{applicant.opened ? "開封済み" : "タップして確認"}</span>
+                  {!applicant.opened && showEnvelopeNewBadge && <span className="recruit-new-badge-clean-v4095" aria-label="NEW"></span>}
+                  {applicant.opened && (
+                    <span className="recruit-applicant-summary">
+                      {getRarityLabel(applicant.rarity)} / {applicant.name}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -35966,9 +36942,10 @@ return (
             const selectedApplicantSkills = getEmployeeSkills(selectedApplicant);
             return (
               <div className="recruit-profile-wrap">
-                <div className="recruit-profile-panel">
+                <div className={`recruit-profile-panel recruit-profile-neutral recruit-profile-rarity-${String(selectedApplicant.rarity || "N").toLowerCase()}`}>
                   <div className="recruit-profile-photo">
-                    {isNewApplicant && <span className="recruit-new-stamp profile-new-stamp">NEW!</span>}
+                    {isNewApplicant && <span className="recruit-new-badge-clean-v4095 profile-new-badge-clean-v4095 profile-new-badge-left-edge-v4101" aria-label="NEW"></span>}
+                    {renderAwakeningStars(selectedApplicant, true)}
                     {selectedApplicant.graphicCode ? <img className="recruit-character-image" src={`/characters/${selectedApplicant.graphicCode}.png`} alt={selectedApplicant.name} /> : <div className={`recruit-avatar recruit-avatar-${selectedApplicant.gender === "female" ? "female" : "male"}`}><span>{selectedApplicant.name.slice(0, 1)}</span></div>}
                   </div>
                   <div className="recruit-profile-main">
@@ -36217,8 +37194,8 @@ return (
         } else {
           setShowTitleScreen(false);
           setTitleModal(null);
-          setActivePanel("employeeRecruit");
-          setEmployeeRecruitReturnPanel("employeeRecruit");
+          setActivePanel("home");
+          setEmployeeRecruitReturnPanel("map");
         }
       }}>OK</button>
     </div>
@@ -36227,7 +37204,7 @@ return (
 
 {employeeRecruitmentOffer && employeeRecruitAnimationStep === "ready" && (
   <div className="popup-log recruit-popup-stage">
-    <div className={`popup-log-card employee-recruitment-card recruit-desk-card recruit-stage-v206 ${getRecruitmentStageClass(employeeRecruitmentOffer.ticketType)}`}>
+    <div className={`popup-log-card employee-recruitment-card recruit-desk-card recruit-stage-v206 recruit-office-bg-force-v4093 ${getRecruitmentStageClass(employeeRecruitmentOffer.ticketType)}`} style={{ ...RECRUIT_OFFICE_DESK_BACKGROUND_STYLE_V409, minHeight: "100dvh", maxHeight: "100dvh", overflowY: "auto" }}>
       <div className="recruit-stage-aura-v206"></div>
       <div className="recruit-stage-light-v206 light-left"></div>
       <div className="recruit-stage-light-v206 light-right"></div>
@@ -36240,52 +37217,35 @@ return (
       <div className="recruit-sparkle sparkle-e">✧</div>
       <div className="recruit-sparkle sparkle-f">✧</div>
 
-      <div className="recruit-title-area recruit-title-area-v206">
-        <div className="recruit-ornament">◇</div>
-        <div>
-          <span className="recruit-ticket-badge-v206">{getRecruitmentBrand(employeeRecruitmentOffer.ticketType).badge}</span>
-          <h2>{getRecruitmentBrand(employeeRecruitmentOffer.ticketType).stageTitle}</h2>
-          <p>{getRecruitmentBrand(employeeRecruitmentOffer.ticketType).subtitle}</p>
-          <p className="recruit-arrival-text-v206">履歴書が{employeeRecruitmentOffer.applicants.length}通届きました</p>
-        </div>
-        <div className="recruit-ornament">◇</div>
+      <div className="recruit-title-area recruit-title-area-v206 recruit-title-compact-v4098">
+        <p className="recruit-arrival-text-v206">履歴書が{employeeRecruitmentOffer.applicants.length}通届きました</p>
       </div>
 
       <div className={`recruit-envelope-grid recruit-envelope-desk-row recruit-envelope-count-${employeeRecruitmentOffer.applicants.length}`}>
         {employeeRecruitmentOffer.applicants.map((applicant, index) => {
-          const isNewApplicant = !findOwnedEmployeeById(applicant.id);
+          const isNewApplicant = applicant.isNewApplicant ?? !findOwnedEmployeeById(applicant.id);
+          const showEnvelopeNewBadge = shouldShowEnvelopeNewBadgeV409(applicant);
           return (
             <button
               key={applicant.envelopeId}
               type="button"
-              className={`recruit-envelope-card recruit-envelope-card-v206 envelope-${applicant.envelopeType} ${applicant.opened ? "opened" : "closed"} ${employeeRecruitmentOffer.selectedEnvelopeId === applicant.envelopeId ? "selected" : ""}`}
-              style={{ animationDelay: `${index * 90}ms` }}
+              className={`recruit-envelope-card recruit-envelope-card-v206 envelope-${applicant.envelopeType} recruit-envelope-neutral ${applicant.opened ? "opened" : "closed"} ${employeeRecruitmentOffer.selectedEnvelopeId === applicant.envelopeId ? "selected" : ""} ${showEnvelopeNewBadge ? "is-new-applicant-v4093" : ""}`}
+              style={getRecruitEnvelopeButtonStyleV409(applicant, index)}
               onClick={() => openRecruitEnvelope(applicant.envelopeId)}
               aria-label={`履歴書${index + 1}を開封する`}
             >
-              {isNewApplicant && <span className="recruit-new-stamp envelope-new-stamp">NEW!</span>}
-              <span className="resume-envelope-visual" aria-hidden="true">
-                <span className="resume-envelope-back"></span>
-                <span className="resume-envelope-paper">
-                  <span className="resume-paper-title">履歴書</span>
-                  <span className="resume-paper-line"></span>
-                  <span className="resume-paper-line short"></span>
+              {!applicant.opened && showEnvelopeNewBadge && <span className="recruit-new-badge-clean-v4095" aria-label="NEW"></span>}
+              {applicant.opened && (
+                <span className="recruit-applicant-summary">
+                  {getRarityLabel(applicant.rarity)} / {applicant.name}
                 </span>
-                <span className="resume-envelope-flap"></span>
-                <span className="resume-envelope-body"></span>
-                
-                <span className="resume-envelope-seal"><span className="resume-seal-emblem" aria-hidden="true"></span></span>
-                <span className="resume-envelope-shine"></span>
-              </span>
-              <span className="recruit-applicant-summary">
-                {applicant.opened ? "開封済み" : "タップして確認"}
-              </span>
+              )}
             </button>
           );
         })}
       </div>
 
-      <div className="recruit-tap-guide">封筒をタップして履歴書を確認してください</div>
+      {!employeeRecruitmentOffer.selectedEnvelopeId && <div className="recruit-tap-guide">封筒をタップして履歴書を確認してください</div>}
 
       {(() => {
         const selectedApplicant = employeeRecruitmentOffer.applicants.find((applicant) => applicant.envelopeId === employeeRecruitmentOffer.selectedEnvelopeId);
@@ -36298,9 +37258,10 @@ return (
 
         return (
           <div className="recruit-profile-wrap">
-            <div className="recruit-profile-panel">
+            <div className={`recruit-profile-panel recruit-profile-neutral recruit-profile-rarity-${String(selectedApplicant.rarity || "N").toLowerCase()}`}>
               <div className="recruit-profile-photo">
-                {isNewApplicant && <span className="recruit-new-stamp profile-new-stamp">NEW!</span>}
+                {isNewApplicant && <span className="recruit-new-badge-clean-v4095 profile-new-badge-clean-v4095 profile-new-badge-left-edge-v4101" aria-label="NEW"></span>}
+                {renderAwakeningStars(selectedApplicant, true)}
                 {selectedApplicant.graphicCode ? (
   <img
     className="recruit-character-image"
@@ -36481,11 +37442,13 @@ return (
           {(playerRankUpResult.specialMissionUnlocks ?? []).map((unlockName) => <p key={unlockName}>⚡ {unlockName} 解放！</p>)}
         </div>
       )}
-      {!playerRankUpResult.tutorialNoTicketReward && playerRankUpResult.ticketCount > 0 && (
+      {!playerRankUpResult.tutorialNoTicketReward && ((playerRankUpResult.ticketCount ?? 0) > 0 || (playerRankUpResult.ticketRewards?.medals ?? 0) > 0 || (playerRankUpResult.ticketRewards?.shine ?? 0) > 0) && (
         <div>
           {(playerRankUpResult.ticketRewards?.rookie ?? 0) > 0 && <p>{getTicketName("rookie")} +{playerRankUpResult.ticketRewards.rookie}枚</p>}
           {(playerRankUpResult.ticketRewards?.normal ?? 0) > 0 && <p>{getTicketName("normal")} +{playerRankUpResult.ticketRewards.normal}枚</p>}
           {(playerRankUpResult.ticketRewards?.premium ?? 0) > 0 && <p>{getTicketName("premium")} +{playerRankUpResult.ticketRewards.premium}枚</p>}
+          {(playerRankUpResult.ticketRewards?.medals ?? 0) > 0 && <p>🏅 メダル +{playerRankUpResult.ticketRewards.medals}</p>}
+          {(playerRankUpResult.ticketRewards?.shine ?? 0) > 0 && <p>💎 シャイン +{playerRankUpResult.ticketRewards.shine}</p>}
         </div>
       )}
       {(playerRankUpResult.unlockMessages ?? []).length > 0 ? (
@@ -36507,8 +37470,8 @@ return (
   <div className="popup-log">
     <div className="popup-log-card player-rankup-card headquarter-levelup-card-v286">
       <div className="levelup-celebration-icon-v286 hq">🏛</div>
-      <h2>{currentOfficeLevelFullLabel}アップ！</h2>
-      <p className="employee-gacha-rarity">{currentOfficeLevelShortLabel}{headquarterLevelUpResult.beforeLevel} → {currentOfficeLevelShortLabel}{headquarterLevelUpResult.level}</p>
+      <h2>会社評価アップ！</h2>
+      <p className="employee-gacha-rarity">{headquarterLevelUpResult.beforeLevel?.toLocaleString?.() ?? headquarterLevelUpResult.beforeLevel}pt → {headquarterLevelUpResult.level?.toLocaleString?.() ?? headquarterLevelUpResult.level}pt</p>
       <div>
         {(headquarterLevelUpResult.messages ?? []).map((message) => (
           <p key={message}>{message}</p>
@@ -36958,8 +37921,8 @@ return (
   <button
     type="button"
     className={`map-top-hud-chip-v268 ${isHeadquarterInfoOpen ? "active" : ""}`}
-    title={`${currentOfficeLevelFullLabel}詳細`}
-    aria-label={`${currentOfficeLevelFullLabel}詳細`}
+    title="会社評価ポイント詳細"
+    aria-label="会社評価ポイント詳細"
     onClick={() => {
       setIsHeadquarterInfoOpen((current) => !current);
       setIsDateInfoOpen(false);
@@ -36968,7 +37931,7 @@ return (
       setIsMainMenuOpen(false);
       setIsMapInfoMenuOpen(false);
     }}
-  ><span>🏢</span><strong>Lv{headquarterLevel}</strong></button>
+  ><span>🏢</span><strong>{companyEvaluationPointTotal.toLocaleString()}pt</strong></button>
   <button
     type="button"
     className={`map-top-hud-chip-v268 ${isMapViewMenuOpen ? "active" : ""}`}
@@ -37063,14 +38026,14 @@ return (
 
     {isHeadquarterInfoOpen && (
       <div className="map-top-hud-bubble-v3106" style={{ ...mapTopHudPopupInlineStyle, "--hud-bubble-arrow-left": "28px" }}>
-        <div className="map-top-hud-popup-title-v270"><span>🏢 {currentOfficeLevelShortLabel}詳細</span><button type="button" aria-label="閉じる" title="閉じる" onClick={() => setIsHeadquarterInfoOpen(false)} style={{ width: 32, minWidth: 32, maxWidth: 32, height: 20, minHeight: 20, maxHeight: 20, borderRadius: 6, padding: 0, lineHeight: 1, boxShadow: "none" }}>×</button></div>
+        <div className="map-top-hud-popup-title-v270"><span>🏢 会社評価詳細</span><button type="button" aria-label="閉じる" title="閉じる" onClick={() => setIsHeadquarterInfoOpen(false)} style={{ width: 32, minWidth: 32, maxWidth: 32, height: 20, minHeight: 20, maxHeight: 20, borderRadius: 6, padding: 0, lineHeight: 1, boxShadow: "none" }}>×</button></div>
         <div className="map-top-hud-popup-grid-v270">
-          <span>現在の{currentOfficeLevelShortLabel}</span><strong>{headquarterLevel}</strong>
-          <span>{currentOfficeExpLabel}</span><strong>{headquarterNextLevelInfo.isMaxLevel ? "最大Lv" : `${headquarterNextLevelInfo.exp} / ${headquarterNextLevelInfo.requiredExp}`}</strong>
-          <span>社員呼び出し枠</span><strong>{employees.length}/{employeeCallLimit}人</strong>
+          <span>会社評価</span><strong>{companyEvaluationPointTotal.toLocaleString()}pt</strong>
+          <span>評価段階</span><strong>{companyEvaluationStageName}</strong>
+          <span>社員配属枠</span><strong>{employees.length}/{employeeCallLimit}人</strong>
         </div>
         <div className="headquarter-next-reward-v278">
-          <span>次レベルアップ時</span>
+          <span>次の解放</span>
           <strong>{headquarterNextLevelRewardText}</strong>
         </div>
       </div>
@@ -37083,8 +38046,8 @@ return (
           <span>現在</span><strong>{gameDate.label}</strong>
           <span>経過</span><strong>{month}ヶ月</strong>
           <span>プレイヤーランク</span><strong>{playerRank}</strong>
-          <span>{currentOfficeLevelShortLabel}</span><strong>{headquarterLevel}</strong>
-          <span>社員呼び出し枠</span><strong>{employees.length}/{employeeCallLimit}人</strong>
+          <span>会社評価</span><strong>{companyEvaluationPointTotal.toLocaleString()}pt</strong>
+          <span>社員配属枠</span><strong>{employees.length}/{employeeCallLimit}人</strong>
           <span>人口</span><strong>{totalPopulation.toLocaleString()}</strong>
           <span>保管社員</span><strong>{employeeStorage.length}人</strong>
           <span>支店</span><strong>{branchCount}店</strong>
@@ -37316,17 +38279,9 @@ return (
           <button type="button" className={activePanel === "build" ? "active" : ""} onClick={() => { setBuildEntrySource("menu"); setPendingBuildKey(null); setActivePanel("build"); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); setIsMapEmployeeMenuOpen(false); }}>
             <span className="map-bottom-menu-icon-v268">🏗</span><span>建設</span>
           </button>
-          <div className="map-bottom-menu-item-wrap-v268">
-            <button type="button" className={`${isMapEmployeeMenuOpen || activePanel === "employee" || activePanel === "employeeRecruit" ? "active" : ""} ${getNagoyaTutorialGuideClass("employee-menu")}`} disabled={!hqPlaced} onClick={() => { setIsMapEmployeeMenuOpen((current) => !current); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); }}>
-              <span className="map-bottom-menu-icon-v268">👥</span><span>社員</span>
-            </button>
-            {isMapEmployeeMenuOpen && (
-              <div className="map-bottom-popup-v268 map-employee-popup-v268">
-                <button type="button" className={getNagoyaTutorialGuideClass("employee-recruit")} onClick={() => { setEmployeeRecruitReturnPanel("employeeRecruit"); setShowTitleScreen(false); setTitleModal(null); setActivePanel("employeeRecruit"); setTitleVaultDetailEmployee(null); setIsMapEmployeeMenuOpen(false); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); }}>📨 社員採用</button>
-                <button type="button" className={getNagoyaTutorialGuideClass("employee-assignment")} onClick={() => { setActivePanel("employee"); setIsMapEmployeeMenuOpen(false); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); }}>👥 社員配属</button>
-              </div>
-            )}
-          </div>
+          <button type="button" className={`${activePanel === "employee" ? "active" : ""} ${getNagoyaTutorialGuideClass("employee-menu")} ${getNagoyaTutorialGuideClass("employee-assignment")}`} disabled={!hqPlaced} onClick={() => { setActivePanel("employee"); setIsMapEmployeeMenuOpen(false); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); }}>
+            <span className="map-bottom-menu-icon-v268">👥</span><span>社員</span>
+          </button>
           <button type="button" className={`${activePanel === "bank" ? "active" : ""} ${getNagoyaTutorialGuideClass("bank-menu")}`} disabled={!hqPlaced} onClick={() => { setActivePanel("bank"); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); setIsMapEmployeeMenuOpen(false); }}>
             <span className="map-bottom-menu-icon-v268">🏦</span><span>銀行</span>
           </button>
@@ -37357,6 +38312,19 @@ return (
             )}
           </div>
         </nav>
+
+        {false && activePanel === "mapEmployeeRecruitPage" && (
+          <section className="map-recruit-page-v414" aria-label="マップ社員採用ページ">
+            <div className="map-recruit-page-header-v414">
+              <button type="button" className="map-recruit-page-back-v414" onClick={() => { setActivePanel("home"); setEmployeeRecruitReturnPanel("map"); setIsMapEmployeeMenuOpen(false); setIsMainMenuOpen(false); setIsMapInfoMenuOpen(false); }}>← マップへ戻る</button>
+              <div>
+                <h2>社員採用</h2>
+                <p>マップから開いた社員採用です。採用後はマップへ戻ります。</p>
+              </div>
+            </div>
+            {renderRecruitSelectionImageOverlayV402("map")}
+          </section>
+        )}
 
         {(activePanel === "hq" || activePanel === "land" || activePanel === "build" || activePanel === "employee" || activePanel === "employeeRecruit" || activePanel === "employeeLibrary") && (
   <section
@@ -37623,7 +38591,7 @@ return (
             <div className="smart-section-card office-range-info">
               <div className="smart-section-title">
                 <h3>拠点</h3>
-                <span>{selectedTile.feature === FEATURE.HQ ? `${currentOfficeLevelShortLabel}${headquarterLevel} / 呼び出し枠 ${employees.length}/${employeeCallLimit}人 / 行動範囲 ${getOfficeActionRange(selectedTile)}マス` : `行動範囲 ${getOfficeActionRange(selectedTile)}マス`}</span>
+                <span>{selectedTile.feature === FEATURE.HQ ? `${companyEvaluationPointTotal.toLocaleString()}pt / 配属枠 ${employees.length}/${employeeCallLimit}人 / 行動範囲 ${getOfficeActionRange(selectedTile)}マス` : `行動範囲 ${getOfficeActionRange(selectedTile)}マス`}</span>
               </div>
               {(() => {
                 const roles = getOfficeRoleAssignments(selectedTile);
@@ -37754,7 +38722,7 @@ return (
       );
       // v275.4: 社員管理では、そのマップの待機社員だけでなく、
       // アカウント共通の社員保管庫も呼び出し候補に含める。
-      // これにより本社Lvで呼び出し枠が増えた時、過去にガチャで獲得した社員も選べる。
+      // これにより会社評価ポイントで配属枠が増えた時、過去にガチャで獲得した社員も選べる。
       const currentAssignmentPageFreeMapKey = isFreeModeKey(currentGameMode) ? normalizeFreeModeKey(currentGameMode) : null;
       const currentAssignmentPageAreaKey = getSpecialMissionAreaKeyFromMode(currentGameMode, currentAssignmentPageFreeMapKey);
       const allAssignableEmployees = mergeEmployeeCollections([
@@ -37966,63 +38934,7 @@ return (
 
 
 
-{activePanel === "employeeRecruit" && (
-  <div className="employee-recruit-home-style-page-v27219">
-    <div className="employee-recruit-home-style-header-v27219">
-      <h2>社員採用</h2>
-      <span>採用チケットで履歴書確認</span>
-    </div>
 
-    <div className="home-recruit-pass-grid-v2184 employee-recruit-home-style-grid-v27219">
-      {[
-        ["rookie", rookieEmployeeTickets, "低確率・毎日用"],
-        ["normal", employeeTickets, "URまで排出"],
-        ["premium", premiumEmployeeTickets, "SR以上確定"],
-      ].map(([ticketType, ticketCount, description]) => {
-        const brand = getRecruitmentBrand(ticketType);
-        const disabled = Number(ticketCount) < 1;
-        return (
-          <button
-            key={ticketType}
-            type="button"
-            className={`home-recruit-pass-button-v206 home-recruit-pass-button-v2184 ${brand.className}`}
-            disabled={disabled}
-            onClick={() => startHomeEmployeeRecruitmentByTicket(ticketType, "map")}
-            style={{
-              border: `1px solid ${brand.borderColor}`,
-              background: brand.buttonGradient,
-              opacity: disabled ? 0.55 : 1,
-              cursor: disabled ? "not-allowed" : "pointer",
-            }}
-          >
-            <span className="home-recruit-pass-icon-v2184">{brand.icon}</span>
-            <strong>{brand.menuName}</strong>
-            <em>{ticketCount}枚</em>
-          </button>
-        );
-      })}
-    </div>
-
-    <div className="home-recruit-odds-compact-v2184 employee-recruit-home-style-odds-v27219">
-      <span><strong>{getRecruitmentMenuName("rookie")}:</strong> {getTicketOddsText("rookie")}</span>
-      <span><strong>{getRecruitmentMenuName("normal")}:</strong> {getTicketOddsText("normal")}</span>
-      <span><strong>{getRecruitmentMenuName("premium")}:</strong> {getTicketOddsText("premium")}</span>
-    </div>
-
-    <button
-      type="button"
-      className="employee-recruit-home-style-close-v27219"
-      onClick={() => {
-        setActivePanel("home");
-        setEmployeeRecruitReturnPanel("employeeRecruit");
-        setIsMapEmployeeMenuOpen(false);
-        setIsMainMenuOpen(false);
-        setIsMapInfoMenuOpen(false);
-      }}
-      style={{ width: "100%", marginTop: 14, padding: "13px 18px", borderRadius: 999, border: "none", background: "linear-gradient(135deg,#1f6b43,#155334)", color: "#fff", fontSize: 16, fontWeight: 900, cursor: "pointer", boxShadow: "0 10px 22px rgba(12,64,36,0.22)" }}
-    >閉じる</button>
-  </div>
-)}
 
 
 {activePanel === "employeeLibrary" && (
@@ -38036,12 +38948,6 @@ return (
             onClick={() => setActivePanel("employee")}
           >
             社員配置
-          </button>
-          <button
-            type="button"
-            onClick={() => setActivePanel("employeeRecruit")}
-          >
-            社員採用
           </button>
           <button
             type="button"
@@ -38355,8 +39261,8 @@ return (
             return building.category === "住宅" && building.subCategory === selectedHousingType;
           })
           .map(([key, building]) => {
-            const requiredRank = getRequiredRankForBuilding(key);
-            const unlocked = isBuildingUnlockedForRank(key, playerRank);
+            const requiredRank = getRequiredCompanyEvaluationPointsForBuilding(key);
+            const unlocked = isBuildingUnlockedForCompanyEvaluation(key, companyEvaluationPointTotal);
             const tutorialBuildLocked = isStoryTutorialActive() &&
               tutorialStep === STORY_TUTORIAL_STEPS.BUILD_APARTMENT &&
               key !== "house_1f";
@@ -38378,7 +39284,7 @@ return (
                     return;
                   }
                   if (!unlocked) {
-                    alert(`${building.name}はプレイヤーランク${requiredRank}で解放されます。`);
+                    alert(`${building.name}は会社評価${requiredRank.toLocaleString()}ptで解放されます。現在の会社評価は${companyEvaluationPointTotal.toLocaleString()}ptです。`);
                     return;
                   }
                   startBuildPlacement(key);
@@ -38411,7 +39317,7 @@ return (
                     <div style={{ minWidth: 0 }}>
                       <strong style={{ display: "block", fontSize: 19, lineHeight: 1.12, fontWeight: 950 }}>{building.name}</strong>
                       {tutorialBuildLocked && <span style={{ display: "inline-block", marginTop: 4, padding: "3px 8px", borderRadius: 999, background: "#ffe1e5", color: "#c84a5a", fontSize: 11.5, fontWeight: 950 }}>チュートリアル未開放</span>}
-                      {!tutorialBuildLocked && !unlocked && <span style={{ display: "inline-block", marginTop: 4, padding: "3px 8px", borderRadius: 999, background: "#ffe1e5", color: "#c84a5a", fontSize: 11.5, fontWeight: 950 }}>Rank{requiredRank}で解放</span>}
+                      {!tutorialBuildLocked && !unlocked && <span style={{ display: "inline-block", marginTop: 4, padding: "3px 8px", borderRadius: 999, background: "#ffe1e5", color: "#c84a5a", fontSize: 11.5, fontWeight: 950 }}>{requiredRank.toLocaleString()}ptで解放</span>}
                       {canSelectBuilding && <span style={{ display: "inline-block", marginTop: 4, padding: "3px 8px", borderRadius: 999, background: "#e4f8e8", color: "#0d8043", fontSize: 11.5, fontWeight: 950 }}>建築可能</span>}
                     </div>
                   </div>
@@ -38424,7 +39330,7 @@ return (
                     <span style={{ borderRadius: 13, padding: "6px 4px", background: "rgba(235,247,240,.95)", fontSize: 10.5, color: "#5e6d62", textAlign: "center" }}>工期<b style={{ display: "block", color: "#172a20", fontSize: 12.6 }}>{building.buildMonths}ヶ月</b></span>
                   </div>
                   <div style={{ borderRadius: 999, padding: "8px 12px", background: canSelectBuilding ? "linear-gradient(135deg,#16764b,#25a767)" : "linear-gradient(135deg,#a7a7a7,#c9c9c9)", color: canSelectBuilding ? "white" : "#555", fontSize: 13, fontWeight: 950, textAlign: "center", boxShadow: canSelectBuilding ? "inset 0 1px 0 rgba(255,255,255,.34)" : "none" }}>
-                    {canSelectBuilding ? "この建物を選択" : `Rank${requiredRank}で解放`}
+                    {canSelectBuilding ? "この建物を選択" : `${requiredRank.toLocaleString()}ptで解放`}
                   </div>
                 </div>
               </button>
@@ -38666,8 +39572,8 @@ return (
         <div><span>経過</span><strong>{month}ヶ月</strong></div>
         <div><span>プレイヤーランク</span><strong>{playerRank}</strong></div>
         <div><span>ランクEXP</span><strong>{playerExp} / {getPlayerRequiredExp(playerRank)}</strong></div>
-        <div><span>{currentOfficeLevelShortLabel}</span><strong>{headquarterLevel}</strong></div>
-        <div><span>社員呼び出し枠</span><strong>{employees.length}/{employeeCallLimit}人</strong></div>
+        <div><span>会社評価</span><strong>{companyEvaluationPointTotal.toLocaleString()}pt</strong></div>
+        <div><span>社員配属枠</span><strong>{employees.length}/{employeeCallLimit}人</strong></div>
         <div><span>人口</span><strong>{totalPopulation.toLocaleString()}</strong></div>
         <div><span>保管社員</span><strong>{employeeStorage.length}人</strong></div>
         <div><span>支店</span><strong>{branchCount}店</strong></div>
