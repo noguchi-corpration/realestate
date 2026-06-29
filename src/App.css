@@ -17069,3 +17069,90 @@ html body .home-action-grid-v201 .home-menu-card-v201,
 html body .home-action-grid-v201 button {
   pointer-events: auto !important;
 }
+
+/* ===== v415: 表示幅・詳細ボタン修正 ===== */
+/* 社員採用後の社員情報：名前欄と能力チップを常に枠いっぱいで揃える */
+html body .popup-log.recruit-popup-stage .recruit-profile-header,
+html body .app .recruit-profile-header {
+  width: 100% !important;
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-profile-header h3,
+html body .app .recruit-profile-header h3 {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-profile-subrow,
+html body .app .recruit-profile-subrow {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-profile-subrow span,
+html body .app .recruit-profile-subrow span {
+  width: 100% !important;
+  min-width: 0 !important;
+  text-align: center !important;
+  justify-content: center !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-stat-grid,
+html body .app .recruit-stat-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+}
+
+html body .popup-log.recruit-popup-stage .recruit-stat-grid div,
+html body .app .recruit-stat-grid div {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+}
+
+/* ホーム右上の通知バッジ：1桁は丸、2桁以上だけ自然に横へ伸びる */
+html body .home-top-action-badge-v371,
+html body .home-lobby-nav-badge-v2182,
+html body .home-menu-badge-v203 {
+  width: auto !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  padding: 0 5px !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+html body .home-top-action-badge-v371 {
+  top: -4px !important;
+  left: auto !important;
+  right: 2px !important;
+  font-size: 10px !important;
+}
+
+html body .home-lobby-nav-badge-v2182 {
+  min-width: 20px !important;
+  height: 20px !important;
+  padding: 0 6px !important;
+  font-size: 10px !important;
+}
